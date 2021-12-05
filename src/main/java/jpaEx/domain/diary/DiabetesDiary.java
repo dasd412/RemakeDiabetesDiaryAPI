@@ -2,6 +2,7 @@ package jpaEx.domain.diary;
 
 import jpaEx.domain.BaseTimeEntity;
 import jpaEx.domain.diet.Diet;
+import jpaEx.domain.writer.Writer;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -29,12 +30,22 @@ public class DiabetesDiary extends BaseTimeEntity {
     @OneToMany(mappedBy = "diary")
     private List<Diet>dietList=new ArrayList<>();
 
+    //Writer와 일대다 양방향 관계이며, 연관관계의 주인이다.
+    @ManyToOne
+    @JoinColumn(name="writer_id")
+    private Writer writer;
+
     protected DiabetesDiary(){}
 
     public DiabetesDiary(int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
+        this(fastingPlasmaGlucose,remark,writtenTime,null);
+    }
+
+    public DiabetesDiary(int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime, Writer writer) {
         this.fastingPlasmaGlucose = fastingPlasmaGlucose;
         this.remark = remark;
         this.writtenTime = writtenTime;
+        this.writer = writer;
     }
 
     public Long getId() {
@@ -75,11 +86,26 @@ public class DiabetesDiary extends BaseTimeEntity {
         return dietList;
     }
 
+    public void setDietList(List<Diet> dietList) {
+        this.dietList = dietList;
+    }
+
     public void addDiet(Diet diet){
         this.dietList.add(diet);
         //무한 루프 체크
         if(diet.getDiary()!=this){
             diet.setDiary(this);
+        }
+    }
+
+    public Writer getWriter() {
+        return writer;
+    }
+
+    public void setWriter(Writer writer) {
+        this.writer = writer;
+        if(!writer.getDiaries().contains(this)){
+            writer.getDiaries().add(this);
         }
     }
 }
