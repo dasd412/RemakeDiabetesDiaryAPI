@@ -1,4 +1,7 @@
-package jpaEx.domain;
+package jpaEx.domain.diet;
+
+import jpaEx.domain.BaseTimeEntity;
+import jpaEx.domain.food.Food;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -6,7 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name="Diet")
-public class Diet extends BaseTimeEntity{
+public class Diet extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="diet_id")

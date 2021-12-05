@@ -1,10 +1,13 @@
-package jpaEx.domain;
+package jpaEx.domain.food;
+
+import jpaEx.domain.BaseTimeEntity;
+import jpaEx.domain.diet.Diet;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name="Food")
-public class Food extends BaseTimeEntity{
+public class Food extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

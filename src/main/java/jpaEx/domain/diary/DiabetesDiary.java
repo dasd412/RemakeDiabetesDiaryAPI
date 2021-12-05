@@ -1,4 +1,4 @@
-package jpaEx.domain;
+package jpaEx.domain.diary;
 
 public class DiabetesDiary {
 }
