@@ -20,13 +20,9 @@ public class DietRepositoryTest {
     @Autowired
     DietRepository dietRepository;
 
-    @Autowired
-    FoodRepository foodRepository;
-
     @After
     public void clean(){
         dietRepository.deleteAll();
-        foodRepository.deleteAll();
     }
 
     @Transactional

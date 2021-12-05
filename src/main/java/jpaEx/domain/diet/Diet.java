@@ -1,6 +1,7 @@
 package jpaEx.domain.diet;
 
 import jpaEx.domain.BaseTimeEntity;
+import jpaEx.domain.diary.DiabetesDiary;
 import jpaEx.domain.food.Food;
 
 import javax.persistence.*;
@@ -28,11 +29,21 @@ public class Diet extends BaseTimeEntity {
     @OneToMany(mappedBy = "diet")
     private List<Food>foodList=new ArrayList<>();
 
+    //혈당일지 "일"에 대해 "다"이므로 연관관계의 주인(외래키 관리자)이다.
+    @ManyToOne
+    @JoinColumn(name="diary_id")
+    private DiabetesDiary diary;
+
     protected Diet(){}
 
-    public Diet(EatTime eatTime, int bloodSugar){
+    public Diet(EatTime eatTime,int bloodSugar){
+        this(eatTime,bloodSugar,null);
+    }
+
+    public Diet(EatTime eatTime, int bloodSugar, DiabetesDiary diary){
         this.eatTime=eatTime;
         this.bloodSugar=bloodSugar;
+        this.diary=diary;
     }
 
     public Long getId() {
@@ -66,5 +77,19 @@ public class Diet extends BaseTimeEntity {
 
     public void setFoodList(List<Food> foodList) {
         this.foodList = foodList;
+    }
+
+    public DiabetesDiary getDiary() {
+        return diary;
+    }
+
+    //연관 관계 편의 메소드
+    public void setDiary(DiabetesDiary diary) {
+        //기존 관계 제거
+        if (this.diary!=null){
+            this.diary.getDietList().remove(this);
+        }
+        this.diary=diary;
+        diary.getDietList().add(this);
     }
 }

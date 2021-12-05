@@ -13,6 +13,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -36,11 +39,18 @@ public class FoodRepositoryTest {
     @Test
     public void saveFood(){
         //given
-        Diet diet=new Diet(EatTime.Lunch,100);
-        dietRepository.save(diet);
+        Diet diet=new Diet(EatTime.Lunch,100,null);
+
+        List<Food>foodList=new ArrayList<>();
 
         Food pizza=new Food("pizza",diet);
+        foodList.add(pizza);
         foodRepository.save(pizza);
+
+        diet.setFoodList(foodList);
+
+        dietRepository.save(diet);
+
         //when
         Diet foundDiet=dietRepository.findAll().get(0);
         Food foundFood=foodRepository.findAll().get(0);
@@ -48,6 +58,10 @@ public class FoodRepositoryTest {
         assertThat(foundDiet).isEqualTo(diet);
         assertThat(foundFood).isEqualTo(pizza);
         assertThat(foundFood.getFoodName()).isEqualTo(pizza.getFoodName());
+        assertThat(foundDiet.getFoodList().get(0)).isEqualTo(pizza);
+        assertThat(foundDiet.getFoodList().get(0).getFoodName()).isEqualTo(pizza.getFoodName());
+
+        //음식으로부터 혈당을 알아낼 수 있다.
         assertThat(foundFood.getDiet()).isEqualTo(foundDiet);
         assertThat(foundFood.getDiet().getBloodSugar()).isEqualTo(diet.getBloodSugar());
 
