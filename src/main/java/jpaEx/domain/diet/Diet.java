@@ -7,6 +7,8 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 @Entity
 @Table(name="Diet")
 public class Diet extends BaseTimeEntity {
@@ -53,7 +55,8 @@ public class Diet extends BaseTimeEntity {
         return bloodSugar;
     }
 
-    public void setBloodSugar(int bloodSugar) {
+    public void modifyBloodSugar(int bloodSugar) {
+        checkArgument(bloodSugar > 0, "bloodSugar must be positive number");
         this.bloodSugar = bloodSugar;
     }
 
