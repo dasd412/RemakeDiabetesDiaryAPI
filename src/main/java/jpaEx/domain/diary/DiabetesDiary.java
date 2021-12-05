@@ -77,6 +77,9 @@ public class DiabetesDiary extends BaseTimeEntity {
 
     public void addDiet(Diet diet){
         this.dietList.add(diet);
+        //무한 루프 체크
+        if(diet.getDiary()!=this){
+            diet.setDiary(this);
+        }
     }
-
 }

@@ -47,11 +47,10 @@ public class Food extends BaseTimeEntity {
     }
     //연관 관계 편의 메소드
     public void setDiet(Diet diet) {
-        //기존 관계 제거
-        if(this.diet!=null){
-            this.diet.getFoodList().remove(this);
-        }
+        //무한 루프 체크
         this.diet=diet;
-        diet.getFoodList().add(this);
+        if(!diet.getFoodList().contains(this)){
+            diet.getFoodList().add(this);
+        }
     }
 }
