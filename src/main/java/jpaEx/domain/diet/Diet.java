@@ -28,6 +28,11 @@ public class Diet extends BaseTimeEntity {
 
     protected Diet(){}
 
+    public Diet(EatTime eatTime, int bloodSugar){
+        this.eatTime=eatTime;
+        this.bloodSugar=bloodSugar;
+    }
+
     public Long getId() {
         return id;
     }
