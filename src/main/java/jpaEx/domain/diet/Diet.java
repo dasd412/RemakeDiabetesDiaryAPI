@@ -75,8 +75,8 @@ public class Diet extends BaseTimeEntity {
         return foodList;
     }
 
-    public void setFoodList(List<Food> foodList) {
-        this.foodList = foodList;
+    public void addFood(Food food){
+        this.foodList.add(food);
     }
 
     public DiabetesDiary getDiary() {

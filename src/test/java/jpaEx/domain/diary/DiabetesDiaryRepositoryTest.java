@@ -58,13 +58,11 @@ public class DiabetesDiaryRepositoryTest {
     @Test
     public void saveDiaryWithDiet(){
         //given
-        List<Diet> dietList=new ArrayList<>();
         Diet diet=new Diet(EatTime.BreakFast,100);
-        dietList.add(diet);
         dietRepository.save(diet);
 
         DiabetesDiary diary=new DiabetesDiary(20,"test", LocalDateTime.now());
-        diary.setDietList(dietList);
+        diary.addDiet(diet);
 
         diabetesDiaryRepository.save(diary);
 
@@ -83,18 +81,14 @@ public class DiabetesDiaryRepositoryTest {
         //given
         Diet diet=new Diet(EatTime.Lunch,100,null);
 
-        List<Food>foodList=new ArrayList<>();
         Food pizza=new Food("pizza",diet);
-        foodList.add(pizza);
-        diet.setFoodList(foodList);
         foodRepository.save(pizza);
-
-        List<Diet>dietList=new ArrayList<>();
-        dietList.add(diet);
+        diet.addFood(pizza);
 
         DiabetesDiary diary=new DiabetesDiary(20,"test", LocalDateTime.now());
-        diary.setDietList(dietList);
         diet.setDiary(diary);
+        diary.addDiet(diet);
+
         dietRepository.save(diet);
         diabetesDiaryRepository.save(diary);
         //when

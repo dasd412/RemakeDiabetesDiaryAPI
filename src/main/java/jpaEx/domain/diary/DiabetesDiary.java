@@ -75,7 +75,8 @@ public class DiabetesDiary extends BaseTimeEntity {
         return dietList;
     }
 
-    public void setDietList(List<Diet> dietList) {
-        this.dietList = dietList;
+    public void addDiet(Diet diet){
+        this.dietList.add(diet);
     }
+
 }

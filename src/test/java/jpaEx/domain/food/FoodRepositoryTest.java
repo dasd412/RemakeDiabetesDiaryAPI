@@ -41,13 +41,10 @@ public class FoodRepositoryTest {
         //given
         Diet diet=new Diet(EatTime.Lunch,100,null);
 
-        List<Food>foodList=new ArrayList<>();
-
         Food pizza=new Food("pizza",diet);
-        foodList.add(pizza);
         foodRepository.save(pizza);
 
-        diet.setFoodList(foodList);
+        diet.addFood(pizza);
 
         dietRepository.save(diet);
 
