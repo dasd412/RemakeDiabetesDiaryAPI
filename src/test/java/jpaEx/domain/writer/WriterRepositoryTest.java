@@ -1,7 +1,10 @@
 package jpaEx.domain.writer;
 
+import jpaEx.domain.diary.DiabetesDiary;
 import jpaEx.domain.diary.DiabetesDiaryRepository;
+import jpaEx.domain.diet.Diet;
 import jpaEx.domain.diet.DietRepository;
+import jpaEx.domain.diet.EatTime;
 import jpaEx.domain.food.FoodRepository;
 import org.junit.After;
 import org.junit.Test;
@@ -15,6 +18,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +45,81 @@ public class WriterRepositoryTest {
     @Transactional
     @Test
     public void saveWriter(){
-        //todo 엔티티 연관관계랑 함께 잘 저장 되는지 확인하는 테스트 수행 필요
+
+        //given
+        Writer me=new Writer("ME","TEST@NAVER.COM",Role.User);
+        writerRepository.save(me);
+
+        //when
+        Writer found=writerRepository.findAll().get(0);
+
+        //then
+        assertThat(found).isEqualTo(me);
+        assertThat(found.getName()).isEqualTo(me.getName());
+        assertThat(found.getEmail()).isEqualTo(me.getEmail());
+        assertThat(found.getRole()).isEqualTo(me.getRole());
     }
 
+    @Transactional
+    @Test
+    public void saveWriterWithDiary(){
+
+        //given
+        DiabetesDiary diary=new DiabetesDiary(20,"test", LocalDateTime.now());
+        Writer me=new Writer("ME","TEST@NAVER.COM",Role.User);
+        me.addDiary(diary);
+        writerRepository.save(me);
+
+
+        //when
+        Writer found=writerRepository.findAll().get(0);
+
+        //then
+        assertThat(found).isEqualTo(me);
+        assertThat(found.getName()).isEqualTo(me.getName());
+        assertThat(found.getEmail()).isEqualTo(me.getEmail());
+        assertThat(found.getRole()).isEqualTo(me.getRole());
+
+        assertThat(found.getDiaries().get(0)).isEqualTo(diary);
+        assertThat(found.getDiaries().get(0).getFastingPlasmaGlucose()).isEqualTo(diary.getFastingPlasmaGlucose());
+        assertThat(found.getDiaries().get(0).getRemark()).isEqualTo(diary.getRemark());
+        logger.info(found.getDiaries().get(0).toString());
+    }
+
+    @Transactional
+    @Test
+    public void saveWriterWithDiaryWithDiet(){
+
+        //given
+
+        DiabetesDiary diary=new DiabetesDiary(20,"test", LocalDateTime.now());
+        Diet diet=new Diet(EatTime.Lunch,100,diary);
+        diary.addDiet(diet);
+
+        Writer me=new Writer("ME","TEST@NAVER.COM",Role.User);
+        me.addDiary(diary);
+
+        writerRepository.save(me);
+
+        //when
+        Writer found=writerRepository.findAll().get(0);
+
+        //then
+        //writer
+        assertThat(found).isEqualTo(me);
+        assertThat(found.getName()).isEqualTo(me.getName());
+        assertThat(found.getEmail()).isEqualTo(me.getEmail());
+        assertThat(found.getRole()).isEqualTo(me.getRole());
+        //diary
+        assertThat(found.getDiaries().get(0)).isEqualTo(diary);
+        assertThat(found.getDiaries().get(0).getFastingPlasmaGlucose()).isEqualTo(diary.getFastingPlasmaGlucose());
+        assertThat(found.getDiaries().get(0).getRemark()).isEqualTo(diary.getRemark());
+        logger.info(found.getDiaries().get(0).toString());
+
+        //diet
+        assertThat(found.getDiaries().get(0).getDietList().get(0)).isEqualTo(diet);
+        assertThat(found.getDiaries().get(0).getDietList().get(0).getEatTime()).isEqualTo(diet.getEatTime());
+        assertThat(found.getDiaries().get(0).getDietList().get(0).getBloodSugar()).isEqualTo(diet.getBloodSugar());
+        logger.info(found.getDiaries().get(0).getDietList().get(0).toString());
+    }
 }

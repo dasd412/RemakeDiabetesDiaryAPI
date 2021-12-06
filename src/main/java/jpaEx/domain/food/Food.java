@@ -3,6 +3,8 @@ package jpaEx.domain.food;
 import jpaEx.domain.BaseTimeEntity;
 import jpaEx.domain.diet.Diet;
 import jpaEx.domain.writer.Writer;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.persistence.*;
 
@@ -79,6 +81,14 @@ public class Food extends BaseTimeEntity {
         if(!writer.getFoodList().contains(this)){
             writer.getFoodList().add(this);
         }
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append("id",id)
+                .append("foodName",foodName)
+                .toString();
     }
 
 }

@@ -3,6 +3,8 @@ package jpaEx.domain.diet;
 import jpaEx.domain.BaseTimeEntity;
 import jpaEx.domain.diary.DiabetesDiary;
 import jpaEx.domain.food.Food;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -96,5 +98,14 @@ public class Diet extends BaseTimeEntity {
         if(!diary.getDietList().contains(this)){
             diary.getDietList().add(this);
         }
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append("id",id)
+                .append("eatTime",eatTime)
+                .append("blood sugar",bloodSugar)
+                .toString();
     }
 }

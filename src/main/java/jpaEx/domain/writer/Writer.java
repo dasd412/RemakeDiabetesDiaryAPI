@@ -5,7 +5,11 @@ import jpaEx.domain.diary.DiabetesDiary;
 import jpaEx.domain.food.Food;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -25,7 +29,7 @@ public class Writer extends BaseTimeEntity {
     private Role role;
 
     @OneToMany(mappedBy = "writer",orphanRemoval = true,cascade = CascadeType.ALL)
-    private List<DiabetesDiary>diaries;
+    private List<DiabetesDiary>diaries=new ArrayList<>();
 
     //양방향 연관 관계를 맺을 때는 외래키를 갖고 있는 쪽이 연관 관계의 주인이 되어야 한다.
     //db의 1 대 다 관계에서는 '다' 쪽이 외래키를 갖고 있다. 따라서 '다'에 해당하는 Food 가 연관 관계의 주인이 되어야 한다.
@@ -101,11 +105,21 @@ public class Writer extends BaseTimeEntity {
         }
     }
 
-    public void addDiaries(DiabetesDiary diary){
+    public void addDiary(DiabetesDiary diary){
         this.diaries.add(diary);
         //무한 루프 방지
         if(diary.getWriter()!=this){
             diary.setWriter(this);
         }
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append("id",id)
+                .append("name",name)
+                .append("email",email)
+                .append("role",role)
+                .toString();
     }
 }
