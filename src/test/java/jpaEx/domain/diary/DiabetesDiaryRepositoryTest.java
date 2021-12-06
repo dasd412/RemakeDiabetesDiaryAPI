@@ -1,14 +1,15 @@
 package jpaEx.domain.diary;
 
 import jpaEx.domain.diet.Diet;
-import jpaEx.domain.diet.DietRepository;
+
 import jpaEx.domain.diet.EatTime;
 import jpaEx.domain.food.Food;
-import jpaEx.domain.food.FoodRepository;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Profile;
@@ -23,19 +24,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @Profile("test")
 public class DiabetesDiaryRepositoryTest {
-    @Autowired
-    DietRepository dietRepository;
 
     @Autowired
     DiabetesDiaryRepository diabetesDiaryRepository;
 
-    @Autowired
-    FoodRepository foodRepository;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @After
     public void clean(){
-        foodRepository.deleteAll();
-        dietRepository.deleteAll();
         diabetesDiaryRepository.deleteAll();
     }
 
@@ -57,8 +53,6 @@ public class DiabetesDiaryRepositoryTest {
     public void saveDiaryWithDiet(){
         //given
         Diet diet=new Diet(EatTime.BreakFast,100);
-        dietRepository.save(diet);
-
         DiabetesDiary diary=new DiabetesDiary(20,"test", LocalDateTime.now());
         diary.addDiet(diet);
 
@@ -71,23 +65,19 @@ public class DiabetesDiaryRepositoryTest {
         assertThat(found).isEqualTo(diary);
         assertThat(found.getDietList().get(0).getEatTime()).isEqualTo(diet.getEatTime());
         assertThat(found.getDietList().get(0).getBloodSugar()).isEqualTo(diet.getBloodSugar());
+        logger.info(found.getDietList().get(0).toString());
     }
 
     @Transactional
     @Test
     public void saveDiaryWithDietWhichHasFood() {
         //given
-        Diet diet=new Diet(EatTime.Lunch,100,null);
-
-        Food pizza=new Food("pizza",diet);
-        foodRepository.save(pizza);
-        diet.addFood(pizza);
-
         DiabetesDiary diary=new DiabetesDiary(20,"test", LocalDateTime.now());
-        diet.setDiary(diary);
+        Diet diet=new Diet(EatTime.Lunch,100,diary);
+        Food pizza=new Food("pizza",diet);
+        diet.addFood(pizza);
         diary.addDiet(diet);
 
-        dietRepository.save(diet);
         diabetesDiaryRepository.save(diary);
         //when
         DiabetesDiary foundDiary=diabetesDiaryRepository.findAll().get(0);
@@ -104,6 +94,7 @@ public class DiabetesDiaryRepositoryTest {
         //다이어리 안의 식단에 음식이 넣어졌는 지 체크
         assertThat(foundDiary.getDietList().get(0).getFoodList().get(0)).isEqualTo(pizza);
         assertThat(foundDiary.getDietList().get(0).getFoodList().get(0).getFoodName()).isEqualTo(pizza.getFoodName());
+        logger.info(foundDiary.getDietList().get(0).getFoodList().get(0).toString());
     }
 
 }

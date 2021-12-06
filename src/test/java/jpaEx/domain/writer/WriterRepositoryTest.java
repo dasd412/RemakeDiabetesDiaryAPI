@@ -1,12 +1,9 @@
 package jpaEx.domain.writer;
 
 import jpaEx.domain.diary.DiabetesDiary;
-import jpaEx.domain.diary.DiabetesDiaryRepository;
 import jpaEx.domain.diet.Diet;
-import jpaEx.domain.diet.DietRepository;
 import jpaEx.domain.diet.EatTime;
 import jpaEx.domain.food.Food;
-import jpaEx.domain.food.FoodRepository;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,8 +17,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,16 +27,12 @@ public class WriterRepositoryTest {
     @Autowired
     WriterRepository writerRepository;
 
-    @Autowired
-    DiabetesDiaryRepository diaryRepository;
-
-    @Autowired
-    DietRepository dietRepository;
-
-    @Autowired
-    FoodRepository foodRepository;
-
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @After
+    public void clean(){
+        writerRepository.deleteAll();
+    }
 
     @Transactional
     @Test

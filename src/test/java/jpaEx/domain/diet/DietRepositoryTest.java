@@ -1,7 +1,7 @@
 package jpaEx.domain.diet;
 
 import jpaEx.domain.food.Food;
-import jpaEx.domain.food.FoodRepository;
+
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,15 +26,10 @@ public class DietRepositoryTest {
     @Autowired
     DietRepository dietRepository;
 
-    @Autowired
-    FoodRepository foodRepository;
-
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @After
     public void clean(){
-        //외래키를 갖고 있는 food 부터 삭제해야 외래키 참조 오류가 발생하지 않는다.
-        foodRepository.deleteAll();
         dietRepository.deleteAll();
     }
 
@@ -53,6 +48,33 @@ public class DietRepositoryTest {
 
     @Transactional
     @Test
+    public void saveFood(){
+        //given
+        Diet diet=new Diet(EatTime.Lunch,100,null);
+
+        Food pizza=new Food("pizza",diet);
+        diet.addFood(pizza);
+
+        dietRepository.save(diet);
+
+        //when
+        Diet foundDiet=dietRepository.findAll().get(0);
+
+        //then
+        assertThat(foundDiet).isEqualTo(diet);
+        assertThat(foundDiet.getFoodList().get(0)).isEqualTo(pizza);
+        assertThat(foundDiet.getFoodList().get(0).getFoodName()).isEqualTo(pizza.getFoodName());
+        assertThat(foundDiet.getFoodList().get(0)).isEqualTo(pizza);
+        assertThat(foundDiet.getFoodList().get(0).getFoodName()).isEqualTo(pizza.getFoodName());
+
+        //음식으로부터 혈당을 알아낼 수 있다.
+        assertThat(foundDiet.getFoodList().get(0).getDiet()).isEqualTo(foundDiet);
+        assertThat(foundDiet.getFoodList().get(0).getDiet().getBloodSugar()).isEqualTo(diet.getBloodSugar());
+        logger.info(foundDiet.getFoodList().get(0).toString());
+    }
+
+    @Transactional
+    @Test
     public void saveFoodsInDiet(){
         //given
         Diet diet=new Diet(EatTime.Lunch,100,null);
@@ -67,7 +89,6 @@ public class DietRepositoryTest {
         foodList.add(iceCream);
 
         for (Food food : foodList){
-            foodRepository.save(food);
             diet.addFood(food);
         }
 
@@ -75,12 +96,12 @@ public class DietRepositoryTest {
 
         //when
         Diet foundDiet=dietRepository.findAll().get(0);
-        List<Food> foundFood=foodRepository.findAll();
+
         //then
         assertThat(foundDiet).isEqualTo(diet);
-        for (int i=0;i<foundFood.size();i++){
-            assertThat(foundFood.get(i)).isEqualTo(foodList.get(i));
+        for (int i=0;i<foundDiet.getFoodList().size();i++){
             assertThat(foundDiet.getFoodList().get(i)).isEqualTo(foodList.get(i));
+            logger.info(foundDiet.getFoodList().get(i).toString());
         }
     }
 
@@ -100,7 +121,6 @@ public class DietRepositoryTest {
         foodList.add(iceCream);
 
         for (Food food : foodList){
-            foodRepository.save(food);
             diet.addFood(food);
         }
 
@@ -110,14 +130,11 @@ public class DietRepositoryTest {
         Diet foundDiet=dietRepository.findAll().get(0);
         foundDiet.getFoodList().remove(juice);
 
-        List<Food> foundFood=foodRepository.findAll();
         //then
         assertThat(foundDiet).isEqualTo(diet);
         assertThat(foundDiet.getFoodList().size()).isEqualTo(2);
-        assertThat(foundFood.size()).isEqualTo(2);
 
-        for (int i=0;i<foundFood.size();i++){
-            logger.info(foundFood.get(i).getFoodName());
+        for (int i=0;i<foundDiet.getFoodList().size();i++){
             logger.info(foundDiet.getFoodList().get(i).getFoodName());
         }
     }
