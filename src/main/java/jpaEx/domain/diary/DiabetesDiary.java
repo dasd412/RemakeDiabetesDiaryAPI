@@ -29,11 +29,11 @@ public class DiabetesDiary extends BaseTimeEntity {
 
     //일 대 다 단방향 관계의 경우 외래키가 없는 일쪽에서 외래키를 관리하므로 Update 쿼리를 날려야 하는 추가 비용이 존재한다. 따라서 다 대 일 양방향 매핑으로 바꿔야 한다.
     //양방향이므로 연관관계의 주인을 정해야 한다. "일"에 해당하는 엔티티는 외래키가 없으므로 연관관계의 주인이 아니다. 이를 명시하기 위해 mapped by를 사용한다.
-    @OneToMany(mappedBy = "diary",orphanRemoval = true,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "diary",orphanRemoval = true,cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Diet>dietList=new ArrayList<>();
 
-    //Writer와 일대다 양방향 관계이며, 연관관계의 주인이다.
-    @ManyToOne
+    //Writer와 일대다 양방향 관계이며, 연관관계의 주인이다. 되도록이면 모든 연관 관계를 지연로딩으로 사용하는 것이 성능에 좋음.
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="writer_id")
     private Writer writer;
 

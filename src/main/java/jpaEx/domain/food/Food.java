@@ -17,12 +17,12 @@ public class Food extends BaseTimeEntity {
 
     private String foodName;
 
-    //'다'에 해당하므로 연관 관계의 주인이다.
-    @ManyToOne
+    //'다'에 해당하므로 연관 관계의 주인이다. 되도록이면 모든 연관 관계를 지연로딩으로 사용하는 것이 성능에 좋음.
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="diet_id")
     private Diet diet;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="writer_id")
     private Writer writer;
 
