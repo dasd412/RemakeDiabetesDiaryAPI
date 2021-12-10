@@ -2,7 +2,6 @@ package jpaEx.domain.food;
 
 import jpaEx.domain.BaseTimeEntity;
 import jpaEx.domain.diet.Diet;
-import jpaEx.domain.writer.Writer;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -54,6 +53,8 @@ public class Food extends BaseTimeEntity {
     }
     //연관 관계 편의 메소드
     public void setDiet(Diet diet) {
+        //기존 관계 삭제
+        this.diet.getFoodList().remove(this);
         //무한 루프 체크
         this.diet=diet;
         if(!diet.getFoodList().contains(this)){

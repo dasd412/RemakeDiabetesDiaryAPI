@@ -57,11 +57,10 @@ public class WriterRepositoryTest {
     public void saveWriterWithDiary(){
 
         //given
-        DiabetesDiary diary=new DiabetesDiary(20,"test", LocalDateTime.now());
         Writer me=new Writer("ME","TEST@NAVER.COM",Role.User);
-        me.addDiary(diary);
         writerRepository.save(me);
-
+        DiabetesDiary diary=new DiabetesDiary(20,"test", LocalDateTime.now());
+        me.addDiary(diary);
 
         //when
         Writer found=writerRepository.findAll().get(0);
@@ -83,15 +82,13 @@ public class WriterRepositoryTest {
     public void saveWriterWithDiaryWithDiet(){
 
         //given
+        Writer me=new Writer("ME","TEST@NAVER.COM",Role.User);
+        writerRepository.save(me);
 
         DiabetesDiary diary=new DiabetesDiary(20,"test", LocalDateTime.now());
         Diet diet=new Diet(EatTime.Lunch,100,diary);
         diary.addDiet(diet);
-
-        Writer me=new Writer("ME","TEST@NAVER.COM",Role.User);
         me.addDiary(diary);
-
-        writerRepository.save(me);
 
         //when
         Writer found=writerRepository.findAll().get(0);
@@ -119,17 +116,18 @@ public class WriterRepositoryTest {
     @Test
     public void saveWriterWithDiaryWithDietWithFood(){
         //given
+        Writer me=new Writer("ME","TEST@NAVER.COM",Role.User);
+        writerRepository.save(me);
 
         DiabetesDiary diary=new DiabetesDiary(20,"test", LocalDateTime.now());
         Diet diet=new Diet(EatTime.Lunch,100,diary);
         diary.addDiet(diet);
-
-        Writer me=new Writer("ME","TEST@NAVER.COM",Role.User);
         me.addDiary(diary);
+
 
         Food food=new Food("pizza",diet);
         diet.addFood(food);
-        writerRepository.save(me);
+
 
         //when
         Writer found=writerRepository.findAll().get(0);
@@ -158,5 +156,99 @@ public class WriterRepositoryTest {
         logger.info(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(0).toString());
     }
 
+    @Transactional
+    @Test
+    public void modifyDiary(){
+        //given
+        Writer me=new Writer("ME","TEST@NAVER.COM",Role.User);
+        writerRepository.save(me);
+
+        DiabetesDiary diary=new DiabetesDiary(20,"test", LocalDateTime.now());
+        me.addDiary(diary);
+
+        diary.modifyFastingPlasmaGlucose(45);
+        diary.modifyRemark("modify");
+
+        //when
+        Writer found=writerRepository.findAll().get(0);
+
+        //then
+        assertThat(found).isEqualTo(me);
+        assertThat(found.getName()).isEqualTo(me.getName());
+        assertThat(found.getEmail()).isEqualTo(me.getEmail());
+        assertThat(found.getRole()).isEqualTo(me.getRole());
+        logger.info(found.getDiaries().get(0).toString());
+
+        assertThat(found.getDiaries().get(0)).isEqualTo(diary);
+        assertThat(found.getDiaries().get(0).getFastingPlasmaGlucose()).isEqualTo(45);
+        assertThat(found.getDiaries().get(0).getRemark()).isEqualTo("modify");
+        logger.info(found.getDiaries().get(0).toString());
+    }
+
+    @Transactional
+    @Test
+    public void modifyDiet(){
+        //given
+        Writer me=new Writer("ME","TEST@NAVER.COM",Role.User);
+        writerRepository.save(me);
+
+        DiabetesDiary diary=new DiabetesDiary(20,"test", LocalDateTime.now());
+        me.addDiary(diary);
+
+        Diet diet1=new Diet(EatTime.BreakFast,100);
+        Diet diet2=new Diet(EatTime.Lunch,200);
+        diary.addDiet(diet1);
+        diary.addDiet(diet2);
+
+        diet2.modifyBloodSugar(150);
+        diet2.modifyEatTime(EatTime.Dinner);
+
+        //when
+        Writer found=writerRepository.findAll().get(0);
+
+        //then
+        assertThat(found.getDiaries().get(0).getDietList().get(0).getEatTime()).isEqualTo(diet1.getEatTime());
+        assertThat(found.getDiaries().get(0).getDietList().get(0).getBloodSugar()).isEqualTo(diet1.getBloodSugar());
+        assertThat(found.getDiaries().get(0).getDietList().get(1).getEatTime()).isEqualTo(EatTime.Dinner);
+        assertThat(found.getDiaries().get(0).getDietList().get(1).getBloodSugar()).isEqualTo(150);
+        logger.info(found.getDiaries().get(0).getDietList().toString());
+    }
+
+    @Transactional
+    @Test
+    public void modifyFood(){
+        //given
+        Writer me=new Writer("ME","TEST@NAVER.COM",Role.User);
+        writerRepository.save(me);
+
+        DiabetesDiary diary=new DiabetesDiary(20,"test", LocalDateTime.now());
+        me.addDiary(diary);
+
+        Diet diet1=new Diet(EatTime.BreakFast,100);
+        Diet diet2=new Diet(EatTime.Lunch,200);
+        diary.addDiet(diet1);
+        diary.addDiet(diet2);
+
+        Food food1=new Food("pizza",diet2);
+        Food food2=new Food("cola",diet2);
+        diet2.addFood(food1);
+        diet2.addFood(food2);
+
+        Food food3=new Food("tofu",diet1);
+        diet1.addFood(food3);
+
+        food2.setDiet(diet1);
+        food2.setFoodName("water");
+
+        //when
+        Writer found=writerRepository.findAll().get(0);
+
+        //then
+        assertThat(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(0).getFoodName()).isEqualTo(food3.getFoodName());
+        assertThat(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(1).getFoodName()).isEqualTo(food2.getFoodName());
+        assertThat(found.getDiaries().get(0).getDietList().get(1).getFoodList().get(0).getFoodName()).isEqualTo(food1.getFoodName());
+        logger.info(found.getDiaries().get(0).getDietList().get(0).getFoodList().toString());
+        logger.info(found.getDiaries().get(0).getDietList().get(1).getFoodList().toString());
+    }
 
 }

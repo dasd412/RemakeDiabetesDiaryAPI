@@ -62,7 +62,7 @@ public class Diet extends BaseTimeEntity {
         return eatTime;
     }
 
-    public void setEatTime(EatTime eatTime) {
+    public void modifyEatTime(EatTime eatTime) {
         this.eatTime = eatTime;
     }
 
