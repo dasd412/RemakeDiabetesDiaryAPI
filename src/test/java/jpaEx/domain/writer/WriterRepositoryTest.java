@@ -127,7 +127,7 @@ public class WriterRepositoryTest {
         Writer me=new Writer("ME","TEST@NAVER.COM",Role.User);
         me.addDiary(diary);
 
-        Food food=new Food("pizza",diet,me);
+        Food food=new Food("pizza",diet);
         diet.addFood(food);
         writerRepository.save(me);
 
@@ -157,4 +157,6 @@ public class WriterRepositoryTest {
         assertThat(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(0).getFoodName()).isEqualTo(food.getFoodName());
         logger.info(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(0).toString());
     }
+
+
 }

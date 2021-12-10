@@ -22,24 +22,15 @@ public class Food extends BaseTimeEntity {
     @JoinColumn(name="diet_id")
     private Diet diet;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="writer_id")
-    private Writer writer;
-
     protected Food(){}
 
     public Food(String foodName){
-        this(foodName,null,null);
+        this(foodName,null);
     }
 
     public Food(String foodName,Diet diet){
-        this(foodName,diet,null);
-    }
-
-    public Food(String foodName,Diet diet, Writer writer){
         this.foodName=foodName;
         this.diet=diet;
-        this.writer=writer;
     }
 
     public Long getId() {
@@ -67,19 +58,6 @@ public class Food extends BaseTimeEntity {
         this.diet=diet;
         if(!diet.getFoodList().contains(this)){
             diet.getFoodList().add(this);
-        }
-    }
-
-    public Writer getWriter() {
-        return writer;
-    }
-
-    //연관 관계 편의 메소드
-    public void setWriter(Writer writer) {
-        //무한 루프 체크
-        this.writer=writer;
-        if(!writer.getFoodList().contains(this)){
-            writer.getFoodList().add(this);
         }
     }
 
