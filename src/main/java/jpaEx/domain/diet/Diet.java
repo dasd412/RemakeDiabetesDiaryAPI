@@ -54,10 +54,6 @@ public class Diet extends BaseTimeEntity {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public EatTime getEatTime() {
         return eatTime;
     }

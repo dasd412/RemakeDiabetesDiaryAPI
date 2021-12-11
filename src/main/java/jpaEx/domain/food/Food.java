@@ -7,6 +7,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.persistence.*;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 @Entity
 @Table(name="Food")
 public class Food extends BaseTimeEntity {
@@ -36,15 +38,12 @@ public class Food extends BaseTimeEntity {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getFoodName() {
         return foodName;
     }
 
-    public void setFoodName(String foodName) {
+    public void modifyFoodName(String foodName) {
+        checkArgument(foodName.length()>0 && foodName.length()<=50, "food name length should be between 1 and 50");
         this.foodName = foodName;
     }
 
