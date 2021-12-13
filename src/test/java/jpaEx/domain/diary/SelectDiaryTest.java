@@ -77,7 +77,6 @@ public class SelectDiaryTest {
         int a=0;
         for(DiabetesDiary diary : diaries){
             //11은 시작일을 뜻함.
-            assertThat(diary.getId()).isEqualTo(a+11);
             assertThat(diary.getFastingPlasmaGlucose()).isEqualTo(a+100);
             assertThat(diary.getWrittenTime()).isBetween(startDate,endDate);
             logger.info(diary.toString());
