@@ -21,6 +21,7 @@ public class DiabetesDiary extends BaseTimeEntity {
     @Column(name="diary_id")
     private Long id;
 
+    @Column(name="fpg")
     private int fastingPlasmaGlucose;
 
     private String remark;

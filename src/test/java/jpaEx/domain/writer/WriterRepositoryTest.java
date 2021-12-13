@@ -238,7 +238,7 @@ public class WriterRepositoryTest {
         diet1.addFood(food3);
 
         food2.setDiet(diet1);
-        food2.setFoodName("water");
+        food2.modifyFoodName("water");
 
         //when
         Writer found=writerRepository.findAll().get(0);

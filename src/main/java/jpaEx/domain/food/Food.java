@@ -34,6 +34,7 @@ public class Food extends BaseTimeEntity {
         this.diet=diet;
     }
 
+
     public Long getId() {
         return id;
     }
