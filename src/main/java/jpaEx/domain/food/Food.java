@@ -33,15 +33,11 @@ public class Food extends BaseTimeEntity {
 
     public Food(){}
 
-    public Food(String foodName){
-        this(foodName,null);
+    public Food(Long id, Diet diet, String foodName) {
+        this.id = id;
+        this.diet = diet;
+        this.foodName = foodName;
     }
-
-    public Food(String foodName,Diet diet){
-        this.foodName=foodName;
-        this.diet=diet;
-    }
-
 
     public Long getId() {
         return id;

@@ -47,14 +47,11 @@ public class Diet extends BaseTimeEntity{
 
     public Diet(){}
 
-    public Diet(EatTime eatTime,int bloodSugar){
-        this(eatTime,bloodSugar,null);
-    }
-
-    public Diet(EatTime eatTime, int bloodSugar, DiabetesDiary diary){
-        this.eatTime=eatTime;
-        this.bloodSugar=bloodSugar;
-        this.diary=diary;
+    public Diet(Long id, DiabetesDiary diary, EatTime eatTime, int bloodSugar) {
+        this.id = id;
+        this.diary = diary;
+        this.eatTime = eatTime;
+        this.bloodSugar = bloodSugar;
     }
 
     public EatTime getEatTime() {

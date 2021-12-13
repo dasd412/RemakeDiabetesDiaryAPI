@@ -39,7 +39,7 @@ public class WriterRepositoryTest {
     public void saveWriter(){
 
         //given
-        Writer me=new Writer("ME","TEST@NAVER.COM",Role.User);
+        Writer me=new Writer(1L,"ME","TEST@NAVER.COM",Role.User);
         writerRepository.save(me);
 
         //when
@@ -57,11 +57,11 @@ public class WriterRepositoryTest {
     public void saveWriterWithDiary(){
 
         //given
-        Writer me=new Writer("ME","TEST@NAVER.COM",Role.User);
-        writerRepository.save(me);
-        DiabetesDiary diary=new DiabetesDiary(20,"test", LocalDateTime.now());
-        me.addDiary(diary);
+        Writer me=new Writer(1L,"ME","TEST@NAVER.COM",Role.User);
 
+        DiabetesDiary diary=new DiabetesDiary(1L,me,20,"test", LocalDateTime.now());
+        me.addDiary(diary);
+        writerRepository.save(me);
         //when
         Writer found=writerRepository.findAll().get(0);
 
@@ -82,13 +82,14 @@ public class WriterRepositoryTest {
     public void saveWriterWithDiaryWithDiet(){
 
         //given
-        Writer me=new Writer("ME","TEST@NAVER.COM",Role.User);
-        writerRepository.save(me);
+        Writer me=new Writer(1L,"ME","TEST@NAVER.COM",Role.User);
 
-        DiabetesDiary diary=new DiabetesDiary(20,"test", LocalDateTime.now());
-        Diet diet=new Diet(EatTime.Lunch,100,diary);
+        DiabetesDiary diary=new DiabetesDiary(1L,me,20,"test", LocalDateTime.now());
+        Diet diet=new Diet(1L,diary,EatTime.Lunch,100);
         diary.addDiet(diet);
         me.addDiary(diary);
+
+        writerRepository.save(me);
 
         //when
         Writer found=writerRepository.findAll().get(0);
@@ -116,18 +117,17 @@ public class WriterRepositoryTest {
     @Test
     public void saveWriterWithDiaryWithDietWithFood(){
         //given
-        Writer me=new Writer("ME","TEST@NAVER.COM",Role.User);
-        writerRepository.save(me);
+        Writer me=new Writer(1L,"ME","TEST@NAVER.COM",Role.User);
 
-        DiabetesDiary diary=new DiabetesDiary(20,"test", LocalDateTime.now());
-        Diet diet=new Diet(EatTime.Lunch,100,diary);
+        DiabetesDiary diary=new DiabetesDiary(1L,me,20,"test", LocalDateTime.now());
+        Diet diet=new Diet(1L,diary,EatTime.Lunch,100);
         diary.addDiet(diet);
         me.addDiary(diary);
 
-
-        Food food=new Food("pizza",diet);
+        Food food=new Food(1L,diet,"pizza");
         diet.addFood(food);
 
+        writerRepository.save(me);
 
         //when
         Writer found=writerRepository.findAll().get(0);
@@ -160,14 +160,16 @@ public class WriterRepositoryTest {
     @Test
     public void modifyDiary(){
         //given
-        Writer me=new Writer("ME","TEST@NAVER.COM",Role.User);
-        writerRepository.save(me);
+        Writer me=new Writer(1L,"ME","TEST@NAVER.COM",Role.User);
 
-        DiabetesDiary diary=new DiabetesDiary(20,"test", LocalDateTime.now());
+
+        DiabetesDiary diary=new DiabetesDiary(1L,me,20,"test", LocalDateTime.now());
         me.addDiary(diary);
+        writerRepository.save(me);
 
         diary.modifyFastingPlasmaGlucose(45);
         diary.modifyRemark("modify");
+        writerRepository.save(me);
 
         //when
         Writer found=writerRepository.findAll().get(0);
@@ -189,19 +191,21 @@ public class WriterRepositoryTest {
     @Test
     public void modifyDiet(){
         //given
-        Writer me=new Writer("ME","TEST@NAVER.COM",Role.User);
-        writerRepository.save(me);
+        Writer me=new Writer(1L,"ME","TEST@NAVER.COM",Role.User);
 
-        DiabetesDiary diary=new DiabetesDiary(20,"test", LocalDateTime.now());
+
+        DiabetesDiary diary=new DiabetesDiary(1L,me,20,"test", LocalDateTime.now());
         me.addDiary(diary);
 
-        Diet diet1=new Diet(EatTime.BreakFast,100);
-        Diet diet2=new Diet(EatTime.Lunch,200);
+        Diet diet1=new Diet(1L,diary,EatTime.BreakFast,100);
+        Diet diet2=new Diet(2L,diary,EatTime.Lunch,200);
         diary.addDiet(diet1);
         diary.addDiet(diet2);
+        writerRepository.save(me);
 
         diet2.modifyBloodSugar(150);
         diet2.modifyEatTime(EatTime.Dinner);
+        writerRepository.save(me);
 
         //when
         Writer found=writerRepository.findAll().get(0);
@@ -218,27 +222,28 @@ public class WriterRepositoryTest {
     @Test
     public void modifyFood(){
         //given
-        Writer me=new Writer("ME","TEST@NAVER.COM",Role.User);
-        writerRepository.save(me);
+        Writer me=new Writer(1L,"ME","TEST@NAVER.COM",Role.User);
 
-        DiabetesDiary diary=new DiabetesDiary(20,"test", LocalDateTime.now());
+
+        DiabetesDiary diary=new DiabetesDiary(1L,me,20,"test", LocalDateTime.now());
         me.addDiary(diary);
 
-        Diet diet1=new Diet(EatTime.BreakFast,100);
-        Diet diet2=new Diet(EatTime.Lunch,200);
+        Diet diet1=new Diet(1L,diary,EatTime.BreakFast,100);
+        Diet diet2=new Diet(2L,diary,EatTime.Lunch,200);
         diary.addDiet(diet1);
         diary.addDiet(diet2);
 
-        Food food1=new Food("pizza",diet2);
-        Food food2=new Food("cola",diet2);
+        Food food1=new Food(1L,diet2,"pizza");
+        Food food2=new Food(2L,diet2,"cola");
         diet2.addFood(food1);
         diet2.addFood(food2);
-
-        Food food3=new Food("tofu",diet1);
+        Food food3=new Food(3L,diet1,"tofu");
         diet1.addFood(food3);
+        writerRepository.save(me);
 
         food2.setDiet(diet1);
         food2.modifyFoodName("water");
+        writerRepository.save(me);
 
         //when
         Writer found=writerRepository.findAll().get(0);
@@ -254,20 +259,21 @@ public class WriterRepositoryTest {
     @Test
     public void deleteDiary() {
         //given
-        Writer me = new Writer("ME", "TEST@NAVER.COM", Role.User);
-        writerRepository.save(me);
+        Writer me = new Writer(1L,"ME", "TEST@NAVER.COM", Role.User);
 
-        DiabetesDiary diary1 = new DiabetesDiary(70, "test1", LocalDateTime.now());
+
+        DiabetesDiary diary1 = new DiabetesDiary(1L,me,70, "test1", LocalDateTime.now());
         me.addDiary(diary1);
 
-        DiabetesDiary diary2 = new DiabetesDiary(90, "test2", LocalDateTime.now());
+        DiabetesDiary diary2 = new DiabetesDiary(2L,me,90, "test2", LocalDateTime.now());
         me.addDiary(diary2);
 
-        DiabetesDiary diary3 = new DiabetesDiary(40, "test3", LocalDateTime.now());
+        DiabetesDiary diary3 = new DiabetesDiary(3L,me,40, "test3", LocalDateTime.now());
         me.addDiary(diary3);
+        writerRepository.save(me);
 
         me.getDiaries().remove(diary1);
-
+        writerRepository.save(me);
         //when
         Writer found=writerRepository.findAll().get(0);
 
@@ -281,32 +287,32 @@ public class WriterRepositoryTest {
     @Test
     public void deleteDiet() {
         //given
-        Writer me = new Writer("ME", "TEST@NAVER.COM", Role.User);
-        writerRepository.save(me);
+        Writer me = new Writer(1L,"ME", "TEST@NAVER.COM", Role.User);
 
-        DiabetesDiary diary = new DiabetesDiary(70, "test", LocalDateTime.now());
+        DiabetesDiary diary = new DiabetesDiary(1L,me,70, "test", LocalDateTime.now());
         me.addDiary(diary);
 
-        Diet diet1=new Diet(EatTime.BreakFast, 100);
-        Diet diet2=new Diet(EatTime.Lunch, 200);
-        Diet diet3=new Diet(EatTime.Dinner,100);
+        Diet diet1=new Diet(1L,diary,EatTime.BreakFast, 100);
+        Diet diet2=new Diet(2L,diary,EatTime.Lunch, 200);
+        Diet diet3=new Diet(3L,diary,EatTime.Dinner,100);
         diary.addDiet(diet1);
         diary.addDiet(diet2);
         diary.addDiet(diet3);
 
-        Food tofu=new Food("tofu",diet1);
-        Food pizza=new Food("pizza",diet2);
-        Food cola=new Food("cola",diet2);
-        Food chicken=new Food("chicken",diet2);
-        Food soup=new Food("soup",diet3);
+        Food tofu=new Food(1L,diet1,"tofu");
+        Food pizza=new Food(2L,diet2,"pizza");
+        Food cola=new Food(3L,diet2,"cola");
+        Food chicken=new Food(4L,diet2,"chicken");
+        Food soup=new Food(5L,diet3,"soup");
         diet1.addFood(tofu);
         diet2.addFood(pizza);
         diet2.addFood(cola);
         diet2.addFood(chicken);
         diet3.addFood(soup);
+        writerRepository.save(me);
 
         diary.getDietList().remove(diet2);
-
+        writerRepository.save(me);
         //when
         Writer found = writerRepository.findAll().get(0);
 
@@ -319,31 +325,32 @@ public class WriterRepositoryTest {
     @Test
     public void deleteFood() {
         //given
-        Writer me = new Writer("ME", "TEST@NAVER.COM", Role.User);
-        writerRepository.save(me);
+        Writer me = new Writer(1L,"ME", "TEST@NAVER.COM", Role.User);
 
-        DiabetesDiary diary = new DiabetesDiary(70, "test", LocalDateTime.now());
+        DiabetesDiary diary = new DiabetesDiary(1L,me,70, "test", LocalDateTime.now());
         me.addDiary(diary);
 
-        Diet diet1 = new Diet(EatTime.BreakFast, 100);
-        Diet diet2 = new Diet(EatTime.Lunch, 200);
-        Diet diet3 = new Diet(EatTime.Dinner, 100);
+        Diet diet1 = new Diet(1L,diary,EatTime.BreakFast, 100);
+        Diet diet2 = new Diet(2L,diary,EatTime.Lunch, 200);
+        Diet diet3 = new Diet(3L,diary,EatTime.Dinner, 100);
         diary.addDiet(diet1);
         diary.addDiet(diet2);
         diary.addDiet(diet3);
 
-        Food tofu = new Food("tofu", diet1);
-        Food pizza = new Food("pizza", diet2);
-        Food cola = new Food("cola", diet2);
-        Food chicken = new Food("chicken", diet2);
-        Food soup = new Food("soup", diet3);
+        Food tofu = new Food(1L,diet1,"tofu");
+        Food pizza = new Food(2L,diet2,"pizza");
+        Food cola = new Food(3L,diet2,"cola");
+        Food chicken = new Food(4L,diet2,"chicken");
+        Food soup = new Food(5L,diet3,"soup");
         diet1.addFood(tofu);
         diet2.addFood(pizza);
         diet2.addFood(cola);
         diet2.addFood(chicken);
         diet3.addFood(soup);
+        writerRepository.save(me);
 
         diet2.getFoodList().remove(chicken);
+        writerRepository.save(me);
         //when
         Writer found = writerRepository.findAll().get(0);
 

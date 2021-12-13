@@ -16,7 +16,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 @Entity
 @Table(name="Writer")
 public class Writer extends BaseTimeEntity {
-    //복합키에는 @GeneratedValue 사용 불가
     @Id
     @Column(name="writer_id")
     private Long id;
@@ -36,7 +35,8 @@ public class Writer extends BaseTimeEntity {
 
     public Writer(){}
 
-    public Writer(String name, String email, Role role) {
+    public Writer(Long id, String name, String email, Role role) {
+        this.id = id;
         this.name = name;
         this.email = email;
         this.role = role;

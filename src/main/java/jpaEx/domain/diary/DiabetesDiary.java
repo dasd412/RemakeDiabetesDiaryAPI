@@ -21,7 +21,7 @@ public class DiabetesDiary extends BaseTimeEntity{
     //식별 관계이므로 복합키 사용.
     @Id
     @Column(name="diary_id")
-    private Long diaryId;
+    private Long id;
 
     //Writer 와 일대다 양방향 관계이며, 연관관계의 주인이다. 되도록이면 모든 연관 관계를 지연로딩으로 사용하는 것이 성능에 좋음.
     @Id
@@ -43,19 +43,8 @@ public class DiabetesDiary extends BaseTimeEntity{
 
     public DiabetesDiary(){}
 
-    public DiabetesDiary(int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
-        this(fastingPlasmaGlucose,remark,writtenTime,null);
-    }
-
-    public DiabetesDiary(int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime, Writer writer) {
-        this.fastingPlasmaGlucose = fastingPlasmaGlucose;
-        this.remark = remark;
-        this.writtenTime = writtenTime;
-        this.writer = writer;
-    }
-
-    public DiabetesDiary(Long diaryId, Writer writer, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
-        this.diaryId = diaryId;
+    public DiabetesDiary(Long id, Writer writer, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
+        this.id=id;
         this.writer = writer;
         this.fastingPlasmaGlucose = fastingPlasmaGlucose;
         this.remark = remark;
@@ -110,7 +99,7 @@ public class DiabetesDiary extends BaseTimeEntity{
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                .append("id",diaryId)
+                .append("id",id)
                 .append("writerId",writer)
                 .append("fpg",fastingPlasmaGlucose)
                 .append("remark",remark)
@@ -120,7 +109,7 @@ public class DiabetesDiary extends BaseTimeEntity{
 
     @Override
     public int hashCode() {
-        return Objects.hash(writer,diaryId);
+        return Objects.hash(writer,id);
     }
 
     @Override
@@ -132,6 +121,6 @@ public class DiabetesDiary extends BaseTimeEntity{
             return false;
         }
         DiabetesDiary target = (DiabetesDiary) obj;
-        return Objects.equals(this.writer,target.writer)&&Objects.equals(this.diaryId,target.diaryId);
+        return Objects.equals(this.writer,target.writer)&&Objects.equals(this.id,target.id);
     }
 }
