@@ -10,16 +10,24 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Entity
 @Table(name="DiabetesDiary")
-public class DiabetesDiary extends BaseTimeEntity {
+@IdClass(DiabetesDiaryId.class)
+public class DiabetesDiary extends BaseTimeEntity{
+    //식별 관계이므로 복합키 사용.
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="diary_id")
-    private Long id;
+    private Long diaryId;
+
+    //Writer 와 일대다 양방향 관계이며, 연관관계의 주인이다. 되도록이면 모든 연관 관계를 지연로딩으로 사용하는 것이 성능에 좋음.
+    @Id
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="writer_id")
+    private Writer writer;
 
     @Column(name="fpg")
     private int fastingPlasmaGlucose;
@@ -33,12 +41,7 @@ public class DiabetesDiary extends BaseTimeEntity {
     @OneToMany(mappedBy = "diary",orphanRemoval = true,cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private final List<Diet>dietList=new ArrayList<>();
 
-    //Writer 와 일대다 양방향 관계이며, 연관관계의 주인이다. 되도록이면 모든 연관 관계를 지연로딩으로 사용하는 것이 성능에 좋음.
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="writer_id")
-    private Writer writer;
-
-    protected DiabetesDiary(){}
+    public DiabetesDiary(){}
 
     public DiabetesDiary(int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
         this(fastingPlasmaGlucose,remark,writtenTime,null);
@@ -51,8 +54,12 @@ public class DiabetesDiary extends BaseTimeEntity {
         this.writer = writer;
     }
 
-    public Long getId() {
-        return id;
+    public DiabetesDiary(Long diaryId, Writer writer, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
+        this.diaryId = diaryId;
+        this.writer = writer;
+        this.fastingPlasmaGlucose = fastingPlasmaGlucose;
+        this.remark = remark;
+        this.writtenTime = writtenTime;
     }
 
     public int getFastingPlasmaGlucose() {
@@ -103,10 +110,28 @@ public class DiabetesDiary extends BaseTimeEntity {
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                .append("id",id)
+                .append("id",diaryId)
+                .append("writerId",writer)
                 .append("fpg",fastingPlasmaGlucose)
                 .append("remark",remark)
                 .append("written time",writtenTime)
                 .toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(writer,diaryId);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        DiabetesDiary target = (DiabetesDiary) obj;
+        return Objects.equals(this.writer,target.writer)&&Objects.equals(this.diaryId,target.diaryId);
     }
 }

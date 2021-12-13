@@ -9,16 +9,28 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Entity
 @Table(name="Diet")
-public class Diet extends BaseTimeEntity {
+@IdClass(DietId.class)
+public class Diet extends BaseTimeEntity{
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="diet_id")
     private Long id;
+
+    //혈당일지 "일"에 대해 "다"이므로 연관관계의 주인(외래키 관리자)이다. 되도록이면 모든 연관 관계를 지연로딩으로 사용하는 것이 성능에 좋음.
+    @Id
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumns({
+            @JoinColumn(name="writer_id",referencedColumnName = "writer_id"),
+            @JoinColumn(name="diary_id",referencedColumnName ="diary_id")
+    })//referencedColumnName 를 지정해줘야 순서가 거꾸로 안나온다.
+    private DiabetesDiary diary;
+
 
     @Enumerated(EnumType.STRING)
     private EatTime eatTime;
@@ -33,12 +45,7 @@ public class Diet extends BaseTimeEntity {
     @OneToMany(mappedBy = "diet",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private final List<Food>foodList=new ArrayList<>();
 
-    //혈당일지 "일"에 대해 "다"이므로 연관관계의 주인(외래키 관리자)이다. 되도록이면 모든 연관 관계를 지연로딩으로 사용하는 것이 성능에 좋음.
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="diary_id")
-    private DiabetesDiary diary;
-
-    protected Diet(){}
+    public Diet(){}
 
     public Diet(EatTime eatTime,int bloodSugar){
         this(eatTime,bloodSugar,null);
@@ -48,10 +55,6 @@ public class Diet extends BaseTimeEntity {
         this.eatTime=eatTime;
         this.bloodSugar=bloodSugar;
         this.diary=diary;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public EatTime getEatTime() {
@@ -103,5 +106,22 @@ public class Diet extends BaseTimeEntity {
                 .append("eatTime",eatTime)
                 .append("blood sugar",bloodSugar)
                 .toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(diary,id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Diet target = (Diet) obj;
+        return Objects.equals(this.id,target.id)&&Objects.equals(this.diary,target.diary);
     }
 }

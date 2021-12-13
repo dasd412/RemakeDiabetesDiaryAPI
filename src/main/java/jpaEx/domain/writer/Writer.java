@@ -6,6 +6,7 @@ import jpaEx.domain.diary.DiabetesDiary;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -15,8 +16,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 @Entity
 @Table(name="Writer")
 public class Writer extends BaseTimeEntity {
+    //복합키에는 @GeneratedValue 사용 불가
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="writer_id")
     private Long id;
 
@@ -33,7 +34,7 @@ public class Writer extends BaseTimeEntity {
     @OneToMany(mappedBy = "writer",orphanRemoval = true,cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private final List<DiabetesDiary>diaries=new ArrayList<>();
 
-    protected Writer(){}
+    public Writer(){}
 
     public Writer(String name, String email, Role role) {
         this.name = name;
@@ -91,5 +92,22 @@ public class Writer extends BaseTimeEntity {
                 .append("email",email)
                 .append("role",role)
                 .toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Writer target = (Writer) obj;
+        return Objects.equals(this.id,target.id);
     }
 }
