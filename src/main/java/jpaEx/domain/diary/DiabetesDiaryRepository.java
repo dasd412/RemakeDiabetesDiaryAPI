@@ -24,7 +24,7 @@ public interface DiabetesDiaryRepository extends JpaRepository<DiabetesDiary,Lon
      */
 
     //시작일 ~ 종료일 사이의 혈당일지 모두 조회
-    @Query(value="SELECT d FROM DiabetesDiary as d WHERE d.writtenTime BETWEEN : startDate AND : endDate")
+    @Query(value="SELECT d FROM DiabetesDiary as d WHERE d.writtenTime BETWEEN :startDate AND :endDate")
     List<DiabetesDiary>findDiaryBetweenTime(@Param("startDate")LocalDateTime startDate, @Param("endDate")LocalDateTime endDate);
 
     //입력된 공복혈당 보다 높은 공복혈당을 기록한 일지 모두 조회

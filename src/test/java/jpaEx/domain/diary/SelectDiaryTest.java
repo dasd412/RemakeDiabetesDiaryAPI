@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -66,7 +67,36 @@ public class SelectDiaryTest {
     @Transactional
     @Test
     public void testFindDiaryBetweenTime(){
+        //given
+        LocalDateTime startDate=LocalDateTime.of(2021,11,11,0,0,0);
+        LocalDateTime endDate=LocalDateTime.of(2021,11,21,0,0,0);
+        //when
+        List<DiabetesDiary>diaries=diabetesDiaryRepository.findDiaryBetweenTime(startDate,endDate);
 
+        //then
+        int a=0;
+        for(DiabetesDiary diary : diaries){
+            //11은 시작일을 뜻함.
+            assertThat(diary.getId()).isEqualTo(a+11);
+            assertThat(diary.getFastingPlasmaGlucose()).isEqualTo(a+100);
+            assertThat(diary.getWrittenTime()).isBetween(startDate,endDate);
+            logger.info(diary.toString());
+
+            assertThat(diary.getDietList().get(0).getEatTime()).isEqualTo(EatTime.BreakFast);
+            assertThat(diary.getDietList().get(0).getBloodSugar()).isEqualTo(a+100+11-1);
+            assertThat(diary.getDietList().get(1).getEatTime()).isEqualTo(EatTime.Lunch);
+            assertThat(diary.getDietList().get(1).getBloodSugar()).isEqualTo(a+110+11-1);
+            assertThat(diary.getDietList().get(2).getEatTime()).isEqualTo(EatTime.Dinner);
+            assertThat(diary.getDietList().get(2).getBloodSugar()).isEqualTo(a+120+11-1);
+
+            logger.info(diary.getDietList().toString());
+
+            assertThat(diary.getDietList().get(0).getFoodList().get(0).getFoodName()).isEqualTo("a"+ (a + 11 - 1));
+            assertThat(diary.getDietList().get(1).getFoodList().get(0).getFoodName()).isEqualTo("b"+ (a + 11 - 1));
+            assertThat(diary.getDietList().get(2).getFoodList().get(0).getFoodName()).isEqualTo("c"+ (a + 11 - 1));
+
+            a++;
+        }
     }
 
     @Transactional
