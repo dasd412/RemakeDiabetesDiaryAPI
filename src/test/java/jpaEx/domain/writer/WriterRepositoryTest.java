@@ -17,6 +17,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,13 +36,47 @@ public class WriterRepositoryTest {
         writerRepository.deleteAll();
     }
 
+    //작성자 id 생성 메서드 todo 실제 사용할 때 트랜잭션 처리 필수다.
+    public Long getIdOfWriter(){
+        Long count=writerRepository.findCountOfId();
+        Long writer_id;
+        if (count==0){
+            writer_id=0L;
+        }else{
+            writer_id=writerRepository.findMaxOfId();
+        }
+        return writer_id+1;
+    }
+
+    //나중에 서비스 레이어에 쓸 예정. getIdOfWriter()의 경우 트랜잭션 처리 안하면 다른 스레드가 껴들어 올 경우 id 값이 중복될 수 있어 기본키 조건을 위배할 수도 있다.
+    @Transactional
+    public Writer saveWriter(String name,String email,Role role){
+        Writer writer=new Writer(getIdOfWriter(),name,email,role);
+        writerRepository.save(writer);
+        return writer;
+    }
+
     @Transactional
     @Test
-    public void saveWriter(){
+    public void countAndMaxOfIdWhenEmpty(){
+        //given
+        Long count=writerRepository.findCountOfId();
+        logger.info("count : "+count);
+        assertThat(count).isEqualTo(0L);
+
+        Long maxId=writerRepository.findMaxOfId();
+        logger.info("maxId : "+maxId);
+        assertThat(maxId).isNull();
+
+    }
+
+
+    @Transactional
+    @Test
+    public void saveWriterOne(){
 
         //given
-        Writer me=new Writer(1L,"ME","TEST@NAVER.COM",Role.User);
-        writerRepository.save(me);
+        Writer me=saveWriter("ME","TEST@NAVER.COM",Role.User);
 
         //when
         Writer found=writerRepository.findAll().get(0);
@@ -50,6 +86,42 @@ public class WriterRepositoryTest {
         assertThat(found.getName()).isEqualTo(me.getName());
         assertThat(found.getEmail()).isEqualTo(me.getEmail());
         assertThat(found.getRole()).isEqualTo(me.getRole());
+    }
+
+    @Transactional
+    @Test
+    public void saveWritersMany(){
+
+        //given
+        Writer me=saveWriter("me","ME@NAVER.COM",Role.User);
+
+        Writer other=saveWriter("other","OTHER@NAVER.COM",Role.User);
+
+        Writer another=saveWriter("another","Another@NAVER.COM",Role.User);
+
+        //when
+        Writer foundMe=writerRepository.findAll().get(0);
+        Writer foundOther=writerRepository.findAll().get(1);
+        Writer foundAnother=writerRepository.findAll().get(2);
+
+        //then
+        assertThat(foundMe).isEqualTo(me);
+        assertThat(foundMe.getName()).isEqualTo(me.getName());
+        assertThat(foundMe.getEmail()).isEqualTo(me.getEmail());
+        assertThat(foundMe.getRole()).isEqualTo(me.getRole());
+        logger.info(foundMe.toString());
+
+        assertThat(foundOther).isEqualTo(other);
+        assertThat(foundOther.getName()).isEqualTo(other.getName());
+        assertThat(foundOther.getEmail()).isEqualTo(other.getEmail());
+        assertThat(foundOther.getRole()).isEqualTo(other.getRole());
+        logger.info(foundOther.toString());
+
+        assertThat(foundAnother).isEqualTo(another);
+        assertThat(foundAnother.getName()).isEqualTo(another.getName());
+        assertThat(foundAnother.getEmail()).isEqualTo(another.getEmail());
+        assertThat(foundAnother.getRole()).isEqualTo(another.getRole());
+        logger.info(foundAnother.toString());
     }
 
     @Transactional

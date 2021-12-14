@@ -17,7 +17,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 @Table(name="Writer")
 public class Writer extends BaseTimeEntity {
     @Id
-    @Column(name="writer_id")
+    @Column(name="writer_id",columnDefinition = "bigint default 0")
     private Long id;
 
     private String name;

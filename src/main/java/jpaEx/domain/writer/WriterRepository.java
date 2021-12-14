@@ -23,6 +23,12 @@ public interface WriterRepository extends JpaRepository<Writer,Long> {
     엔티티의 연관 필드를 기준으로 해서 작성해야 한다!!
      */
 
+    @Query(value="SELECT COUNT(w.id) FROM Writer w")
+    Long findCountOfId();
+
+    @Query(value="SELECT MAX(w.id) FROM Writer w")
+    Long findMaxOfId();
+
     //todo 아래 메서드들 전부 Writer id 포함하도록 파라미터 변경 필요!!!!!!!
     //시작일 ~ 종료일 사이의 혈당일지 모두 조회
     @Query(value="SELECT d FROM DiabetesDiary as d WHERE d.writtenTime BETWEEN :startDate AND :endDate")
