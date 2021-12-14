@@ -241,7 +241,6 @@ public class WriterRepositoryTest {
         diet1.addFood(food3);
         writerRepository.save(me);
 
-        food2.setDiet(diet1);
         food2.modifyFoodName("water");
         writerRepository.save(me);
 
@@ -250,7 +249,7 @@ public class WriterRepositoryTest {
 
         //then
         assertThat(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(0).getFoodName()).isEqualTo(food3.getFoodName());
-        assertThat(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(1).getFoodName()).isEqualTo(food2.getFoodName());
+        assertThat(found.getDiaries().get(0).getDietList().get(1).getFoodList().get(1).getFoodName()).isEqualTo(food2.getFoodName());
         assertThat(found.getDiaries().get(0).getDietList().get(1).getFoodList().get(0).getFoodName()).isEqualTo(food1.getFoodName());
         logger.info(found.getDiaries().get(0).getDietList().get(0).getFoodList().toString());
         logger.info(found.getDiaries().get(0).getDietList().get(1).getFoodList().toString());
