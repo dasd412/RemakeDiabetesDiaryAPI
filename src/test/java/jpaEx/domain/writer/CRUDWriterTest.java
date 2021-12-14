@@ -7,6 +7,7 @@ import jpaEx.domain.diet.Diet;
 import jpaEx.domain.diet.DietRepository;
 import jpaEx.domain.diet.EatTime;
 import jpaEx.domain.food.Food;
+import jpaEx.domain.food.FoodRepository;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,6 +37,9 @@ public class CRUDWriterTest {
     @Autowired
     DietRepository dietRepository;
 
+    @Autowired
+    FoodRepository foodRepository;
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @After
@@ -45,7 +49,7 @@ public class CRUDWriterTest {
 
     //작성자 id 생성 메서드 todo 실제 사용할 때 트랜잭션 처리 필수다.
     // 파라미터에 리포지토리를 넣은 이유는, 파라미터가 아무 것도 없을 경우 혹시라도 getId를 다른 것을 호출할 수 있기 때문에 넣었다.
-    public EntityId<Writer> getIdOfWriter(WriterRepository writerRepository) {
+    public EntityId<Writer> getIdOfWriter() {
         Long count = writerRepository.findCountOfId();
         Long writerId;
         if (count == 0) {
@@ -53,11 +57,11 @@ public class CRUDWriterTest {
         } else {
             writerId = writerRepository.findMaxOfId();
         }
-        return new EntityId<>(writerId+1);
+        return new EntityId<>(writerId + 1);
     }
 
     //일지 id 생성 메서드 (트랜잭션 필수)
-    public EntityId<DiabetesDiary> getIdOfDiary(DiaryRepository diaryRepository) {
+    public EntityId<DiabetesDiary> getIdOfDiary() {
         Long count = diaryRepository.findCountOfId();
         Long diaryId;
         if (count == 0) {
@@ -69,7 +73,7 @@ public class CRUDWriterTest {
     }
 
     //식단 id 생성 메서드 (트랜잭션 필수)
-    public EntityId<Diet> getIdOfDiet(DietRepository dietRepository) {
+    public EntityId<Diet> getIdOfDiet() {
         Long count = dietRepository.findCountOfId();
         Long dietId;
         if (count == 0) {
@@ -80,17 +84,29 @@ public class CRUDWriterTest {
         return new EntityId<>(dietId + 1);
     }
 
+    //음식 id 생성 메서드 (트랜잭션 필수)
+    public EntityId<Food> getIdOfFood() {
+        Long count = foodRepository.findCountOfId();
+        Long foodId;
+        if (count == 0) {
+            foodId = 0L;
+        } else {
+            foodId = foodRepository.findMaxOfId();
+        }
+        return new EntityId<>(foodId + 1);
+    }
+
     //나중에 서비스 레이어에 쓸 예정. getIdOfWriter()의 경우 트랜잭션 처리 안하면 다른 스레드가 껴들어 올 경우 id 값이 중복될 수 있어 기본키 조건을 위배할 수도 있다.
     @Transactional
     public Writer saveWriter(String name, String email, Role role) {
-        Writer writer = new Writer(getIdOfWriter(writerRepository), name, email, role);
+        Writer writer = new Writer(getIdOfWriter(), name, email, role);
         writerRepository.save(writer);
         return writer;
     }
 
     @Transactional
     public DiabetesDiary saveDiary(Writer writer, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
-        DiabetesDiary diary = new DiabetesDiary(getIdOfDiary(diaryRepository), writer, fastingPlasmaGlucose, remark, writtenTime);
+        DiabetesDiary diary = new DiabetesDiary(getIdOfDiary(), writer, fastingPlasmaGlucose, remark, writtenTime);
         writer.addDiary(diary);
         writerRepository.save(writer);
         return diary;
@@ -98,13 +114,20 @@ public class CRUDWriterTest {
 
     @Transactional
     public Diet saveDiet(Writer writer, DiabetesDiary diary, EatTime eatTime, int bloodSugar) {
-        Diet diet = new Diet(getIdOfDiet(dietRepository), diary, eatTime, bloodSugar);
+        Diet diet = new Diet(getIdOfDiet(), diary, eatTime, bloodSugar);
         diary.addDiet(diet);
         writer.addDiary(diary);
         writerRepository.save(writer);
         return diet;
     }
 
+    @Transactional
+    public Food saveFood(Writer writer, Diet diet, String foodName) {
+        Food food = new Food(getIdOfFood(), diet, foodName);
+        diet.addFood(food);
+        writerRepository.save(writer);
+        return food;
+    }
 
     @Transactional
     @Test
@@ -281,7 +304,7 @@ public class CRUDWriterTest {
 
     @Transactional
     @Test
-    public void saveWriterWithDiaryWithDiet() {
+    public void saveWriterWithDiaryWithDietOne() {
 
         //given
         Writer me = saveWriter("ME", "TEST@NAVER.COM", Role.User);
@@ -312,49 +335,143 @@ public class CRUDWriterTest {
         logger.info(found.getDiaries().get(0).getDietList().get(0).toString());
     }
 
-//    //todo
-//    @Transactional
-//    @Test
-//    public void saveWriterWithDiaryWithDietWithFood() {
-//        //given
-//        Writer me = new Writer(1L, "ME", "TEST@NAVER.COM", Role.User);
-//
-//        DiabetesDiary diary = new DiabetesDiary(1L, me, 20, "test", LocalDateTime.now());
-//        Diet diet = new Diet(1L, diary, EatTime.Lunch, 100);
-//        diary.addDiet(diet);
-//        me.addDiary(diary);
-//
-//        Food food = new Food(1L, diet, "pizza");
-//        diet.addFood(food);
-//
-//        writerRepository.save(me);
-//
-//        //when
-//        Writer found = writerRepository.findAll().get(0);
-//
-//        //then
-//        //writer
-//        assertThat(found).isEqualTo(me);
-//        assertThat(found.getName()).isEqualTo(me.getName());
-//        assertThat(found.getEmail()).isEqualTo(me.getEmail());
-//        assertThat(found.getRole()).isEqualTo(me.getRole());
-//        //diary
-//        assertThat(found.getDiaries().get(0)).isEqualTo(diary);
-//        assertThat(found.getDiaries().get(0).getFastingPlasmaGlucose()).isEqualTo(diary.getFastingPlasmaGlucose());
-//        assertThat(found.getDiaries().get(0).getRemark()).isEqualTo(diary.getRemark());
-//        logger.info(found.getDiaries().get(0).toString());
-//
-//        //diet
-//        assertThat(found.getDiaries().get(0).getDietList().get(0)).isEqualTo(diet);
-//        assertThat(found.getDiaries().get(0).getDietList().get(0).getEatTime()).isEqualTo(diet.getEatTime());
-//        assertThat(found.getDiaries().get(0).getDietList().get(0).getBloodSugar()).isEqualTo(diet.getBloodSugar());
-//        logger.info(found.getDiaries().get(0).getDietList().get(0).toString());
-//
-//        //food
-//        assertThat(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(0)).isEqualTo(food);
-//        assertThat(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(0).getFoodName()).isEqualTo(food.getFoodName());
-//        logger.info(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(0).toString());
-//    }
+    @Transactional
+    @Test
+    public void saveWriterWithDiaryWithDietMany() {
+
+        //given
+        Writer me = saveWriter("ME", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary = saveDiary(me, 20, "test", LocalDateTime.now());
+        Diet diet1 = saveDiet(me, diary, EatTime.BreakFast, 100);
+        Diet diet2 = saveDiet(me, diary, EatTime.Lunch, 200);
+        Diet diet3 = saveDiet(me, diary, EatTime.Dinner, 150);
+
+        //when
+        Writer found = writerRepository.findAll().get(0);
+
+        //then
+        //writer
+        assertThat(found).isEqualTo(me);
+        assertThat(found.getName()).isEqualTo(me.getName());
+        assertThat(found.getEmail()).isEqualTo(me.getEmail());
+        assertThat(found.getRole()).isEqualTo(me.getRole());
+        logger.info(found.toString());
+
+        //diary
+        assertThat(found.getDiaries().get(0)).isEqualTo(diary);
+        assertThat(found.getDiaries().get(0).getFastingPlasmaGlucose()).isEqualTo(diary.getFastingPlasmaGlucose());
+        assertThat(found.getDiaries().get(0).getRemark()).isEqualTo(diary.getRemark());
+        logger.info(found.getDiaries().get(0).toString());
+
+        //diet1
+        assertThat(found.getDiaries().get(0).getDietList().get(0)).isEqualTo(diet1);
+        assertThat(found.getDiaries().get(0).getDietList().get(0).getEatTime()).isEqualTo(diet1.getEatTime());
+        assertThat(found.getDiaries().get(0).getDietList().get(0).getBloodSugar()).isEqualTo(diet1.getBloodSugar());
+        logger.info(found.getDiaries().get(0).getDietList().get(0).toString());
+
+        //diet2
+        assertThat(found.getDiaries().get(0).getDietList().get(1)).isEqualTo(diet2);
+        assertThat(found.getDiaries().get(0).getDietList().get(1).getEatTime()).isEqualTo(diet2.getEatTime());
+        assertThat(found.getDiaries().get(0).getDietList().get(1).getBloodSugar()).isEqualTo(diet2.getBloodSugar());
+        logger.info(found.getDiaries().get(0).getDietList().get(1).toString());
+
+        //diet3
+        assertThat(found.getDiaries().get(0).getDietList().get(2)).isEqualTo(diet3);
+        assertThat(found.getDiaries().get(0).getDietList().get(2).getEatTime()).isEqualTo(diet3.getEatTime());
+        assertThat(found.getDiaries().get(0).getDietList().get(2).getBloodSugar()).isEqualTo(diet3.getBloodSugar());
+        logger.info(found.getDiaries().get(0).getDietList().get(2).toString());
+    }
+
+
+
+    @Transactional
+    @Test
+    public void saveWriterWithDiaryWithDietWithFoodOne() {
+        //given
+        Writer me = saveWriter("ME", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary = saveDiary(me, 20, "test", LocalDateTime.now());
+        Diet diet = saveDiet(me, diary, EatTime.Lunch, 100);
+        Food food = saveFood(me,diet,"pizza");
+
+        //when
+        Writer found = writerRepository.findAll().get(0);
+
+        //then
+        //writer
+        assertThat(found).isEqualTo(me);
+        assertThat(found.getName()).isEqualTo(me.getName());
+        assertThat(found.getEmail()).isEqualTo(me.getEmail());
+        assertThat(found.getRole()).isEqualTo(me.getRole());
+        logger.info(found.toString());
+
+        //diary
+        assertThat(found.getDiaries().get(0)).isEqualTo(diary);
+        assertThat(found.getDiaries().get(0).getFastingPlasmaGlucose()).isEqualTo(diary.getFastingPlasmaGlucose());
+        assertThat(found.getDiaries().get(0).getRemark()).isEqualTo(diary.getRemark());
+        logger.info(found.getDiaries().get(0).toString());
+
+        //diet
+        assertThat(found.getDiaries().get(0).getDietList().get(0)).isEqualTo(diet);
+        assertThat(found.getDiaries().get(0).getDietList().get(0).getEatTime()).isEqualTo(diet.getEatTime());
+        assertThat(found.getDiaries().get(0).getDietList().get(0).getBloodSugar()).isEqualTo(diet.getBloodSugar());
+        logger.info(found.getDiaries().get(0).getDietList().get(0).toString());
+
+        //food
+        assertThat(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(0)).isEqualTo(food);
+        assertThat(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(0).getFoodName()).isEqualTo(food.getFoodName());
+        logger.info(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(0).toString());
+    }
+
+    @Transactional
+    @Test
+    public void saveWriterWithDiaryWithDietWithFoodMany() {
+        //given
+        Writer me = saveWriter("ME", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary = saveDiary(me, 20, "test", LocalDateTime.now());
+        Diet diet = saveDiet(me, diary, EatTime.Lunch, 250);
+        Food food1 = saveFood(me,diet,"pizza");
+        Food food2 = saveFood(me,diet,"chicken");
+        Food food3 = saveFood(me,diet,"cola");
+
+        //when
+        Writer found = writerRepository.findAll().get(0);
+
+        //then
+        //writer
+        assertThat(found).isEqualTo(me);
+        assertThat(found.getName()).isEqualTo(me.getName());
+        assertThat(found.getEmail()).isEqualTo(me.getEmail());
+        assertThat(found.getRole()).isEqualTo(me.getRole());
+        logger.info(found.toString());
+
+        //diary
+        assertThat(found.getDiaries().get(0)).isEqualTo(diary);
+        assertThat(found.getDiaries().get(0).getFastingPlasmaGlucose()).isEqualTo(diary.getFastingPlasmaGlucose());
+        assertThat(found.getDiaries().get(0).getRemark()).isEqualTo(diary.getRemark());
+        logger.info(found.getDiaries().get(0).toString());
+
+        //diet
+        assertThat(found.getDiaries().get(0).getDietList().get(0)).isEqualTo(diet);
+        assertThat(found.getDiaries().get(0).getDietList().get(0).getEatTime()).isEqualTo(diet.getEatTime());
+        assertThat(found.getDiaries().get(0).getDietList().get(0).getBloodSugar()).isEqualTo(diet.getBloodSugar());
+        logger.info(found.getDiaries().get(0).getDietList().get(0).toString());
+
+        //food1
+        assertThat(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(0)).isEqualTo(food1);
+        assertThat(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(0).getFoodName()).isEqualTo(food1.getFoodName());
+        logger.info(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(0).toString());
+
+        //food2
+        assertThat(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(1)).isEqualTo(food2);
+        assertThat(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(1).getFoodName()).isEqualTo(food2.getFoodName());
+        logger.info(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(1).toString());
+
+        //food2
+        assertThat(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(2)).isEqualTo(food3);
+        assertThat(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(2).getFoodName()).isEqualTo(food3.getFoodName());
+        logger.info(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(2).toString());
+    }
+
 //
 //    @Transactional
 //    @Test
