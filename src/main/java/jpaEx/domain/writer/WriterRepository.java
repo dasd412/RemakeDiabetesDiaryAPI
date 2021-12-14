@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface WriterRepository extends JpaRepository<Writer,Long> {
+public interface WriterRepository extends JpaRepository<Writer, Long> {
     /*
     JPQL 에서 SELECT 절에 조회할 대상을 지정하는 것을 프로젝션(projection)이라 한다.
     SELECT 프로젝션 대상 FROM 으로 대상을 선택한다.
@@ -23,24 +23,24 @@ public interface WriterRepository extends JpaRepository<Writer,Long> {
     엔티티의 연관 필드를 기준으로 해서 작성해야 한다!!
      */
 
-    @Query(value="SELECT COUNT(w.id) FROM Writer w")
+    @Query(value = "SELECT COUNT(w.id) FROM Writer w")
     Long findCountOfId();
 
-    @Query(value="SELECT MAX(w.id) FROM Writer w")
+    @Query(value = "SELECT MAX(w.id) FROM Writer w")
     Long findMaxOfId();
 
     //todo 아래 메서드들 전부 Writer id 포함하도록 파라미터 변경 필요!!!!!!!
     //시작일 ~ 종료일 사이의 혈당일지 모두 조회
-    @Query(value="SELECT d FROM DiabetesDiary as d WHERE d.writtenTime BETWEEN :startDate AND :endDate")
-    List<DiabetesDiary> findDiaryBetweenTime(@Param("startDate") LocalDateTime startDate, @Param("endDate")LocalDateTime endDate);
+    @Query(value = "SELECT d FROM DiabetesDiary as d WHERE d.writtenTime BETWEEN :startDate AND :endDate")
+    List<DiabetesDiary> findDiaryBetweenTime(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
     //입력된 공복혈당 보다 높은 공복혈당을 기록한 일지 모두 조회
-    @Query(value="SELECT d FROM DiabetesDiary as d WHERE d.fastingPlasmaGlucose >= : bloodSugar")
-    List<DiabetesDiary>findDiaryHigherThan(@Param("bloodSugar")int fastingPlasmaGlucose);
+    @Query(value = "SELECT d FROM DiabetesDiary as d WHERE d.fastingPlasmaGlucose >= : bloodSugar")
+    List<DiabetesDiary> findDiaryHigherThan(@Param("bloodSugar") int fastingPlasmaGlucose);
 
     //내부조인을 홯용해서 혈당 일지 내 모든 식단 조회
-    @Query(value="SELECT di FROM DiabetesDiary as d INNER JOIN d.dietList as di WHERE di.diary = : diaryId")
-    List<Diet>findDietInDiary(@Param("diaryId")Long id);
+    @Query(value = "SELECT di FROM DiabetesDiary as d INNER JOIN d.dietList as di WHERE di.diary = : diaryId")
+    List<Diet> findDietInDiary(@Param("diaryId") Long id);
 
     //내부 조인 + COUNT 를 활용해 혈당 일지 내 식단 개수 조회
 

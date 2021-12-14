@@ -11,11 +11,12 @@ public class FoodId implements Serializable {
     private DietId diet;//Food.diet 매핑
     private Long id;//Food.id 매핑
 
-    public FoodId(){}
+    public FoodId() {
+    }
 
     @Override
     public int hashCode() {
-        return Objects.hash(diet,id);
+        return Objects.hash(diet, id);
     }
 
     @Override
@@ -27,7 +28,7 @@ public class FoodId implements Serializable {
             return false;
         }
         FoodId target = (FoodId) obj;
-        return Objects.equals(this.id,target.id)&&Objects.equals(this.diet,target.diet);
+        return Objects.equals(this.id, target.id) && Objects.equals(this.diet, target.diet);
     }
 
 }

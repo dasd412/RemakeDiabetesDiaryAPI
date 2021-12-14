@@ -1,6 +1,7 @@
 package jpaEx.domain.diet;
 
 import jpaEx.domain.diary.DiabetesDiaryId;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -10,11 +11,12 @@ public class DietId implements Serializable {
     private DiabetesDiaryId diary;//Diet.diary 매핑
     private Long id;//Diet.id 매핑
 
-    public DietId(){}
+    public DietId() {
+    }
 
     @Override
     public int hashCode() {
-        return Objects.hash(diary,id);
+        return Objects.hash(diary, id);
     }
 
     @Override
@@ -26,7 +28,7 @@ public class DietId implements Serializable {
             return false;
         }
         DietId target = (DietId) obj;
-        return Objects.equals(this.id,target.id)&&Objects.equals(this.diary,target.diary);
+        return Objects.equals(this.id, target.id) && Objects.equals(this.diary, target.diary);
     }
 
 }

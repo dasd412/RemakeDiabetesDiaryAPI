@@ -14,10 +14,10 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Entity
-@Table(name="Writer")
+@Table(name = "Writer")
 public class Writer extends BaseTimeEntity {
     @Id
-    @Column(name="writer_id",columnDefinition = "bigint default 0")
+    @Column(name = "writer_id", columnDefinition = "bigint default 0 auto_increment")
     private Long id;
 
     private String name;
@@ -30,10 +30,11 @@ public class Writer extends BaseTimeEntity {
     //연관된 엔티티의 컬렉션을 로딩하는 것은 비용이 너무 많이 드므로 지연 로딩.
     //orphanRemoval=true 로 지정하면, 부모 엔티티 컬렉션에서 자식 엔티티를 삭제할 때 참조가 끊어지면서 db 에도 삭제된다.
     //cascade = CascadeType.ALL 을 적용하면 이 엔티티에 적용된 작업이 연관된 다른 엔티티들에도 모두 적용이 전파된다.
-    @OneToMany(mappedBy = "writer",orphanRemoval = true,cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    private final List<DiabetesDiary>diaries=new ArrayList<>();
+    @OneToMany(mappedBy = "writer", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private final List<DiabetesDiary> diaries = new ArrayList<>();
 
-    public Writer(){}
+    public Writer() {
+    }
 
     public Writer(Long id, String name, String email, Role role) {
         this.id = id;
@@ -51,7 +52,7 @@ public class Writer extends BaseTimeEntity {
     }
 
     public void modifyName(String name) {
-        checkArgument(name.length()>0 && name.length()<=50, "name should be between 1 and 50");
+        checkArgument(name.length() > 0 && name.length() <= 50, "name should be between 1 and 50");
         this.name = name;
     }
 
@@ -76,10 +77,10 @@ public class Writer extends BaseTimeEntity {
         return diaries;
     }
 
-    public void addDiary(DiabetesDiary diary){
+    public void addDiary(DiabetesDiary diary) {
         this.diaries.add(diary);
         //무한 루프 방지
-        if(diary.getWriter()!=this){
+        if (diary.getWriter() != this) {
             diary.modifyWriter(this);
         }
     }
@@ -87,10 +88,10 @@ public class Writer extends BaseTimeEntity {
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                .append("id",id)
-                .append("name",name)
-                .append("email",email)
-                .append("role",role)
+                .append("id", id)
+                .append("name", name)
+                .append("email", email)
+                .append("role", role)
                 .toString();
     }
 
@@ -108,6 +109,6 @@ public class Writer extends BaseTimeEntity {
             return false;
         }
         Writer target = (Writer) obj;
-        return Objects.equals(this.id,target.id);
+        return Objects.equals(this.id, target.id);
     }
 }

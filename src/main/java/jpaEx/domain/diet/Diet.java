@@ -14,20 +14,20 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Entity
-@Table(name="Diet")
+@Table(name = "Diet")
 @IdClass(DietId.class)
-public class Diet extends BaseTimeEntity{
+public class Diet extends BaseTimeEntity {
 
     @Id
-    @Column(name="diet_id")
+    @Column(name = "diet_id", columnDefinition = "bigint default 0 auto_increment")
     private Long id;
 
     //혈당일지 "일"에 대해 "다"이므로 연관관계의 주인(외래키 관리자)이다. 되도록이면 모든 연관 관계를 지연로딩으로 사용하는 것이 성능에 좋음.
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumns({
-            @JoinColumn(name="writer_id",referencedColumnName = "writer_id"),
-            @JoinColumn(name="diary_id",referencedColumnName ="diary_id")
+            @JoinColumn(name = "writer_id", referencedColumnName = "writer_id"),
+            @JoinColumn(name = "diary_id", referencedColumnName = "diary_id")
     })//referencedColumnName 를 지정해줘야 순서가 거꾸로 안나온다.
     private DiabetesDiary diary;
 
@@ -42,10 +42,11 @@ public class Diet extends BaseTimeEntity{
     //'일'에 해당하는 Diet 는 주인이 아니므로 mappedBy 속성을 사용하여 주인이 아님을 지정한다.
 
     //food 객체는 Writer 의 컬렉션에서도 참조되므로 고아 객체 제거 기능을 활용할 수 없다. orphanRemoval 은 참조하는 곳이 하나일 때만 사용가능하다.
-    @OneToMany(mappedBy = "diet",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    private final List<Food>foodList=new ArrayList<>();
+    @OneToMany(mappedBy = "diet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private final List<Food> foodList = new ArrayList<>();
 
-    public Diet(){}
+    public Diet() {
+    }
 
     public Diet(Long id, DiabetesDiary diary, EatTime eatTime, int bloodSugar) {
         this.id = id;
@@ -75,10 +76,10 @@ public class Diet extends BaseTimeEntity{
         return foodList;
     }
 
-    public void addFood(Food food){
+    public void addFood(Food food) {
         this.foodList.add(food);
         //무한 루프에 빠지지 않도록 체크
-        if (food.getDiet()!=this){
+        if (food.getDiet() != this) {
             food.setDiet(this);
         }
     }
@@ -90,8 +91,8 @@ public class Diet extends BaseTimeEntity{
     //연관 관계 편의 메소드
     public void setDiary(DiabetesDiary diary) {
         //무한 루프 체크
-        this.diary=diary;
-        if(!diary.getDietList().contains(this)){
+        this.diary = diary;
+        if (!diary.getDietList().contains(this)) {
             diary.getDietList().add(this);
         }
     }
@@ -99,15 +100,15 @@ public class Diet extends BaseTimeEntity{
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                .append("id",id)
-                .append("eatTime",eatTime)
-                .append("blood sugar",bloodSugar)
+                .append("id", id)
+                .append("eatTime", eatTime)
+                .append("blood sugar", bloodSugar)
                 .toString();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(diary,id);
+        return Objects.hash(diary, id);
     }
 
     @Override
@@ -119,6 +120,6 @@ public class Diet extends BaseTimeEntity{
             return false;
         }
         Diet target = (Diet) obj;
-        return Objects.equals(this.id,target.id)&&Objects.equals(this.diary,target.diary);
+        return Objects.equals(this.id, target.id) && Objects.equals(this.diary, target.diary);
     }
 }

@@ -1,6 +1,7 @@
 package jpaEx.domain.writer;
 
 import jpaEx.domain.diary.DiabetesDiary;
+import jpaEx.domain.diary.DiaryRepository;
 import jpaEx.domain.diet.Diet;
 import jpaEx.domain.diet.EatTime;
 import jpaEx.domain.food.Food;
@@ -17,8 +18,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,43 +28,69 @@ public class WriterRepositoryTest {
     @Autowired
     WriterRepository writerRepository;
 
+    @Autowired
+    DiaryRepository diaryRepository;
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @After
-    public void clean(){
-        writerRepository.deleteAll();
+    public void clean() {
+        writerRepository.deleteAll();//cascade all 이므로 작성자 삭제하면 다 삭제됨.
     }
 
     //작성자 id 생성 메서드 todo 실제 사용할 때 트랜잭션 처리 필수다.
-    public Long getIdOfWriter(){
-        Long count=writerRepository.findCountOfId();
-        Long writer_id;
-        if (count==0){
-            writer_id=0L;
-        }else{
-            writer_id=writerRepository.findMaxOfId();
+    // 파라미터에 리포지토리를 넣은 이유는, 파라미터가 아무 것도 없을 경우 혹시라도 getId를 다른 것을 호출할 수 있기 때문에 넣었다.
+    public Long getIdOfWriter(WriterRepository writerRepository) {
+        Long count = writerRepository.findCountOfId();
+        Long writerId;
+        if (count == 0) {
+            writerId = 0L;
+        } else {
+            writerId = writerRepository.findMaxOfId();
         }
-        return writer_id+1;
+        return writerId + 1;
     }
+
+    //일지 id 생성 메서드 (트랜잭션 필수)
+    public Long getIdOfDiary(DiaryRepository diaryRepository) {
+        Long count = diaryRepository.findCountOfId();
+        Long diaryId;
+        if (count == 0) {
+            diaryId = 0L;
+        } else {
+            diaryId = diaryRepository.findMaxOfId();
+        }
+        return diaryId + 1;
+    }
+
 
     //나중에 서비스 레이어에 쓸 예정. getIdOfWriter()의 경우 트랜잭션 처리 안하면 다른 스레드가 껴들어 올 경우 id 값이 중복될 수 있어 기본키 조건을 위배할 수도 있다.
     @Transactional
-    public Writer saveWriter(String name,String email,Role role){
-        Writer writer=new Writer(getIdOfWriter(),name,email,role);
+    public Writer saveWriter(String name, String email, Role role) {
+        Writer writer = new Writer(getIdOfWriter(writerRepository), name, email, role);
         writerRepository.save(writer);
         return writer;
     }
 
     @Transactional
+    public Writer saveDiary(Writer writer, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
+        DiabetesDiary diary = new DiabetesDiary(getIdOfDiary(diaryRepository), writer, fastingPlasmaGlucose, remark, writtenTime);
+        writer.addDiary(diary);
+        writerRepository.save(writer);
+        return writer;
+    }
+
+
+    @Transactional
     @Test
-    public void countAndMaxOfIdWhenEmpty(){
+    public void countAndMaxOfIdWhenEmpty() {
         //given
-        Long count=writerRepository.findCountOfId();
-        logger.info("count : "+count);
+        Long count = writerRepository.findCountOfId();
+        logger.info("count : " + count);
         assertThat(count).isEqualTo(0L);
 
-        Long maxId=writerRepository.findMaxOfId();
-        logger.info("maxId : "+maxId);
+        Long maxId = writerRepository.findMaxOfId();
+        logger.info("maxId : " + maxId);
         assertThat(maxId).isNull();
 
     }
@@ -73,13 +98,13 @@ public class WriterRepositoryTest {
 
     @Transactional
     @Test
-    public void saveWriterOne(){
+    public void saveWriterOne() {
 
         //given
-        Writer me=saveWriter("ME","TEST@NAVER.COM",Role.User);
+        Writer me = saveWriter("ME", "TEST@NAVER.COM", Role.User);
 
         //when
-        Writer found=writerRepository.findAll().get(0);
+        Writer found = writerRepository.findAll().get(0);
 
         //then
         assertThat(found).isEqualTo(me);
@@ -90,19 +115,19 @@ public class WriterRepositoryTest {
 
     @Transactional
     @Test
-    public void saveWritersMany(){
+    public void saveWritersMany() {
 
         //given
-        Writer me=saveWriter("me","ME@NAVER.COM",Role.User);
+        Writer me = saveWriter("me", "ME@NAVER.COM", Role.User);
 
-        Writer other=saveWriter("other","OTHER@NAVER.COM",Role.User);
+        Writer other = saveWriter("other", "OTHER@NAVER.COM", Role.User);
 
-        Writer another=saveWriter("another","Another@NAVER.COM",Role.User);
+        Writer another = saveWriter("another", "Another@NAVER.COM", Role.User);
 
         //when
-        Writer foundMe=writerRepository.findAll().get(0);
-        Writer foundOther=writerRepository.findAll().get(1);
-        Writer foundAnother=writerRepository.findAll().get(2);
+        Writer foundMe = writerRepository.findAll().get(0);
+        Writer foundOther = writerRepository.findAll().get(1);
+        Writer foundAnother = writerRepository.findAll().get(2);
 
         //then
         assertThat(foundMe).isEqualTo(me);
@@ -126,45 +151,43 @@ public class WriterRepositoryTest {
 
     @Transactional
     @Test
-    public void saveWriterWithDiary(){
+    public void saveWriterWithDiary() {
 
         //given
-        Writer me=new Writer(1L,"ME","TEST@NAVER.COM",Role.User);
+        Writer me = saveWriter("me", "ME@NAVER.COM", Role.User);
+        me=saveDiary(me,20,"test",LocalDateTime.now());
 
-        DiabetesDiary diary=new DiabetesDiary(1L,me,20,"test", LocalDateTime.now());
-        me.addDiary(diary);
-        writerRepository.save(me);
         //when
-        Writer found=writerRepository.findAll().get(0);
+        Writer found = writerRepository.findAll().get(0);
 
         //then
         assertThat(found).isEqualTo(me);
         assertThat(found.getName()).isEqualTo(me.getName());
         assertThat(found.getEmail()).isEqualTo(me.getEmail());
         assertThat(found.getRole()).isEqualTo(me.getRole());
+        logger.info(found.toString());
 
-        assertThat(found.getDiaries().get(0)).isEqualTo(diary);
-        assertThat(found.getDiaries().get(0).getFastingPlasmaGlucose()).isEqualTo(diary.getFastingPlasmaGlucose());
-        assertThat(found.getDiaries().get(0).getRemark()).isEqualTo(diary.getRemark());
+        assertThat(found.getDiaries().get(0).getFastingPlasmaGlucose()).isEqualTo(20);
+        assertThat(found.getDiaries().get(0).getRemark()).isEqualTo("test");
         logger.info(found.getDiaries().get(0).toString());
     }
 
     @Transactional
     @Test
-    public void saveWriterWithDiaryWithDiet(){
+    public void saveWriterWithDiaryWithDiet() {
 
         //given
-        Writer me=new Writer(1L,"ME","TEST@NAVER.COM",Role.User);
+        Writer me = new Writer(1L, "ME", "TEST@NAVER.COM", Role.User);
 
-        DiabetesDiary diary=new DiabetesDiary(1L,me,20,"test", LocalDateTime.now());
-        Diet diet=new Diet(1L,diary,EatTime.Lunch,100);
+        DiabetesDiary diary = new DiabetesDiary(1L, me, 20, "test", LocalDateTime.now());
+        Diet diet = new Diet(1L, diary, EatTime.Lunch, 100);
         diary.addDiet(diet);
         me.addDiary(diary);
 
         writerRepository.save(me);
 
         //when
-        Writer found=writerRepository.findAll().get(0);
+        Writer found = writerRepository.findAll().get(0);
 
         //then
         //writer
@@ -187,22 +210,22 @@ public class WriterRepositoryTest {
 
     @Transactional
     @Test
-    public void saveWriterWithDiaryWithDietWithFood(){
+    public void saveWriterWithDiaryWithDietWithFood() {
         //given
-        Writer me=new Writer(1L,"ME","TEST@NAVER.COM",Role.User);
+        Writer me = new Writer(1L, "ME", "TEST@NAVER.COM", Role.User);
 
-        DiabetesDiary diary=new DiabetesDiary(1L,me,20,"test", LocalDateTime.now());
-        Diet diet=new Diet(1L,diary,EatTime.Lunch,100);
+        DiabetesDiary diary = new DiabetesDiary(1L, me, 20, "test", LocalDateTime.now());
+        Diet diet = new Diet(1L, diary, EatTime.Lunch, 100);
         diary.addDiet(diet);
         me.addDiary(diary);
 
-        Food food=new Food(1L,diet,"pizza");
+        Food food = new Food(1L, diet, "pizza");
         diet.addFood(food);
 
         writerRepository.save(me);
 
         //when
-        Writer found=writerRepository.findAll().get(0);
+        Writer found = writerRepository.findAll().get(0);
 
         //then
         //writer
@@ -230,12 +253,12 @@ public class WriterRepositoryTest {
 
     @Transactional
     @Test
-    public void modifyDiary(){
+    public void modifyDiary() {
         //given
-        Writer me=new Writer(1L,"ME","TEST@NAVER.COM",Role.User);
+        Writer me = new Writer(1L, "ME", "TEST@NAVER.COM", Role.User);
 
 
-        DiabetesDiary diary=new DiabetesDiary(1L,me,20,"test", LocalDateTime.now());
+        DiabetesDiary diary = new DiabetesDiary(1L, me, 20, "test", LocalDateTime.now());
         me.addDiary(diary);
         writerRepository.save(me);
 
@@ -244,7 +267,7 @@ public class WriterRepositoryTest {
         writerRepository.save(me);
 
         //when
-        Writer found=writerRepository.findAll().get(0);
+        Writer found = writerRepository.findAll().get(0);
 
         //then
         assertThat(found).isEqualTo(me);
@@ -261,16 +284,16 @@ public class WriterRepositoryTest {
 
     @Transactional
     @Test
-    public void modifyDiet(){
+    public void modifyDiet() {
         //given
-        Writer me=new Writer(1L,"ME","TEST@NAVER.COM",Role.User);
+        Writer me = new Writer(1L, "ME", "TEST@NAVER.COM", Role.User);
 
 
-        DiabetesDiary diary=new DiabetesDiary(1L,me,20,"test", LocalDateTime.now());
+        DiabetesDiary diary = new DiabetesDiary(1L, me, 20, "test", LocalDateTime.now());
         me.addDiary(diary);
 
-        Diet diet1=new Diet(1L,diary,EatTime.BreakFast,100);
-        Diet diet2=new Diet(2L,diary,EatTime.Lunch,200);
+        Diet diet1 = new Diet(1L, diary, EatTime.BreakFast, 100);
+        Diet diet2 = new Diet(2L, diary, EatTime.Lunch, 200);
         diary.addDiet(diet1);
         diary.addDiet(diet2);
         writerRepository.save(me);
@@ -280,7 +303,7 @@ public class WriterRepositoryTest {
         writerRepository.save(me);
 
         //when
-        Writer found=writerRepository.findAll().get(0);
+        Writer found = writerRepository.findAll().get(0);
 
         //then
         assertThat(found.getDiaries().get(0).getDietList().get(0).getEatTime()).isEqualTo(diet1.getEatTime());
@@ -292,24 +315,24 @@ public class WriterRepositoryTest {
 
     @Transactional
     @Test
-    public void modifyFood(){
+    public void modifyFood() {
         //given
-        Writer me=new Writer(1L,"ME","TEST@NAVER.COM",Role.User);
+        Writer me = new Writer(1L, "ME", "TEST@NAVER.COM", Role.User);
 
 
-        DiabetesDiary diary=new DiabetesDiary(1L,me,20,"test", LocalDateTime.now());
+        DiabetesDiary diary = new DiabetesDiary(1L, me, 20, "test", LocalDateTime.now());
         me.addDiary(diary);
 
-        Diet diet1=new Diet(1L,diary,EatTime.BreakFast,100);
-        Diet diet2=new Diet(2L,diary,EatTime.Lunch,200);
+        Diet diet1 = new Diet(1L, diary, EatTime.BreakFast, 100);
+        Diet diet2 = new Diet(2L, diary, EatTime.Lunch, 200);
         diary.addDiet(diet1);
         diary.addDiet(diet2);
 
-        Food food1=new Food(1L,diet2,"pizza");
-        Food food2=new Food(2L,diet2,"cola");
+        Food food1 = new Food(1L, diet2, "pizza");
+        Food food2 = new Food(2L, diet2, "cola");
         diet2.addFood(food1);
         diet2.addFood(food2);
-        Food food3=new Food(3L,diet1,"tofu");
+        Food food3 = new Food(3L, diet1, "tofu");
         diet1.addFood(food3);
         writerRepository.save(me);
 
@@ -317,7 +340,7 @@ public class WriterRepositoryTest {
         writerRepository.save(me);
 
         //when
-        Writer found=writerRepository.findAll().get(0);
+        Writer found = writerRepository.findAll().get(0);
 
         //then
         assertThat(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(0).getFoodName()).isEqualTo(food3.getFoodName());
@@ -326,27 +349,28 @@ public class WriterRepositoryTest {
         logger.info(found.getDiaries().get(0).getDietList().get(0).getFoodList().toString());
         logger.info(found.getDiaries().get(0).getDietList().get(1).getFoodList().toString());
     }
+
     @Transactional
     @Test
     public void deleteDiary() {
         //given
-        Writer me = new Writer(1L,"ME", "TEST@NAVER.COM", Role.User);
+        Writer me = new Writer(1L, "ME", "TEST@NAVER.COM", Role.User);
 
 
-        DiabetesDiary diary1 = new DiabetesDiary(1L,me,70, "test1", LocalDateTime.now());
+        DiabetesDiary diary1 = new DiabetesDiary(1L, me, 70, "test1", LocalDateTime.now());
         me.addDiary(diary1);
 
-        DiabetesDiary diary2 = new DiabetesDiary(2L,me,90, "test2", LocalDateTime.now());
+        DiabetesDiary diary2 = new DiabetesDiary(2L, me, 90, "test2", LocalDateTime.now());
         me.addDiary(diary2);
 
-        DiabetesDiary diary3 = new DiabetesDiary(3L,me,40, "test3", LocalDateTime.now());
+        DiabetesDiary diary3 = new DiabetesDiary(3L, me, 40, "test3", LocalDateTime.now());
         me.addDiary(diary3);
         writerRepository.save(me);
 
         me.getDiaries().remove(diary1);
         writerRepository.save(me);
         //when
-        Writer found=writerRepository.findAll().get(0);
+        Writer found = writerRepository.findAll().get(0);
 
         //then
         assertThat(found.getDiaries().size()).isEqualTo(2);
@@ -358,23 +382,23 @@ public class WriterRepositoryTest {
     @Test
     public void deleteDiet() {
         //given
-        Writer me = new Writer(1L,"ME", "TEST@NAVER.COM", Role.User);
+        Writer me = new Writer(1L, "ME", "TEST@NAVER.COM", Role.User);
 
-        DiabetesDiary diary = new DiabetesDiary(1L,me,70, "test", LocalDateTime.now());
+        DiabetesDiary diary = new DiabetesDiary(1L, me, 70, "test", LocalDateTime.now());
         me.addDiary(diary);
 
-        Diet diet1=new Diet(1L,diary,EatTime.BreakFast, 100);
-        Diet diet2=new Diet(2L,diary,EatTime.Lunch, 200);
-        Diet diet3=new Diet(3L,diary,EatTime.Dinner,100);
+        Diet diet1 = new Diet(1L, diary, EatTime.BreakFast, 100);
+        Diet diet2 = new Diet(2L, diary, EatTime.Lunch, 200);
+        Diet diet3 = new Diet(3L, diary, EatTime.Dinner, 100);
         diary.addDiet(diet1);
         diary.addDiet(diet2);
         diary.addDiet(diet3);
 
-        Food tofu=new Food(1L,diet1,"tofu");
-        Food pizza=new Food(2L,diet2,"pizza");
-        Food cola=new Food(3L,diet2,"cola");
-        Food chicken=new Food(4L,diet2,"chicken");
-        Food soup=new Food(5L,diet3,"soup");
+        Food tofu = new Food(1L, diet1, "tofu");
+        Food pizza = new Food(2L, diet2, "pizza");
+        Food cola = new Food(3L, diet2, "cola");
+        Food chicken = new Food(4L, diet2, "chicken");
+        Food soup = new Food(5L, diet3, "soup");
         diet1.addFood(tofu);
         diet2.addFood(pizza);
         diet2.addFood(cola);
@@ -396,23 +420,23 @@ public class WriterRepositoryTest {
     @Test
     public void deleteFood() {
         //given
-        Writer me = new Writer(1L,"ME", "TEST@NAVER.COM", Role.User);
+        Writer me = new Writer(1L, "ME", "TEST@NAVER.COM", Role.User);
 
-        DiabetesDiary diary = new DiabetesDiary(1L,me,70, "test", LocalDateTime.now());
+        DiabetesDiary diary = new DiabetesDiary(1L, me, 70, "test", LocalDateTime.now());
         me.addDiary(diary);
 
-        Diet diet1 = new Diet(1L,diary,EatTime.BreakFast, 100);
-        Diet diet2 = new Diet(2L,diary,EatTime.Lunch, 200);
-        Diet diet3 = new Diet(3L,diary,EatTime.Dinner, 100);
+        Diet diet1 = new Diet(1L, diary, EatTime.BreakFast, 100);
+        Diet diet2 = new Diet(2L, diary, EatTime.Lunch, 200);
+        Diet diet3 = new Diet(3L, diary, EatTime.Dinner, 100);
         diary.addDiet(diet1);
         diary.addDiet(diet2);
         diary.addDiet(diet3);
 
-        Food tofu = new Food(1L,diet1,"tofu");
-        Food pizza = new Food(2L,diet2,"pizza");
-        Food cola = new Food(3L,diet2,"cola");
-        Food chicken = new Food(4L,diet2,"chicken");
-        Food soup = new Food(5L,diet3,"soup");
+        Food tofu = new Food(1L, diet1, "tofu");
+        Food pizza = new Food(2L, diet2, "pizza");
+        Food cola = new Food(3L, diet2, "cola");
+        Food chicken = new Food(4L, diet2, "chicken");
+        Food soup = new Food(5L, diet3, "soup");
         diet1.addFood(tofu);
         diet2.addFood(pizza);
         diet2.addFood(cola);
