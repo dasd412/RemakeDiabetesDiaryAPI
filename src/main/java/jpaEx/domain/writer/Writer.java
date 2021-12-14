@@ -1,6 +1,7 @@
 package jpaEx.domain.writer;
 
 import jpaEx.domain.BaseTimeEntity;
+import jpaEx.domain.EntityId;
 import jpaEx.domain.diary.DiabetesDiary;
 
 import javax.persistence.*;
@@ -36,8 +37,8 @@ public class Writer extends BaseTimeEntity {
     public Writer() {
     }
 
-    public Writer(Long id, String name, String email, Role role) {
-        this.id = id;
+    public Writer(EntityId<Writer>writerEntityId, String name, String email, Role role) {
+        this.id = writerEntityId.getId();
         this.name = name;
         this.email = email;
         this.role = role;

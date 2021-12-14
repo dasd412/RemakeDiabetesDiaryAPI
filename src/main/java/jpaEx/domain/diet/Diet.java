@@ -1,6 +1,7 @@
 package jpaEx.domain.diet;
 
 import jpaEx.domain.BaseTimeEntity;
+import jpaEx.domain.EntityId;
 import jpaEx.domain.diary.DiabetesDiary;
 import jpaEx.domain.food.Food;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -48,8 +49,8 @@ public class Diet extends BaseTimeEntity {
     public Diet() {
     }
 
-    public Diet(Long id, DiabetesDiary diary, EatTime eatTime, int bloodSugar) {
-        this.id = id;
+    public Diet(EntityId<Diet>dietEntityId, DiabetesDiary diary, EatTime eatTime, int bloodSugar) {
+        this.id = dietEntityId.getId();
         this.diary = diary;
         this.eatTime = eatTime;
         this.bloodSugar = bloodSugar;
@@ -101,6 +102,7 @@ public class Diet extends BaseTimeEntity {
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
                 .append("id", id)
+                .append("diary", diary)
                 .append("eatTime", eatTime)
                 .append("blood sugar", bloodSugar)
                 .toString();
