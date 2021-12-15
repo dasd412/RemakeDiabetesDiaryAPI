@@ -9,14 +9,14 @@ import java.util.Objects;
 public class DietId implements Serializable {
 
     private DiabetesDiaryId diary;//Diet.diary 매핑
-    private Long id;//Diet.id 매핑
+    private Long dietId;//Diet.dietId 매핑
 
     public DietId() {
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(diary, id);
+        return Objects.hash(diary, dietId);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class DietId implements Serializable {
             return false;
         }
         DietId target = (DietId) obj;
-        return Objects.equals(this.id, target.id) && Objects.equals(this.diary, target.diary);
+        return Objects.equals(this.dietId, target.dietId) && Objects.equals(this.diary, target.diary);
     }
 
 }

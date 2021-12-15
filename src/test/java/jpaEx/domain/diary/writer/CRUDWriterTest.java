@@ -21,6 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -142,7 +143,9 @@ public class CRUDWriterTest {
 
     }
 
-
+    /*
+    Save 테스트
+     */
     @Transactional
     @Test
     public void saveWriterOne() {
@@ -382,7 +385,6 @@ public class CRUDWriterTest {
     }
 
 
-
     @Transactional
     @Test
     public void saveWriterWithDiaryWithDietWithFoodOne() {
@@ -390,7 +392,7 @@ public class CRUDWriterTest {
         Writer me = saveWriter("ME", "TEST@NAVER.COM", Role.User);
         DiabetesDiary diary = saveDiary(me, 20, "test", LocalDateTime.now());
         Diet diet = saveDiet(me, diary, EatTime.Lunch, 100);
-        Food food = saveFood(me,diet,"pizza");
+        Food food = saveFood(me, diet, "pizza");
 
         //when
         Writer found = writerRepository.findAll().get(0);
@@ -428,9 +430,9 @@ public class CRUDWriterTest {
         Writer me = saveWriter("ME", "TEST@NAVER.COM", Role.User);
         DiabetesDiary diary = saveDiary(me, 20, "test", LocalDateTime.now());
         Diet diet = saveDiet(me, diary, EatTime.Lunch, 250);
-        Food food1 = saveFood(me,diet,"pizza");
-        Food food2 = saveFood(me,diet,"chicken");
-        Food food3 = saveFood(me,diet,"cola");
+        Food food1 = saveFood(me, diet, "pizza");
+        Food food2 = saveFood(me, diet, "chicken");
+        Food food3 = saveFood(me, diet, "cola");
 
         //when
         Writer found = writerRepository.findAll().get(0);
@@ -471,21 +473,64 @@ public class CRUDWriterTest {
         logger.info(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(2).toString());
     }
 
+    /*
+    Find 테스트
+     */
+    @Transactional
+    @Test
+    public void findByIdOfWriter() {
+        //given
+        Writer me = saveWriter("ME", "TEST@NAVER.COM", Role.User);
+
+        //when
+        Writer found = writerRepository.findById(me.getId()).orElseThrow(() -> new NoSuchElementException("해당 작성자가 존재하지 않습니다."));
+
+        //then
+        assertThat(found).isEqualTo(me);
+        assertThat(found.getName()).isEqualTo(me.getName());
+        assertThat(found.getEmail()).isEqualTo(me.getEmail());
+        assertThat(found.getRole()).isEqualTo(me.getRole());
+        logger.info(found.toString());
+    }
+
+    @Transactional
+    @Test
+    public void findByIdOfDiary(){
+        //given
+        Writer me = saveWriter("me", "ME@NAVER.COM", Role.User);
+        DiabetesDiary diary=saveDiary(me, 20, "test", LocalDateTime.now());
+        logger.info(diaryRepository.findWriterOfDiary(diary.getId()).toString());
+        //when
+//        Writer found = writerRepository.findById(me.getId()).orElseThrow(() -> new NoSuchElementException("해당 작성자가 존재하지 않습니다."));
+//        List<DiabetesDiary> foundDiaries=diaryRepository.findDiabetesDiariesOfWriter(found.getId());
 //
+//        //then
+//        assertThat(found).isEqualTo(me);
+//        assertThat(found.getName()).isEqualTo(me.getName());
+//        assertThat(found.getEmail()).isEqualTo(me.getEmail());
+//        assertThat(found.getRole()).isEqualTo(me.getRole());
+//        logger.info(found.toString());
+//
+//        assertThat(found.getDiaries().get(0).getFastingPlasmaGlucose()).isEqualTo(foundDiaries.get(0).getFastingPlasmaGlucose());
+//        assertThat(found.getDiaries().get(0).getRemark()).isEqualTo(foundDiaries.get(0).getRemark());
+//        logger.info(found.getDiaries().get(0).toString());
+//        logger.info(foundDiaries.get(0).toString());
+    }
+
 //    @Transactional
 //    @Test
 //    public void modifyDiary() {
 //        //given
-//        Writer me = new Writer(1L, "ME", "TEST@NAVER.COM", Role.User);
-//
-//
-//        DiabetesDiary diary = new DiabetesDiary(1L, me, 20, "test", LocalDateTime.now());
+//        Writer me = saveWriter("ME", "TEST@NAVER.COM", Role.User);
+//        DiabetesDiary diary = saveDiary(me, 20, "test", LocalDateTime.now());
 //        me.addDiary(diary);
 //        writerRepository.save(me);
 //
+//        Writer foundMe = writerRepository.findById(me.getId()).orElseThrow(() -> new NoSuchElementException("해당 작성자가 존재하지 않습니다."));
+//
 //        diary.modifyFastingPlasmaGlucose(45);
 //        diary.modifyRemark("modify");
-//        writerRepository.save(me);
+//        writerRepository.save(foundMe);
 //
 //        //when
 //        Writer found = writerRepository.findAll().get(0);
@@ -495,7 +540,7 @@ public class CRUDWriterTest {
 //        assertThat(found.getName()).isEqualTo(me.getName());
 //        assertThat(found.getEmail()).isEqualTo(me.getEmail());
 //        assertThat(found.getRole()).isEqualTo(me.getRole());
-//        logger.info(found.getDiaries().get(0).toString());
+//        logger.info(found.toString());
 //
 //        assertThat(found.getDiaries().get(0)).isEqualTo(diary);
 //        assertThat(found.getDiaries().get(0).getFastingPlasmaGlucose()).isEqualTo(45);
@@ -507,16 +552,11 @@ public class CRUDWriterTest {
 //    @Test
 //    public void modifyDiet() {
 //        //given
-//        Writer me = new Writer(1L, "ME", "TEST@NAVER.COM", Role.User);
+//        Writer me = saveWriter("ME", "TEST@NAVER.COM", Role.User);
+//        DiabetesDiary diary = saveDiary(me, 20, "test", LocalDateTime.now());
+//        Diet diet1 = saveDiet(me, diary, EatTime.BreakFast, 100);
+//        Diet diet2 = saveDiet(me, diary, EatTime.Lunch, 200);
 //
-//
-//        DiabetesDiary diary = new DiabetesDiary(1L, me, 20, "test", LocalDateTime.now());
-//        me.addDiary(diary);
-//
-//        Diet diet1 = new Diet(1L, diary, EatTime.BreakFast, 100);
-//        Diet diet2 = new Diet(2L, diary, EatTime.Lunch, 200);
-//        diary.addDiet(diet1);
-//        diary.addDiet(diet2);
 //        writerRepository.save(me);
 //
 //        diet2.modifyBloodSugar(150);

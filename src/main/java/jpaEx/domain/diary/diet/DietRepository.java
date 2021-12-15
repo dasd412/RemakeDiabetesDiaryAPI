@@ -11,9 +11,9 @@ public interface DietRepository extends JpaRepository<Diet, Long> {
     엔티티의 연관 필드를 기준으로 해서 작성해야 한다!!
      */
 
-    @Query(value = "SELECT COUNT(di.id) FROM Diet di")
+    @Query(value = "SELECT COUNT(di.dietId) FROM Diet di")
     Long findCountOfId();
 
-    @Query(value = "SELECT MAX(di.id) FROM Diet di")
+    @Query(value = "SELECT MAX(di.dietId) FROM Diet di")
     Long findMaxOfId();
 }

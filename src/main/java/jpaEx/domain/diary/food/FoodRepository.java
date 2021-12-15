@@ -11,9 +11,9 @@ public interface FoodRepository extends JpaRepository<Food, Long> {
     엔티티의 연관 필드를 기준으로 해서 작성해야 한다!!
      */
 
-    @Query(value = "SELECT COUNT(f.id) FROM Food f")
+    @Query(value = "SELECT COUNT(f.foodId) FROM Food f")
     Long findCountOfId();
 
-    @Query(value = "SELECT MAX(f.id) FROM Food f")
+    @Query(value = "SELECT MAX(f.foodId) FROM Food f")
     Long findMaxOfId();
 }
