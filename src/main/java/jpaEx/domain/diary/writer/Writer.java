@@ -19,7 +19,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class Writer extends BaseTimeEntity {
     @Id
     @Column(name = "writer_id", columnDefinition = "bigint default 0 auto_increment")
-    private Long id;
+    private Long writerId;
 
     private String name;
 
@@ -38,14 +38,14 @@ public class Writer extends BaseTimeEntity {
     }
 
     public Writer(EntityId<Writer>writerEntityId, String name, String email, Role role) {
-        this.id = writerEntityId.getId();
+        this.writerId = writerEntityId.getId();
         this.name = name;
         this.email = email;
         this.role = role;
     }
 
     public Long getId() {
-        return id;
+        return writerId;
     }
 
     public String getName() {
@@ -89,7 +89,7 @@ public class Writer extends BaseTimeEntity {
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                .append("id", id)
+                .append("id", writerId)
                 .append("name", name)
                 .append("email", email)
                 .append("role", role)
@@ -98,7 +98,7 @@ public class Writer extends BaseTimeEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(writerId);
     }
 
     @Override
@@ -110,6 +110,6 @@ public class Writer extends BaseTimeEntity {
             return false;
         }
         Writer target = (Writer) obj;
-        return Objects.equals(this.id, target.id);
+        return Objects.equals(this.writerId, target.writerId);
     }
 }

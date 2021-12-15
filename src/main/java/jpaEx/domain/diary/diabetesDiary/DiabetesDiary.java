@@ -22,7 +22,7 @@ public class DiabetesDiary extends BaseTimeEntity {
     //식별 관계이므로 복합키 사용.
     @Id
     @Column(name = "diary_id", columnDefinition = "bigint default 0 auto_increment")
-    private Long id;
+    private Long diaryId;
 
     //Writer 와 일대다 양방향 관계이며, 연관관계의 주인이다. 되도록이면 모든 연관 관계를 지연로딩으로 사용하는 것이 성능에 좋음.
     @Id
@@ -46,11 +46,15 @@ public class DiabetesDiary extends BaseTimeEntity {
     }
 
     public DiabetesDiary(EntityId<DiabetesDiary> diabetesDiaryEntityId, Writer writer, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
-        this.id = diabetesDiaryEntityId.getId();
+        this.diaryId = diabetesDiaryEntityId.getId();
         this.writer = writer;
         this.fastingPlasmaGlucose = fastingPlasmaGlucose;
         this.remark = remark;
         this.writtenTime = writtenTime;
+    }
+
+    public Long getId() {
+        return diaryId;
     }
 
     public int getFastingPlasmaGlucose() {
@@ -101,7 +105,7 @@ public class DiabetesDiary extends BaseTimeEntity {
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                .append("id", id)
+                .append("id", diaryId)
                 .append("writerId", writer)
                 .append("fpg", fastingPlasmaGlucose)
                 .append("remark", remark)
@@ -111,7 +115,7 @@ public class DiabetesDiary extends BaseTimeEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(writer, id);
+        return Objects.hash(writer, diaryId);
     }
 
     @Override
@@ -123,6 +127,6 @@ public class DiabetesDiary extends BaseTimeEntity {
             return false;
         }
         DiabetesDiary target = (DiabetesDiary) obj;
-        return Objects.equals(this.writer, target.writer) && Objects.equals(this.id, target.id);
+        return Objects.equals(this.writer, target.writer) && Objects.equals(this.diaryId, target.diaryId);
     }
 }

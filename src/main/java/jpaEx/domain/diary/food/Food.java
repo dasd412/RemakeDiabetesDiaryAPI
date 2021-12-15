@@ -18,7 +18,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class Food extends BaseTimeEntity {
     @Id
     @Column(name = "food_id", columnDefinition = "bigint default 0 auto_increment")
-    private Long id;
+    private Long foodId;
 
     //'다'에 해당하므로 연관 관계의 주인이다. 되도록이면 모든 연관 관계를 지연로딩으로 사용하는 것이 성능에 좋음.
     @Id
@@ -36,13 +36,13 @@ public class Food extends BaseTimeEntity {
     }
 
     public Food(EntityId<Food> foodEntityId, Diet diet, String foodName) {
-        this.id = foodEntityId.getId();
+        this.foodId = foodEntityId.getId();
         this.diet = diet;
         this.foodName = foodName;
     }
 
     public Long getId() {
-        return id;
+        return foodId;
     }
 
     public String getFoodName() {
@@ -72,7 +72,7 @@ public class Food extends BaseTimeEntity {
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                .append("id", id)
+                .append("id", foodId)
                 .append("diet", diet)
                 .append("foodName", foodName)
                 .toString();
@@ -80,7 +80,7 @@ public class Food extends BaseTimeEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(diet, id);
+        return Objects.hash(diet, foodId);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class Food extends BaseTimeEntity {
             return false;
         }
         Food target = (Food) obj;
-        return Objects.equals(this.id, target.id) && Objects.equals(this.diet, target.diet);
+        return Objects.equals(this.foodId, target.foodId) && Objects.equals(this.diet, target.diet);
     }
 
 }

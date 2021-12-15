@@ -21,7 +21,7 @@ public class Diet extends BaseTimeEntity {
 
     @Id
     @Column(name = "diet_id", columnDefinition = "bigint default 0 auto_increment")
-    private Long id;
+    private Long dietId;
 
     //혈당일지 "일"에 대해 "다"이므로 연관관계의 주인(외래키 관리자)이다. 되도록이면 모든 연관 관계를 지연로딩으로 사용하는 것이 성능에 좋음.
     @Id
@@ -50,10 +50,14 @@ public class Diet extends BaseTimeEntity {
     }
 
     public Diet(EntityId<Diet>dietEntityId, DiabetesDiary diary, EatTime eatTime, int bloodSugar) {
-        this.id = dietEntityId.getId();
+        this.dietId = dietEntityId.getId();
         this.diary = diary;
         this.eatTime = eatTime;
         this.bloodSugar = bloodSugar;
+    }
+
+    public Long getDietId() {
+        return dietId;
     }
 
     public EatTime getEatTime() {
@@ -101,7 +105,7 @@ public class Diet extends BaseTimeEntity {
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                .append("id", id)
+                .append("id", dietId)
                 .append("diary", diary)
                 .append("eatTime", eatTime)
                 .append("blood sugar", bloodSugar)
@@ -110,7 +114,7 @@ public class Diet extends BaseTimeEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(diary, id);
+        return Objects.hash(diary, dietId);
     }
 
     @Override
@@ -122,6 +126,6 @@ public class Diet extends BaseTimeEntity {
             return false;
         }
         Diet target = (Diet) obj;
-        return Objects.equals(this.id, target.id) && Objects.equals(this.diary, target.diary);
+        return Objects.equals(this.dietId, target.dietId) && Objects.equals(this.diary, target.diary);
     }
 }
