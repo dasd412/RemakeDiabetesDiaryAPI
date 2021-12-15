@@ -1,4 +1,4 @@
-package jpaEx.domain;
+package jpaEx.domain.diary;
 
 //복합키 엔티티의 Id를 생성할 때, 타입 정확성을 위해 만든 보조 클래스
 public class EntityId<T> {

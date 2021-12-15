@@ -1,8 +1,8 @@
-package jpaEx.domain.writer;
+package jpaEx.domain.diary.writer;
 
 import jpaEx.domain.BaseTimeEntity;
-import jpaEx.domain.EntityId;
-import jpaEx.domain.diary.DiabetesDiary;
+import jpaEx.domain.diary.EntityId;
+import jpaEx.domain.diary.diabetesDiary.DiabetesDiary;
 
 import javax.persistence.*;
 import java.util.ArrayList;

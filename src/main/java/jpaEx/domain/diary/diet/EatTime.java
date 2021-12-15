@@ -1,4 +1,4 @@
-package jpaEx.domain.diet;
+package jpaEx.domain.diary.diet;
 
 public enum EatTime {
 

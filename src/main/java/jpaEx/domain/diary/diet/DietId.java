@@ -1,6 +1,6 @@
-package jpaEx.domain.diet;
+package jpaEx.domain.diary.diet;
 
-import jpaEx.domain.diary.DiabetesDiaryId;
+import jpaEx.domain.diary.diabetesDiary.DiabetesDiaryId;
 
 import java.io.Serializable;
 import java.util.Objects;

@@ -1,9 +1,9 @@
-package jpaEx.domain.diary;
+package jpaEx.domain.diary.diabetesDiary;
 
 import jpaEx.domain.BaseTimeEntity;
-import jpaEx.domain.EntityId;
-import jpaEx.domain.diet.Diet;
-import jpaEx.domain.writer.Writer;
+import jpaEx.domain.diary.EntityId;
+import jpaEx.domain.diary.diet.Diet;
+import jpaEx.domain.diary.writer.Writer;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -45,7 +45,7 @@ public class DiabetesDiary extends BaseTimeEntity {
     public DiabetesDiary() {
     }
 
-    public DiabetesDiary(EntityId<DiabetesDiary>diabetesDiaryEntityId, Writer writer, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
+    public DiabetesDiary(EntityId<DiabetesDiary> diabetesDiaryEntityId, Writer writer, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
         this.id = diabetesDiaryEntityId.getId();
         this.writer = writer;
         this.fastingPlasmaGlucose = fastingPlasmaGlucose;

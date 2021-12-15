@@ -1,4 +1,4 @@
-package jpaEx.domain.diary;
+package jpaEx.domain.diary.diabetesDiary;
 
 import java.io.Serializable;
 import java.util.Objects;

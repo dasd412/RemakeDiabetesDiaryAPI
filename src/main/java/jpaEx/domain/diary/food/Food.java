@@ -1,8 +1,8 @@
-package jpaEx.domain.food;
+package jpaEx.domain.diary.food;
 
 import jpaEx.domain.BaseTimeEntity;
-import jpaEx.domain.EntityId;
-import jpaEx.domain.diet.Diet;
+import jpaEx.domain.diary.EntityId;
+import jpaEx.domain.diary.diet.Diet;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 

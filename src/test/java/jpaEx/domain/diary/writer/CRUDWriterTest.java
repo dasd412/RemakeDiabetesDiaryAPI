@@ -1,13 +1,13 @@
-package jpaEx.domain.writer;
+package jpaEx.domain.diary.writer;
 
-import jpaEx.domain.EntityId;
-import jpaEx.domain.diary.DiabetesDiary;
-import jpaEx.domain.diary.DiaryRepository;
-import jpaEx.domain.diet.Diet;
-import jpaEx.domain.diet.DietRepository;
-import jpaEx.domain.diet.EatTime;
-import jpaEx.domain.food.Food;
-import jpaEx.domain.food.FoodRepository;
+import jpaEx.domain.diary.EntityId;
+import jpaEx.domain.diary.diabetesDiary.DiabetesDiary;
+import jpaEx.domain.diary.diabetesDiary.DiaryRepository;
+import jpaEx.domain.diary.diet.Diet;
+import jpaEx.domain.diary.diet.DietRepository;
+import jpaEx.domain.diary.diet.EatTime;
+import jpaEx.domain.diary.food.Food;
+import jpaEx.domain.diary.food.FoodRepository;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
