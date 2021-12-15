@@ -22,11 +22,11 @@ public interface DiaryRepository extends JpaRepository<DiabetesDiary, Long> {
     @Query(value = "SELECT MAX(d.diaryId) FROM DiabetesDiary d")
     Long findMaxOfId();
 
-    @Query(value = "SELECT diary.writer FROM DiabetesDiary diary WHERE diary.diaryId= :diary_id")
+    @Query(value = "SELECT diary.writer FROM DiabetesDiary diary WHERE diary.diaryId = :diary_id")
     Optional<Writer> findWriterOfDiary(@Param("diary_id") Long diaryId);
 
     //작성자와 관련된 일지들 조회
-    @Query(value = "FROM DiabetesDiary diary INNER JOIN Writer writer WHERE diary.writer.id = :writer_id")
+    @Query(value = "FROM DiabetesDiary diary INNER JOIN diary.writer w WHERE diary.writer.writerId = :writer_id")
     List<DiabetesDiary> findDiabetesDiariesOfWriter(@Param("writer_id") Long writerId);
 
     //작성자와 관련된 "특정 id"의 일지 조회

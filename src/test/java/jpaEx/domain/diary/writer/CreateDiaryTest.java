@@ -1,6 +1,5 @@
 package jpaEx.domain.diary.writer;
 
-import jpaEx.domain.diary.EntityId;
 import jpaEx.domain.diary.diabetesDiary.DiabetesDiary;
 import jpaEx.domain.diary.diabetesDiary.DiaryRepository;
 import jpaEx.domain.diary.diet.Diet;
@@ -8,6 +7,7 @@ import jpaEx.domain.diary.diet.DietRepository;
 import jpaEx.domain.diary.diet.EatTime;
 import jpaEx.domain.diary.food.Food;
 import jpaEx.domain.diary.food.FoodRepository;
+import jpaEx.service.SaveDiaryService;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,126 +21,25 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Profile("test")
-public class CRUDWriterTest {
+public class CreateDiaryTest {
+
+    @Autowired
+    SaveDiaryService saveDiaryService;
+
     @Autowired
     WriterRepository writerRepository;
-
-    @Autowired
-    DiaryRepository diaryRepository;
-
-    @Autowired
-    DietRepository dietRepository;
-
-    @Autowired
-    FoodRepository foodRepository;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @After
     public void clean() {
         writerRepository.deleteAll();//cascade all 이므로 작성자 삭제하면 다 삭제됨.
-    }
-
-    //작성자 id 생성 메서드
-    public EntityId<Writer> getIdOfWriter() {
-        Long count = writerRepository.findCountOfId();
-        Long writerId;
-        if (count == 0) {
-            writerId = 0L;
-        } else {
-            writerId = writerRepository.findMaxOfId();
-        }
-        return new EntityId<>(writerId + 1);
-    }
-
-    //일지 id 생성 메서드 (트랜잭션 필수)
-    public EntityId<DiabetesDiary> getIdOfDiary() {
-        Long count = diaryRepository.findCountOfId();
-        Long diaryId;
-        if (count == 0) {
-            diaryId = 0L;
-        } else {
-            diaryId = diaryRepository.findMaxOfId();
-        }
-        return new EntityId<>(diaryId + 1);
-    }
-
-    //식단 id 생성 메서드 (트랜잭션 필수)
-    public EntityId<Diet> getIdOfDiet() {
-        Long count = dietRepository.findCountOfId();
-        Long dietId;
-        if (count == 0) {
-            dietId = 0L;
-        } else {
-            dietId = dietRepository.findMaxOfId();
-        }
-        return new EntityId<>(dietId + 1);
-    }
-
-    //음식 id 생성 메서드 (트랜잭션 필수)
-    public EntityId<Food> getIdOfFood() {
-        Long count = foodRepository.findCountOfId();
-        Long foodId;
-        if (count == 0) {
-            foodId = 0L;
-        } else {
-            foodId = foodRepository.findMaxOfId();
-        }
-        return new EntityId<>(foodId + 1);
-    }
-
-    //나중에 서비스 레이어에 쓸 예정. getIdOfWriter()의 경우 트랜잭션 처리 안하면 다른 스레드가 껴들어 올 경우 id 값이 중복될 수 있어 기본키 조건을 위배할 수도 있다.
-    @Transactional
-    public Writer saveWriter(String name, String email, Role role) {
-        Writer writer = new Writer(getIdOfWriter(), name, email, role);
-        writerRepository.save(writer);
-        return writer;
-    }
-
-    @Transactional
-    public DiabetesDiary saveDiary(Writer writer, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
-        DiabetesDiary diary = new DiabetesDiary(getIdOfDiary(), writer, fastingPlasmaGlucose, remark, writtenTime);
-        writer.addDiary(diary);
-        writerRepository.save(writer);
-        return diary;
-    }
-
-    @Transactional
-    public Diet saveDiet(Writer writer, DiabetesDiary diary, EatTime eatTime, int bloodSugar) {
-        Diet diet = new Diet(getIdOfDiet(), diary, eatTime, bloodSugar);
-        diary.addDiet(diet);
-        writer.addDiary(diary);
-        writerRepository.save(writer);
-        return diet;
-    }
-
-    @Transactional
-    public Food saveFood(Writer writer, Diet diet, String foodName) {
-        Food food = new Food(getIdOfFood(), diet, foodName);
-        diet.addFood(food);
-        writerRepository.save(writer);
-        return food;
-    }
-
-    @Transactional
-    @Test
-    public void countAndMaxOfIdWhenEmpty() {
-        //given
-        Long count = writerRepository.findCountOfId();
-        logger.info("count : " + count);
-        assertThat(count).isEqualTo(0L);
-
-        Long maxId = writerRepository.findMaxOfId();
-        logger.info("maxId : " + maxId);
-        assertThat(maxId).isNull();
-
     }
 
     /*
@@ -151,7 +50,7 @@ public class CRUDWriterTest {
     public void saveWriterOne() {
 
         //given
-        Writer me = saveWriter("ME", "TEST@NAVER.COM", Role.User);
+        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
 
         //when
         Writer found = writerRepository.findAll().get(0);
@@ -168,11 +67,11 @@ public class CRUDWriterTest {
     public void saveWritersMany() {
 
         //given
-        Writer me = saveWriter("me", "ME@NAVER.COM", Role.User);
+        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
 
-        Writer other = saveWriter("other", "OTHER@NAVER.COM", Role.User);
+        Writer other = saveDiaryService.saveWriter("other", "OTHER@NAVER.COM", Role.User);
 
-        Writer another = saveWriter("another", "Another@NAVER.COM", Role.User);
+        Writer another = saveDiaryService.saveWriter("another", "Another@NAVER.COM", Role.User);
 
         //when
         Writer foundMe = writerRepository.findAll().get(0);
@@ -204,8 +103,8 @@ public class CRUDWriterTest {
     public void saveWriterWithDiaryOne() {
 
         //given
-        Writer me = saveWriter("me", "ME@NAVER.COM", Role.User);
-        saveDiary(me, 20, "test", LocalDateTime.now());
+        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
+        saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
 
         //when
         Writer found = writerRepository.findAll().get(0);
@@ -226,11 +125,11 @@ public class CRUDWriterTest {
     @Test
     public void saveWriterWithDiaries() {
         //given
-        Writer me = saveWriter("me", "ME@NAVER.COM", Role.User);
-        saveDiary(me, 10, "test1", LocalDateTime.now());
-        saveDiary(me, 20, "test2", LocalDateTime.now());
-        saveDiary(me, 30, "test3", LocalDateTime.now());
-        saveDiary(me, 40, "test4", LocalDateTime.now());
+        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
+        saveDiaryService.saveDiary(me, 10, "test1", LocalDateTime.now());
+        saveDiaryService.saveDiary(me, 20, "test2", LocalDateTime.now());
+        saveDiaryService.saveDiary(me, 30, "test3", LocalDateTime.now());
+        saveDiaryService.saveDiary(me, 40, "test4", LocalDateTime.now());
         //when
         Writer found = writerRepository.findAll().get(0);
 
@@ -262,13 +161,13 @@ public class CRUDWriterTest {
     @Test
     public void saveWritersWithDiaries() {
         //given
-        Writer me = saveWriter("me", "ME@NAVER.COM", Role.User);
-        saveDiary(me, 10, "test1", LocalDateTime.now());
-        saveDiary(me, 20, "test2", LocalDateTime.now());
+        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
+        saveDiaryService.saveDiary(me, 10, "test1", LocalDateTime.now());
+        saveDiaryService.saveDiary(me, 20, "test2", LocalDateTime.now());
 
-        Writer other = saveWriter("other", "OTHER@NAVER.COM", Role.User);
-        saveDiary(other, 30, "test3", LocalDateTime.now());
-        saveDiary(other, 40, "test4", LocalDateTime.now());
+        Writer other = saveDiaryService.saveWriter("other", "OTHER@NAVER.COM", Role.User);
+        saveDiaryService.saveDiary(other, 30, "test3", LocalDateTime.now());
+        saveDiaryService.saveDiary(other, 40, "test4", LocalDateTime.now());
 
         //when
         Writer foundMe = writerRepository.findAll().get(0);
@@ -309,9 +208,9 @@ public class CRUDWriterTest {
     public void saveWriterWithDiaryWithDietOne() {
 
         //given
-        Writer me = saveWriter("ME", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiary(me, 20, "test", LocalDateTime.now());
-        Diet diet = saveDiet(me, diary, EatTime.Lunch, 100);
+        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
+        Diet diet = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 100);
 
         //when
         Writer found = writerRepository.findAll().get(0);
@@ -342,11 +241,11 @@ public class CRUDWriterTest {
     public void saveWriterWithDiaryWithDietMany() {
 
         //given
-        Writer me = saveWriter("ME", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiary(me, 20, "test", LocalDateTime.now());
-        Diet diet1 = saveDiet(me, diary, EatTime.BreakFast, 100);
-        Diet diet2 = saveDiet(me, diary, EatTime.Lunch, 200);
-        Diet diet3 = saveDiet(me, diary, EatTime.Dinner, 150);
+        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
+        Diet diet1 = saveDiaryService.saveDiet(me, diary, EatTime.BreakFast, 100);
+        Diet diet2 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 200);
+        Diet diet3 = saveDiaryService.saveDiet(me, diary, EatTime.Dinner, 150);
 
         //when
         Writer found = writerRepository.findAll().get(0);
@@ -389,10 +288,10 @@ public class CRUDWriterTest {
     @Test
     public void saveWriterWithDiaryWithDietWithFoodOne() {
         //given
-        Writer me = saveWriter("ME", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiary(me, 20, "test", LocalDateTime.now());
-        Diet diet = saveDiet(me, diary, EatTime.Lunch, 100);
-        Food food = saveFood(me, diet, "pizza");
+        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
+        Diet diet = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 100);
+        Food food = saveDiaryService.saveFood(me, diet, "pizza");
 
         //when
         Writer found = writerRepository.findAll().get(0);
@@ -427,12 +326,12 @@ public class CRUDWriterTest {
     @Test
     public void saveWriterWithDiaryWithDietWithFoodMany() {
         //given
-        Writer me = saveWriter("ME", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiary(me, 20, "test", LocalDateTime.now());
-        Diet diet = saveDiet(me, diary, EatTime.Lunch, 250);
-        Food food1 = saveFood(me, diet, "pizza");
-        Food food2 = saveFood(me, diet, "chicken");
-        Food food3 = saveFood(me, diet, "cola");
+        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
+        Diet diet = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 250);
+        Food food1 = saveDiaryService.saveFood(me, diet, "pizza");
+        Food food2 = saveDiaryService.saveFood(me, diet, "chicken");
+        Food food3 = saveDiaryService.saveFood(me, diet, "cola");
 
         //when
         Writer found = writerRepository.findAll().get(0);
@@ -473,49 +372,6 @@ public class CRUDWriterTest {
         logger.info(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(2).toString());
     }
 
-    /*
-    Find 테스트
-     */
-    @Transactional
-    @Test
-    public void findByIdOfWriter() {
-        //given
-        Writer me = saveWriter("ME", "TEST@NAVER.COM", Role.User);
-
-        //when
-        Writer found = writerRepository.findById(me.getId()).orElseThrow(() -> new NoSuchElementException("해당 작성자가 존재하지 않습니다."));
-
-        //then
-        assertThat(found).isEqualTo(me);
-        assertThat(found.getName()).isEqualTo(me.getName());
-        assertThat(found.getEmail()).isEqualTo(me.getEmail());
-        assertThat(found.getRole()).isEqualTo(me.getRole());
-        logger.info(found.toString());
-    }
-
-    @Transactional
-    @Test
-    public void findByIdOfDiary(){
-        //given
-        Writer me = saveWriter("me", "ME@NAVER.COM", Role.User);
-        DiabetesDiary diary=saveDiary(me, 20, "test", LocalDateTime.now());
-        logger.info(diaryRepository.findWriterOfDiary(diary.getId()).toString());
-        //when
-//        Writer found = writerRepository.findById(me.getId()).orElseThrow(() -> new NoSuchElementException("해당 작성자가 존재하지 않습니다."));
-//        List<DiabetesDiary> foundDiaries=diaryRepository.findDiabetesDiariesOfWriter(found.getId());
-//
-//        //then
-//        assertThat(found).isEqualTo(me);
-//        assertThat(found.getName()).isEqualTo(me.getName());
-//        assertThat(found.getEmail()).isEqualTo(me.getEmail());
-//        assertThat(found.getRole()).isEqualTo(me.getRole());
-//        logger.info(found.toString());
-//
-//        assertThat(found.getDiaries().get(0).getFastingPlasmaGlucose()).isEqualTo(foundDiaries.get(0).getFastingPlasmaGlucose());
-//        assertThat(found.getDiaries().get(0).getRemark()).isEqualTo(foundDiaries.get(0).getRemark());
-//        logger.info(found.getDiaries().get(0).toString());
-//        logger.info(foundDiaries.get(0).toString());
-    }
 
 //    @Transactional
 //    @Test
