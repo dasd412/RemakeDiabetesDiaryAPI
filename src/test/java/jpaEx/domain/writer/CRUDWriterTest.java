@@ -47,8 +47,7 @@ public class CRUDWriterTest {
         writerRepository.deleteAll();//cascade all 이므로 작성자 삭제하면 다 삭제됨.
     }
 
-    //작성자 id 생성 메서드 todo 실제 사용할 때 트랜잭션 처리 필수다.
-    // 파라미터에 리포지토리를 넣은 이유는, 파라미터가 아무 것도 없을 경우 혹시라도 getId를 다른 것을 호출할 수 있기 때문에 넣었다.
+    //작성자 id 생성 메서드
     public EntityId<Writer> getIdOfWriter() {
         Long count = writerRepository.findCountOfId();
         Long writerId;
