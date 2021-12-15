@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +31,19 @@ public interface DiaryRepository extends JpaRepository<DiabetesDiary, Long> {
     List<DiabetesDiary> findDiabetesDiariesOfWriter(@Param("writer_id") Long writerId);
 
     //작성자와 관련된 "특정 id"의 일지 조회
+    @Query(value = "FROM DiabetesDiary diary INNER JOIN diary.writer w WHERE diary.writer.writerId = :writer_id AND diary.diaryId = :diary_id")
+    Optional<DiabetesDiary> findDiabetesDiaryOfWriter(@Param("writer_id") Long writerId, @Param("diary_id") Long diaryId);
 
-    //Optional<DiabetesDiary> findDiabetesDiaryOfWriter(@Param("writer_id") Long writerId, @Param("diary_id") Long diaryId);
+    //시작일 ~ 종료일 사이의 혈당일지 모두 조회
+    @Query(value = "SELECT diary FROM DiabetesDiary as diary INNER JOIN diary.writer w WHERE diary.writer.writerId = :writer_id AND diary.writtenTime BETWEEN :startDate AND :endDate")
+    List<DiabetesDiary> findDiaryBetweenTime(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate,@Param("writer_id")Long writerId);
+
+    //입력된 공복혈당 이상의 공복혈당을 기록한 일지 모두 조회
+    @Query(value = "SELECT diary FROM DiabetesDiary as diary INNER JOIN diary.writer w WHERE diary.writer.writerId = :writer_id AND diary.fastingPlasmaGlucose >= :bloodSugar")
+    List<DiabetesDiary> findFpgHigherOrEqual(@Param("bloodSugar") int fastingPlasmaGlucose, @Param("writer_id") Long writerId);
+
+    //입력된 공복혈당 이하의 공복혈당을 기록한 일지 모두 조회
+    @Query(value = "SELECT diary FROM DiabetesDiary as diary INNER JOIN diary.writer w WHERE diary.writer.writerId = :writer_id AND diary.fastingPlasmaGlucose <= :bloodSugar")
+    List<DiabetesDiary> findFpgLowerOrEqual(@Param("bloodSugar") int fastingPlasmaGlucose, @Param("writer_id") Long writerId);
 
 }

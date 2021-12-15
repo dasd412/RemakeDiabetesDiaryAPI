@@ -16,4 +16,9 @@ public interface FoodRepository extends JpaRepository<Food, Long> {
 
     @Query(value = "SELECT MAX(f.foodId) FROM Food f")
     Long findMaxOfId();
+
+
+    //내부 조인을 활용해 혈당 일지 내 식단 내 음식들 조회
+
+    //내부 조인 + COUNT 를 활용해 혈당 일지 내 식단 내 음식 개수 조회
 }

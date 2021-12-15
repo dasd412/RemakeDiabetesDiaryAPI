@@ -124,5 +124,77 @@ public class ReadDiaryTest {
 
     }
 
+    @Transactional
+    @Test
+    public void findDiaryOfWriterByBothId() {
+        //given
+        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
+        DiabetesDiary diary1 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.now());
+        DiabetesDiary diary2 = saveDiaryService.saveDiary(me, 10, "test2", LocalDateTime.now());
+        DiabetesDiary diary3 = saveDiaryService.saveDiary(me, 40, "test3", LocalDateTime.now());
+
+        //when
+        DiabetesDiary diary = diaryRepository.findDiabetesDiaryOfWriter(me.getId(), diary2.getId()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 일지입니다."));
+
+        //then
+        assertThat(diary).isEqualTo(diary2);
+        assertThat(diary.getWriter()).isEqualTo(me);
+        assertThat(diary.getFastingPlasmaGlucose()).isEqualTo(diary2.getFastingPlasmaGlucose());
+        assertThat(diary.getRemark()).isEqualTo(diary2.getRemark());
+        logger.info(diary.toString());
+    }
+
+    @Transactional
+    @Test
+    public void findDiariesBetweenTime() {
+        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
+        DiabetesDiary diary1 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
+        DiabetesDiary diary2 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
+        DiabetesDiary diary3 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
+
+        //when
+        List<DiabetesDiary> diaries = diaryRepository.findDiaryBetweenTime(LocalDateTime.of(2021, 12, 15, 0, 0, 0), LocalDateTime.of(2021, 12, 31, 0, 0, 0), me.getId());
+
+        //then
+        assertThat(diaries.get(0)).isEqualTo(diary3);
+        assertThat(diaries.get(0).getWriter()).isEqualTo(me);
+        assertThat(diaries.get(0).getFastingPlasmaGlucose()).isEqualTo(diary3.getFastingPlasmaGlucose());
+        assertThat(diaries.get(0).getRemark()).isEqualTo(diary3.getRemark());
+        logger.info(diaries.get(0).toString());
+    }
+
+    @Transactional
+    @Test
+    public void findFpgHigherOrEqual() {
+        //then
+        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
+        saveDiaryService.saveDiary(me, 10, "test1", LocalDateTime.now());
+        saveDiaryService.saveDiary(me, 20, "test2", LocalDateTime.now());
+        saveDiaryService.saveDiary(me, 40, "test3", LocalDateTime.now());
+
+        //when
+        List<DiabetesDiary> diaries = diaryRepository.findFpgHigherOrEqual(15, me.getId());
+
+        //then
+        logger.info(diaries.toString());
+        assertThat(diaries.size()).isEqualTo(2);
+    }
+
+    @Transactional
+    @Test
+    public void findFpgLowerOrEqual() {
+        //then
+        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
+        saveDiaryService.saveDiary(me, 10, "test1", LocalDateTime.now());
+        saveDiaryService.saveDiary(me, 20, "test2", LocalDateTime.now());
+        saveDiaryService.saveDiary(me, 40, "test3", LocalDateTime.now());
+
+        //when
+        List<DiabetesDiary> diaries = diaryRepository.findFpgLowerOrEqual(15, me.getId());
+
+        //then
+        logger.info(diaries.toString());
+        assertThat(diaries.size()).isEqualTo(1);
+    }
 
 }
