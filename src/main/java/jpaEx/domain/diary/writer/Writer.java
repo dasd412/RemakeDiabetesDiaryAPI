@@ -82,7 +82,7 @@ public class Writer extends BaseTimeEntity {
         this.diaries.add(diary);
         //무한 루프 방지
         if (diary.getWriter() != this) {
-            diary.modifyWriter(this);
+            diary.makeRelationWithWriter(this);
         }
     }
 
@@ -111,5 +111,11 @@ public class Writer extends BaseTimeEntity {
         }
         Writer target = (Writer) obj;
         return Objects.equals(this.writerId, target.writerId);
+    }
+
+    public void update(String name,String email,Role role){
+        modifyName(name);
+        modifyEmail(email);
+        modifyRole(role);
     }
 }

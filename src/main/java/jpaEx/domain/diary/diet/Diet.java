@@ -49,7 +49,7 @@ public class Diet extends BaseTimeEntity {
     public Diet() {
     }
 
-    public Diet(EntityId<Diet>dietEntityId, DiabetesDiary diary, EatTime eatTime, int bloodSugar) {
+    public Diet(EntityId<Diet> dietEntityId, DiabetesDiary diary, EatTime eatTime, int bloodSugar) {
         this.dietId = dietEntityId.getId();
         this.diary = diary;
         this.eatTime = eatTime;
@@ -85,7 +85,7 @@ public class Diet extends BaseTimeEntity {
         this.foodList.add(food);
         //무한 루프에 빠지지 않도록 체크
         if (food.getDiet() != this) {
-            food.setDiet(this);
+            food.makeRelationWithDiet(this);
         }
     }
 
@@ -94,7 +94,10 @@ public class Diet extends BaseTimeEntity {
     }
 
     //연관 관계 편의 메소드
-    public void setDiary(DiabetesDiary diary) {
+        /*
+    복합키와 관련된 메서드이므로 엔티티 관계 설정이후엔 호출하면 안된다.
+     */
+    public void makeRelationWithDiary(DiabetesDiary diary) {
         //무한 루프 체크
         this.diary = diary;
         if (!diary.getDietList().contains(this)) {
@@ -127,5 +130,10 @@ public class Diet extends BaseTimeEntity {
         }
         Diet target = (Diet) obj;
         return Objects.equals(this.dietId, target.dietId) && Objects.equals(this.diary, target.diary);
+    }
+
+    public void update(EatTime eatTime, int bloodSugar) {
+        modifyEatTime(eatTime);
+        modifyBloodSugar(bloodSugar);
     }
 }

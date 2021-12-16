@@ -59,7 +59,10 @@ public class Food extends BaseTimeEntity {
     }
 
     //연관 관계 편의 메소드
-    public void setDiet(Diet diet) {
+            /*
+    복합키와 관련된 메서드이므로 엔티티 관계 설정이후엔 호출하면 안된다.
+     */
+    public void makeRelationWithDiet(Diet diet) {
         //기존 관계 삭제
         this.diet.getFoodList().remove(this);
         //무한 루프 체크
@@ -93,6 +96,10 @@ public class Food extends BaseTimeEntity {
         }
         Food target = (Food) obj;
         return Objects.equals(this.foodId, target.foodId) && Objects.equals(this.diet, target.diet);
+    }
+
+    public void update(String foodName) {
+        modifyFoodName(foodName);
     }
 
 }

@@ -87,7 +87,7 @@ public class DiabetesDiary extends BaseTimeEntity {
         this.dietList.add(diet);
         //무한 루프 체크
         if (diet.getDiary() != this) {
-            diet.setDiary(this);
+            diet.makeRelationWithDiary(this);
         }
     }
 
@@ -95,7 +95,10 @@ public class DiabetesDiary extends BaseTimeEntity {
         return writer;
     }
 
-    public void modifyWriter(Writer writer) {
+    /*
+    복합키와 관련된 메서드이므로 엔티티 관계 설정이후엔 호출하면 안된다.
+     */
+    public void makeRelationWithWriter(Writer writer) {
         this.writer = writer;
         if (!writer.getDiaries().contains(this)) {
             writer.getDiaries().add(this);
@@ -128,5 +131,10 @@ public class DiabetesDiary extends BaseTimeEntity {
         }
         DiabetesDiary target = (DiabetesDiary) obj;
         return Objects.equals(this.writer, target.writer) && Objects.equals(this.diaryId, target.diaryId);
+    }
+
+    public void update(int fastingPlasmaGlucose, String remark) {
+        modifyFastingPlasmaGlucose(fastingPlasmaGlucose);
+        modifyRemark(remark);
     }
 }
