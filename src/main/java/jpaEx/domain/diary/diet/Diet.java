@@ -41,13 +41,13 @@ public class Diet extends BaseTimeEntity {
     //양방향 연관 관계를 맺을 때는 외래키를 갖고 있는 쪽이 연관 관계의 주인이 되어야 한다.
     //db의 1 대 다 관계에서는 '다' 쪽이 외래키를 갖고 있다. 따라서 '다'에 해당하는 Food 가 연관 관계의 주인이 되어야 한다.
     //'일'에 해당하는 Diet 는 주인이 아니므로 mappedBy 속성을 사용하여 주인이 아님을 지정한다.
-    @OneToMany(mappedBy = "diet", orphanRemoval = true,cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "diet", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private final List<Food> foodList = new ArrayList<>();
 
     public Diet() {
     }
 
-    public Diet(EntityId<Diet,Long> dietEntityId, DiabetesDiary diary, EatTime eatTime, int bloodSugar) {
+    public Diet(EntityId<Diet, Long> dietEntityId, DiabetesDiary diary, EatTime eatTime, int bloodSugar) {
         this.dietId = dietEntityId.getId();
         this.diary = diary;
         this.eatTime = eatTime;
@@ -136,8 +136,8 @@ public class Diet extends BaseTimeEntity {
     }
 
     //연관 관계 제거 시에만 사용
-    public void removeFood(Food food){
-        checkArgument(this.foodList.contains(food),"this diet dose not have the food");
+    public void removeFood(Food food) {
+        checkArgument(this.foodList.contains(food), "this diet dose not have the food");
         this.foodList.remove(food);
     }
 }

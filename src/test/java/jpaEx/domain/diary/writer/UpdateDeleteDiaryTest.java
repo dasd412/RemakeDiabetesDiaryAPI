@@ -107,6 +107,7 @@ public class UpdateDeleteDiaryTest {
         Writer found = writerRepository.findAll().get(0);
         List<DiabetesDiary> diaries = diaryRepository.findAll();
 
+        //then
         assertThat(found.getDiaries().size()).isEqualTo(2);
         assertThat(diaries.size()).isEqualTo(2);
 
@@ -115,4 +116,24 @@ public class UpdateDeleteDiaryTest {
         logger.info(diaries.toString());
     }
 
+    @Transactional
+    @Test
+    public void deleteCascade() {
+        //작성자 삭제되면 일지도 삭제되는 지 cascade 테스트
+        //given
+        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
+        saveDiaryService.saveDiary(me, 10, "test1", LocalDateTime.now());
+        saveDiaryService.saveDiary(me, 20, "test2", LocalDateTime.now());
+        saveDiaryService.saveDiary(me, 30, "test3", LocalDateTime.now());
+        saveDiaryService.saveDiary(me, 40, "test4", LocalDateTime.now());
+        writerRepository.delete(me);
+
+        //when
+        List<Writer> writers = writerRepository.findAll();
+        List<DiabetesDiary> diaries = diaryRepository.findAll();
+
+        //then
+        assertThat(writers.size()).isEqualTo(0);
+        assertThat(diaries.size()).isEqualTo(0);
+    }
 }

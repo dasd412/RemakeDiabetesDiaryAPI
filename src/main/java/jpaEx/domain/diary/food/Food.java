@@ -35,7 +35,7 @@ public class Food extends BaseTimeEntity {
     public Food() {
     }
 
-    public Food(EntityId<Food,Long> foodEntityId, Diet diet, String foodName) {
+    public Food(EntityId<Food, Long> foodEntityId, Diet diet, String foodName) {
         this.foodId = foodEntityId.getId();
         this.diet = diet;
         this.foodName = foodName;

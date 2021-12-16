@@ -45,7 +45,7 @@ public class DiabetesDiary extends BaseTimeEntity {
     public DiabetesDiary() {
     }
 
-    public DiabetesDiary(EntityId<DiabetesDiary,Long> diabetesDiaryEntityId, Writer writer, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
+    public DiabetesDiary(EntityId<DiabetesDiary, Long> diabetesDiaryEntityId, Writer writer, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
         this.diaryId = diabetesDiaryEntityId.getId();
         this.writer = writer;
         this.fastingPlasmaGlucose = fastingPlasmaGlucose;
@@ -139,8 +139,8 @@ public class DiabetesDiary extends BaseTimeEntity {
     }
 
     //연관 관계 제거 시에만 사용
-    public void removeDiet(Diet diet){
-        checkArgument(this.dietList.contains(diet),"this diary dose not have the diet");
+    public void removeDiet(Diet diet) {
+        checkArgument(this.dietList.contains(diet), "this diary dose not have the diet");
         this.dietList.remove(diet);
     }
 }

@@ -37,7 +37,7 @@ public class Writer extends BaseTimeEntity {
     public Writer() {
     }
 
-    public Writer(EntityId<Writer,Long>writerEntityId, String name, String email, Role role) {
+    public Writer(EntityId<Writer, Long> writerEntityId, String name, String email, Role role) {
         this.writerId = writerEntityId.getId();
         this.name = name;
         this.email = email;
@@ -87,8 +87,8 @@ public class Writer extends BaseTimeEntity {
     }
 
     //연관 관계 제거 시에만 사용
-    public void removeDiary(DiabetesDiary diary){
-        checkArgument(this.diaries.contains(diary),"this writer does not have the diary");
+    public void removeDiary(DiabetesDiary diary) {
+        checkArgument(this.diaries.contains(diary), "this writer does not have the diary");
         this.diaries.remove(diary);
     }
 
@@ -119,7 +119,7 @@ public class Writer extends BaseTimeEntity {
         return Objects.equals(this.writerId, target.writerId);
     }
 
-    public void update(String name,String email,Role role){
+    public void update(String name, String email, Role role) {
         modifyName(name);
         modifyEmail(email);
         modifyRole(role);
