@@ -134,4 +134,10 @@ public class Diet extends BaseTimeEntity {
         modifyEatTime(eatTime);
         modifyBloodSugar(bloodSugar);
     }
+
+    //연관 관계 제거 시에만 사용
+    public void removeFood(Food food){
+        checkArgument(this.foodList.contains(food),"this diet dose not have the food");
+        this.foodList.remove(food);
+    }
 }

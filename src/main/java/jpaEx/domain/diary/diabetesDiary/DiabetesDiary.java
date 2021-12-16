@@ -137,4 +137,10 @@ public class DiabetesDiary extends BaseTimeEntity {
         modifyFastingPlasmaGlucose(fastingPlasmaGlucose);
         modifyRemark(remark);
     }
+
+    //연관 관계 제거 시에만 사용
+    public void removeDiet(Diet diet){
+        checkArgument(this.dietList.contains(diet),"this diary dose not have the diet");
+        this.dietList.remove(diet);
+    }
 }

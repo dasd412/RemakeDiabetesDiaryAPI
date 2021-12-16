@@ -86,8 +86,9 @@ public class Writer extends BaseTimeEntity {
         }
     }
 
+    //연관 관계 제거 시에만 사용
     public void removeDiary(DiabetesDiary diary){
-        checkArgument(this.diaries.contains(diary),"this writer has not diary");
+        checkArgument(this.diaries.contains(diary),"this writer does not have the diary");
         this.diaries.remove(diary);
     }
 
