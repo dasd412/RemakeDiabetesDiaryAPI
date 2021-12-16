@@ -33,7 +33,7 @@ public class SaveDiaryService {
         this.foodRepository = foodRepository;
     }
 
-    //작성자 id 생성 메서드
+    //작성자 id 생성 메서드 (트랜잭션 필수)
     public EntityId<Writer> getNextIdOfWriter() {
         Long count = writerRepository.findCountOfId();
         Long writerId;

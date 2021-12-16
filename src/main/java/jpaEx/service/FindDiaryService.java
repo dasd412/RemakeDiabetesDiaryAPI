@@ -4,7 +4,7 @@ import jpaEx.domain.diary.EntityId;
 import jpaEx.domain.diary.diabetesDiary.DiabetesDiary;
 import jpaEx.domain.diary.diabetesDiary.DiaryRepository;
 import jpaEx.domain.diary.writer.Writer;
-import jpaEx.domain.diary.writer.WriterRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class FindDiaryService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DiaryRepository diaryRepository;
 
-    public FindDiaryService(WriterRepository writerRepository, DiaryRepository diaryRepository) {
+    public FindDiaryService(DiaryRepository diaryRepository) {
         this.diaryRepository = diaryRepository;
     }
 
