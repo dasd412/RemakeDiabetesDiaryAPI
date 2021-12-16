@@ -86,6 +86,11 @@ public class Writer extends BaseTimeEntity {
         }
     }
 
+    public void removeDiary(DiabetesDiary diary){
+        checkArgument(this.diaries.contains(diary),"this writer has not diary");
+        this.diaries.remove(diary);
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
