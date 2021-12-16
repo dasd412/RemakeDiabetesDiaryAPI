@@ -59,21 +59,21 @@ public class FindDiaryService {
     public List<DiabetesDiary> getDiaryBetweenTime(LocalDateTime startDate, LocalDateTime endDate,EntityId<Writer,Long>writerEntityId){
         logger.info("getDiaryBetweenTime");
         checkArgument(startDate.isBefore(endDate),"startDate must be before than endDate");
-        return diaryRepository.findDiaryBetweenTime(startDate,endDate,writerEntityId.getId());
+        return diaryRepository.findDiaryBetweenTime(writerEntityId.getId(),startDate,endDate);
     }
 
     @Transactional(readOnly = true)
     public List<DiabetesDiary> getFpgHigherOrEqual(int fastingPlasmaGlucose,EntityId<Writer,Long>writerEntityId){
         logger.info("getFpgHigherOrEqual");
         checkArgument(fastingPlasmaGlucose>0,"fpg must be positive");
-        return diaryRepository.findFpgHigherOrEqual(fastingPlasmaGlucose,writerEntityId.getId());
+        return diaryRepository.findFpgHigherOrEqual(writerEntityId.getId(),fastingPlasmaGlucose);
     }
 
     @Transactional(readOnly = true)
     public List<DiabetesDiary> getFpgLowerOrEqual(int fastingPlasmaGlucose,EntityId<Writer,Long>writerEntityId){
         logger.info("getFpgLowerOrEqual");
         checkArgument(fastingPlasmaGlucose>0,"fpg must be positive");
-        return diaryRepository.findFpgLowerOrEqual(fastingPlasmaGlucose,writerEntityId.getId());
+        return diaryRepository.findFpgLowerOrEqual(writerEntityId.getId(),fastingPlasmaGlucose);
     }
 
     /*
@@ -88,7 +88,7 @@ public class FindDiaryService {
     @Transactional(readOnly = true)
     public Optional<Diet>getOneDietOfDiary(EntityId<Writer,Long>writerEntityId,EntityId<DiabetesDiary,Long>diabetesDiaryEntityId,EntityId<Diet,Long>dietEntityId){
         logger.info("get only one diet in diary");
-        return dietRepository.findDietInDiary(writerEntityId.getId(),diabetesDiaryEntityId.getId(),dietEntityId.getId());
+        return dietRepository.findOneDietInDiary(writerEntityId.getId(),diabetesDiaryEntityId.getId(),dietEntityId.getId());
     }
 
 }

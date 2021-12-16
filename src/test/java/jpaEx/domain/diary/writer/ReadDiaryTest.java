@@ -159,7 +159,7 @@ public class ReadDiaryTest {
         DiabetesDiary diary3 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
 
         //when
-        List<DiabetesDiary> diaries = diaryRepository.findDiaryBetweenTime(LocalDateTime.of(2021, 12, 15, 0, 0, 0), LocalDateTime.of(2021, 12, 31, 0, 0, 0), me.getId());
+        List<DiabetesDiary> diaries = diaryRepository.findDiaryBetweenTime(me.getId(),LocalDateTime.of(2021, 12, 15, 0, 0, 0), LocalDateTime.of(2021, 12, 31, 0, 0, 0));
 
         //then
         assertThat(diaries.get(0)).isEqualTo(diary3);
@@ -179,7 +179,7 @@ public class ReadDiaryTest {
         saveDiaryService.saveDiary(me, 40, "test3", LocalDateTime.now());
 
         //when
-        List<DiabetesDiary> diaries = diaryRepository.findFpgHigherOrEqual(15, me.getId());
+        List<DiabetesDiary> diaries = diaryRepository.findFpgHigherOrEqual(me.getId(),15);
 
         //then
         logger.info(diaries.toString());
@@ -196,7 +196,7 @@ public class ReadDiaryTest {
         saveDiaryService.saveDiary(me, 40, "test3", LocalDateTime.now());
 
         //when
-        List<DiabetesDiary> diaries = diaryRepository.findFpgLowerOrEqual(15, me.getId());
+        List<DiabetesDiary> diaries = diaryRepository.findFpgLowerOrEqual( me.getId(),15);
 
         //then
         logger.info(diaries.toString());
@@ -244,7 +244,7 @@ public class ReadDiaryTest {
         Diet diet3 = saveDiaryService.saveDiet(me, diary, EatTime.Dinner, 150);
 
         //when
-        Diet diet=dietRepository.findDietInDiary(me.getId(),diary.getId(),diet3.getDietId())
+        Diet diet=dietRepository.findOneDietInDiary(me.getId(),diary.getId(),diet3.getDietId())
                 .orElseThrow(()->new NoSuchElementException("해당 식단이 존재하지 않습니다."));
 
         //then
