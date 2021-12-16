@@ -3,6 +3,8 @@ package jpaEx.service;
 import jpaEx.domain.diary.EntityId;
 import jpaEx.domain.diary.diabetesDiary.DiabetesDiary;
 import jpaEx.domain.diary.diabetesDiary.DiaryRepository;
+import jpaEx.domain.diary.diet.Diet;
+import jpaEx.domain.diary.diet.DietRepository;
 import jpaEx.domain.diary.writer.Writer;
 
 import org.slf4j.Logger;
@@ -21,15 +23,20 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class FindDiaryService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DiaryRepository diaryRepository;
+    private final DietRepository dietRepository;
 
-    public FindDiaryService(DiaryRepository diaryRepository) {
+    public FindDiaryService(DiaryRepository diaryRepository, DietRepository dietRepository) {
         this.diaryRepository = diaryRepository;
+        this.dietRepository = dietRepository;
     }
 
     /*
     조회용으로만 트랜잭션할 경우 readonly = true 로 하면 조회 성능 향상 가능
      */
 
+    /*
+    일지 조회 메서드들
+     */
     @Transactional(readOnly = true)
     public Optional<Writer>getWriterOfDiary(EntityId<DiabetesDiary,Long>diaryEntityId){
         logger.info("getWriterOfDiary");
@@ -69,5 +76,19 @@ public class FindDiaryService {
         return diaryRepository.findFpgLowerOrEqual(fastingPlasmaGlucose,writerEntityId.getId());
     }
 
+    /*
+    식단 조회 메서드들
+     */
+    @Transactional(readOnly = true)
+    public  List<Diet>getDietsOfDiary(EntityId<Writer,Long>writerEntityId,EntityId<DiabetesDiary,Long>diabetesDiaryEntityId){
+        logger.info("getDietsOfDiary");
+        return dietRepository.findDietsInDiary(writerEntityId.getId(),diabetesDiaryEntityId.getId());
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Diet>getOneDietOfDiary(EntityId<Writer,Long>writerEntityId,EntityId<DiabetesDiary,Long>diabetesDiaryEntityId,EntityId<Diet,Long>dietEntityId){
+        logger.info("get only one diet in diary");
+        return dietRepository.findDietInDiary(writerEntityId.getId(),diabetesDiaryEntityId.getId(),dietEntityId.getId());
+    }
 
 }

@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface DietRepository extends JpaRepository<Diet, Long> {
@@ -20,10 +21,18 @@ public interface DietRepository extends JpaRepository<Diet, Long> {
     @Query(value = "SELECT MAX(di.dietId) FROM Diet di")
     Long findMaxOfId();
 
-    //todo 복합키 조인 필요
-    //내부조인을 홯용해서 혈당 일지 내 모든 식단 조회
-    @Query(value = "SELECT di FROM DiabetesDiary as d INNER JOIN d.dietList as di WHERE di.diary = : diaryId")
-    List<Diet> findDietInDiary(@Param("diaryId") Long id);
+    //작성자의 혈당 일지 내 모든 식단 조회
+    @Query(value = "SELECT diet FROM Diet diet INNER JOIN diet.diary diary WHERE diary.writer.writerId = :writer_id AND diet.diary.diaryId = :diary_id")
+    List<Diet> findDietsInDiary(@Param("writer_id")Long writerId,@Param("diary_id") Long diaryId);
 
-    //내부 조인 + COUNT 를 활용해 혈당 일지 내 식단 개수 조회
+    //작성자의 혈당 일지 내 특정 식단 조회
+    @Query(value="SELECT diet FROM Diet diet INNER JOIN diet.diary diary WHERE diary.writer.writerId = :writer_id AND diet.diary.diaryId = :diary_id AND  diet.dietId = :diet_id")
+    Optional<Diet>findDietInDiary(@Param("writer_id")Long writerId,@Param("diary_id") Long diaryId,@Param("diet_id")Long DietId);
+
+    //특정 기간 내 일정 혈당 수치 이상의 모든 식단 조회
+
+    //식사 시간이 oo 이고 혈당 수치 일정 이상인 것들 조회
+
+
+
 }

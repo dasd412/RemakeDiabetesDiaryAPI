@@ -2,6 +2,9 @@ package jpaEx.domain.diary.writer;
 
 import jpaEx.domain.diary.diabetesDiary.DiabetesDiary;
 import jpaEx.domain.diary.diabetesDiary.DiaryRepository;
+import jpaEx.domain.diary.diet.Diet;
+import jpaEx.domain.diary.diet.DietRepository;
+import jpaEx.domain.diary.diet.EatTime;
 import jpaEx.service.SaveDiaryService;
 import org.junit.After;
 import org.junit.Test;
@@ -35,6 +38,9 @@ public class ReadDiaryTest {
     @Autowired
     DiaryRepository diaryRepository;
 
+    @Autowired
+    DietRepository dietRepository;
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @After
@@ -57,8 +63,8 @@ public class ReadDiaryTest {
     }
 
     /*
- Find 테스트
-  */
+    일지 조회
+    */
     @Transactional
     @Test
     public void findByIdOfWriter() {
@@ -196,5 +202,56 @@ public class ReadDiaryTest {
         logger.info(diaries.toString());
         assertThat(diaries.size()).isEqualTo(1);
     }
+
+    /*
+    식단 조회
+     */
+    @Transactional
+    @Test
+    public void findDietsOfDiary() {
+        //given
+        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
+        Diet diet1 = saveDiaryService.saveDiet(me, diary, EatTime.BreakFast, 100);
+        Diet diet2 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 200);
+        Diet diet3 = saveDiaryService.saveDiet(me, diary, EatTime.Dinner, 150);
+
+        //when
+        List<Diet> dietList = dietRepository.findDietsInDiary(me.getId(), diary.getId());
+
+        //then
+        logger.info(dietList.toString());
+        assertThat(dietList.size()).isEqualTo(3);
+        assertThat(dietList.get(0).getEatTime()).isEqualTo(diet1.getEatTime());
+        assertThat(dietList.get(0).getBloodSugar()).isEqualTo(diet1.getBloodSugar());
+
+        assertThat(dietList.get(1).getEatTime()).isEqualTo(diet2.getEatTime());
+        assertThat(dietList.get(1).getBloodSugar()).isEqualTo(diet2.getBloodSugar());
+
+        assertThat(dietList.get(2).getEatTime()).isEqualTo(diet3.getEatTime());
+        assertThat(dietList.get(2).getBloodSugar()).isEqualTo(diet3.getBloodSugar());
+
+    }
+
+    @Transactional
+    @Test
+    public void findDietOfDiary(){
+        //given
+        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
+        Diet diet1 = saveDiaryService.saveDiet(me, diary, EatTime.BreakFast, 100);
+        Diet diet2 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 200);
+        Diet diet3 = saveDiaryService.saveDiet(me, diary, EatTime.Dinner, 150);
+
+        //when
+        Diet diet=dietRepository.findDietInDiary(me.getId(),diary.getId(),diet3.getDietId())
+                .orElseThrow(()->new NoSuchElementException("해당 식단이 존재하지 않습니다."));
+
+        //then
+        logger.info(diet.toString());
+        assertThat(diet.getEatTime()).isEqualTo(diet3.getEatTime());
+        assertThat(diet.getBloodSugar()).isEqualTo(diet3.getBloodSugar());
+    }
+
 
 }
