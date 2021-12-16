@@ -45,7 +45,7 @@ public class DiabetesDiary extends BaseTimeEntity {
     public DiabetesDiary() {
     }
 
-    public DiabetesDiary(EntityId<DiabetesDiary> diabetesDiaryEntityId, Writer writer, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
+    public DiabetesDiary(EntityId<DiabetesDiary,Long> diabetesDiaryEntityId, Writer writer, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
         this.diaryId = diabetesDiaryEntityId.getId();
         this.writer = writer;
         this.fastingPlasmaGlucose = fastingPlasmaGlucose;

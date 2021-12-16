@@ -48,7 +48,7 @@ public class UpdateDeleteDiaryTest {
         Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
         DiabetesDiary diary=saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
 
-        updateDeleteDiaryService.update(new EntityId<Writer>(me.getId()),new EntityId<DiabetesDiary>(diary.getId()),100,"modifyTest");
+        updateDeleteDiaryService.update(EntityId.of(Writer.class,me.getId()),EntityId.of(DiabetesDiary.class, diary.getId()),100,"modifyTest");
 
         //when
         Writer found = writerRepository.findAll().get(0);

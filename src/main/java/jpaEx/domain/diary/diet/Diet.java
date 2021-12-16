@@ -49,7 +49,7 @@ public class Diet extends BaseTimeEntity {
     public Diet() {
     }
 
-    public Diet(EntityId<Diet> dietEntityId, DiabetesDiary diary, EatTime eatTime, int bloodSugar) {
+    public Diet(EntityId<Diet,Long> dietEntityId, DiabetesDiary diary, EatTime eatTime, int bloodSugar) {
         this.dietId = dietEntityId.getId();
         this.diary = diary;
         this.eatTime = eatTime;

@@ -34,7 +34,7 @@ public class SaveDiaryService {
     }
 
     //작성자 id 생성 메서드 (트랜잭션 필수)
-    public EntityId<Writer> getNextIdOfWriter() {
+    public EntityId<Writer, Long> getNextIdOfWriter() {
         Long count = writerRepository.findCountOfId();
         Long writerId;
         if (count == 0) {
@@ -42,11 +42,11 @@ public class SaveDiaryService {
         } else {
             writerId = writerRepository.findMaxOfId();
         }
-        return new EntityId<>(writerId + 1);
+        return EntityId.of(Writer.class, writerId + 1);
     }
 
     //일지 id 생성 메서드 (트랜잭션 필수)
-    public EntityId<DiabetesDiary> getNextIdOfDiary() {
+    public EntityId<DiabetesDiary, Long> getNextIdOfDiary() {
         Long count = diaryRepository.findCountOfId();
         Long diaryId;
         if (count == 0) {
@@ -54,11 +54,11 @@ public class SaveDiaryService {
         } else {
             diaryId = diaryRepository.findMaxOfId();
         }
-        return new EntityId<>(diaryId + 1);
+        return EntityId.of(DiabetesDiary.class, diaryId + 1);
     }
 
     //식단 id 생성 메서드 (트랜잭션 필수)
-    public EntityId<Diet> getNextIdOfDiet() {
+    public EntityId<Diet, Long> getNextIdOfDiet() {
         Long count = dietRepository.findCountOfId();
         Long dietId;
         if (count == 0) {
@@ -66,11 +66,11 @@ public class SaveDiaryService {
         } else {
             dietId = dietRepository.findMaxOfId();
         }
-        return new EntityId<>(dietId + 1);
+        return EntityId.of(Diet.class,dietId + 1);
     }
 
     //음식 id 생성 메서드 (트랜잭션 필수)
-    public EntityId<Food> getNextIdOfFood() {
+    public EntityId<Food, Long> getNextIdOfFood() {
         Long count = foodRepository.findCountOfId();
         Long foodId;
         if (count == 0) {
@@ -78,7 +78,7 @@ public class SaveDiaryService {
         } else {
             foodId = foodRepository.findMaxOfId();
         }
-        return new EntityId<>(foodId + 1);
+        return EntityId.of(Food.class,foodId + 1);
     }
 
     // getIdOfXXX()의 경우 트랜잭션 처리 안하면 다른 스레드가 껴들어 올 경우 id 값이 중복될 수 있어 기본키 조건을 위배할 수도 있다. 레이스 컨디션 반드시 예방해야 함.

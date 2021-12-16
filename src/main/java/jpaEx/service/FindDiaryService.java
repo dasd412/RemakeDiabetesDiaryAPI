@@ -31,39 +31,39 @@ public class FindDiaryService {
      */
 
     @Transactional(readOnly = true)
-    public Optional<Writer>getWriterOfDiary(EntityId<DiabetesDiary>diaryEntityId){
+    public Optional<Writer>getWriterOfDiary(EntityId<DiabetesDiary,Long>diaryEntityId){
         logger.info("getWriterOfDiary");
         return diaryRepository.findWriterOfDiary(diaryEntityId.getId());
     }
 
     @Transactional(readOnly = true)
-    public List<DiabetesDiary> getDiabetesDiariesOfWriter(EntityId<Writer>writerEntityId){
+    public List<DiabetesDiary> getDiabetesDiariesOfWriter(EntityId<Writer,Long>writerEntityId){
         logger.info("getDiabetesDiariesOfWriter");
         return diaryRepository.findDiabetesDiariesOfWriter(writerEntityId.getId());
     }
 
     @Transactional(readOnly = true)
-    public Optional<DiabetesDiary> getDiabetesDiaryOfWriter(EntityId<Writer>writerEntityId,EntityId<DiabetesDiary>diabetesDiaryEntityId){
+    public Optional<DiabetesDiary> getDiabetesDiaryOfWriter(EntityId<Writer,Long>writerEntityId,EntityId<DiabetesDiary,Long>diabetesDiaryEntityId){
         logger.info("getDiabetesDiaryOfWriter");
         return diaryRepository.findDiabetesDiaryOfWriter(writerEntityId.getId(),diabetesDiaryEntityId.getId());
     }
 
     @Transactional(readOnly = true)
-    public List<DiabetesDiary> getDiaryBetweenTime(LocalDateTime startDate, LocalDateTime endDate,EntityId<Writer>writerEntityId){
+    public List<DiabetesDiary> getDiaryBetweenTime(LocalDateTime startDate, LocalDateTime endDate,EntityId<Writer,Long>writerEntityId){
         logger.info("getDiaryBetweenTime");
         checkArgument(startDate.isBefore(endDate),"startDate must be before than endDate");
         return diaryRepository.findDiaryBetweenTime(startDate,endDate,writerEntityId.getId());
     }
 
     @Transactional(readOnly = true)
-    public List<DiabetesDiary> getFpgHigherOrEqual(int fastingPlasmaGlucose,EntityId<Writer>writerEntityId){
+    public List<DiabetesDiary> getFpgHigherOrEqual(int fastingPlasmaGlucose,EntityId<Writer,Long>writerEntityId){
         logger.info("getFpgHigherOrEqual");
         checkArgument(fastingPlasmaGlucose>0,"fpg must be positive");
         return diaryRepository.findFpgHigherOrEqual(fastingPlasmaGlucose,writerEntityId.getId());
     }
 
     @Transactional(readOnly = true)
-    public List<DiabetesDiary> getFpgLowerOrEqual(int fastingPlasmaGlucose,EntityId<Writer>writerEntityId){
+    public List<DiabetesDiary> getFpgLowerOrEqual(int fastingPlasmaGlucose,EntityId<Writer,Long>writerEntityId){
         logger.info("getFpgLowerOrEqual");
         checkArgument(fastingPlasmaGlucose>0,"fpg must be positive");
         return diaryRepository.findFpgLowerOrEqual(fastingPlasmaGlucose,writerEntityId.getId());

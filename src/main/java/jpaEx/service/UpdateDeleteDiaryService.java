@@ -25,7 +25,7 @@ public class UpdateDeleteDiaryService {
     }
 
     @Transactional
-    public DiabetesDiary update(EntityId<Writer> writerEntityId, EntityId<DiabetesDiary> diaryEntityId, int fastingPlasmaGlucose, String remark) {
+    public DiabetesDiary update(EntityId<Writer,Long> writerEntityId, EntityId<DiabetesDiary,Long> diaryEntityId, int fastingPlasmaGlucose, String remark) {
         logger.info("update diary");
 
         checkNotNull(writerEntityId, "writerId must be provided");

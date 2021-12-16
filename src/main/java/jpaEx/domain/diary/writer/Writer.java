@@ -37,7 +37,7 @@ public class Writer extends BaseTimeEntity {
     public Writer() {
     }
 
-    public Writer(EntityId<Writer>writerEntityId, String name, String email, Role role) {
+    public Writer(EntityId<Writer,Long>writerEntityId, String name, String email, Role role) {
         this.writerId = writerEntityId.getId();
         this.name = name;
         this.email = email;
