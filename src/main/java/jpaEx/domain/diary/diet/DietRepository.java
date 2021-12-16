@@ -23,11 +23,11 @@ public interface DietRepository extends JpaRepository<Diet, Long> {
     Long findMaxOfId();
 
     //작성자의 혈당 일지 내 모든 식단 조회
-    @Query(value = "SELECT diet FROM Diet diet INNER JOIN diet.diary diary WHERE diary.writer.writerId = :writer_id AND diet.diary.diaryId = :diary_id")
+    @Query(value = "SELECT diet FROM Diet diet WHERE diary.writer.writerId = :writer_id AND diet.diary.diaryId = :diary_id")
     List<Diet> findDietsInDiary(@Param("writer_id")Long writerId,@Param("diary_id") Long diaryId);
 
     //작성자의 혈당 일지 내 특정 식단 조회
-    @Query(value="SELECT diet FROM Diet diet INNER JOIN diet.diary diary WHERE diary.writer.writerId = :writer_id AND diet.diary.diaryId = :diary_id AND  diet.dietId = :diet_id")
+    @Query(value="SELECT diet FROM Diet diet WHERE diary.writer.writerId = :writer_id AND diet.diary.diaryId = :diary_id AND  diet.dietId = :diet_id")
     Optional<Diet>findOneDietInDiary(@Param("writer_id")Long writerId,@Param("diary_id") Long diaryId,@Param("diet_id")Long DietId);
 
     //특정 기간 내 일정 혈당 수치 이상의 모든 식단 조회
