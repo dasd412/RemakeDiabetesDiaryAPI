@@ -5,6 +5,8 @@ import jpaEx.domain.diary.diabetesDiary.DiaryRepository;
 import jpaEx.domain.diary.diet.Diet;
 import jpaEx.domain.diary.diet.DietRepository;
 import jpaEx.domain.diary.diet.EatTime;
+import jpaEx.domain.diary.food.Food;
+import jpaEx.domain.diary.food.FoodRepository;
 import jpaEx.service.SaveDiaryService;
 import org.junit.After;
 import org.junit.Test;
@@ -40,6 +42,9 @@ public class ReadDiaryTest {
 
     @Autowired
     DietRepository dietRepository;
+
+    @Autowired
+    FoodRepository foodRepository;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -349,5 +354,86 @@ public class ReadDiaryTest {
         assertThat(dietList.contains(diet5)).isTrue();
         assertThat(dietList.contains(diet8)).isTrue();
     }
+
+    /*
+    음식 조회
+     */
+    @Transactional
+    @Test
+    public void findFoodsInDiet() {
+        //given
+        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
+        Diet diet = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 250);
+        Food food1 = saveDiaryService.saveFood(me, diet, "pizza");
+        Food food2 = saveDiaryService.saveFood(me, diet, "chicken");
+        Food food3 = saveDiaryService.saveFood(me, diet, "cola");
+
+        //when
+        List<Food> foodList = foodRepository.findFoodsInDiet(me.getId(), diary.getId(), diet.getDietId());
+
+        //then
+        logger.info(foodList.toString());
+        assertThat(foodList.size()).isEqualTo(3);
+        assertThat(foodList.contains(food1)).isTrue();
+        assertThat(foodList.contains(food2)).isTrue();
+        assertThat(foodList.contains(food3)).isTrue();
+    }
+
+    @Transactional
+    @Test
+    public void findOneFoodByIdInDiet() {
+        //given
+        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
+        Diet diet = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 250);
+        Food food1 = saveDiaryService.saveFood(me, diet, "pizza");
+        Food food2 = saveDiaryService.saveFood(me, diet, "chicken");
+        Food food3 = saveDiaryService.saveFood(me, diet, "cola");
+
+        //when
+        Food foundFood = foodRepository.findOneFoodByIdInDiet(me.getId(), diary.getId(), diet.getDietId(), food3.getId())
+                .orElseThrow(() -> new NoSuchElementException("음식 없음."));
+
+        //then
+        logger.info(foundFood.toString());
+        assertThat(foundFood).isEqualTo(food3);
+        assertThat(foundFood.getFoodName()).isEqualTo(food3.getFoodName());
+        assertThat(foundFood.getDiet()).isEqualTo(food3.getDiet());
+    }
+
+    @Transactional
+    @Test
+    public void findFoodNamesInDietHigherThanBloodSugar() {
+        //given
+        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
+        Diet diet1 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 250);
+        Food food1 = saveDiaryService.saveFood(me, diet1, "pizza");
+        Food food2 = saveDiaryService.saveFood(me, diet1, "chicken");
+        Food food3 = saveDiaryService.saveFood(me, diet1, "cola");
+
+        Diet diet2 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 200);
+        Food food4 = saveDiaryService.saveFood(me, diet2, "ham");
+        Food food5 = saveDiaryService.saveFood(me, diet2, "chicken");
+        Food food6 = saveDiaryService.saveFood(me, diet2, "cola");
+
+        Diet diet3 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 150);
+        Food food7 = saveDiaryService.saveFood(me, diet3, "ham");
+        Food food8 = saveDiaryService.saveFood(me, diet3, "egg");
+        Food food9 = saveDiaryService.saveFood(me, diet3, "water");
+
+        //when
+        List<String> foodNames = foodRepository.findFoodNamesInDietHigherThanBloodSugar(me.getId(), 200);
+
+        //then
+        logger.info(foodNames.toString());
+        assertThat(foodNames.size()).isEqualTo(4);
+        assertThat(foodNames.contains("pizza")).isTrue();
+        assertThat(foodNames.contains("chicken")).isTrue();
+        assertThat(foodNames.contains("cola")).isTrue();
+        assertThat(foodNames.contains("ham")).isTrue();
+    }
+
 
 }
