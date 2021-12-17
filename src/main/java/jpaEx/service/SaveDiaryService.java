@@ -104,7 +104,6 @@ public class SaveDiaryService {
         logger.info("saveDiet");
         Diet diet = new Diet(getNextIdOfDiet(), diary, eatTime, bloodSugar);
         diary.addDiet(diet);
-
         writerRepository.save(writer);
         return diet;
     }
