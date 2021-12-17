@@ -219,14 +219,19 @@ public class CreateDiaryTest {
         assertThat(found.getEmail()).isEqualTo(me.getEmail());
         assertThat(found.getRole()).isEqualTo(me.getRole());
         logger.info(found.toString());
+        logger.info(found.getDiaries().toString());
 
         //diary
+        assertThat(me.getDiaries().size()).isEqualTo(1);
+        assertThat(found.getDiaries().size()).isEqualTo(1);
         assertThat(found.getDiaries().get(0)).isEqualTo(diary);
         assertThat(found.getDiaries().get(0).getFastingPlasmaGlucose()).isEqualTo(diary.getFastingPlasmaGlucose());
         assertThat(found.getDiaries().get(0).getRemark()).isEqualTo(diary.getRemark());
         logger.info(found.getDiaries().get(0).toString());
 
         //diet
+        assertThat(me.getDiaries().get(0).getDietList().size()).isEqualTo(1);
+        assertThat(found.getDiaries().get(0).getDietList().size()).isEqualTo(1);
         assertThat(found.getDiaries().get(0).getDietList().get(0)).isEqualTo(diet);
         assertThat(found.getDiaries().get(0).getDietList().get(0).getEatTime()).isEqualTo(diet.getEatTime());
         assertThat(found.getDiaries().get(0).getDietList().get(0).getBloodSugar()).isEqualTo(diet.getBloodSugar());
