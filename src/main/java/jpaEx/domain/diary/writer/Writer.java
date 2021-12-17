@@ -1,6 +1,5 @@
 package jpaEx.domain.diary.writer;
 
-import jpaEx.domain.BaseTimeEntity;
 import jpaEx.domain.diary.EntityId;
 import jpaEx.domain.diary.diabetesDiary.DiabetesDiary;
 
@@ -16,7 +15,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 @Entity
 @Table(name = "Writer")
-public class Writer extends BaseTimeEntity {
+public class Writer{
     @Id
     @Column(name = "writer_id", columnDefinition = "bigint default 0 auto_increment")
     private Long writerId;

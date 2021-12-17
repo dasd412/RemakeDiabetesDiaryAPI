@@ -1,6 +1,5 @@
 package jpaEx.domain.diary.diabetesDiary;
 
-import jpaEx.domain.BaseTimeEntity;
 import jpaEx.domain.diary.EntityId;
 import jpaEx.domain.diary.diet.Diet;
 import jpaEx.domain.diary.writer.Writer;
@@ -18,7 +17,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 @Entity
 @Table(name = "DiabetesDiary")
 @IdClass(DiabetesDiaryId.class)
-public class DiabetesDiary extends BaseTimeEntity {
+public class DiabetesDiary{
     //식별 관계이므로 복합키 사용.
     @Id
     @Column(name = "diary_id", columnDefinition = "bigint default 0 auto_increment")

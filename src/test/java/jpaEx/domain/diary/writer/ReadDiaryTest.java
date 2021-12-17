@@ -258,8 +258,6 @@ public class ReadDiaryTest {
         assertThat(diet.getBloodSugar()).isEqualTo(diet3.getBloodSugar());
     }
 
-    //todo 여러개 엔티티 save 시 update 쿼리도 날려지는 성능상 이슈가 발생한다. 조치 취할 필요 있음.
-
     @Transactional
     @Test
     public void findHigherThanBloodSugarBetweenTime() {

@@ -1,6 +1,5 @@
 package jpaEx.domain.diary.diet;
 
-import jpaEx.domain.BaseTimeEntity;
 import jpaEx.domain.diary.EntityId;
 import jpaEx.domain.diary.diabetesDiary.DiabetesDiary;
 import jpaEx.domain.diary.food.Food;
@@ -17,7 +16,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 @Entity
 @Table(name = "Diet")
 @IdClass(DietId.class)
-public class Diet extends BaseTimeEntity {
+public class Diet {
 
     @Id
     @Column(name = "diet_id", columnDefinition = "bigint default 0 auto_increment")
