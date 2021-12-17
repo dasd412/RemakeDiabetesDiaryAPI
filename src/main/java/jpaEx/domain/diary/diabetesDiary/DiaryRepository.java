@@ -32,7 +32,7 @@ public interface DiaryRepository extends JpaRepository<DiabetesDiary, Long> {
 
     //작성자와 관련된 "특정 id"의 일지 조회
     @Query(value = "FROM DiabetesDiary diary WHERE diary.writer.writerId = :writer_id AND diary.diaryId = :diary_id")
-    Optional<DiabetesDiary> findDiabetesDiaryOfWriter(@Param("writer_id") Long writerId, @Param("diary_id") Long diaryId);
+    Optional<DiabetesDiary> findOneDiabetesDiaryByIdInWriter(@Param("writer_id") Long writerId, @Param("diary_id") Long diaryId);
 
     //시작일 ~ 종료일 사이의 혈당일지 모두 조회
     @Query(value = "SELECT diary FROM DiabetesDiary diary  WHERE diary.writer.writerId = :writer_id AND diary.writtenTime BETWEEN :startDate AND :endDate")

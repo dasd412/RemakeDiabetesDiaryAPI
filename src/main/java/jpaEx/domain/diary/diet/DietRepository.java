@@ -28,7 +28,7 @@ public interface DietRepository extends JpaRepository<Diet, Long> {
 
     //작성자의 혈당 일지 내 특정 식단 조회
     @Query(value = "SELECT diet FROM Diet diet WHERE diary.writer.writerId = :writer_id AND diet.diary.diaryId = :diary_id AND  diet.dietId = :diet_id")
-    Optional<Diet> findOneDietInDiary(@Param("writer_id") Long writerId, @Param("diary_id") Long diaryId, @Param("diet_id") Long DietId);
+    Optional<Diet> findOneDietByIdInDiary(@Param("writer_id") Long writerId, @Param("diary_id") Long diaryId, @Param("diet_id") Long DietId);
 
     //특정 기간 내의 혈당 일지 중에서 일정 혈당 수치 이상의 모든 식단 조회
     @Query(value = "SELECT diet FROM Diet diet WHERE diet.diary.writer.writerId = :writer_id AND diet.bloodSugar >= :blood_sugar AND diet.diary.writtenTime BETWEEN :startDate AND :endDate")
