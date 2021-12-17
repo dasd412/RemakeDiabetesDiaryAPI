@@ -377,8 +377,85 @@ public class UpdateDeleteDiaryTest {
 
     @Transactional
     @Test
-    public void deleteWriterCascadeFood(){
+    public void deleteWriterCascadeFood() {
+        //given
+        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
+        Diet diet = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 250);
+        Food food1 = saveDiaryService.saveFood(me, diet, "pizza");
+        Food food2 = saveDiaryService.saveFood(me, diet, "chicken");
+        Food food3 = saveDiaryService.saveFood(me, diet, "cola");
 
+        writerRepository.delete(me);
+
+        //when
+        List<Writer> writers = writerRepository.findAll();
+        List<DiabetesDiary> diaries = diaryRepository.findAll();
+        List<Diet> dietList = dietRepository.findAll();
+        List<Food> foodList = foodRepository.findAll();
+
+        //then
+        assertThat(writers.size()).isEqualTo(0);
+        assertThat(diaries.size()).isEqualTo(0);
+        assertThat(dietList.size()).isEqualTo(0);
+        assertThat(foodList.size()).isEqualTo(0);
+    }
+
+    @Transactional
+    @Test
+    public void deleteDiaryCascadeFood() {
+        //given
+        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
+        Diet diet = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 250);
+        Food food1 = saveDiaryService.saveFood(me, diet, "pizza");
+        Food food2 = saveDiaryService.saveFood(me, diet, "chicken");
+        Food food3 = saveDiaryService.saveFood(me, diet, "cola");
+
+        updateDeleteDiaryService.deleteDiary(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()));
+
+        //when
+        List<Writer> found = writerRepository.findAll();
+        List<DiabetesDiary> diaries = diaryRepository.findAll();
+        List<Diet> dietList = dietRepository.findAll();
+        List<Food> foodList = foodRepository.findAll();
+
+        //then
+        logger.info(found.toString());
+        logger.info(found.get(0).getDiaries().toString());
+        logger.info(dietList.toString());
+        logger.info(diaries.toString());
+        logger.info(foodList.toString());
+
+        assertThat(found.get(0).getDiaries().size()).isEqualTo(0);
+        assertThat(dietList.size()).isEqualTo(0);
+        assertThat(diaries.size()).isEqualTo(0);
+        assertThat(foodList.size()).isEqualTo(0);
+    }
+
+    @Transactional
+    @Test
+    public void deleteDietCascadeFood() {
+        //given
+        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
+        Diet diet = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 250);
+        Food food1 = saveDiaryService.saveFood(me, diet, "pizza");
+        Food food2 = saveDiaryService.saveFood(me, diet, "chicken");
+        Food food3 = saveDiaryService.saveFood(me, diet, "cola");
+
+        updateDeleteDiaryService.deleteDiet(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()));
+
+        //when
+        List<Diet> dietList = dietRepository.findAll();
+        List<Food> foodList = foodRepository.findAll();
+
+        //then
+        logger.info(dietList.toString());
+        logger.info(foodList.toString());
+
+        assertThat(dietList.size()).isEqualTo(0);
+        assertThat(foodList.size()).isEqualTo(0);
     }
 
 }
