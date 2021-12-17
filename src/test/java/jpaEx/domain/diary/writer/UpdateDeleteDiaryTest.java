@@ -6,6 +6,8 @@ import jpaEx.domain.diary.diabetesDiary.DiaryRepository;
 import jpaEx.domain.diary.diet.Diet;
 import jpaEx.domain.diary.diet.DietRepository;
 import jpaEx.domain.diary.diet.EatTime;
+import jpaEx.domain.diary.food.Food;
+import jpaEx.domain.diary.food.FoodRepository;
 import jpaEx.service.SaveDiaryService;
 import jpaEx.service.UpdateDeleteDiaryService;
 import org.junit.After;
@@ -44,6 +46,9 @@ public class UpdateDeleteDiaryTest {
 
     @Autowired
     DietRepository dietRepository;
+
+    @Autowired
+    FoodRepository foodRepository;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -276,7 +281,7 @@ public class UpdateDeleteDiaryTest {
         updateDeleteDiaryService.deleteDiary(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()));
 
         //when
-        List<Writer>found=writerRepository.findAll();
+        List<Writer> found = writerRepository.findAll();
         List<DiabetesDiary> diaries = diaryRepository.findAll();
         List<Diet> dietList = dietRepository.findAll();
 
@@ -288,7 +293,31 @@ public class UpdateDeleteDiaryTest {
         assertThat(found.get(0).getDiaries().size()).isEqualTo(0);
         assertThat(dietList.size()).isEqualTo(0);
         assertThat(diaries.size()).isEqualTo(0);
+    }
 
+    @Transactional
+    @Test
+    public void updateFood() {
+        //given
+        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
+        Diet diet1 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 250);
+        Food food1 = saveDiaryService.saveFood(me, diet1, "pizza");
+        updateDeleteDiaryService.updateFood(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet1.getDietId()), EntityId.of(Food.class, food1.getId()), "chicken");
 
+        //when
+        Diet diet = dietRepository.findOneDietByIdInDiary(me.getId(), diary.getId(), diet1.getDietId())
+                .orElseThrow(() -> new NoSuchElementException("식단 없음"));
+
+        Food food = foodRepository.findOneFoodByIdInDiet(me.getId(), diary.getId(), diet.getDietId(), food1.getId())
+                .orElseThrow(() -> new NoSuchElementException("음식 없음"));
+
+        //then
+        logger.info(diet.getFoodList().toString());
+        assertThat(diet.getFoodList().contains(food)).isTrue();
+        assertThat(diet.getFoodList().get(0).getFoodName()).isEqualTo(food.getFoodName());
+
+        logger.info(food.toString());
+        assertThat(food.getFoodName()).isEqualTo("chicken");
     }
 }

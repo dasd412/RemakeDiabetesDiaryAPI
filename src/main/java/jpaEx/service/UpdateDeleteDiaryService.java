@@ -6,6 +6,8 @@ import jpaEx.domain.diary.diabetesDiary.DiaryRepository;
 import jpaEx.domain.diary.diet.Diet;
 import jpaEx.domain.diary.diet.DietRepository;
 import jpaEx.domain.diary.diet.EatTime;
+import jpaEx.domain.diary.food.Food;
+import jpaEx.domain.diary.food.FoodRepository;
 import jpaEx.domain.diary.writer.Writer;
 import jpaEx.domain.diary.writer.WriterRepository;
 import org.slf4j.Logger;
@@ -22,11 +24,13 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class UpdateDeleteDiaryService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final FoodRepository foodRepository;
     private final DietRepository dietRepository;
     private final DiaryRepository diaryRepository;
     private final WriterRepository writerRepository;
 
-    public UpdateDeleteDiaryService(DietRepository dietRepository, DiaryRepository diaryRepository, WriterRepository writerRepository) {
+    public UpdateDeleteDiaryService(FoodRepository foodRepository, DietRepository dietRepository, DiaryRepository diaryRepository, WriterRepository writerRepository) {
+        this.foodRepository = foodRepository;
         this.dietRepository = dietRepository;
         this.diaryRepository = diaryRepository;
         this.writerRepository = writerRepository;
@@ -101,5 +105,28 @@ public class UpdateDeleteDiaryService {
         targetDiet.getFoodList().clear();
         diary.removeDiet(targetDiet);
     }
+
+    @Transactional
+    public Food updateFood(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diaryEntityId, EntityId<Diet, Long> dietEntityId, EntityId<Food, Long> foodEntityId, String foodName) {
+        logger.info("update food");
+        checkNotNull(writerEntityId, "writerId must be provided");
+        checkNotNull(diaryEntityId, "diaryId must be provided");
+        checkNotNull(dietEntityId, "dietId must be provided");
+        checkNotNull(foodEntityId, "foodId must be provided");
+        checkArgument(foodName.length() > 0 && foodName.length() <= 50, "foodName length should be between 1 and 50");
+
+        Food targetFood = foodRepository.findOneFoodByIdInDiet(writerEntityId.getId(), diaryEntityId.getId(), dietEntityId.getId(), foodEntityId.getId())
+                .orElseThrow(() -> new NoSuchElementException("해당 음식이 존재하지 않습니다."));
+
+        targetFood.update(foodName);
+
+        return targetFood;
+    }
+
+    @Transactional
+    public void deleteFood() {
+
+    }
+
 
 }
