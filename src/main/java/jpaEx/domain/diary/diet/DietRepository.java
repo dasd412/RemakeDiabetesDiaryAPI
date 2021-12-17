@@ -24,18 +24,26 @@ public interface DietRepository extends JpaRepository<Diet, Long> {
 
     //작성자의 혈당 일지 내 모든 식단 조회
     @Query(value = "SELECT diet FROM Diet diet WHERE diary.writer.writerId = :writer_id AND diet.diary.diaryId = :diary_id")
-    List<Diet> findDietsInDiary(@Param("writer_id")Long writerId,@Param("diary_id") Long diaryId);
+    List<Diet> findDietsInDiary(@Param("writer_id") Long writerId, @Param("diary_id") Long diaryId);
 
     //작성자의 혈당 일지 내 특정 식단 조회
-    @Query(value="SELECT diet FROM Diet diet WHERE diary.writer.writerId = :writer_id AND diet.diary.diaryId = :diary_id AND  diet.dietId = :diet_id")
-    Optional<Diet>findOneDietInDiary(@Param("writer_id")Long writerId,@Param("diary_id") Long diaryId,@Param("diet_id")Long DietId);
+    @Query(value = "SELECT diet FROM Diet diet WHERE diary.writer.writerId = :writer_id AND diet.diary.diaryId = :diary_id AND  diet.dietId = :diet_id")
+    Optional<Diet> findOneDietInDiary(@Param("writer_id") Long writerId, @Param("diary_id") Long diaryId, @Param("diet_id") Long DietId);
 
-    //특정 기간 내 일정 혈당 수치 이상의 모든 식단 조회
-//    @Query(value="")
-//    List<Diet>findHigherThanBloodSugarBetweenTime(@Param("writer_id")Long writerId, @Param("blood_sugar")int bloodSugar, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+    //특정 기간 내의 혈당 일지 중에서 일정 혈당 수치 이상의 모든 식단 조회
+    @Query(value = "SELECT diet FROM Diet diet WHERE diet.diary.writer.writerId = :writer_id AND diet.bloodSugar >= :blood_sugar AND diet.diary.writtenTime BETWEEN :startDate AND :endDate")
+    List<Diet> findHigherThanBloodSugarBetweenTime(@Param("writer_id") Long writerId, @Param("blood_sugar") int bloodSugar, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
+    //특정 기간 내의 혈당 일지 중에서 일정 혈당 수치 이하의 모든 식단 조회
+    @Query(value = "SELECT diet FROM Diet diet WHERE diet.diary.writer.writerId = :writer_id AND diet.bloodSugar <= :blood_sugar AND diet.diary.writtenTime BETWEEN :startDate AND :endDate")
+    List<Diet> findLowerThanBloodSugarBetweenTime(@Param("writer_id") Long writerId, @Param("blood_sugar") int bloodSugar, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
     //식사 시간이 oo 이고 혈당 수치 일정 이상인 것들 조회
+    @Query(value = "SELECT diet FROM Diet diet WHERE diet.diary.writer.writerId = :writer_id AND diet.bloodSugar >= :blood_sugar AND diet.eatTime =:eat_time")
+    List<Diet> findHigherThanBloodSugarInEatTime(@Param("writer_id") Long writerId, @Param("blood_sugar") int bloodSugar, @Param("eat_time") EatTime eatTime);
 
-
+    //식사 시간이 oo 이고 혈당 수치 일정 이하인 것들 조회
+    @Query(value = "SELECT diet FROM Diet diet WHERE diet.diary.writer.writerId = :writer_id AND diet.bloodSugar <= :blood_sugar AND diet.eatTime =:eat_time")
+    List<Diet> findLowerThanBloodSugarInEatTime(@Param("writer_id") Long writerId, @Param("blood_sugar") int bloodSugar, @Param("eat_time") EatTime eatTime);
 
 }

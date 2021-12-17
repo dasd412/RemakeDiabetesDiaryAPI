@@ -159,7 +159,7 @@ public class ReadDiaryTest {
         DiabetesDiary diary3 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
 
         //when
-        List<DiabetesDiary> diaries = diaryRepository.findDiaryBetweenTime(me.getId(),LocalDateTime.of(2021, 12, 15, 0, 0, 0), LocalDateTime.of(2021, 12, 31, 0, 0, 0));
+        List<DiabetesDiary> diaries = diaryRepository.findDiaryBetweenTime(me.getId(), LocalDateTime.of(2021, 12, 15, 0, 0, 0), LocalDateTime.of(2021, 12, 31, 0, 0, 0));
 
         //then
         assertThat(diaries.get(0)).isEqualTo(diary3);
@@ -179,7 +179,7 @@ public class ReadDiaryTest {
         saveDiaryService.saveDiary(me, 40, "test3", LocalDateTime.now());
 
         //when
-        List<DiabetesDiary> diaries = diaryRepository.findFpgHigherOrEqual(me.getId(),15);
+        List<DiabetesDiary> diaries = diaryRepository.findFpgHigherOrEqual(me.getId(), 15);
 
         //then
         logger.info(diaries.toString());
@@ -196,7 +196,7 @@ public class ReadDiaryTest {
         saveDiaryService.saveDiary(me, 40, "test3", LocalDateTime.now());
 
         //when
-        List<DiabetesDiary> diaries = diaryRepository.findFpgLowerOrEqual( me.getId(),15);
+        List<DiabetesDiary> diaries = diaryRepository.findFpgLowerOrEqual(me.getId(), 15);
 
         //then
         logger.info(diaries.toString());
@@ -235,7 +235,7 @@ public class ReadDiaryTest {
 
     @Transactional
     @Test
-    public void findDietOfDiary(){
+    public void findDietOfDiary() {
         //given
         Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
         DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
@@ -244,8 +244,8 @@ public class ReadDiaryTest {
         Diet diet3 = saveDiaryService.saveDiet(me, diary, EatTime.Dinner, 150);
 
         //when
-        Diet diet=dietRepository.findOneDietInDiary(me.getId(),diary.getId(),diet3.getDietId())
-                .orElseThrow(()->new NoSuchElementException("해당 식단이 존재하지 않습니다."));
+        Diet diet = dietRepository.findOneDietInDiary(me.getId(), diary.getId(), diet3.getDietId())
+                .orElseThrow(() -> new NoSuchElementException("해당 식단이 존재하지 않습니다."));
 
         //then
         logger.info(diet.toString());
@@ -253,5 +253,101 @@ public class ReadDiaryTest {
         assertThat(diet.getBloodSugar()).isEqualTo(diet3.getBloodSugar());
     }
 
+    //todo 여러개 엔티티 save 시 update 쿼리도 날려지는 성능상 이슈가 발생한다. 조치 취할 필요 있음.
+
+    @Transactional
+    @Test
+    public void findHigherThanBloodSugarBetweenTime() {
+        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
+        DiabetesDiary diary1 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
+        DiabetesDiary diary2 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
+        DiabetesDiary diary3 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
+
+        Diet diet1 = saveDiaryService.saveDiet(me, diary1, EatTime.BreakFast, 100);
+        Diet diet2 = saveDiaryService.saveDiet(me, diary1, EatTime.Lunch, 100);
+        Diet diet3 = saveDiaryService.saveDiet(me, diary1, EatTime.Dinner, 100);
+
+        Diet diet4 = saveDiaryService.saveDiet(me, diary2, EatTime.BreakFast, 120);
+        Diet diet5 = saveDiaryService.saveDiet(me, diary2, EatTime.Lunch, 200);
+        Diet diet6 = saveDiaryService.saveDiet(me, diary2, EatTime.Dinner, 170);
+
+        Diet diet7 = saveDiaryService.saveDiet(me, diary3, EatTime.BreakFast, 150);
+        Diet diet8 = saveDiaryService.saveDiet(me, diary3, EatTime.Lunch, 120);
+        Diet diet9 = saveDiaryService.saveDiet(me, diary3, EatTime.Dinner, 140);
+
+        //when
+        List<Diet> dietList = dietRepository.findHigherThanBloodSugarBetweenTime(me.getId(), 150, LocalDateTime.of(2021, 12, 5, 0, 0, 0), LocalDateTime.of(2021, 12, 27, 0, 0, 0));
+
+        //then
+        logger.info(dietList.toString());
+        assertThat(dietList.size()).isEqualTo(3);
+        assertThat(dietList.contains(diet5)).isTrue();
+        assertThat(dietList.contains(diet6)).isTrue();
+        assertThat(dietList.contains(diet7)).isTrue();
+    }
+
+    @Transactional
+    @Test
+    public void findLowerThanBloodSugarBetweenTime() {
+        //given
+        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
+        DiabetesDiary diary1 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
+        DiabetesDiary diary2 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
+        DiabetesDiary diary3 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
+
+        Diet diet1 = saveDiaryService.saveDiet(me, diary1, EatTime.BreakFast, 100);
+        Diet diet2 = saveDiaryService.saveDiet(me, diary1, EatTime.Lunch, 100);
+        Diet diet3 = saveDiaryService.saveDiet(me, diary1, EatTime.Dinner, 100);
+
+        Diet diet4 = saveDiaryService.saveDiet(me, diary2, EatTime.BreakFast, 120);
+        Diet diet5 = saveDiaryService.saveDiet(me, diary2, EatTime.Lunch, 200);
+        Diet diet6 = saveDiaryService.saveDiet(me, diary2, EatTime.Dinner, 170);
+
+        Diet diet7 = saveDiaryService.saveDiet(me, diary3, EatTime.BreakFast, 150);
+        Diet diet8 = saveDiaryService.saveDiet(me, diary3, EatTime.Lunch, 120);
+        Diet diet9 = saveDiaryService.saveDiet(me, diary3, EatTime.Dinner, 140);
+
+        //when
+        List<Diet> dietList = dietRepository.findLowerThanBloodSugarBetweenTime(me.getId(), 150, LocalDateTime.of(2021, 12, 5, 0, 0, 0), LocalDateTime.of(2021, 12, 27, 0, 0, 0));
+
+        //then
+        logger.info(dietList.toString());
+        assertThat(dietList.size()).isEqualTo(4);
+        assertThat(dietList.contains(diet4)).isTrue();
+        assertThat(dietList.contains(diet7)).isTrue();
+        assertThat(dietList.contains(diet8)).isTrue();
+        assertThat(dietList.contains(diet9)).isTrue();
+    }
+
+    @Transactional
+    @Test
+    public void findHigherThanBloodSugarInEatTime() {
+        //given
+        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
+        DiabetesDiary diary1 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
+        DiabetesDiary diary2 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
+        DiabetesDiary diary3 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
+
+        Diet diet1 = saveDiaryService.saveDiet(me, diary1, EatTime.BreakFast, 100);
+        Diet diet2 = saveDiaryService.saveDiet(me, diary1, EatTime.Lunch, 100);
+        Diet diet3 = saveDiaryService.saveDiet(me, diary1, EatTime.Dinner, 100);
+
+        Diet diet4 = saveDiaryService.saveDiet(me, diary2, EatTime.BreakFast, 120);
+        Diet diet5 = saveDiaryService.saveDiet(me, diary2, EatTime.Lunch, 200);
+        Diet diet6 = saveDiaryService.saveDiet(me, diary2, EatTime.Dinner, 170);
+
+        Diet diet7 = saveDiaryService.saveDiet(me, diary3, EatTime.BreakFast, 150);
+        Diet diet8 = saveDiaryService.saveDiet(me, diary3, EatTime.Lunch, 120);
+        Diet diet9 = saveDiaryService.saveDiet(me, diary3, EatTime.Dinner, 140);
+
+        //when
+        List<Diet> dietList = dietRepository.findHigherThanBloodSugarInEatTime(me.getId(), 120, EatTime.Lunch);
+
+        //then
+        logger.info(dietList.toString());
+        assertThat(dietList.size()).isEqualTo(2);
+        assertThat(dietList.contains(diet5)).isTrue();
+        assertThat(dietList.contains(diet8)).isTrue();
+    }
 
 }
