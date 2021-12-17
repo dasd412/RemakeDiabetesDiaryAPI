@@ -53,7 +53,7 @@ public class FindDiaryService {
     @Transactional(readOnly = true)
     public Optional<DiabetesDiary> getDiabetesDiaryOfWriter(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diabetesDiaryEntityId) {
         logger.info("getDiabetesDiaryOfWriter");
-        return diaryRepository.findDiabetesDiaryOfWriter(writerEntityId.getId(), diabetesDiaryEntityId.getId());
+        return diaryRepository.findOneDiabetesDiaryByIdInWriter(writerEntityId.getId(), diabetesDiaryEntityId.getId());
     }
 
     @Transactional(readOnly = true)
@@ -89,7 +89,7 @@ public class FindDiaryService {
     @Transactional(readOnly = true)
     public Optional<Diet> getOneDietOfDiary(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diabetesDiaryEntityId, EntityId<Diet, Long> dietEntityId) {
         logger.info("get only one diet in diary");
-        return dietRepository.findOneDietInDiary(writerEntityId.getId(), diabetesDiaryEntityId.getId(), dietEntityId.getId());
+        return dietRepository.findOneDietByIdInDiary(writerEntityId.getId(), diabetesDiaryEntityId.getId(), dietEntityId.getId());
     }
 
     @Transactional(readOnly = true)

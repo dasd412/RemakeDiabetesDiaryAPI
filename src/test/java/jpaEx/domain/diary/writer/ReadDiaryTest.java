@@ -140,7 +140,7 @@ public class ReadDiaryTest {
         DiabetesDiary diary3 = saveDiaryService.saveDiary(me, 40, "test3", LocalDateTime.now());
 
         //when
-        DiabetesDiary diary = diaryRepository.findDiabetesDiaryOfWriter(me.getId(), diary2.getId()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 일지입니다."));
+        DiabetesDiary diary = diaryRepository.findOneDiabetesDiaryByIdInWriter(me.getId(), diary2.getId()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 일지입니다."));
 
         //then
         assertThat(diary).isEqualTo(diary2);
@@ -244,7 +244,7 @@ public class ReadDiaryTest {
         Diet diet3 = saveDiaryService.saveDiet(me, diary, EatTime.Dinner, 150);
 
         //when
-        Diet diet = dietRepository.findOneDietInDiary(me.getId(), diary.getId(), diet3.getDietId())
+        Diet diet = dietRepository.findOneDietByIdInDiary(me.getId(), diary.getId(), diet3.getDietId())
                 .orElseThrow(() -> new NoSuchElementException("해당 식단이 존재하지 않습니다."));
 
         //then
