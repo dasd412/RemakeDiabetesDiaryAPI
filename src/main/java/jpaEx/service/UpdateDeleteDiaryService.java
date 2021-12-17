@@ -124,9 +124,20 @@ public class UpdateDeleteDiaryService {
     }
 
     @Transactional
-    public void deleteFood() {
+    public void deleteFood(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diaryEntityId, EntityId<Diet, Long> dietEntityId, EntityId<Food, Long> foodEntityId) {
+        logger.info("delete food");
+        checkNotNull(writerEntityId, "writerId must be provided");
+        checkNotNull(diaryEntityId, "diaryId must be provided");
+        checkNotNull(dietEntityId, "dietId must be provided");
+        checkNotNull(foodEntityId, "foodId must be provided");
 
+        Diet diet = dietRepository.findOneDietByIdInDiary(writerEntityId.getId(), diaryEntityId.getId(), dietEntityId.getId())
+                .orElseThrow(() -> new NoSuchElementException("해당 식단이 존재하지 않습니다."));
+
+        Food targetFood = foodRepository.findOneFoodByIdInDiet(writerEntityId.getId(), diaryEntityId.getId(), dietEntityId.getId(), foodEntityId.getId())
+                .orElseThrow(() -> new NoSuchElementException("해당 음식이 존재하지 않습니다."));
+
+        //orphanRemoval = true 로 해놓았기 때문에 부모의 컬렉션에서 자식이 null 되면 알아서 delete 쿼리가 나간다.
+        diet.removeFood(targetFood);
     }
-
-
 }

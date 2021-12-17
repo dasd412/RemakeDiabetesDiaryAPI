@@ -320,4 +320,65 @@ public class UpdateDeleteDiaryTest {
         logger.info(food.toString());
         assertThat(food.getFoodName()).isEqualTo("chicken");
     }
+
+    @Transactional
+    @Test
+    public void deleteFood() {
+        //given
+        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
+        Diet diet1 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 250);
+        Food food1 = saveDiaryService.saveFood(me, diet1, "pizza");
+
+        updateDeleteDiaryService.deleteFood(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet1.getDietId()), EntityId.of(Food.class, food1.getId()));
+
+        //when
+        Diet diet = dietRepository.findOneDietByIdInDiary(me.getId(), diary.getId(), diet1.getDietId())
+                .orElseThrow(() -> new NoSuchElementException("해당 식단이 존재하지 않습니다."));
+        List<Food> foodList = foodRepository.findAll();
+
+        //then
+        logger.info(diet.getFoodList().toString());
+        assertThat(diet.getFoodList().size()).isEqualTo(0);
+        assertThat(foodList.size()).isEqualTo(0);
+    }
+
+    @Transactional
+    @Test
+    public void deleteSomeFood() {
+        //given
+        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
+        Diet diet = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 250);
+        Food food1 = saveDiaryService.saveFood(me, diet, "pizza");
+        Food food2 = saveDiaryService.saveFood(me, diet, "chicken");
+        Food food3 = saveDiaryService.saveFood(me, diet, "cola");
+        Food food4 = saveDiaryService.saveFood(me, diet, "beer");
+
+        updateDeleteDiaryService.deleteFood(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), EntityId.of(Food.class, food2.getId()));
+        updateDeleteDiaryService.deleteFood(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), EntityId.of(Food.class, food4.getId()));
+
+        //when
+        Diet foundDiet = dietRepository.findOneDietByIdInDiary(me.getId(), diary.getId(), diet.getDietId())
+                .orElseThrow(() -> new NoSuchElementException("해당 식단이 존재하지 않습니다."));
+        List<Food> foodList = foodRepository.findAll();
+
+        //then
+        logger.info(foundDiet.getFoodList().toString());
+        assertThat(foundDiet.getFoodList().size()).isEqualTo(2);
+        assertThat(foundDiet.getFoodList().contains(food1)).isTrue();
+        assertThat(foundDiet.getFoodList().contains(food3)).isTrue();
+
+        logger.info(foodList.toString());
+        assertThat(foodList.size()).isEqualTo(2);
+        assertThat(foodList.contains(food2)).isFalse();
+        assertThat(foodList.contains(food4)).isFalse();
+    }
+
+    @Transactional
+    @Test
+    public void deleteWriterCascadeFood(){
+
+    }
+
 }
