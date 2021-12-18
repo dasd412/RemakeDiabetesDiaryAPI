@@ -433,5 +433,25 @@ public class ReadDiaryTest {
         assertThat(foodNames.contains("ham")).isTrue();
     }
 
+    @Transactional
+    @Test
+    public void testNPlusOne() {
+        //given
+        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
+        saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 200);
+        saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 210);
+        saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 220);
+        saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 230);
+        saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 240);
 
+        //when
+        logger.info("find all test");
+        List<DiabetesDiary> diaries = diaryRepository.findAll();
+        for (DiabetesDiary d : diaries) {
+            logger.info(d.getDietList().toString());
+        }
+
+        //todo n+1문제는 안 일어나는 것 처럼 보인다. 하지만 왜 그럴까..?
+    }
 }
