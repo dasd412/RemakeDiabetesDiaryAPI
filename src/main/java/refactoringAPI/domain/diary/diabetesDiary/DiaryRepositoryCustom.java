@@ -1,6 +1,5 @@
 package refactoringAPI.domain.diary.diabetesDiary;
 
-import org.springframework.data.repository.query.Param;
 import refactoringAPI.domain.diary.writer.Writer;
 
 import java.time.LocalDateTime;
@@ -13,15 +12,15 @@ public interface DiaryRepositoryCustom {
 
     Long findMaxOfId();
 
-    Optional<Writer> findWriterOfDiary(@Param("diary_id") Long diaryId);
+    Optional<Writer> findWriterOfDiary(Long diaryId);
 
-    List<DiabetesDiary> findDiabetesDiariesOfWriter(@Param("writer_id") Long writerId);
+    List<DiabetesDiary> findDiabetesDiariesOfWriter(Long writerId);
 
-    Optional<DiabetesDiary> findOneDiabetesDiaryByIdInWriter(@Param("writer_id") Long writerId, @Param("diary_id") Long diaryId);
+    Optional<DiabetesDiary> findOneDiabetesDiaryByIdInWriter(Long writerId, Long diaryId);
 
-    List<DiabetesDiary> findDiaryBetweenTime(@Param("writer_id") Long writerId, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+    List<DiabetesDiary> findDiaryBetweenTime(Long writerId, LocalDateTime startDate, LocalDateTime endDate);
 
-    List<DiabetesDiary> findFpgHigherOrEqual(@Param("writer_id") Long writerId, @Param("bloodSugar") int fastingPlasmaGlucose);
+    List<DiabetesDiary> findFpgHigherOrEqual(Long writerId, int fastingPlasmaGlucose);
 
-    List<DiabetesDiary> findFpgLowerOrEqual(@Param("writer_id") Long writerId, @Param("bloodSugar") int fastingPlasmaGlucose);
+    List<DiabetesDiary> findFpgLowerOrEqual(Long writerId, int fastingPlasmaGlucose);
 }

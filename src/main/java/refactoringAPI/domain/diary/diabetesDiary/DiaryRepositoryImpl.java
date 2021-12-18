@@ -53,7 +53,7 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
     }
 
     @Override
-    public Optional<DiabetesDiary> findOneDiabetesDiaryByIdInWriter(Long writerId, Long diaryId) {
+    public Optional<DiabetesDiary> findOneDiabetesDiaryByIdInWriter(Long writerId,Long diaryId) {
         //@Query(value = "FROM DiabetesDiary diary WHERE diary.writer.writerId = :writer_id AND diary.diaryId = :diary_id")
         return Optional.ofNullable(jpaQueryFactory.selectFrom(QDiabetesDiary.diabetesDiary).where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId).and(QDiabetesDiary.diabetesDiary.diaryId.eq(diaryId))).fetchOne());
     }
