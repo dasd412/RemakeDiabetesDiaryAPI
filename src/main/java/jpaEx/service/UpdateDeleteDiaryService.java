@@ -42,7 +42,6 @@ public class UpdateDeleteDiaryService {
 
         checkNotNull(writerEntityId, "writerId must be provided");
         checkNotNull(diaryEntityId, "diaryId must be provided");
-        checkArgument(fastingPlasmaGlucose > 0, "fpg must be higher than zero");
 
         DiabetesDiary targetDiary = diaryRepository.findOneDiabetesDiaryByIdInWriter(writerEntityId.getId(), diaryEntityId.getId())
                 .orElseThrow(() -> new NoSuchElementException("해당 혈당일지가 존재하지 않습니다."));
@@ -77,7 +76,6 @@ public class UpdateDeleteDiaryService {
         checkNotNull(writerEntityId, "writerId must be provided");
         checkNotNull(diaryEntityId, "diaryId must be provided");
         checkNotNull(dietEntityId, "dietId must be provided");
-        checkArgument(bloodSugar > 0, "blood sugar must be higher than zero");
 
         Diet targetDiet = dietRepository.findOneDietByIdInDiary(writerEntityId.getId(), diaryEntityId.getId(), dietEntityId.getId())
                 .orElseThrow(() -> new NoSuchElementException("해당 식단이 존재하지 않습니다."));
@@ -113,7 +111,6 @@ public class UpdateDeleteDiaryService {
         checkNotNull(diaryEntityId, "diaryId must be provided");
         checkNotNull(dietEntityId, "dietId must be provided");
         checkNotNull(foodEntityId, "foodId must be provided");
-        checkArgument(foodName.length() > 0 && foodName.length() <= 50, "foodName length should be between 1 and 50");
 
         Food targetFood = foodRepository.findOneFoodByIdInDiet(writerEntityId.getId(), diaryEntityId.getId(), dietEntityId.getId(), foodEntityId.getId())
                 .orElseThrow(() -> new NoSuchElementException("해당 음식이 존재하지 않습니다."));

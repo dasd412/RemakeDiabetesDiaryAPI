@@ -11,7 +11,9 @@ import jpaEx.domain.diary.food.FoodRepository;
 import jpaEx.service.SaveDiaryService;
 import jpaEx.service.UpdateDeleteDiaryService;
 import org.junit.After;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
 import org.slf4j.Logger;
@@ -49,6 +51,10 @@ public class UpdateDeleteDiaryTest {
 
     @Autowired
     FoodRepository foodRepository;
+
+    //예외 캐치용 객체
+    @Rule
+    public ExpectedException thrown= ExpectedException.none();
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -458,4 +464,43 @@ public class UpdateDeleteDiaryTest {
         assertThat(foodList.size()).isEqualTo(0);
     }
 
-}
+    /*
+    예외 캐치 테스트
+     */
+    @Transactional
+    @Test
+    public void updateDiaryBloodSugarInappropriate () {
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("fastingPlasmaGlucose must be positive number");
+
+        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
+        DiabetesDiary diary = saveDiaryService.saveDiary(me, 200, "test", LocalDateTime.now());
+        updateDeleteDiaryService.updateDiary(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), -190, "modifyTest");
+    }
+
+    @Transactional
+    @Test
+    public void updateDietBloodSugarInappropriate() {
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("bloodSugar must be positive number");
+
+        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
+        DiabetesDiary diary1 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
+        Diet diet1 = saveDiaryService.saveDiet(me, diary1, EatTime.BreakFast, 100);
+        updateDeleteDiaryService.updateDiet(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EntityId.of(Diet.class, diet1.getDietId()), EatTime.Lunch, -1900);
+    }
+
+    @Transactional
+    @Test
+    public void updateFoodNoName() {
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("food name length should be between 1 and 50");
+
+        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
+        Diet diet1 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 250);
+        Food food1 = saveDiaryService.saveFood(me, diet1, "pizza");
+        updateDeleteDiaryService.updateFood(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet1.getDietId()), EntityId.of(Food.class, food1.getId()), "");
+    }
+
+    }
