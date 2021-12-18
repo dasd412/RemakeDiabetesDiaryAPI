@@ -8,6 +8,7 @@ import jpaEx.domain.diary.diet.EatTime;
 import jpaEx.domain.diary.food.Food;
 import jpaEx.domain.diary.food.FoodRepository;
 import jpaEx.service.SaveDiaryService;
+import org.assertj.core.data.Offset;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -454,4 +455,25 @@ public class ReadDiaryTest {
 
         //todo n+1문제는 안 일어나는 것 처럼 보인다. 하지만 왜 그럴까..?
     }
+
+    @Transactional
+    @Test
+    public void findAverageBloodSugarDiet() {
+        //given
+        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
+        saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 200);
+        saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 210);
+        saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 220);
+        saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 230);
+        saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 240);
+
+        //when
+        double averageBloodSugar = dietRepository.findAverageBloodSugarOfDiet(me.getId());
+
+        //then
+        logger.info(String.valueOf(averageBloodSugar));
+        assertThat(averageBloodSugar).isCloseTo(220.0, Offset.offset(0.005)); //부동 소수점은 isCloseTo()를 활용하여 판단해야 합니다.
+    }
+
 }

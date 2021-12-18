@@ -46,4 +46,7 @@ public interface DietRepository extends JpaRepository<Diet, Long> {
     @Query(value = "SELECT diet FROM Diet diet WHERE diet.diary.writer.writerId = :writer_id AND diet.bloodSugar <= :blood_sugar AND diet.eatTime =:eat_time")
     List<Diet> findLowerThanBloodSugarInEatTime(@Param("writer_id") Long writerId, @Param("blood_sugar") int bloodSugar, @Param("eat_time") EatTime eatTime);
 
+    @Query(value="SELECT AVG(diet.bloodSugar) FROM Diet diet WHERE diet.diary.writer.writerId = :writer_id")
+    double findAverageBloodSugarOfDiet(@Param("writer_id")Long writerId);
+
 }

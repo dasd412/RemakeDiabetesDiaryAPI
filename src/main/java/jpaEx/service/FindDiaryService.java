@@ -143,6 +143,13 @@ public class FindDiaryService {
         return dietRepository.findLowerThanBloodSugarInEatTime(writerEntityId.getId(), bloodSugar, eatTime);
     }
 
+    @Transactional(readOnly = true)
+    public double getAverageBloodSugarOfDiet(EntityId<Writer, Long> writerEntityId) {
+        logger.info("getAverageBloodSugarOfDiet");
+        checkNotNull(writerEntityId, "writerId must be provided");
+        return dietRepository.findAverageBloodSugarOfDiet(writerEntityId.getId());
+    }
+
     /*
     음식 조회 메서드들
      */
