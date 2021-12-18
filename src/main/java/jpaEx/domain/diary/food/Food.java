@@ -49,7 +49,7 @@ public class Food{
         return foodName;
     }
 
-    public void modifyFoodName(String foodName) {
+    private void modifyFoodName(String foodName) {
         checkArgument(foodName.length() > 0 && foodName.length() <= 50, "food name length should be between 1 and 50");
         this.foodName = foodName;
     }

@@ -62,7 +62,7 @@ public class DiabetesDiary{
         return fastingPlasmaGlucose;
     }
 
-    public void modifyFastingPlasmaGlucose(int fastingPlasmaGlucose) {
+    private void modifyFastingPlasmaGlucose(int fastingPlasmaGlucose) {
         checkArgument(fastingPlasmaGlucose > 0, "fastingPlasmaGlucose must be positive number");
         this.fastingPlasmaGlucose = fastingPlasmaGlucose;
     }
@@ -71,7 +71,7 @@ public class DiabetesDiary{
         return remark;
     }
 
-    public void modifyRemark(String remark) {
+    private void modifyRemark(String remark) {
         checkArgument(remark.length() <= 500, "remark length should be lower than 501");
         this.remark = remark;
     }

@@ -52,7 +52,7 @@ public class Writer{
         return name;
     }
 
-    public void modifyName(String name) {
+    private void modifyName(String name) {
         checkArgument(name.length() > 0 && name.length() <= 50, "name should be between 1 and 50");
         this.name = name;
     }
@@ -61,7 +61,7 @@ public class Writer{
         return email;
     }
 
-    public void modifyEmail(String email) {
+    private void modifyEmail(String email) {
         //CHECK Email
         this.email = email;
     }
@@ -70,7 +70,7 @@ public class Writer{
         return role;
     }
 
-    public void modifyRole(Role role) {
+    private void modifyRole(Role role) {
         this.role = role;
     }
 

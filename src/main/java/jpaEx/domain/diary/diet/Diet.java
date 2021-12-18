@@ -62,7 +62,7 @@ public class Diet {
         return eatTime;
     }
 
-    public void modifyEatTime(EatTime eatTime) {
+    private void modifyEatTime(EatTime eatTime) {
         this.eatTime = eatTime;
     }
 
@@ -70,7 +70,7 @@ public class Diet {
         return bloodSugar;
     }
 
-    public void modifyBloodSugar(int bloodSugar) {
+    private void modifyBloodSugar(int bloodSugar) {
         checkArgument(bloodSugar > 0, "bloodSugar must be positive number");
         this.bloodSugar = bloodSugar;
     }
