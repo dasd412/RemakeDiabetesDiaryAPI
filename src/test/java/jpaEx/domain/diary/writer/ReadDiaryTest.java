@@ -476,4 +476,40 @@ public class ReadDiaryTest {
         assertThat(averageBloodSugar).isCloseTo(220.0, Offset.offset(0.005)); //부동 소수점은 isCloseTo()를 활용하여 판단해야 합니다.
     }
 
+    @Transactional
+    @Test
+    public void findFoodHigherThanAverageBloodSugarOfDiet() {
+        //given
+        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
+        Diet diet1 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 200);
+        Diet diet2 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 210);
+        Diet diet3 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 220);//<-평균 혈당
+        Diet diet4 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 230);
+        Diet diet5 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 240);
+
+        saveDiaryService.saveFood(me, diet1, "pizza");
+        saveDiaryService.saveFood(me, diet2, "chicken");
+        saveDiaryService.saveFood(me, diet3, "cola");//<-
+        saveDiaryService.saveFood(me, diet4, "ham");//<-
+        saveDiaryService.saveFood(me, diet5, "apple");//<-
+        saveDiaryService.saveFood(me, diet1, "orange");
+        saveDiaryService.saveFood(me, diet2, "sausage");
+        saveDiaryService.saveFood(me, diet3, "egg");//<-
+        saveDiaryService.saveFood(me, diet4, "water");//<-
+        saveDiaryService.saveFood(me, diet4, "juice");//<-
+
+        //when
+        List<String>foodNames=foodRepository.findFoodHigherThanAverageBloodSugarOfDiet(me.getId());
+
+        //then
+        logger.info(foodNames.toString());
+        assertThat(foodNames.contains("cola")).isTrue();
+        assertThat(foodNames.contains("ham")).isTrue();
+        assertThat(foodNames.contains("apple")).isTrue();
+        assertThat(foodNames.contains("egg")).isTrue();
+        assertThat(foodNames.contains("water")).isTrue();
+        assertThat(foodNames.contains("juice")).isTrue();
+    }
+
 }

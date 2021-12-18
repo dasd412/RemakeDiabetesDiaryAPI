@@ -180,4 +180,11 @@ public class FindDiaryService {
         return foodRepository.findFoodNamesInDietHigherThanBloodSugar(writerEntityId.getId(), bloodSugar);
     }
 
+    @Transactional(readOnly = true)
+    public List<String> getFoodHigherThanAverageBloodSugarOfDiet(EntityId<Writer, Long> writerEntityId) {
+        logger.info("getFoodHigherThanAverageBloodSugarOfDiet");
+        checkNotNull(writerEntityId, "writerId must be provided");
+        return foodRepository.findFoodHigherThanAverageBloodSugarOfDiet(writerEntityId.getId());
+    }
+
 }

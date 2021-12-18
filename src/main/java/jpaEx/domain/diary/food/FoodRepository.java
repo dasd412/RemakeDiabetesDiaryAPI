@@ -33,4 +33,7 @@ public interface FoodRepository extends JpaRepository<Food, Long> {
     @Query(value="SELECT DISTINCT food.foodName FROM Food food INNER JOIN food.diet diet WHERE diet.bloodSugar >= :blood_sugar AND food.diet.diary.writer.writerId = :writer_id")
     List<String>findFoodNamesInDietHigherThanBloodSugar(@Param("writer_id") Long writerId,@Param("blood_sugar") int bloodSugar);
 
+    //작성자가 먹은 음식 중, 혈당(공복 혈당 아님)이 평균 혈당 이상인 것들의 음식 이름 조회
+    @Query(value="SELECT DISTINCT food.foodName FROM Food food INNER JOIN food.diet diet WHERE diet.bloodSugar >= (SELECT AVG(diet.bloodSugar) FROM diet) AND food.diet.diary.writer.writerId = :writer_id")
+    List<String>findFoodHigherThanAverageBloodSugarOfDiet(@Param("writer_id") Long writerId);
 }

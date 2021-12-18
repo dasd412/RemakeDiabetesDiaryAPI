@@ -54,7 +54,7 @@ public class UpdateDeleteDiaryTest {
 
     //예외 캐치용 객체
     @Rule
-    public ExpectedException thrown= ExpectedException.none();
+    public ExpectedException thrown = ExpectedException.none();
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -469,7 +469,7 @@ public class UpdateDeleteDiaryTest {
      */
     @Transactional
     @Test
-    public void updateDiaryBloodSugarInappropriate () {
+    public void updateDiaryBloodSugarInappropriate() {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("fastingPlasmaGlucose must be positive number");
 
@@ -503,4 +503,4 @@ public class UpdateDeleteDiaryTest {
         updateDeleteDiaryService.updateFood(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet1.getDietId()), EntityId.of(Food.class, food1.getId()), "");
     }
 
-    }
+}
