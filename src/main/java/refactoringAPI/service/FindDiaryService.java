@@ -147,7 +147,7 @@ public class FindDiaryService {
     public double getAverageBloodSugarOfDiet(EntityId<Writer, Long> writerEntityId) {
         logger.info("getAverageBloodSugarOfDiet");
         checkNotNull(writerEntityId, "writerId must be provided");
-        return dietRepository.findAverageBloodSugarOfDiet(writerEntityId.getId());
+        return dietRepository.findAverageBloodSugarOfDiet(writerEntityId.getId()).orElseThrow(()->new IllegalStateException("아직 혈당을 기록한 식단이 없습니다."));
     }
 
     /*

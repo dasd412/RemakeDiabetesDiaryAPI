@@ -469,7 +469,7 @@ public class ReadDiaryTest {
         saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 240);
 
         //when
-        double averageBloodSugar = dietRepository.findAverageBloodSugarOfDiet(me.getId());
+        double averageBloodSugar = dietRepository.findAverageBloodSugarOfDiet(me.getId()).orElseThrow(()->new NullPointerException("아예 혈당이 없다."));
 
         //then
         logger.info(String.valueOf(averageBloodSugar));
