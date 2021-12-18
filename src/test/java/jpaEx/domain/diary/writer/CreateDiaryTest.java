@@ -6,7 +6,9 @@ import jpaEx.domain.diary.diet.EatTime;
 import jpaEx.domain.diary.food.Food;
 import jpaEx.service.SaveDiaryService;
 import org.junit.After;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
 import org.slf4j.Logger;
@@ -33,6 +35,10 @@ public class CreateDiaryTest {
     WriterRepository writerRepository;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    
+    //예외 캐치용 객체
+    @Rule
+    public ExpectedException thrown=ExpectedException.none();
 
     @After
     public void clean() {
@@ -374,4 +380,63 @@ public class CreateDiaryTest {
         logger.info(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(2).toString());
     }
 
+    /*
+    예외 캐치 테스트
+     */
+    @Transactional
+    @Test
+    public void saveWriterNoName(){
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("name should be between 1 and 50");
+        Writer me = saveDiaryService.saveWriter("", "TEST@NAVER.COM", Role.User);
+    }
+
+    @Transactional
+    @Test
+    public void saveDiaryZeroBloodSugar(){
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("fastingPlasmaGlucose must be positive number");
+        Writer me = saveDiaryService.saveWriter("me", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary=saveDiaryService.saveDiary(me,0,"",LocalDateTime.now());
+    }
+
+    @Transactional
+    @Test
+    public void saveDiaryNegativeBloodSugar(){
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("fastingPlasmaGlucose must be positive number");
+        Writer me = saveDiaryService.saveWriter("me", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary=saveDiaryService.saveDiary(me,-1,"",LocalDateTime.now());
+    }
+
+    @Transactional
+    @Test
+    public void saveDietZeroBloodSugar(){
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("bloodSugar must be positive number");
+        Writer me = saveDiaryService.saveWriter("me", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary=saveDiaryService.saveDiary(me,100,"",LocalDateTime.now());
+        Diet diet = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 0);
+    }
+
+    @Transactional
+    @Test
+    public void saveDietNegativeBloodSugar(){
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("bloodSugar must be positive number");
+        Writer me = saveDiaryService.saveWriter("me", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary=saveDiaryService.saveDiary(me,100,"",LocalDateTime.now());
+        Diet diet = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, -200);
+    }
+
+    @Transactional
+    @Test
+    public void saveFoodNoName(){
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("food name length should be between 1 and 50");
+        Writer me = saveDiaryService.saveWriter("me", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary=saveDiaryService.saveDiary(me,100,"",LocalDateTime.now());
+        Diet diet = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 150);
+        Food food = saveDiaryService.saveFood(me, diet, "");
+    }
 }

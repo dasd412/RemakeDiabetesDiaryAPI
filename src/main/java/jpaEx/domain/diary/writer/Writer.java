@@ -37,6 +37,7 @@ public class Writer{
     }
 
     public Writer(EntityId<Writer, Long> writerEntityId, String name, String email, Role role) {
+        checkArgument(name.length() > 0 && name.length() <= 50, "name should be between 1 and 50");
         this.writerId = writerEntityId.getId();
         this.name = name;
         this.email = email;

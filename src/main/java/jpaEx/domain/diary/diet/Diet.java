@@ -47,6 +47,7 @@ public class Diet {
     }
 
     public Diet(EntityId<Diet, Long> dietEntityId, DiabetesDiary diary, EatTime eatTime, int bloodSugar) {
+        checkArgument(bloodSugar > 0, "bloodSugar must be positive number");
         this.dietId = dietEntityId.getId();
         this.diary = diary;
         this.eatTime = eatTime;

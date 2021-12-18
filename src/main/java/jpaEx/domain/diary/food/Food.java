@@ -35,6 +35,7 @@ public class Food{
     }
 
     public Food(EntityId<Food, Long> foodEntityId, Diet diet, String foodName) {
+        checkArgument(foodName.length() > 0 && foodName.length() <= 50, "food name length should be between 1 and 50");
         this.foodId = foodEntityId.getId();
         this.diet = diet;
         this.foodName = foodName;

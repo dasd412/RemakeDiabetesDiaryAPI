@@ -45,6 +45,8 @@ public class DiabetesDiary{
     }
 
     public DiabetesDiary(EntityId<DiabetesDiary, Long> diabetesDiaryEntityId, Writer writer, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
+        checkArgument(fastingPlasmaGlucose > 0, "fastingPlasmaGlucose must be positive number");
+        checkArgument(remark.length() <= 500, "remark length should be lower than 501");
         this.diaryId = diabetesDiaryEntityId.getId();
         this.writer = writer;
         this.fastingPlasmaGlucose = fastingPlasmaGlucose;
@@ -70,7 +72,7 @@ public class DiabetesDiary{
     }
 
     public void modifyRemark(String remark) {
-        checkArgument(remark.length() > 0 && remark.length() <= 500, "remark length should be between 1 and 500");
+        checkArgument(remark.length() <= 500, "remark length should be lower than 501");
         this.remark = remark;
     }
 
