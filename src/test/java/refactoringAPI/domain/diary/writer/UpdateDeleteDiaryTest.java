@@ -309,13 +309,13 @@ public class UpdateDeleteDiaryTest {
         DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
         Diet diet1 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 250);
         Food food1 = saveDiaryService.saveFood(me, diet1, "pizza");
-        updateDeleteDiaryService.updateFood(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet1.getDietId()), EntityId.of(Food.class, food1.getId()), "chicken");
+        updateDeleteDiaryService.updateFood(EntityId.of(Writer.class, me.getId()), EntityId.of(Diet.class, diet1.getDietId()), EntityId.of(Food.class, food1.getId()), "chicken");
 
         //when
         Diet diet = dietRepository.findOneDietByIdInDiary(me.getId(), diary.getId(), diet1.getDietId())
                 .orElseThrow(() -> new NoSuchElementException("식단 없음"));
 
-        Food food = foodRepository.findOneFoodByIdInDiet(me.getId(), diary.getId(), diet.getDietId(), food1.getId())
+        Food food = foodRepository.findOneFoodByIdInDiet(me.getId(), diet.getDietId(), food1.getId())
                 .orElseThrow(() -> new NoSuchElementException("음식 없음"));
 
         //then
@@ -500,7 +500,7 @@ public class UpdateDeleteDiaryTest {
         DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
         Diet diet1 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 250);
         Food food1 = saveDiaryService.saveFood(me, diet1, "pizza");
-        updateDeleteDiaryService.updateFood(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet1.getDietId()), EntityId.of(Food.class, food1.getId()), "");
+        updateDeleteDiaryService.updateFood(EntityId.of(Writer.class, me.getId()), EntityId.of(Diet.class, diet1.getDietId()), EntityId.of(Food.class, food1.getId()), "");
     }
 
 }

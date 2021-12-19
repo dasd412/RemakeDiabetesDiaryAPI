@@ -369,7 +369,7 @@ public class ReadDiaryTest {
         Food food3 = saveDiaryService.saveFood(me, diet, "cola");
 
         //when
-        List<Food> foodList = foodRepository.findFoodsInDiet(me.getId(), diary.getId(), diet.getDietId());
+        List<Food> foodList = foodRepository.findFoodsInDiet(me.getId(),diet.getDietId());
 
         //then
         logger.info(foodList.toString());
@@ -391,7 +391,7 @@ public class ReadDiaryTest {
         Food food3 = saveDiaryService.saveFood(me, diet, "cola");
 
         //when
-        Food foundFood = foodRepository.findOneFoodByIdInDiet(me.getId(), diary.getId(), diet.getDietId(), food3.getId())
+        Food foundFood = foodRepository.findOneFoodByIdInDiet(me.getId(), diet.getDietId(), food3.getId())
                 .orElseThrow(() -> new NoSuchElementException("음식 없음."));
 
         //then
@@ -450,7 +450,9 @@ public class ReadDiaryTest {
         logger.info("find all test");
         List<DiabetesDiary> diaries = diaryRepository.findAll();
         for (DiabetesDiary d : diaries) {
-            logger.info(d.getDietList().toString());
+            for (Diet di : d.getDietList()){
+                logger.info(di.toString());
+            }
         }
 
         //todo n+1문제는 안 일어나는 것 처럼 보인다. 하지만 왜 그럴까..?

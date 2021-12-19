@@ -154,22 +154,20 @@ public class FindDiaryService {
     음식 조회 메서드들
      */
     @Transactional(readOnly = true)
-    public List<Food> getFoodsInDiet(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diabetesDiaryEntityId, EntityId<Diet, Long> dietEntityId) {
+    public List<Food> getFoodsInDiet(EntityId<Writer, Long> writerEntityId,EntityId<Diet, Long> dietEntityId) {
         logger.info("getFoodsInDiet");
         checkNotNull(writerEntityId, "writerId must be provided");
-        checkNotNull(diabetesDiaryEntityId, "diaryId must be provided");
         checkNotNull(dietEntityId, "dietId must be provided");
-        return foodRepository.findFoodsInDiet(writerEntityId.getId(), diabetesDiaryEntityId.getId(), dietEntityId.getId());
+        return foodRepository.findFoodsInDiet(writerEntityId.getId(),dietEntityId.getId());
     }
 
     @Transactional(readOnly = true)
-    public Optional<Food> getOneFoodByIdInDiet(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diabetesDiaryEntityId, EntityId<Diet, Long> dietEntityId, EntityId<Food, Long> foodEntityId) {
+    public Optional<Food> getOneFoodByIdInDiet(EntityId<Writer, Long> writerEntityId, EntityId<Diet, Long> dietEntityId, EntityId<Food, Long> foodEntityId) {
         logger.info("getOneFoodByIdInDiet");
         checkNotNull(writerEntityId, "writerId must be provided");
-        checkNotNull(diabetesDiaryEntityId, "diaryId must be provided");
         checkNotNull(dietEntityId, "dietId must be provided");
         checkNotNull(foodEntityId, "foodId must be provided");
-        return foodRepository.findOneFoodByIdInDiet(writerEntityId.getId(), diabetesDiaryEntityId.getId(), dietEntityId.getId(), foodEntityId.getId());
+        return foodRepository.findOneFoodByIdInDiet(writerEntityId.getId(), dietEntityId.getId(), foodEntityId.getId());
     }
 
     @Transactional(readOnly = true)

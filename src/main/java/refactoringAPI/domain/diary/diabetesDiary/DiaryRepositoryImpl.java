@@ -37,42 +37,55 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
 
     @Override
     public Long findMaxOfId() {
-        return jpaQueryFactory.from(QDiabetesDiary.diabetesDiary).select(QDiabetesDiary.diabetesDiary.diaryId.max()).fetchOne();
+        return jpaQueryFactory.from(QDiabetesDiary.diabetesDiary).select(QDiabetesDiary.diabetesDiary.diaryId.max())
+                .fetchOne();
     }
 
     @Override
     public Optional<Writer> findWriterOfDiary(Long diaryId) {
         //@Query(value = "SELECT diary.writer FROM DiabetesDiary diary WHERE diary.diaryId = :diary_id")
-        return Optional.ofNullable(jpaQueryFactory.from(QDiabetesDiary.diabetesDiary).select(QDiabetesDiary.diabetesDiary.writer).where(QDiabetesDiary.diabetesDiary.diaryId.eq(diaryId)).fetchOne());
+        return Optional.ofNullable(jpaQueryFactory.from(QDiabetesDiary.diabetesDiary).select(QDiabetesDiary.diabetesDiary.writer)
+                .where(QDiabetesDiary.diabetesDiary.diaryId.eq(diaryId))
+                .fetchOne());
     }
 
     @Override
     public List<DiabetesDiary> findDiabetesDiariesOfWriter(Long writerId) {
         //@Query(value = "FROM DiabetesDiary diary WHERE diary.writer.writerId = :writer_id")
-        return jpaQueryFactory.selectFrom(QDiabetesDiary.diabetesDiary).where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId)).fetch();
+        return jpaQueryFactory.selectFrom(QDiabetesDiary.diabetesDiary)
+                .where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId))
+                .fetch();
     }
 
     @Override
-    public Optional<DiabetesDiary> findOneDiabetesDiaryByIdInWriter(Long writerId,Long diaryId) {
+    public Optional<DiabetesDiary> findOneDiabetesDiaryByIdInWriter(Long writerId, Long diaryId) {
         //@Query(value = "FROM DiabetesDiary diary WHERE diary.writer.writerId = :writer_id AND diary.diaryId = :diary_id")
-        return Optional.ofNullable(jpaQueryFactory.selectFrom(QDiabetesDiary.diabetesDiary).where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId).and(QDiabetesDiary.diabetesDiary.diaryId.eq(diaryId))).fetchOne());
+        return Optional.ofNullable(jpaQueryFactory.selectFrom(QDiabetesDiary.diabetesDiary)
+                .where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId).and(QDiabetesDiary.diabetesDiary.diaryId.eq(diaryId)))
+                .fetchOne());
     }
 
     @Override
     public List<DiabetesDiary> findDiaryBetweenTime(Long writerId, LocalDateTime startDate, LocalDateTime endDate) {
         //@Query(value = "SELECT diary FROM DiabetesDiary diary  WHERE diary.writer.writerId = :writer_id AND diary.writtenTime BETWEEN :startDate AND :endDate")
-        return jpaQueryFactory.selectFrom(QDiabetesDiary.diabetesDiary).where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId).and(QDiabetesDiary.diabetesDiary.writtenTime.between(startDate, endDate))).fetch();
+        return jpaQueryFactory.selectFrom(QDiabetesDiary.diabetesDiary)
+                .where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId).and(QDiabetesDiary.diabetesDiary.writtenTime.between(startDate, endDate)))
+                .fetch();
     }
 
     @Override
     public List<DiabetesDiary> findFpgHigherOrEqual(Long writerId, int fastingPlasmaGlucose) {
         //@Query(value = "SELECT diary FROM DiabetesDiary diary WHERE diary.writer.writerId = :writer_id AND diary.fastingPlasmaGlucose >= :bloodSugar")
-        return jpaQueryFactory.selectFrom(QDiabetesDiary.diabetesDiary).where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId).and(QDiabetesDiary.diabetesDiary.fastingPlasmaGlucose.goe(fastingPlasmaGlucose))).fetch();
+        return jpaQueryFactory.selectFrom(QDiabetesDiary.diabetesDiary)
+                .where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId).and(QDiabetesDiary.diabetesDiary.fastingPlasmaGlucose.goe(fastingPlasmaGlucose)))
+                .fetch();
     }
 
     @Override
     public List<DiabetesDiary> findFpgLowerOrEqual(Long writerId, int fastingPlasmaGlucose) {
         //@Query(value = "SELECT diary FROM DiabetesDiary diary  WHERE diary.writer.writerId = :writer_id AND diary.fastingPlasmaGlucose <= :bloodSugar")
-        return jpaQueryFactory.selectFrom(QDiabetesDiary.diabetesDiary).where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId).and(QDiabetesDiary.diabetesDiary.fastingPlasmaGlucose.loe(fastingPlasmaGlucose))).fetch();
+        return jpaQueryFactory.selectFrom(QDiabetesDiary.diabetesDiary)
+                .where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId).and(QDiabetesDiary.diabetesDiary.fastingPlasmaGlucose.loe(fastingPlasmaGlucose)))
+                .fetch();
     }
 }

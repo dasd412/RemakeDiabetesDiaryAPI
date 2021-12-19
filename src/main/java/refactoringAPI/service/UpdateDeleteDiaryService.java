@@ -105,14 +105,13 @@ public class UpdateDeleteDiaryService {
     }
 
     @Transactional
-    public Food updateFood(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diaryEntityId, EntityId<Diet, Long> dietEntityId, EntityId<Food, Long> foodEntityId, String foodName) {
+    public Food updateFood(EntityId<Writer, Long> writerEntityId, EntityId<Diet, Long> dietEntityId, EntityId<Food, Long> foodEntityId, String foodName) {
         logger.info("update food");
         checkNotNull(writerEntityId, "writerId must be provided");
-        checkNotNull(diaryEntityId, "diaryId must be provided");
         checkNotNull(dietEntityId, "dietId must be provided");
         checkNotNull(foodEntityId, "foodId must be provided");
 
-        Food targetFood = foodRepository.findOneFoodByIdInDiet(writerEntityId.getId(), diaryEntityId.getId(), dietEntityId.getId(), foodEntityId.getId())
+        Food targetFood = foodRepository.findOneFoodByIdInDiet(writerEntityId.getId(), dietEntityId.getId(), foodEntityId.getId())
                 .orElseThrow(() -> new NoSuchElementException("해당 음식이 존재하지 않습니다."));
 
         targetFood.update(foodName);
@@ -131,7 +130,7 @@ public class UpdateDeleteDiaryService {
         Diet diet = dietRepository.findOneDietByIdInDiary(writerEntityId.getId(), diaryEntityId.getId(), dietEntityId.getId())
                 .orElseThrow(() -> new NoSuchElementException("해당 식단이 존재하지 않습니다."));
 
-        Food targetFood = foodRepository.findOneFoodByIdInDiet(writerEntityId.getId(), diaryEntityId.getId(), dietEntityId.getId(), foodEntityId.getId())
+        Food targetFood = foodRepository.findOneFoodByIdInDiet(writerEntityId.getId(), dietEntityId.getId(), foodEntityId.getId())
                 .orElseThrow(() -> new NoSuchElementException("해당 음식이 존재하지 않습니다."));
 
         //orphanRemoval = true 로 해놓았기 때문에 부모의 컬렉션에서 자식이 null 되면 알아서 delete 쿼리가 나간다.
