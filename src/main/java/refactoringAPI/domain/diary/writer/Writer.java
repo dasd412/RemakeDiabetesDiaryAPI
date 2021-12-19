@@ -14,14 +14,15 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Entity
-@Table(name = "Writer")
+@Table(name = "Writer",uniqueConstraints = @UniqueConstraint(columnNames = {"writer_id","email"}))
 public class Writer{
     @Id
-    @Column(name = "writer_id", columnDefinition = "bigint default 0 auto_increment")
+    @Column(name = "writer_id", columnDefinition = "bigint default 0 auto_increment" ,nullable = false)
     private Long writerId;
 
     private String name;
 
+    @Column(name="email")
     private String email;
 
     @Enumerated(EnumType.STRING)

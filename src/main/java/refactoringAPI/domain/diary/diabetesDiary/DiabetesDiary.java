@@ -15,7 +15,7 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Entity
-@Table(name = "DiabetesDiary")
+@Table(name = "DiabetesDiary",uniqueConstraints = @UniqueConstraint(columnNames = {"diary_id"}))
 @IdClass(DiabetesDiaryId.class)
 public class DiabetesDiary{
     //식별 관계이므로 복합키 사용.

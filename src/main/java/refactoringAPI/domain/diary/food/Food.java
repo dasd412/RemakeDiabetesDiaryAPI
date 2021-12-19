@@ -12,7 +12,7 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Entity
-@Table(name = "Food")
+@Table(name = "Food",uniqueConstraints = @UniqueConstraint(columnNames = {"food_id"}))
 @IdClass(FoodId.class)
 public class Food{
     @Id

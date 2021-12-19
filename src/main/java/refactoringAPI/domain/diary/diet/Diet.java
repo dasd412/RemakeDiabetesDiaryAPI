@@ -14,7 +14,7 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Entity
-@Table(name = "Diet")
+@Table(name = "Diet",uniqueConstraints = @UniqueConstraint(columnNames = {"diet_id"}))
 @IdClass(DietId.class)
 public class Diet {
 
