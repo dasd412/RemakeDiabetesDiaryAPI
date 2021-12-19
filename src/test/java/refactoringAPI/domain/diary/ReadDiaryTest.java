@@ -1,4 +1,4 @@
-package refactoringAPI.domain.diary.writer;
+package refactoringAPI.domain.diary;
 
 import refactoringAPI.domain.diary.diabetesDiary.DiabetesDiary;
 import refactoringAPI.domain.diary.diabetesDiary.DiaryRepository;
@@ -7,6 +7,9 @@ import refactoringAPI.domain.diary.diet.DietRepository;
 import refactoringAPI.domain.diary.diet.EatTime;
 import refactoringAPI.domain.diary.food.Food;
 import refactoringAPI.domain.diary.food.FoodRepository;
+import refactoringAPI.domain.diary.writer.Role;
+import refactoringAPI.domain.diary.writer.Writer;
+import refactoringAPI.domain.diary.writer.WriterRepository;
 import refactoringAPI.service.SaveDiaryService;
 import org.assertj.core.data.Offset;
 import org.junit.After;
@@ -31,6 +34,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @Profile("test")
 public class ReadDiaryTest {
+
+    /*
+    2021 - 12 -19 기준
+    클래스 커버리지 100% (18/18)
+    메소드 커버리지 70% (91/130)
+    라인 커버리지 71% (236/332)
+     */
 
     @Autowired
     SaveDiaryService saveDiaryService;

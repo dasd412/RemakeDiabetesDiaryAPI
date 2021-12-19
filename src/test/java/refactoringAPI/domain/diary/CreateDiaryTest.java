@@ -1,9 +1,12 @@
-package refactoringAPI.domain.diary.writer;
+package refactoringAPI.domain.diary;
 
 import refactoringAPI.domain.diary.diabetesDiary.DiabetesDiary;
 import refactoringAPI.domain.diary.diet.Diet;
 import refactoringAPI.domain.diary.diet.EatTime;
 import refactoringAPI.domain.diary.food.Food;
+import refactoringAPI.domain.diary.writer.Role;
+import refactoringAPI.domain.diary.writer.Writer;
+import refactoringAPI.domain.diary.writer.WriterRepository;
 import refactoringAPI.service.SaveDiaryService;
 import org.junit.After;
 import org.junit.Rule;
@@ -28,6 +31,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Profile("test")
 public class CreateDiaryTest {
 
+    /*
+    2021 - 12 -19 기준
+    클래스 커버리지 100% (18/18)
+    메소드 커버리지 56% (73/130)
+    라인 커버리지 49% (163/332)
+     */
     @Autowired
     SaveDiaryService saveDiaryService;
 
