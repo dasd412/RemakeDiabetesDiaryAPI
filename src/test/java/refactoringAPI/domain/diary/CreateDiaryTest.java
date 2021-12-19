@@ -404,7 +404,7 @@ public class CreateDiaryTest {
     @Test
     public void saveDiaryZeroBloodSugar(){
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("fastingPlasmaGlucose must be positive number");
+        thrown.expectMessage("fastingPlasmaGlucose must be between 1 and 1000");
         Writer me = saveDiaryService.saveWriter("me", "TEST@NAVER.COM", Role.User);
         DiabetesDiary diary=saveDiaryService.saveDiary(me,0,"",LocalDateTime.now());
     }
@@ -413,7 +413,7 @@ public class CreateDiaryTest {
     @Test
     public void saveDiaryNegativeBloodSugar(){
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("fastingPlasmaGlucose must be positive number");
+        thrown.expectMessage("fastingPlasmaGlucose must be between 1 and 1000");
         Writer me = saveDiaryService.saveWriter("me", "TEST@NAVER.COM", Role.User);
         DiabetesDiary diary=saveDiaryService.saveDiary(me,-1,"",LocalDateTime.now());
     }
@@ -422,7 +422,7 @@ public class CreateDiaryTest {
     @Test
     public void saveDietZeroBloodSugar(){
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("bloodSugar must be positive number");
+        thrown.expectMessage("bloodSugar must be between 1 and 1000");
         Writer me = saveDiaryService.saveWriter("me", "TEST@NAVER.COM", Role.User);
         DiabetesDiary diary=saveDiaryService.saveDiary(me,100,"",LocalDateTime.now());
         Diet diet = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 0);
@@ -432,7 +432,7 @@ public class CreateDiaryTest {
     @Test
     public void saveDietNegativeBloodSugar(){
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("bloodSugar must be positive number");
+        thrown.expectMessage("bloodSugar must be between 1 and 1000");
         Writer me = saveDiaryService.saveWriter("me", "TEST@NAVER.COM", Role.User);
         DiabetesDiary diary=saveDiaryService.saveDiary(me,100,"",LocalDateTime.now());
         Diet diet = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, -200);
