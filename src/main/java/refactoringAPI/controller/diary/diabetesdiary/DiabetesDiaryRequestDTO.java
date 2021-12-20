@@ -3,8 +3,6 @@ package refactoringAPI.controller.diary.diabetesdiary;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import java.time.LocalDateTime;
-
 public class DiabetesDiaryRequestDTO {
 
     private final Long writerId;
@@ -13,16 +11,33 @@ public class DiabetesDiaryRequestDTO {
 
     private final String remark;
 
-    private final LocalDateTime writtenTime;
+    private final String year;
 
-    public DiabetesDiaryRequestDTO(Long writerId, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
+    private final String month;
+
+    private final String day;
+
+    private final String hour;
+
+    private final String minute;
+
+    private final String second;
+
+    public DiabetesDiaryRequestDTO(Long writerId, int fastingPlasmaGlucose, String remark, String year, String month, String day, String hour, String minute, String second) {
         this.writerId = writerId;
         this.fastingPlasmaGlucose = fastingPlasmaGlucose;
         this.remark = remark;
-        this.writtenTime = writtenTime;
+        this.year = year;
+        this.month = month;
+        this.day = day;
+        this.hour = hour;
+        this.minute = minute;
+        this.second = second;
     }
 
-    public Long getWriterId() {return writerId;}
+    public Long getWriterId() {
+        return writerId;
+    }
 
     public int getFastingPlasmaGlucose() {
         return fastingPlasmaGlucose;
@@ -32,8 +47,28 @@ public class DiabetesDiaryRequestDTO {
         return remark;
     }
 
-    public LocalDateTime getWrittenTime() {
-        return writtenTime;
+    public String getYear() {
+        return year;
+    }
+
+    public String getMonth() {
+        return month;
+    }
+
+    public String getDay() {
+        return day;
+    }
+
+    public String getHour() {
+        return hour;
+    }
+
+    public String getMinute() {
+        return minute;
+    }
+
+    public String getSecond() {
+        return second;
     }
 
     @Override
@@ -42,7 +77,7 @@ public class DiabetesDiaryRequestDTO {
                 .append("writer", writerId)
                 .append("fpg", fastingPlasmaGlucose)
                 .append("remark", remark)
-                .append("written time", writtenTime)
+                .append("written time", year + " : " + month + " : " + day + " : " + hour + " : " + minute + " : " + second)
                 .toString();
     }
 }

@@ -16,6 +16,10 @@ import refactoringAPI.domain.diary.EntityId;
 import refactoringAPI.domain.diary.writer.Writer;
 import refactoringAPI.service.SaveDiaryService;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @RestController
 public class DiarySaveRestController {
     /*
@@ -39,6 +43,10 @@ public class DiarySaveRestController {
     @PostMapping("api/diary/diabetesDiary")
     public ApiResult<DiabetesDiaryResponseDTO> postDiary(@RequestBody DiabetesDiaryRequestDTO dto) {
         logger.info("post diary : " + dto.toString());
-        return ApiResult.OK(new DiabetesDiaryResponseDTO(saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, dto.getWriterId()), dto.getFastingPlasmaGlucose(), dto.getRemark(), dto.getWrittenTime())));
+        //컨트롤러 테스트 시, LocalDateTime->JSON 으로 직렬화를 못한다. 그걸 해결하기 위한 코드 두 줄.
+        String date = dto.getYear() + "-" + dto.getMonth() + "-" + dto.getDay()+" "+dto.getHour()+":"+dto.getMinute()+":"+dto.getSecond();
+        LocalDateTime writtenTime = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        logger.info("writtenTime : "+writtenTime);
+        return ApiResult.OK(new DiabetesDiaryResponseDTO(saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, dto.getWriterId()), dto.getFastingPlasmaGlucose(), dto.getRemark(), writtenTime)));
     }
 }
