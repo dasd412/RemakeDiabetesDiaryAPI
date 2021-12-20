@@ -23,6 +23,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -44,10 +45,10 @@ public class CreateDiaryTest {
     WriterRepository writerRepository;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    
+
     //예외 캐치용 객체
     @Rule
-    public ExpectedException thrown=ExpectedException.none();
+    public ExpectedException thrown = ExpectedException.none();
 
     @After
     public void clean() {
@@ -110,13 +111,13 @@ public class CreateDiaryTest {
         logger.info(foundAnother.toString());
     }
 
+
     @Transactional
     @Test
-    public void saveWriterWithDiaryOne() {
-
+    public void saveDiaryOneOfWriterOneById() {
         //given
         Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
+        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
 
         //when
         Writer found = writerRepository.findAll().get(0);
@@ -135,71 +136,13 @@ public class CreateDiaryTest {
 
     @Transactional
     @Test
-    public void saveDiaryOneOfWriterOneById(){
+    public void saveDiariesOfWriterById() {
         //given
         Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()),20,"test",LocalDateTime.now());
-
-        //when
-        Writer found = writerRepository.findAll().get(0);
-
-        //then
-        assertThat(found).isEqualTo(me);
-        assertThat(found.getName()).isEqualTo(me.getName());
-        assertThat(found.getEmail()).isEqualTo(me.getEmail());
-        assertThat(found.getRole()).isEqualTo(me.getRole());
-        logger.info(found.toString());
-
-        assertThat(found.getDiaries().get(0).getFastingPlasmaGlucose()).isEqualTo(20);
-        assertThat(found.getDiaries().get(0).getRemark()).isEqualTo("test");
-        logger.info(found.getDiaries().get(0).toString());
-    }
-
-    @Transactional
-    @Test
-    public void saveWriterWithDiaries() {
-        //given
-        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        saveDiaryService.saveDiary(me, 10, "test1", LocalDateTime.now());
-        saveDiaryService.saveDiary(me, 20, "test2", LocalDateTime.now());
-        saveDiaryService.saveDiary(me, 30, "test3", LocalDateTime.now());
-        saveDiaryService.saveDiary(me, 40, "test4", LocalDateTime.now());
-        //when
-        Writer found = writerRepository.findAll().get(0);
-
-        //then
-        assertThat(found).isEqualTo(me);
-        assertThat(found.getName()).isEqualTo(me.getName());
-        assertThat(found.getEmail()).isEqualTo(me.getEmail());
-        assertThat(found.getRole()).isEqualTo(me.getRole());
-        logger.info(found.toString());
-
-        assertThat(found.getDiaries().get(0).getFastingPlasmaGlucose()).isEqualTo(10);
-        assertThat(found.getDiaries().get(0).getRemark()).isEqualTo("test1");
-        logger.info(found.getDiaries().get(0).toString());
-
-        assertThat(found.getDiaries().get(1).getFastingPlasmaGlucose()).isEqualTo(20);
-        assertThat(found.getDiaries().get(1).getRemark()).isEqualTo("test2");
-        logger.info(found.getDiaries().get(1).toString());
-
-        assertThat(found.getDiaries().get(2).getFastingPlasmaGlucose()).isEqualTo(30);
-        assertThat(found.getDiaries().get(2).getRemark()).isEqualTo("test3");
-        logger.info(found.getDiaries().get(2).toString());
-
-        assertThat(found.getDiaries().get(3).getFastingPlasmaGlucose()).isEqualTo(40);
-        assertThat(found.getDiaries().get(3).getRemark()).isEqualTo("test4");
-        logger.info(found.getDiaries().get(3).toString());
-    }
-
-    @Transactional
-    @Test
-    public void saveDiariesOfWriterById(){
-        //given
-        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()),10,"test1",LocalDateTime.now());
-        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()),20,"test2",LocalDateTime.now());
-        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()),30,"test3",LocalDateTime.now());
-        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()),40,"test4",LocalDateTime.now());
+        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 10, "test1", LocalDateTime.now());
+        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test2", LocalDateTime.now());
+        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 30, "test3", LocalDateTime.now());
+        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 40, "test4", LocalDateTime.now());
 
         //when
         Writer found = writerRepository.findAll().get(0);
@@ -230,61 +173,15 @@ public class CreateDiaryTest {
 
     @Transactional
     @Test
-    public void saveWritersWithDiaries() {
+    public void saveDiariesOfWritersById() {
         //given
         Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        saveDiaryService.saveDiary(me, 10, "test1", LocalDateTime.now());
-        saveDiaryService.saveDiary(me, 20, "test2", LocalDateTime.now());
+        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 10, "test1", LocalDateTime.now());
+        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test2", LocalDateTime.now());
 
         Writer other = saveDiaryService.saveWriter("other", "OTHER@NAVER.COM", Role.User);
-        saveDiaryService.saveDiary(other, 30, "test3", LocalDateTime.now());
-        saveDiaryService.saveDiary(other, 40, "test4", LocalDateTime.now());
-
-        //when
-        Writer foundMe = writerRepository.findAll().get(0);
-        Writer foundOther = writerRepository.findAll().get(1);
-
-        //then
-        assertThat(foundMe).isEqualTo(me);
-        assertThat(foundMe.getName()).isEqualTo(me.getName());
-        assertThat(foundMe.getEmail()).isEqualTo(me.getEmail());
-        assertThat(foundMe.getRole()).isEqualTo(me.getRole());
-        logger.info(foundMe.toString());
-
-        assertThat(foundMe.getDiaries().get(0).getFastingPlasmaGlucose()).isEqualTo(10);
-        assertThat(foundMe.getDiaries().get(0).getRemark()).isEqualTo("test1");
-        logger.info(foundMe.getDiaries().get(0).toString());
-
-        assertThat(foundMe.getDiaries().get(1).getFastingPlasmaGlucose()).isEqualTo(20);
-        assertThat(foundMe.getDiaries().get(1).getRemark()).isEqualTo("test2");
-        logger.info(foundMe.getDiaries().get(1).toString());
-
-        assertThat(foundOther).isEqualTo(other);
-        assertThat(foundOther.getName()).isEqualTo(other.getName());
-        assertThat(foundOther.getEmail()).isEqualTo(other.getEmail());
-        assertThat(foundOther.getRole()).isEqualTo(other.getRole());
-        logger.info(foundOther.toString());
-
-        assertThat(foundOther.getDiaries().get(0).getFastingPlasmaGlucose()).isEqualTo(30);
-        assertThat(foundOther.getDiaries().get(0).getRemark()).isEqualTo("test3");
-        logger.info(foundOther.getDiaries().get(0).toString());
-
-        assertThat(foundOther.getDiaries().get(1).getFastingPlasmaGlucose()).isEqualTo(40);
-        assertThat(foundOther.getDiaries().get(1).getRemark()).isEqualTo("test4");
-        logger.info(foundOther.getDiaries().get(1).toString());
-    }
-
-    @Transactional
-    @Test
-    public void saveDiariesOfWritersById(){
-        //given
-        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()),10,"test1",LocalDateTime.now());
-        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()),20,"test2",LocalDateTime.now());
-
-        Writer other = saveDiaryService.saveWriter("other", "OTHER@NAVER.COM", Role.User);
-        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, other.getId()),30,"test3",LocalDateTime.now());
-        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, other.getId()),40,"test4",LocalDateTime.now());
+        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, other.getId()), 30, "test3", LocalDateTime.now());
+        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, other.getId()), 40, "test4", LocalDateTime.now());
 
         //when
         Writer foundMe = writerRepository.findAll().get(0);
@@ -323,40 +220,39 @@ public class CreateDiaryTest {
 
     @Transactional
     @Test
-    public void saveWriterWithDiaryWithDietOne() {
+    public void saveWriterWithDiaryWithDietOneById() {
 
         //given
         Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
-        Diet diet = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 100);
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
+        Diet diet = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 100);
 
         //when
-        Writer found = writerRepository.findAll().get(0);
+        Writer found = writerRepository.findById(me.getId()).orElseThrow(() -> new NoSuchElementException("작성자가 없습니다."));
 
         //then
+        logger.info(found.toString());
+        logger.info(found.getDiaries().get(0).toString());
+        logger.info(found.getDiaries().get(0).getDietList().get(0).toString());
         //writer
         assertThat(found).isEqualTo(me);
         assertThat(found.getName()).isEqualTo(me.getName());
         assertThat(found.getEmail()).isEqualTo(me.getEmail());
         assertThat(found.getRole()).isEqualTo(me.getRole());
-        logger.info(found.toString());
-        logger.info(found.getDiaries().toString());
 
         //diary
-        assertThat(me.getDiaries().size()).isEqualTo(1);
         assertThat(found.getDiaries().size()).isEqualTo(1);
         assertThat(found.getDiaries().get(0)).isEqualTo(diary);
         assertThat(found.getDiaries().get(0).getFastingPlasmaGlucose()).isEqualTo(diary.getFastingPlasmaGlucose());
         assertThat(found.getDiaries().get(0).getRemark()).isEqualTo(diary.getRemark());
-        logger.info(found.getDiaries().get(0).toString());
+
 
         //diet
-        assertThat(me.getDiaries().get(0).getDietList().size()).isEqualTo(1);
         assertThat(found.getDiaries().get(0).getDietList().size()).isEqualTo(1);
         assertThat(found.getDiaries().get(0).getDietList().get(0)).isEqualTo(diet);
         assertThat(found.getDiaries().get(0).getDietList().get(0).getEatTime()).isEqualTo(diet.getEatTime());
         assertThat(found.getDiaries().get(0).getDietList().get(0).getBloodSugar()).isEqualTo(diet.getBloodSugar());
-        logger.info(found.getDiaries().get(0).getDietList().get(0).toString());
+
     }
 
     @Transactional
@@ -365,10 +261,10 @@ public class CreateDiaryTest {
 
         //given
         Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
-        Diet diet1 = saveDiaryService.saveDiet(me, diary, EatTime.BreakFast, 100);
-        Diet diet2 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 200);
-        Diet diet3 = saveDiaryService.saveDiet(me, diary, EatTime.Dinner, 150);
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
+        Diet diet1 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.BreakFast, 100);
+        Diet diet2 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 200);
+        Diet diet3 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Dinner, 150);
 
         //when
         Writer found = writerRepository.findAll().get(0);
@@ -412,9 +308,9 @@ public class CreateDiaryTest {
     public void saveWriterWithDiaryWithDietWithFoodOne() {
         //given
         Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
-        Diet diet = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 100);
-        Food food = saveDiaryService.saveFood(me, diet, "pizza");
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
+        Diet diet = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 100);
+        Food food = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "pizza");
 
         //when
         Writer found = writerRepository.findAll().get(0);
@@ -450,11 +346,11 @@ public class CreateDiaryTest {
     public void saveWriterWithDiaryWithDietWithFoodMany() {
         //given
         Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
-        Diet diet = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 250);
-        Food food1 = saveDiaryService.saveFood(me, diet, "pizza");
-        Food food2 = saveDiaryService.saveFood(me, diet, "chicken");
-        Food food3 = saveDiaryService.saveFood(me, diet, "cola");
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
+        Diet diet = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 250);
+        Food food1 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "pizza");
+        Food food2 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "chicken");
+        Food food3 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "cola");
 
         //when
         Writer found = writerRepository.findAll().get(0);
@@ -500,7 +396,7 @@ public class CreateDiaryTest {
      */
     @Transactional
     @Test
-    public void saveWriterNoName(){
+    public void saveWriterNoName() {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("name should be between 1 and 50");
         Writer me = saveDiaryService.saveWriter("", "TEST@NAVER.COM", Role.User);
@@ -508,50 +404,50 @@ public class CreateDiaryTest {
 
     @Transactional
     @Test
-    public void saveDiaryZeroBloodSugar(){
+    public void saveDiaryZeroBloodSugar() {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("fastingPlasmaGlucose must be between 1 and 1000");
         Writer me = saveDiaryService.saveWriter("me", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary=saveDiaryService.saveDiary(me,0,"",LocalDateTime.now());
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 0, "", LocalDateTime.now());
     }
 
     @Transactional
     @Test
-    public void saveDiaryNegativeBloodSugar(){
+    public void saveDiaryNegativeBloodSugar() {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("fastingPlasmaGlucose must be between 1 and 1000");
         Writer me = saveDiaryService.saveWriter("me", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary=saveDiaryService.saveDiary(me,-1,"",LocalDateTime.now());
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), -1, "", LocalDateTime.now());
     }
 
     @Transactional
     @Test
-    public void saveDietZeroBloodSugar(){
+    public void saveDietZeroBloodSugar() {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("bloodSugar must be between 1 and 1000");
         Writer me = saveDiaryService.saveWriter("me", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary=saveDiaryService.saveDiary(me,100,"",LocalDateTime.now());
-        Diet diet = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 0);
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 100, "", LocalDateTime.now());
+        Diet diet = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 0);
     }
 
     @Transactional
     @Test
-    public void saveDietNegativeBloodSugar(){
+    public void saveDietNegativeBloodSugar() {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("bloodSugar must be between 1 and 1000");
         Writer me = saveDiaryService.saveWriter("me", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary=saveDiaryService.saveDiary(me,100,"",LocalDateTime.now());
-        Diet diet = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, -200);
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 100, "", LocalDateTime.now());
+        Diet diet = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, -200);
     }
 
     @Transactional
     @Test
-    public void saveFoodNoName(){
+    public void saveFoodNoName() {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("food name length should be between 1 and 50");
         Writer me = saveDiaryService.saveWriter("me", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary=saveDiaryService.saveDiary(me,100,"",LocalDateTime.now());
-        Diet diet = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 150);
-        Food food = saveDiaryService.saveFood(me, diet, "");
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 100, "", LocalDateTime.now());
+        Diet diet = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 150);
+        Food food = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "");
     }
 }

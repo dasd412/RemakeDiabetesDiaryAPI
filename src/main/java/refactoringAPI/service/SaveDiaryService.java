@@ -92,16 +92,6 @@ public class SaveDiaryService {
         return writer;
     }
 
-    //todo byId 메서드로 교체 필요
-    @Transactional
-    public DiabetesDiary saveDiary(Writer writer, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
-        logger.info("saveDiary");
-        DiabetesDiary diary = new DiabetesDiary(getNextIdOfDiary(), writer, fastingPlasmaGlucose, remark, writtenTime);
-        writer.addDiary(diary);
-        writerRepository.save(writer);
-        return diary;
-    }
-
     @Transactional
     public DiabetesDiary saveDiaryOfWriterById(EntityId<Writer, Long> writerEntityId, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
         logger.info("saveDiaryOfWriterById");
@@ -112,17 +102,6 @@ public class SaveDiaryService {
         return diary;
     }
 
-    //todo byId 메서드로 교체 필요
-    @Transactional
-    public Diet saveDiet(Writer writer, DiabetesDiary diary, EatTime eatTime, int bloodSugar) {
-        logger.info("saveDiet");
-        Diet diet = new Diet(getNextIdOfDiet(), diary, eatTime, bloodSugar);
-        diary.addDiet(diet);
-        writerRepository.save(writer);
-        return diet;
-    }
-
-
     @Transactional
     public Diet saveDietOfWriterById(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diaryEntityId, EatTime eatTime, int bloodSugar) {
         logger.info("saveDietOfWriterById");
@@ -132,16 +111,6 @@ public class SaveDiaryService {
         diary.addDiet(diet);
         writerRepository.save(writer);
         return diet;
-    }
-
-    //todo byId 메서드로 교체 필요
-    @Transactional
-    public Food saveFood(Writer writer, Diet diet, String foodName) {
-        logger.info("saveFood");
-        Food food = new Food(getNextIdOfFood(), diet, foodName);
-        diet.addFood(food);
-        writerRepository.save(writer);
-        return food;
     }
 
     @Transactional
