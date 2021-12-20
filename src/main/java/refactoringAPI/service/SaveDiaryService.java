@@ -68,7 +68,7 @@ public class SaveDiaryService {
         } else {
             dietId = dietRepository.findMaxOfId();
         }
-        return EntityId.of(Diet.class,dietId + 1);
+        return EntityId.of(Diet.class, dietId + 1);
     }
 
     //음식 id 생성 메서드 (트랜잭션 필수)
@@ -80,7 +80,7 @@ public class SaveDiaryService {
         } else {
             foodId = foodRepository.findMaxOfId();
         }
-        return EntityId.of(Food.class,foodId + 1);
+        return EntityId.of(Food.class, foodId + 1);
     }
 
     // getIdOfXXX()의 경우 트랜잭션 처리 안하면 다른 스레드가 껴들어 올 경우 id 값이 중복될 수 있어 기본키 조건을 위배할 수도 있다. 레이스 컨디션 반드시 예방해야 함.
@@ -92,6 +92,7 @@ public class SaveDiaryService {
         return writer;
     }
 
+    //todo byId 메서드로 교체 필요
     @Transactional
     public DiabetesDiary saveDiary(Writer writer, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
         logger.info("saveDiary");
@@ -102,12 +103,16 @@ public class SaveDiaryService {
     }
 
     @Transactional
-    public DiabetesDiary saveDiaryOfWriterById(EntityId<Writer,Long> writerEntityId, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
+    public DiabetesDiary saveDiaryOfWriterById(EntityId<Writer, Long> writerEntityId, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
         logger.info("saveDiaryOfWriterById");
-        Writer writer=writerRepository.findById(writerEntityId.getId()).orElseThrow(()->new NoSuchElementException("작성자가 없습니다."));
-        return this.saveDiary(writer,fastingPlasmaGlucose,remark,writtenTime);
+        Writer writer = writerRepository.findById(writerEntityId.getId()).orElseThrow(() -> new NoSuchElementException("작성자가 없습니다."));
+        DiabetesDiary diary = new DiabetesDiary(getNextIdOfDiary(), writer, fastingPlasmaGlucose, remark, writtenTime);
+        writer.addDiary(diary);
+        writerRepository.save(writer);
+        return diary;
     }
 
+    //todo byId 메서드로 교체 필요
     @Transactional
     public Diet saveDiet(Writer writer, DiabetesDiary diary, EatTime eatTime, int bloodSugar) {
         logger.info("saveDiet");
@@ -117,9 +122,33 @@ public class SaveDiaryService {
         return diet;
     }
 
+
+    @Transactional
+    public Diet saveDietOfWriterById(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diaryEntityId, EatTime eatTime, int bloodSugar) {
+        logger.info("saveDietOfWriterById");
+        Writer writer = writerRepository.findById(writerEntityId.getId()).orElseThrow(() -> new NoSuchElementException("작성자가 없습니다."));
+        DiabetesDiary diary = diaryRepository.findOneDiabetesDiaryByIdInWriter(writerEntityId.getId(),diaryEntityId.getId()).orElseThrow(() -> new NoSuchElementException("일지가 없습니다."));
+        Diet diet = new Diet(getNextIdOfDiet(), diary, eatTime, bloodSugar);
+        diary.addDiet(diet);
+        writerRepository.save(writer);
+        return diet;
+    }
+
+    //todo byId 메서드로 교체 필요
     @Transactional
     public Food saveFood(Writer writer, Diet diet, String foodName) {
         logger.info("saveFood");
+        Food food = new Food(getNextIdOfFood(), diet, foodName);
+        diet.addFood(food);
+        writerRepository.save(writer);
+        return food;
+    }
+
+    @Transactional
+    public Food saveFoodOfWriterById(EntityId<Writer, Long> writerEntityId, EntityId<Diet, Long> dietEntityId, String foodName) {
+        logger.info("saveFoodOfWriterById");
+        Writer writer = writerRepository.findById(writerEntityId.getId()).orElseThrow(() -> new NoSuchElementException("작성자가 없습니다."));
+        Diet diet = dietRepository.findById(dietEntityId.getId()).orElseThrow(() -> new NoSuchElementException("식단이 없습니다."));
         Food food = new Food(getNextIdOfFood(), diet, foodName);
         diet.addFood(food);
         writerRepository.save(writer);
