@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 
 @Service
 public class SaveDiaryService {
@@ -98,6 +99,13 @@ public class SaveDiaryService {
         writer.addDiary(diary);
         writerRepository.save(writer);
         return diary;
+    }
+
+    @Transactional
+    public DiabetesDiary saveDiaryOfWriterById(EntityId<Writer,Long> writerEntityId, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
+        logger.info("saveDiaryOfWriterById");
+        Writer writer=writerRepository.findById(writerEntityId.getId()).orElseThrow(()->new NoSuchElementException("작성자가 없습니다."));
+        return this.saveDiary(writer,fastingPlasmaGlucose,remark,writtenTime);
     }
 
     @Transactional

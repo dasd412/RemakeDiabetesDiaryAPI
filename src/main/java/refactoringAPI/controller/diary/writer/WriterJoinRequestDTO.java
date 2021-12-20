@@ -8,7 +8,9 @@ import refactoringAPI.domain.diary.writer.Role;
 public class WriterJoinRequestDTO {
 
     private final String name;
+
     private final String email;
+
     private final Role role;
 
     public WriterJoinRequestDTO(String name, String email, Role role) {

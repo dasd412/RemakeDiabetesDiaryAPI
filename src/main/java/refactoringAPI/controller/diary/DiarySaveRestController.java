@@ -7,9 +7,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import refactoringAPI.controller.ApiResult;
+import refactoringAPI.controller.diary.diabetesdiary.DiabetesDiaryRequestDTO;
+import refactoringAPI.controller.diary.diabetesdiary.DiabetesDiaryResponseDTO;
 import refactoringAPI.controller.diary.writer.WriterJoinRequestDTO;
 import refactoringAPI.controller.diary.writer.WriterJoinResponseDTO;
 
+import refactoringAPI.domain.diary.EntityId;
+import refactoringAPI.domain.diary.writer.Writer;
 import refactoringAPI.service.SaveDiaryService;
 
 @RestController
@@ -32,5 +36,9 @@ public class DiarySaveRestController {
         return ApiResult.OK(new WriterJoinResponseDTO(saveDiaryService.saveWriter(dto.getName(), dto.getEmail(), dto.getRole())));
     }
 
-
+    @PostMapping("api/diary/diabetesDiary")
+    public ApiResult<DiabetesDiaryResponseDTO> postDiary(@RequestBody DiabetesDiaryRequestDTO dto) {
+        logger.info("post diary : " + dto.toString());
+        return ApiResult.OK(new DiabetesDiaryResponseDTO(saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, dto.getWriterId()), dto.getFastingPlasmaGlucose(), dto.getRemark(), dto.getWrittenTime())));
+    }
 }

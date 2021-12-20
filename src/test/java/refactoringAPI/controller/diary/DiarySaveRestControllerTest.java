@@ -18,13 +18,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import refactoringAPI.controller.diary.writer.WriterJoinRequestDTO;
-import refactoringAPI.domain.diary.diabetesDiary.DiaryRepository;
-import refactoringAPI.domain.diary.diet.DietRepository;
-import refactoringAPI.domain.diary.food.FoodRepository;
 import refactoringAPI.domain.diary.writer.Role;
-import refactoringAPI.domain.diary.writer.WriterRepository;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;

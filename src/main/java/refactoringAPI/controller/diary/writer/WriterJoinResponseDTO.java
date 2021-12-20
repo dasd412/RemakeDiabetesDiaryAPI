@@ -9,8 +9,11 @@ import refactoringAPI.domain.diary.writer.Writer;
 public class WriterJoinResponseDTO {
 
     private final Long writerId;
+
     private final String name;
+
     private final String email;
+
     private final Role role;
 
     public WriterJoinResponseDTO(Writer writer) {
