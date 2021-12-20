@@ -127,7 +127,7 @@ public class SaveDiaryService {
     public Diet saveDietOfWriterById(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diaryEntityId, EatTime eatTime, int bloodSugar) {
         logger.info("saveDietOfWriterById");
         Writer writer = writerRepository.findById(writerEntityId.getId()).orElseThrow(() -> new NoSuchElementException("작성자가 없습니다."));
-        DiabetesDiary diary = diaryRepository.findOneDiabetesDiaryByIdInWriter(writerEntityId.getId(),diaryEntityId.getId()).orElseThrow(() -> new NoSuchElementException("일지가 없습니다."));
+        DiabetesDiary diary = diaryRepository.findOneDiabetesDiaryByIdInWriter(writerEntityId.getId(), diaryEntityId.getId()).orElseThrow(() -> new NoSuchElementException("일지가 없습니다."));
         Diet diet = new Diet(getNextIdOfDiet(), diary, eatTime, bloodSugar);
         diary.addDiet(diet);
         writerRepository.save(writer);
@@ -145,14 +145,13 @@ public class SaveDiaryService {
     }
 
     @Transactional
-    public Food saveFoodOfWriterById(EntityId<Writer, Long> writerEntityId, EntityId<Diet, Long> dietEntityId, String foodName) {
+    public Food saveFoodOfWriterById(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diaryEntityId, EntityId<Diet, Long> dietEntityId, String foodName) {
         logger.info("saveFoodOfWriterById");
         Writer writer = writerRepository.findById(writerEntityId.getId()).orElseThrow(() -> new NoSuchElementException("작성자가 없습니다."));
-        Diet diet = dietRepository.findById(dietEntityId.getId()).orElseThrow(() -> new NoSuchElementException("식단이 없습니다."));
+        Diet diet = dietRepository.findOneDietByIdInDiary(writerEntityId.getId(), diaryEntityId.getId(), dietEntityId.getId()).orElseThrow(() -> new NoSuchElementException("식단이 없습니다."));
         Food food = new Food(getNextIdOfFood(), diet, foodName);
         diet.addFood(food);
         writerRepository.save(writer);
         return food;
     }
-
 }

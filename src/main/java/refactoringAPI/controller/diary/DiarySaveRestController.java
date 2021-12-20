@@ -11,15 +11,17 @@ import refactoringAPI.controller.diary.diabetesdiary.DiabetesDiaryRequestDTO;
 import refactoringAPI.controller.diary.diabetesdiary.DiabetesDiaryResponseDTO;
 import refactoringAPI.controller.diary.diet.DietRequestDTO;
 import refactoringAPI.controller.diary.diet.DietResponseDTO;
+import refactoringAPI.controller.diary.food.FoodRequestDTO;
+import refactoringAPI.controller.diary.food.FoodResponseDTO;
 import refactoringAPI.controller.diary.writer.WriterJoinRequestDTO;
 import refactoringAPI.controller.diary.writer.WriterJoinResponseDTO;
 
 import refactoringAPI.domain.diary.EntityId;
 import refactoringAPI.domain.diary.diabetesDiary.DiabetesDiary;
+import refactoringAPI.domain.diary.diet.Diet;
 import refactoringAPI.domain.diary.writer.Writer;
 import refactoringAPI.service.SaveDiaryService;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -56,8 +58,13 @@ public class DiarySaveRestController {
     @PostMapping("api/diary/diet")
     public ApiResult<DietResponseDTO> postDiet(@RequestBody DietRequestDTO dto) {
         logger.info("post Diet : " + dto.toString());
-        //todo EatTime enum <-> String 변환 필요할 듯...
         return ApiResult.OK(new DietResponseDTO(saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, dto.getWriterId()), EntityId.of(DiabetesDiary.class, dto.getDiaryId()), dto.getEatTime(), dto.getBloodSugar())));
+    }
+
+    @PostMapping("api/diary/food")
+    public ApiResult<FoodResponseDTO> postFood(@RequestBody FoodRequestDTO dto) {
+        logger.info("post Food : " + dto.toString());
+        return ApiResult.OK(new FoodResponseDTO(saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, dto.getWriterId()), EntityId.of(DiabetesDiary.class, dto.getDiaryId()), EntityId.of(Diet.class, dto.getDietId()), dto.getFoodName())));
     }
 
 }

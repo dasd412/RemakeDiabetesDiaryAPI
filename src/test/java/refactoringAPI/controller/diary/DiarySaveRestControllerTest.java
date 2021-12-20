@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import refactoringAPI.controller.diary.diabetesdiary.DiabetesDiaryRequestDTO;
 import refactoringAPI.controller.diary.diet.DietRequestDTO;
+import refactoringAPI.controller.diary.food.FoodRequestDTO;
 import refactoringAPI.controller.diary.writer.WriterJoinRequestDTO;
 import refactoringAPI.domain.diary.diet.EatTime;
 import refactoringAPI.domain.diary.writer.Role;
@@ -210,7 +211,7 @@ public class DiarySaveRestControllerTest {
         DietRequestDTO dietRequestDTO = new DietRequestDTO(1L, 1L, EatTime.Lunch, 200000);
         String postDietUrl = "http://localhost:" + port + "api/diary/diet";
         mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
-                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO))).andDo(print())
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -246,7 +247,8 @@ public class DiarySaveRestControllerTest {
         DietRequestDTO dietRequestDTO = new DietRequestDTO(1L, 1L, EatTime.Lunch, 200);
         String postDietUrl = "http://localhost:" + port + "api/diary/diet";
         mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
-                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO))).andDo(print())
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO)))
+                .andDo(print())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.diaryId").value("1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.writerId").value("1"))
@@ -254,6 +256,110 @@ public class DiarySaveRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.bloodSugar").value("200"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.eatTime").value("Lunch"));
 
+    }
+
+    @Transactional
+    @Test
+    public void postInvalidFood() throws Exception {
+        //given
+        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("test", "test@naver.com", Role.User);
+        String url = "http://localhost:" + port + "/api/diary/writer";
+
+        mockMvc.perform(post(url).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dto)))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.writerId").value("1"));
+
+        String year = "2021";
+        String month = "09";
+        String day = "25";
+        String hour = "06";
+        String minute = "49";
+        String second = "41";
+        DiabetesDiaryRequestDTO diaryRequestDTO = new DiabetesDiaryRequestDTO(1L, 100, "TEST", year, month, day, hour, minute, second);
+
+        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetesDiary";
+        mockMvc.perform(post(postDiaryUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(diaryRequestDTO)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.diaryId").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.writerId").value("1"));
+
+        DietRequestDTO dietRequestDTO = new DietRequestDTO(1L, 1L, EatTime.Lunch, 200);
+        String postDietUrl = "http://localhost:" + port + "api/diary/diet";
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.diaryId").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.writerId").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.dietId").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.bloodSugar").value("200"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.eatTime").value("Lunch"));
+
+        String foodUrl = "http://localhost:" + port + "api/diary/food";
+        StringBuilder foodName = new StringBuilder();
+        IntStream.range(0, 100).forEach(i -> foodName.append("a"));
+        FoodRequestDTO foodRequestDTO = new FoodRequestDTO(1L, 1L, 1L, foodName.toString());
+
+        //when and then
+        mockMvc.perform(post(foodUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(foodRequestDTO)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Transactional
+    @Test
+    public void postFood() throws Exception {
+        //given
+        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("test", "test@naver.com", Role.User);
+        String url = "http://localhost:" + port + "/api/diary/writer";
+
+        mockMvc.perform(post(url).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dto)))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.writerId").value("1"));
+
+        String year = "2021";
+        String month = "09";
+        String day = "25";
+        String hour = "06";
+        String minute = "49";
+        String second = "41";
+        DiabetesDiaryRequestDTO diaryRequestDTO = new DiabetesDiaryRequestDTO(1L, 100, "TEST", year, month, day, hour, minute, second);
+
+        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetesDiary";
+        mockMvc.perform(post(postDiaryUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(diaryRequestDTO)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.diaryId").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.writerId").value("1"));
+
+        DietRequestDTO dietRequestDTO = new DietRequestDTO(1L, 1L, EatTime.Lunch, 200);
+        String postDietUrl = "http://localhost:" + port + "api/diary/diet";
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.diaryId").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.writerId").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.dietId").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.bloodSugar").value("200"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.eatTime").value("Lunch"));
+
+        String foodUrl = "http://localhost:" + port + "api/diary/food";
+        FoodRequestDTO foodRequestDTO = new FoodRequestDTO(1L, 1L, 1L, "pizza");
+
+        //when and then
+        mockMvc.perform(post(foodUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(foodRequestDTO)))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.diaryId").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.writerId").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.dietId").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.foodId").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.foodName").value("pizza"));
     }
 
 }
