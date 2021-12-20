@@ -103,7 +103,7 @@ public class ReadDiaryTest {
     public void findWriterOfDiary() {
         //given
         Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
 
         //when
         Writer found = writerRepository.findById(me.getId()).orElseThrow(() -> new NoSuchElementException("해당 작성자가 존재하지 않습니다."));
@@ -127,8 +127,8 @@ public class ReadDiaryTest {
     public void findDiariesOfWriter() {
         //given
         Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        DiabetesDiary diary1 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.now());
-        DiabetesDiary diary2 = saveDiaryService.saveDiary(me, 10, "test2", LocalDateTime.now());
+        DiabetesDiary diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.now());
+        DiabetesDiary diary2 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 10, "test2", LocalDateTime.now());
 
         //when
         List<DiabetesDiary> diaries = diaryRepository.findDiabetesDiariesOfWriter(me.getId());
@@ -151,9 +151,9 @@ public class ReadDiaryTest {
     public void findDiaryOfWriterByBothId() {
         //given
         Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        DiabetesDiary diary1 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.now());
-        DiabetesDiary diary2 = saveDiaryService.saveDiary(me, 10, "test2", LocalDateTime.now());
-        DiabetesDiary diary3 = saveDiaryService.saveDiary(me, 40, "test3", LocalDateTime.now());
+        DiabetesDiary diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.now());
+        DiabetesDiary diary2 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 10, "test2", LocalDateTime.now());
+        DiabetesDiary diary3 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 40, "test3", LocalDateTime.now());
 
         //when
         DiabetesDiary diary = diaryRepository.findOneDiabetesDiaryByIdInWriter(me.getId(), diary2.getId()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 일지입니다."));
@@ -170,9 +170,9 @@ public class ReadDiaryTest {
     @Test
     public void findDiariesBetweenTime() {
         Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        DiabetesDiary diary1 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
-        DiabetesDiary diary2 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
-        DiabetesDiary diary3 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
+        DiabetesDiary diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
+        DiabetesDiary diary2 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
+        DiabetesDiary diary3 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
 
         //when
         List<DiabetesDiary> diaries = diaryRepository.findDiaryBetweenTime(me.getId(), LocalDateTime.of(2021, 12, 15, 0, 0, 0), LocalDateTime.of(2021, 12, 31, 0, 0, 0));
@@ -190,9 +190,9 @@ public class ReadDiaryTest {
     public void findFpgHigherOrEqual() {
         //then
         Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        saveDiaryService.saveDiary(me, 10, "test1", LocalDateTime.now());
-        saveDiaryService.saveDiary(me, 20, "test2", LocalDateTime.now());
-        saveDiaryService.saveDiary(me, 40, "test3", LocalDateTime.now());
+        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 10, "test1", LocalDateTime.now());
+        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test2", LocalDateTime.now());
+        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 40, "test3", LocalDateTime.now());
 
         //when
         List<DiabetesDiary> diaries = diaryRepository.findFpgHigherOrEqual(me.getId(), 15);
@@ -207,9 +207,9 @@ public class ReadDiaryTest {
     public void findFpgLowerOrEqual() {
         //then
         Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        saveDiaryService.saveDiary(me, 10, "test1", LocalDateTime.now());
-        saveDiaryService.saveDiary(me, 20, "test2", LocalDateTime.now());
-        saveDiaryService.saveDiary(me, 40, "test3", LocalDateTime.now());
+        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 10, "test1", LocalDateTime.now());
+        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test2", LocalDateTime.now());
+        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 40, "test3", LocalDateTime.now());
 
         //when
         List<DiabetesDiary> diaries = diaryRepository.findFpgLowerOrEqual(me.getId(), 15);
@@ -227,10 +227,10 @@ public class ReadDiaryTest {
     public void findDietsOfDiary() {
         //given
         Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
-        Diet diet1 = saveDiaryService.saveDiet(me, diary, EatTime.BreakFast, 100);
-        Diet diet2 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 200);
-        Diet diet3 = saveDiaryService.saveDiet(me, diary, EatTime.Dinner, 150);
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
+        Diet diet1 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.BreakFast, 100);
+        Diet diet2 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 200);
+        Diet diet3 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Dinner, 150);
 
         //when
         List<Diet> dietList = dietRepository.findDietsInDiary(me.getId(), diary.getId());
@@ -254,10 +254,10 @@ public class ReadDiaryTest {
     public void findDietOfDiary() {
         //given
         Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
-        Diet diet1 = saveDiaryService.saveDiet(me, diary, EatTime.BreakFast, 100);
-        Diet diet2 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 200);
-        Diet diet3 = saveDiaryService.saveDiet(me, diary, EatTime.Dinner, 150);
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
+        Diet diet1 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.BreakFast, 100);
+        Diet diet2 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 200);
+        Diet diet3 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Dinner, 150);
 
         //when
         Diet diet = dietRepository.findOneDietByIdInDiary(me.getId(), diary.getId(), diet3.getDietId())
@@ -273,21 +273,21 @@ public class ReadDiaryTest {
     @Test
     public void findHigherThanBloodSugarBetweenTime() {
         Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        DiabetesDiary diary1 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
-        DiabetesDiary diary2 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
-        DiabetesDiary diary3 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
+        DiabetesDiary diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
+        DiabetesDiary diary2 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
+        DiabetesDiary diary3 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
 
-        Diet diet1 = saveDiaryService.saveDiet(me, diary1, EatTime.BreakFast, 100);
-        Diet diet2 = saveDiaryService.saveDiet(me, diary1, EatTime.Lunch, 100);
-        Diet diet3 = saveDiaryService.saveDiet(me, diary1, EatTime.Dinner, 100);
+        Diet diet1 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.BreakFast, 100);
+        Diet diet2 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Lunch, 100);
+        Diet diet3 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Dinner, 100);
 
-        Diet diet4 = saveDiaryService.saveDiet(me, diary2, EatTime.BreakFast, 120);
-        Diet diet5 = saveDiaryService.saveDiet(me, diary2, EatTime.Lunch, 200);
-        Diet diet6 = saveDiaryService.saveDiet(me, diary2, EatTime.Dinner, 170);
+        Diet diet4 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.BreakFast, 120);
+        Diet diet5 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.Lunch, 200);
+        Diet diet6 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.Dinner, 170);
 
-        Diet diet7 = saveDiaryService.saveDiet(me, diary3, EatTime.BreakFast, 150);
-        Diet diet8 = saveDiaryService.saveDiet(me, diary3, EatTime.Lunch, 120);
-        Diet diet9 = saveDiaryService.saveDiet(me, diary3, EatTime.Dinner, 140);
+        Diet diet7 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()), EatTime.BreakFast, 150);
+        Diet diet8 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()), EatTime.Lunch, 120);
+        Diet diet9 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()), EatTime.Dinner, 140);
 
         //when
         List<Diet> dietList = dietRepository.findHigherThanBloodSugarBetweenTime(me.getId(), 150, LocalDateTime.of(2021, 12, 5, 0, 0, 0), LocalDateTime.of(2021, 12, 27, 0, 0, 0));
@@ -305,21 +305,21 @@ public class ReadDiaryTest {
     public void findLowerThanBloodSugarBetweenTime() {
         //given
         Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        DiabetesDiary diary1 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
-        DiabetesDiary diary2 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
-        DiabetesDiary diary3 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
+        DiabetesDiary diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
+        DiabetesDiary diary2 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
+        DiabetesDiary diary3 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
 
-        Diet diet1 = saveDiaryService.saveDiet(me, diary1, EatTime.BreakFast, 100);
-        Diet diet2 = saveDiaryService.saveDiet(me, diary1, EatTime.Lunch, 100);
-        Diet diet3 = saveDiaryService.saveDiet(me, diary1, EatTime.Dinner, 100);
+        Diet diet1 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.BreakFast, 100);
+        Diet diet2 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Lunch, 100);
+        Diet diet3 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Dinner, 100);
 
-        Diet diet4 = saveDiaryService.saveDiet(me, diary2, EatTime.BreakFast, 120);
-        Diet diet5 = saveDiaryService.saveDiet(me, diary2, EatTime.Lunch, 200);
-        Diet diet6 = saveDiaryService.saveDiet(me, diary2, EatTime.Dinner, 170);
+        Diet diet4 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.BreakFast, 120);
+        Diet diet5 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.Lunch, 200);
+        Diet diet6 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.Dinner, 170);
 
-        Diet diet7 = saveDiaryService.saveDiet(me, diary3, EatTime.BreakFast, 150);
-        Diet diet8 = saveDiaryService.saveDiet(me, diary3, EatTime.Lunch, 120);
-        Diet diet9 = saveDiaryService.saveDiet(me, diary3, EatTime.Dinner, 140);
+        Diet diet7 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()), EatTime.BreakFast, 150);
+        Diet diet8 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()), EatTime.Lunch, 120);
+        Diet diet9 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()), EatTime.Dinner, 140);
 
         //when
         List<Diet> dietList = dietRepository.findLowerThanBloodSugarBetweenTime(me.getId(), 150, LocalDateTime.of(2021, 12, 5, 0, 0, 0), LocalDateTime.of(2021, 12, 27, 0, 0, 0));
@@ -338,21 +338,21 @@ public class ReadDiaryTest {
     public void findHigherThanBloodSugarInEatTime() {
         //given
         Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        DiabetesDiary diary1 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
-        DiabetesDiary diary2 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
-        DiabetesDiary diary3 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
+        DiabetesDiary diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
+        DiabetesDiary diary2 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
+        DiabetesDiary diary3 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
 
-        Diet diet1 = saveDiaryService.saveDiet(me, diary1, EatTime.BreakFast, 100);
-        Diet diet2 = saveDiaryService.saveDiet(me, diary1, EatTime.Lunch, 100);
-        Diet diet3 = saveDiaryService.saveDiet(me, diary1, EatTime.Dinner, 100);
+        Diet diet1 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.BreakFast, 100);
+        Diet diet2 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Lunch, 100);
+        Diet diet3 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Dinner, 100);
 
-        Diet diet4 = saveDiaryService.saveDiet(me, diary2, EatTime.BreakFast, 120);
-        Diet diet5 = saveDiaryService.saveDiet(me, diary2, EatTime.Lunch, 200);
-        Diet diet6 = saveDiaryService.saveDiet(me, diary2, EatTime.Dinner, 170);
+        Diet diet4 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.BreakFast, 120);
+        Diet diet5 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.Lunch, 200);
+        Diet diet6 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.Dinner, 170);
 
-        Diet diet7 = saveDiaryService.saveDiet(me, diary3, EatTime.BreakFast, 150);
-        Diet diet8 = saveDiaryService.saveDiet(me, diary3, EatTime.Lunch, 120);
-        Diet diet9 = saveDiaryService.saveDiet(me, diary3, EatTime.Dinner, 140);
+        Diet diet7 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()), EatTime.BreakFast, 150);
+        Diet diet8 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()), EatTime.Lunch, 120);
+        Diet diet9 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()), EatTime.Dinner, 140);
 
         //when
         List<Diet> dietList = dietRepository.findHigherThanBloodSugarInEatTime(me.getId(), 120, EatTime.Lunch);
@@ -372,14 +372,14 @@ public class ReadDiaryTest {
     public void findFoodsInDiet() {
         //given
         Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
-        Diet diet = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 250);
-        Food food1 = saveDiaryService.saveFood(me, diet, "pizza");
-        Food food2 = saveDiaryService.saveFood(me, diet, "chicken");
-        Food food3 = saveDiaryService.saveFood(me, diet, "cola");
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
+        Diet diet = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 250);
+        Food food1 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "pizza");
+        Food food2 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "chicken");
+        Food food3 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "cola");
 
         //when
-        List<Food> foodList = foodRepository.findFoodsInDiet(me.getId(),diet.getDietId());
+        List<Food> foodList = foodRepository.findFoodsInDiet(me.getId(), diet.getDietId());
 
         //then
         logger.info(foodList.toString());
@@ -394,11 +394,11 @@ public class ReadDiaryTest {
     public void findOneFoodByIdInDiet() {
         //given
         Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
-        Diet diet = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 250);
-        Food food1 = saveDiaryService.saveFood(me, diet, "pizza");
-        Food food2 = saveDiaryService.saveFood(me, diet, "chicken");
-        Food food3 = saveDiaryService.saveFood(me, diet, "cola");
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
+        Diet diet = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 250);
+        Food food1 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "pizza");
+        Food food2 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "chicken");
+        Food food3 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "cola");
 
         //when
         Food foundFood = foodRepository.findOneFoodByIdInDiet(me.getId(), diet.getDietId(), food3.getId())
@@ -416,21 +416,21 @@ public class ReadDiaryTest {
     public void findFoodNamesInDietHigherThanBloodSugar() {
         //given
         Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
-        Diet diet1 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 250);
-        Food food1 = saveDiaryService.saveFood(me, diet1, "pizza");
-        Food food2 = saveDiaryService.saveFood(me, diet1, "chicken");
-        Food food3 = saveDiaryService.saveFood(me, diet1, "cola");
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
+        Diet diet1 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 250);
+        Food food1 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet1.getDietId()), "pizza");
+        Food food2 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet1.getDietId()), "chicken");
+        Food food3 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet1.getDietId()), "cola");
 
-        Diet diet2 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 200);
-        Food food4 = saveDiaryService.saveFood(me, diet2, "ham");
-        Food food5 = saveDiaryService.saveFood(me, diet2, "chicken");
-        Food food6 = saveDiaryService.saveFood(me, diet2, "cola");
+        Diet diet2 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 200);
+        Food food4 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet2.getDietId()), "ham");
+        Food food5 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet2.getDietId()), "chicken");
+        Food food6 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet2.getDietId()), "cola");
 
-        Diet diet3 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 150);
-        Food food7 = saveDiaryService.saveFood(me, diet3, "ham");
-        Food food8 = saveDiaryService.saveFood(me, diet3, "egg");
-        Food food9 = saveDiaryService.saveFood(me, diet3, "water");
+        Diet diet3 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 150);
+        Food food7 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet3.getDietId()), "ham");
+        Food food8 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet3.getDietId()), "egg");
+        Food food9 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet3.getDietId()), "water");
 
         //when
         List<String> foodNames = foodRepository.findFoodNamesInDietHigherThanBloodSugar(me.getId(), 200);
@@ -449,18 +449,18 @@ public class ReadDiaryTest {
     public void testNPlusOne() {
         //given
         Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
-        saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 200);
-        saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 210);
-        saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 220);
-        saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 230);
-        saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 240);
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 200);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 210);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 220);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 230);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 240);
 
         //when
         logger.info("find all test");
         List<DiabetesDiary> diaries = diaryRepository.findAll();
         for (DiabetesDiary d : diaries) {
-            for (Diet di : d.getDietList()){
+            for (Diet di : d.getDietList()) {
                 logger.info(di.toString());
             }
         }
@@ -473,15 +473,14 @@ public class ReadDiaryTest {
     public void findAverageBloodSugarDiet() {
         //given
         Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
-        saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 200);
-        saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 210);
-        saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 220);
-        saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 230);
-        saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 240);
-
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 200);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 210);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 220);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 230);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 240);
         //when
-        double averageBloodSugar = dietRepository.findAverageBloodSugarOfDiet(me.getId()).orElseThrow(()->new NullPointerException("아예 혈당이 없다."));
+        double averageBloodSugar = dietRepository.findAverageBloodSugarOfDiet(me.getId()).orElseThrow(() -> new NullPointerException("아예 혈당이 없다."));
 
         //then
         logger.info(String.valueOf(averageBloodSugar));
@@ -493,26 +492,27 @@ public class ReadDiaryTest {
     public void findFoodHigherThanAverageBloodSugarOfDiet() {
         //given
         Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
-        Diet diet1 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 200);
-        Diet diet2 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 210);
-        Diet diet3 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 220);//<-평균 혈당
-        Diet diet4 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 230);
-        Diet diet5 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 240);
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
+        Diet diet1 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 200);
+        Diet diet2 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 210);
+        Diet diet3 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 220);//<-평균 혈당
+        Diet diet4 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 230);
+        Diet diet5 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 240);
 
-        saveDiaryService.saveFood(me, diet1, "pizza");
-        saveDiaryService.saveFood(me, diet2, "chicken");
-        saveDiaryService.saveFood(me, diet3, "cola");//<-
-        saveDiaryService.saveFood(me, diet4, "ham");//<-
-        saveDiaryService.saveFood(me, diet5, "apple");//<-
-        saveDiaryService.saveFood(me, diet1, "orange");
-        saveDiaryService.saveFood(me, diet2, "sausage");
-        saveDiaryService.saveFood(me, diet3, "egg");//<-
-        saveDiaryService.saveFood(me, diet4, "water");//<-
-        saveDiaryService.saveFood(me, diet4, "juice");//<-
+        saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet1.getDietId()), "pizza");
+        saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet2.getDietId()), "chicken");
+        saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet3.getDietId()), "cola");//<-
+        saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet4.getDietId()), "ham");//<-
+        saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet5.getDietId()), "apple");//<-
+
+        saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet1.getDietId()), "orange");
+        saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet2.getDietId()), "sausage");
+        saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet3.getDietId()), "egg");//<-
+        saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet4.getDietId()), "water");//<-
+        saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet5.getDietId()), "juice");//<-
 
         //when
-        List<String>foodNames=foodRepository.findFoodHigherThanAverageBloodSugarOfDiet(me.getId());
+        List<String> foodNames = foodRepository.findFoodHigherThanAverageBloodSugarOfDiet(me.getId());
 
         //then
         logger.info(foodNames.toString());
