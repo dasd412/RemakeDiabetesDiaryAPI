@@ -45,7 +45,7 @@ public class DiarySaveRestController {
         return ApiResult.OK(new WriterJoinResponseDTO(saveDiaryService.saveWriter(dto.getName(), dto.getEmail(), dto.getRole())));
     }
 
-    @PostMapping("api/diary/diabetesDiary")
+    @PostMapping("api/diary/diabetes_diary")
     public ApiResult<DiabetesDiaryResponseDTO> postDiary(@RequestBody DiabetesDiaryRequestDTO dto) {
         logger.info("post diary : " + dto.toString());
         //컨트롤러 테스트 시, LocalDateTime->JSON 으로 직렬화를 못한다. 그걸 해결하기 위한 코드 두 줄.
