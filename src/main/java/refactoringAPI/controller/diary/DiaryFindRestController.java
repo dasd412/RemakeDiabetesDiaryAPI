@@ -78,4 +78,30 @@ public class DiaryFindRestController {
 
         return ApiResult.OK(dtoList);
     }
+
+    @GetMapping("api/diary/owner/{writerId}/diabetes_diary/ge/{fastingPlasmaGlucose}")
+    public ApiResult<List<DiaryListFindResponseDTO>> findFpgHigherOrEqual(@PathVariable("writerId") Long writerId, @PathVariable("fastingPlasmaGlucose") int fastingPlasmaGlucose) {
+        logger.info("find Fpg HigherOrEqual -> " + fastingPlasmaGlucose);
+
+        List<DiabetesDiary> diabetesDiaryList = findDiaryService.getFpgHigherOrEqual(EntityId.of(Writer.class, writerId), fastingPlasmaGlucose);
+        List<DiaryListFindResponseDTO> dtoList = diabetesDiaryList.stream().map(
+                DiaryListFindResponseDTO::new
+        ).collect(Collectors.toList());
+
+        return ApiResult.OK(dtoList);
+    }
+
+    @GetMapping("api/diary/owner/{writerId}/diabetes_diary/le/{fastingPlasmaGlucose}")
+    public ApiResult<List<DiaryListFindResponseDTO>> findFpgLowerOrEqual(@PathVariable("writerId") Long writerId, @PathVariable("fastingPlasmaGlucose") int fastingPlasmaGlucose) {
+        logger.info("find Fpg LowerOrEqual -> " + fastingPlasmaGlucose);
+
+        List<DiabetesDiary> diaries = findDiaryService.getFpgLowerOrEqual(EntityId.of(Writer.class, writerId), fastingPlasmaGlucose);
+        List<DiaryListFindResponseDTO> dtoList = diaries.stream().map(
+                DiaryListFindResponseDTO::new
+        ).collect(Collectors.toList());
+
+        return ApiResult.OK(dtoList);
+    }
+
+
 }

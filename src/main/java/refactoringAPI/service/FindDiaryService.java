@@ -86,7 +86,7 @@ public class FindDiaryService {
     }
 
     @Transactional(readOnly = true)
-    public List<DiabetesDiary> getFpgHigherOrEqual(int fastingPlasmaGlucose, EntityId<Writer, Long> writerEntityId) {
+    public List<DiabetesDiary> getFpgHigherOrEqual(EntityId<Writer, Long> writerEntityId, int fastingPlasmaGlucose) {
         logger.info("getFpgHigherOrEqual");
         checkNotNull(writerEntityId, "writerId must be provided");
         checkArgument(fastingPlasmaGlucose > 0, "fpg must be positive");
@@ -94,7 +94,7 @@ public class FindDiaryService {
     }
 
     @Transactional(readOnly = true)
-    public List<DiabetesDiary> getFpgLowerOrEqual(int fastingPlasmaGlucose, EntityId<Writer, Long> writerEntityId) {
+    public List<DiabetesDiary> getFpgLowerOrEqual(EntityId<Writer, Long> writerEntityId, int fastingPlasmaGlucose) {
         logger.info("getFpgLowerOrEqual");
         checkNotNull(writerEntityId, "writerId must be provided");
         checkArgument(fastingPlasmaGlucose > 0, "fpg must be positive");

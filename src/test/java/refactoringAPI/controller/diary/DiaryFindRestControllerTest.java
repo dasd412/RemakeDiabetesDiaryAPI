@@ -267,4 +267,63 @@ public class DiaryFindRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(3)));
     }
 
+    @Transactional
+    @Test
+    public void findFpgHigherOrEqual() throws Exception {
+        //given
+        DiabetesDiaryRequestDTO diaryRequestDTO1 = new DiabetesDiaryRequestDTO(1L, 200, "TEST@", "2021", "09", "26", "00", "00", "00");
+
+        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes_diary";
+        mockMvc.perform(post(postDiaryUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(diaryRequestDTO1)))
+                .andExpect(status().isOk());
+
+        DiabetesDiaryRequestDTO diaryRequestDTO2 = new DiabetesDiaryRequestDTO(1L, 150, "TEST@@", "2021", "09", "27", "00", "00", "00");
+
+        mockMvc.perform(post(postDiaryUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(diaryRequestDTO2)))
+                .andExpect(status().isOk());
+
+        long writerId = 1L;
+        int fastingPlasmaGlucose = 150;
+
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes_diary/ge/" + fastingPlasmaGlucose;
+
+        //when and then
+        mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(2)));
+    }
+
+    @Transactional
+    @Test
+    public void findFpgLowerOrEqual() throws Exception {
+        //given
+        DiabetesDiaryRequestDTO diaryRequestDTO1 = new DiabetesDiaryRequestDTO(1L, 200, "TEST@", "2021", "09", "26", "00", "00", "00");
+
+        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes_diary";
+        mockMvc.perform(post(postDiaryUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(diaryRequestDTO1)))
+                .andExpect(status().isOk());
+
+        DiabetesDiaryRequestDTO diaryRequestDTO2 = new DiabetesDiaryRequestDTO(1L, 150, "TEST@@", "2021", "09", "27", "00", "00", "00");
+
+        mockMvc.perform(post(postDiaryUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(diaryRequestDTO2)))
+                .andExpect(status().isOk());
+
+        long writerId = 1L;
+        int fastingPlasmaGlucose = 200;
+
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes_diary/le/" + fastingPlasmaGlucose;
+
+        //when and then
+        mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(3)));
+    }
 }
