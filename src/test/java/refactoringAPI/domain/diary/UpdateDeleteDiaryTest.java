@@ -284,11 +284,11 @@ public class UpdateDeleteDiaryTest {
         assertThat(dietList.size()).isEqualTo(0);
     }
 
-    //todo org.hibernate.AssertionFailure: no collection snapshot for orphan delete 발생
     @Transactional
     @Test
     public void deleteDiaryCascadeDiet() {
         //given
+        logger.info("save start");
         Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
         DiabetesDiary diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
 
@@ -296,8 +296,10 @@ public class UpdateDeleteDiaryTest {
         Diet diet2 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Lunch, 100);
         Diet diet3 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Dinner, 100);
 
+        logger.info("delete start");
         updateDeleteDiaryService.deleteDiary(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()));
 
+        logger.info("delete end");
         //when
         List<Writer> found = writerRepository.findAll();
         List<DiabetesDiary> diaries = diaryRepository.findAll();
@@ -306,7 +308,6 @@ public class UpdateDeleteDiaryTest {
         //then
         logger.info(found.toString());
         logger.info(found.get(0).getDiaries().toString());
-        logger.info(found.get(0).getDiaries().get(0).getDietList().toString());
         logger.info(dietList.toString());
         logger.info(diaries.toString());
         assertThat(found.get(0).getDiaries().size()).isEqualTo(0);
@@ -420,7 +421,6 @@ public class UpdateDeleteDiaryTest {
         assertThat(foodList.size()).isEqualTo(0);
     }
 
-    //todo 이건 왜 될까?
     @Transactional
     @Test
     public void deleteDiaryCascadeFood() {
@@ -453,7 +453,6 @@ public class UpdateDeleteDiaryTest {
         assertThat(foodList.size()).isEqualTo(0);
     }
 
-    // todo cascade 안됨.
     @Transactional
     @Test
     public void deleteDietCascadeFood() {
