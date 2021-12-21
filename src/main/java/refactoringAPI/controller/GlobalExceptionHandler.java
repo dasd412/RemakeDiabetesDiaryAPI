@@ -14,6 +14,8 @@ import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import java.util.NoSuchElementException;
+
 @ControllerAdvice
 //전역 예외 처리 핸들러
 public class GlobalExceptionHandler {
@@ -30,7 +32,7 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NoHandlerFoundException.class)
+    @ExceptionHandler({NoHandlerFoundException.class, NoSuchElementException.class})
     public ModelAndView handle404() {
         logger.error("Not found in server");
         return new ModelAndView("404");
