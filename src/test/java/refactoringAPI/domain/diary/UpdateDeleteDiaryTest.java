@@ -78,7 +78,7 @@ public class UpdateDeleteDiaryTest {
 
         //given
         Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
 
         updateDeleteDiaryService.updateDiary(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), 100, "modifyTest");
 
@@ -108,7 +108,7 @@ public class UpdateDeleteDiaryTest {
     public void deleteDiary() {
         //given
         Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
 
         updateDeleteDiaryService.deleteDiary(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()));
 
@@ -129,10 +129,10 @@ public class UpdateDeleteDiaryTest {
     public void deleteSomeDiary() {
         //given
         Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        DiabetesDiary diary1 = saveDiaryService.saveDiary(me, 10, "test1", LocalDateTime.now());
-        DiabetesDiary diary2 = saveDiaryService.saveDiary(me, 20, "test2", LocalDateTime.now());
-        DiabetesDiary diary3 = saveDiaryService.saveDiary(me, 30, "test3", LocalDateTime.now());
-        DiabetesDiary diary4 = saveDiaryService.saveDiary(me, 40, "test4", LocalDateTime.now());
+        DiabetesDiary diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 10, "test1", LocalDateTime.now());
+        DiabetesDiary diary2 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test2", LocalDateTime.now());
+        DiabetesDiary diary3 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 30, "test3", LocalDateTime.now());
+        DiabetesDiary diary4 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 40, "test4", LocalDateTime.now());
 
         updateDeleteDiaryService.deleteDiary(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()));
         updateDeleteDiaryService.deleteDiary(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()));
@@ -156,11 +156,11 @@ public class UpdateDeleteDiaryTest {
         //작성자 삭제되면 일지도 삭제되는 지 cascade 테스트
         //given
         Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        saveDiaryService.saveDiary(me, 10, "test1", LocalDateTime.now());
-        saveDiaryService.saveDiary(me, 20, "test2", LocalDateTime.now());
-        saveDiaryService.saveDiary(me, 30, "test3", LocalDateTime.now());
-        saveDiaryService.saveDiary(me, 40, "test4", LocalDateTime.now());
-        writerRepository.delete(me);
+        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 10, "test1", LocalDateTime.now());
+        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test2", LocalDateTime.now());
+        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 30, "test3", LocalDateTime.now());
+        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 40, "test4", LocalDateTime.now());
+        writerRepository.deleteById(me.getId());
 
         //when
         List<Writer> writers = writerRepository.findAll();
@@ -177,9 +177,9 @@ public class UpdateDeleteDiaryTest {
         //given
         Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
 
-        DiabetesDiary diary1 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
+        DiabetesDiary diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
 
-        Diet diet1 = saveDiaryService.saveDiet(me, diary1, EatTime.BreakFast, 100);
+        Diet diet1 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.BreakFast, 100);
         updateDeleteDiaryService.updateDiet(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EntityId.of(Diet.class, diet1.getDietId()), EatTime.Lunch, 200);
 
         //when
@@ -202,8 +202,8 @@ public class UpdateDeleteDiaryTest {
     public void deleteDiet() {
         //given
         Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        DiabetesDiary diary1 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
-        Diet diet1 = saveDiaryService.saveDiet(me, diary1, EatTime.BreakFast, 100);
+        DiabetesDiary diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
+        Diet diet1 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.BreakFast, 100);
 
         updateDeleteDiaryService.deleteDiet(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EntityId.of(Diet.class, diet1.getDietId()));
 
@@ -211,6 +211,7 @@ public class UpdateDeleteDiaryTest {
         DiabetesDiary diary = diaryRepository.findOneDiabetesDiaryByIdInWriter(me.getId(), diary1.getId())
                 .orElseThrow(() -> new NoSuchElementException("일지 없음"));
         List<Diet> dietList = dietRepository.findAll();
+
         //then
         logger.info(diary.getDietList().toString());
         assertThat(diary.getDietList().size()).isEqualTo(0);
@@ -223,15 +224,15 @@ public class UpdateDeleteDiaryTest {
         //given
         Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
 
-        DiabetesDiary diary1 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
-        Diet diet1 = saveDiaryService.saveDiet(me, diary1, EatTime.BreakFast, 100);
-        Diet diet2 = saveDiaryService.saveDiet(me, diary1, EatTime.Lunch, 100);
-        Diet diet3 = saveDiaryService.saveDiet(me, diary1, EatTime.Dinner, 100);
+        DiabetesDiary diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
+        Diet diet1 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.BreakFast, 100);
+        Diet diet2 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Lunch, 100);
+        Diet diet3 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Dinner, 100);
 
-        DiabetesDiary diary2 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
-        Diet diet4 = saveDiaryService.saveDiet(me, diary2, EatTime.BreakFast, 120);
-        Diet diet5 = saveDiaryService.saveDiet(me, diary2, EatTime.Lunch, 200);
-        Diet diet6 = saveDiaryService.saveDiet(me, diary2, EatTime.Dinner, 170);
+        DiabetesDiary diary2 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
+        Diet diet4 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.BreakFast, 120);
+        Diet diet5 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.Lunch, 200);
+        Diet diet6 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.Dinner, 170);
 
         updateDeleteDiaryService.deleteDiet(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EntityId.of(Diet.class, diet1.getDietId()));
         updateDeleteDiaryService.deleteDiet(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EntityId.of(Diet.class, diet5.getDietId()));
@@ -264,12 +265,13 @@ public class UpdateDeleteDiaryTest {
     public void deleteWriterCascadeDiet() {
         //given
         Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        DiabetesDiary diary1 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
+        DiabetesDiary diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
 
-        Diet diet1 = saveDiaryService.saveDiet(me, diary1, EatTime.BreakFast, 100);
-        Diet diet2 = saveDiaryService.saveDiet(me, diary1, EatTime.Lunch, 100);
-        Diet diet3 = saveDiaryService.saveDiet(me, diary1, EatTime.Dinner, 100);
-        writerRepository.delete(me);
+        Diet diet1 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.BreakFast, 100);
+        Diet diet2 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Lunch, 100);
+        Diet diet3 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Dinner, 100);
+
+        writerRepository.deleteById(me.getId());
 
         //when
         List<Writer> writers = writerRepository.findAll();
@@ -282,16 +284,17 @@ public class UpdateDeleteDiaryTest {
         assertThat(dietList.size()).isEqualTo(0);
     }
 
+    //todo org.hibernate.AssertionFailure: no collection snapshot for orphan delete 발생
     @Transactional
     @Test
     public void deleteDiaryCascadeDiet() {
         //given
         Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        DiabetesDiary diary1 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
+        DiabetesDiary diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
 
-        Diet diet1 = saveDiaryService.saveDiet(me, diary1, EatTime.BreakFast, 100);
-        Diet diet2 = saveDiaryService.saveDiet(me, diary1, EatTime.Lunch, 100);
-        Diet diet3 = saveDiaryService.saveDiet(me, diary1, EatTime.Dinner, 100);
+        Diet diet1 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.BreakFast, 100);
+        Diet diet2 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Lunch, 100);
+        Diet diet3 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Dinner, 100);
 
         updateDeleteDiaryService.deleteDiary(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()));
 
@@ -303,6 +306,7 @@ public class UpdateDeleteDiaryTest {
         //then
         logger.info(found.toString());
         logger.info(found.get(0).getDiaries().toString());
+        logger.info(found.get(0).getDiaries().get(0).getDietList().toString());
         logger.info(dietList.toString());
         logger.info(diaries.toString());
         assertThat(found.get(0).getDiaries().size()).isEqualTo(0);
@@ -315,9 +319,9 @@ public class UpdateDeleteDiaryTest {
     public void updateFood() {
         //given
         Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
-        Diet diet1 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 250);
-        Food food1 = saveDiaryService.saveFood(me, diet1, "pizza");
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
+        Diet diet1 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 250);
+        Food food1 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet1.getDietId()), "pizza");
         updateDeleteDiaryService.updateFood(EntityId.of(Writer.class, me.getId()), EntityId.of(Diet.class, diet1.getDietId()), EntityId.of(Food.class, food1.getId()), "chicken");
 
         //when
@@ -341,9 +345,9 @@ public class UpdateDeleteDiaryTest {
     public void deleteFood() {
         //given
         Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
-        Diet diet1 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 250);
-        Food food1 = saveDiaryService.saveFood(me, diet1, "pizza");
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
+        Diet diet1 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 250);
+        Food food1 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet1.getDietId()), "pizza");
 
         updateDeleteDiaryService.deleteFood(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet1.getDietId()), EntityId.of(Food.class, food1.getId()));
 
@@ -363,12 +367,12 @@ public class UpdateDeleteDiaryTest {
     public void deleteSomeFood() {
         //given
         Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
-        Diet diet = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 250);
-        Food food1 = saveDiaryService.saveFood(me, diet, "pizza");
-        Food food2 = saveDiaryService.saveFood(me, diet, "chicken");
-        Food food3 = saveDiaryService.saveFood(me, diet, "cola");
-        Food food4 = saveDiaryService.saveFood(me, diet, "beer");
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
+        Diet diet = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 250);
+        Food food1 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "pizza");
+        Food food2 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "chicken");
+        Food food3 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "cola");
+        Food food4 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "beer");
 
         updateDeleteDiaryService.deleteFood(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), EntityId.of(Food.class, food2.getId()));
         updateDeleteDiaryService.deleteFood(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), EntityId.of(Food.class, food4.getId()));
@@ -395,11 +399,11 @@ public class UpdateDeleteDiaryTest {
     public void deleteWriterCascadeFood() {
         //given
         Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
-        Diet diet = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 250);
-        Food food1 = saveDiaryService.saveFood(me, diet, "pizza");
-        Food food2 = saveDiaryService.saveFood(me, diet, "chicken");
-        Food food3 = saveDiaryService.saveFood(me, diet, "cola");
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
+        Diet diet = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 250);
+        Food food1 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "pizza");
+        Food food2 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "chicken");
+        Food food3 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "cola");
 
         writerRepository.delete(me);
 
@@ -416,16 +420,17 @@ public class UpdateDeleteDiaryTest {
         assertThat(foodList.size()).isEqualTo(0);
     }
 
+    //todo 이건 왜 될까?
     @Transactional
     @Test
     public void deleteDiaryCascadeFood() {
         //given
         Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
-        Diet diet = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 250);
-        Food food1 = saveDiaryService.saveFood(me, diet, "pizza");
-        Food food2 = saveDiaryService.saveFood(me, diet, "chicken");
-        Food food3 = saveDiaryService.saveFood(me, diet, "cola");
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
+        Diet diet = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 250);
+        Food food1 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "pizza");
+        Food food2 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "chicken");
+        Food food3 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "cola");
 
         updateDeleteDiaryService.deleteDiary(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()));
 
@@ -448,16 +453,17 @@ public class UpdateDeleteDiaryTest {
         assertThat(foodList.size()).isEqualTo(0);
     }
 
+    // todo cascade 안됨.
     @Transactional
     @Test
     public void deleteDietCascadeFood() {
         //given
         Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
-        Diet diet = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 250);
-        Food food1 = saveDiaryService.saveFood(me, diet, "pizza");
-        Food food2 = saveDiaryService.saveFood(me, diet, "chicken");
-        Food food3 = saveDiaryService.saveFood(me, diet, "cola");
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
+        Diet diet = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 250);
+        Food food1 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "pizza");
+        Food food2 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "chicken");
+        Food food3 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "cola");
 
         updateDeleteDiaryService.deleteDiet(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()));
 
@@ -483,7 +489,7 @@ public class UpdateDeleteDiaryTest {
         thrown.expectMessage("fastingPlasmaGlucose must be between 1 and 1000");
 
         Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiary(me, 200, "test", LocalDateTime.now());
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 200, "test", LocalDateTime.now());
         updateDeleteDiaryService.updateDiary(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), -190, "modifyTest");
     }
 
@@ -494,8 +500,8 @@ public class UpdateDeleteDiaryTest {
         thrown.expectMessage("bloodSugar must be between 1 and 1000");
 
         Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        DiabetesDiary diary1 = saveDiaryService.saveDiary(me, 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
-        Diet diet1 = saveDiaryService.saveDiet(me, diary1, EatTime.BreakFast, 100);
+        DiabetesDiary diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
+        Diet diet1 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.BreakFast, 100);
         updateDeleteDiaryService.updateDiet(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EntityId.of(Diet.class, diet1.getDietId()), EatTime.Lunch, -1900);
     }
 
@@ -506,9 +512,9 @@ public class UpdateDeleteDiaryTest {
         thrown.expectMessage("food name length should be between 1 and 50");
 
         Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiary(me, 20, "test", LocalDateTime.now());
-        Diet diet1 = saveDiaryService.saveDiet(me, diary, EatTime.Lunch, 250);
-        Food food1 = saveDiaryService.saveFood(me, diet1, "pizza");
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
+        Diet diet1 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 250);
+        Food food1 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet1.getDietId()), "pizza");
         updateDeleteDiaryService.updateFood(EntityId.of(Writer.class, me.getId()), EntityId.of(Diet.class, diet1.getDietId()), EntityId.of(Food.class, food1.getId()), "");
     }
 

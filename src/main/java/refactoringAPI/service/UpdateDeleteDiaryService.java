@@ -63,6 +63,8 @@ public class UpdateDeleteDiaryService {
         DiabetesDiary targetDiary = diaryRepository.findOneDiabetesDiaryByIdInWriter(writerEntityId.getId(), diaryEntityId.getId())
                 .orElseThrow(() -> new NoSuchElementException("해당 혈당일지가 존재하지 않습니다."));
 
+        logger.info("target : "+targetDiary.toString());
+        logger.info("diet : "+targetDiary.getDietList().toString());
         //orphanRemoval = true 로 해놓았기 때문에 부모의 컬렉션에서 자식이 null 되면 알아서 delete 쿼리가 나간다.
         targetDiary.getDietList().clear();
         writer.removeDiary(targetDiary);

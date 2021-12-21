@@ -1,6 +1,8 @@
 package refactoringAPI.domain.diary.diabetesDiary;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import refactoringAPI.domain.diary.diet.QDiet;
+import refactoringAPI.domain.diary.food.QFood;
 import refactoringAPI.domain.diary.writer.Writer;
 
 import java.time.LocalDateTime;
@@ -88,4 +90,5 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
                 .where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId).and(QDiabetesDiary.diabetesDiary.fastingPlasmaGlucose.loe(fastingPlasmaGlucose)))
                 .fetch();
     }
+
 }
