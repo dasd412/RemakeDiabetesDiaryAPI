@@ -24,6 +24,8 @@ import refactoringAPI.controller.diary.writer.WriterJoinRequestDTO;
 import refactoringAPI.domain.diary.diet.EatTime;
 import refactoringAPI.domain.diary.writer.Role;
 
+import java.time.LocalDateTime;
+
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -208,23 +210,61 @@ public class DiaryFindRestControllerTest {
         //given
         String startDate = "2021-09-25-06:49:41";
         String endDate = "2021-09-26:06:49:41";
-        long writerId=1L;
+        long writerId = 1L;
 
-        String url = "http://localhost:" + port+"api/diary/owner/"+writerId+"/diabetesDiary/startDate/"+startDate+"/endDate/"+endDate;
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes_diary/start_date/" + startDate + "/end_date/" + endDate;
 
-
+        //when and then
+        mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
     }
 
     @Transactional
     @Test
     public void findDiariesBetweenTimeInvalidTimeOrder() throws Exception {
+        //given
+        String startDate = "2021-09-25T06:49:41";
+        String endDate = "2021-09-22T06:49:41";
+        long writerId = 1L;
 
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes_diary/start_date/" + startDate + "/end_date/" + endDate;
+
+        //when and then
+        mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
     }
 
     @Transactional
     @Test
     public void findDiariesBetweenTime() throws Exception {
+        //given
+        DiabetesDiaryRequestDTO diaryRequestDTO1 = new DiabetesDiaryRequestDTO(1L, 200, "TEST@", "2021", "09", "26", "00", "00", "00");
 
+        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes_diary";
+        mockMvc.perform(post(postDiaryUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(diaryRequestDTO1)))
+                .andExpect(status().isOk());
+
+        DiabetesDiaryRequestDTO diaryRequestDTO2 = new DiabetesDiaryRequestDTO(1L, 150, "TEST@@", "2021", "09", "27", "00", "00", "00");
+
+        mockMvc.perform(post(postDiaryUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(diaryRequestDTO2)))
+                .andExpect(status().isOk());
+
+        long writerId = 1L;
+
+        String startDate = "2021-09-25T00:00:00";
+        String endDate = "2021-09-27T23:59:59";
+
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes_diary/start_date/" + startDate + "/end_date/" + endDate;
+
+        mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(3)));
     }
 
 }

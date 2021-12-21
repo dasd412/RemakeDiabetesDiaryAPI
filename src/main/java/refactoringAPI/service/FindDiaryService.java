@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -48,7 +49,7 @@ public class FindDiaryService {
     public Writer getWriterOfDiary(EntityId<DiabetesDiary, Long> diaryEntityId) {
         logger.info("getWriterOfDiary");
         checkNotNull(diaryEntityId, "diaryId must be provided");
-        return diaryRepository.findWriterOfDiary(diaryEntityId.getId()).orElseThrow(()-> new NoSuchElementException("해당 일지의 작성자가 없습니다."));
+        return diaryRepository.findWriterOfDiary(diaryEntityId.getId()).orElseThrow(() -> new NoSuchElementException("해당 일지의 작성자가 없습니다."));
     }
 
     @Transactional(readOnly = true)
@@ -63,15 +64,25 @@ public class FindDiaryService {
         logger.info("getDiabetesDiaryOfWriter");
         checkNotNull(writerEntityId, "writerId must be provided");
         checkNotNull(diabetesDiaryEntityId, "diaryId must be provided");
-        return diaryRepository.findOneDiabetesDiaryByIdInWriter(writerEntityId.getId(), diabetesDiaryEntityId.getId()).orElseThrow(()->new NoSuchElementException("작성자의 일지 중, id에 해당하는 일지가 없습니다."));
+        return diaryRepository.findOneDiabetesDiaryByIdInWriter(writerEntityId.getId(), diabetesDiaryEntityId.getId()).orElseThrow(() -> new NoSuchElementException("작성자의 일지 중, id에 해당하는 일지가 없습니다."));
     }
 
     @Transactional(readOnly = true)
-    public List<DiabetesDiary> getDiaryBetweenTime(LocalDateTime startDate, LocalDateTime endDate, EntityId<Writer, Long> writerEntityId) {
+    public List<DiabetesDiary> getDiariesBetweenTime(EntityId<Writer, Long> writerEntityId, String startDateString, String endDateString) {
         logger.info("getDiaryBetweenTime");
+
         checkNotNull(writerEntityId, "writerId must be provided");
-        checkArgument(startDate.isBefore(endDate), "startDate must be before than endDate");
-        return diaryRepository.findDiaryBetweenTime(writerEntityId.getId(), startDate, endDate);
+
+        try {
+            LocalDateTime startDate = LocalDateTime.parse(startDateString);
+            LocalDateTime endDate = LocalDateTime.parse(endDateString);
+
+            checkArgument(startDate.isBefore(endDate), "startDate must be before than endDate");
+
+            return diaryRepository.findDiaryBetweenTime(writerEntityId.getId(), startDate, endDate);
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException("LocalDateTime 포맷으로 변경할 수 없는 문자열입니다.");
+        }
     }
 
     @Transactional(readOnly = true)
@@ -107,7 +118,7 @@ public class FindDiaryService {
         checkNotNull(writerEntityId, "writerId must be provided");
         checkNotNull(diabetesDiaryEntityId, "diaryId must be provided");
         checkNotNull(dietEntityId, "dietId must be provided");
-        return dietRepository.findOneDietByIdInDiary(writerEntityId.getId(), diabetesDiaryEntityId.getId(), dietEntityId.getId()).orElseThrow(()->new NoSuchElementException("일지에서 해당 식단이 존재하지 않습니다."));
+        return dietRepository.findOneDietByIdInDiary(writerEntityId.getId(), diabetesDiaryEntityId.getId(), dietEntityId.getId()).orElseThrow(() -> new NoSuchElementException("일지에서 해당 식단이 존재하지 않습니다."));
     }
 
     @Transactional(readOnly = true)
@@ -148,18 +159,18 @@ public class FindDiaryService {
     public double getAverageBloodSugarOfDiet(EntityId<Writer, Long> writerEntityId) {
         logger.info("getAverageBloodSugarOfDiet");
         checkNotNull(writerEntityId, "writerId must be provided");
-        return dietRepository.findAverageBloodSugarOfDiet(writerEntityId.getId()).orElseThrow(()->new IllegalStateException("아직 혈당을 기록한 식단이 없습니다."));
+        return dietRepository.findAverageBloodSugarOfDiet(writerEntityId.getId()).orElseThrow(() -> new IllegalStateException("아직 혈당을 기록한 식단이 없습니다."));
     }
 
     /*
     음식 조회 메서드들
      */
     @Transactional(readOnly = true)
-    public List<Food> getFoodsInDiet(EntityId<Writer, Long> writerEntityId,EntityId<Diet, Long> dietEntityId) {
+    public List<Food> getFoodsInDiet(EntityId<Writer, Long> writerEntityId, EntityId<Diet, Long> dietEntityId) {
         logger.info("getFoodsInDiet");
         checkNotNull(writerEntityId, "writerId must be provided");
         checkNotNull(dietEntityId, "dietId must be provided");
-        return foodRepository.findFoodsInDiet(writerEntityId.getId(),dietEntityId.getId());
+        return foodRepository.findFoodsInDiet(writerEntityId.getId(), dietEntityId.getId());
     }
 
     @Transactional(readOnly = true)
@@ -168,7 +179,7 @@ public class FindDiaryService {
         checkNotNull(writerEntityId, "writerId must be provided");
         checkNotNull(dietEntityId, "dietId must be provided");
         checkNotNull(foodEntityId, "foodId must be provided");
-        return foodRepository.findOneFoodByIdInDiet(writerEntityId.getId(), dietEntityId.getId(), foodEntityId.getId()).orElseThrow(()->new NoSuchElementException("식단에서 해당 음식이 존재하지 않습니다."));
+        return foodRepository.findOneFoodByIdInDiet(writerEntityId.getId(), dietEntityId.getId(), foodEntityId.getId()).orElseThrow(() -> new NoSuchElementException("식단에서 해당 음식이 존재하지 않습니다."));
     }
 
     @Transactional(readOnly = true)
