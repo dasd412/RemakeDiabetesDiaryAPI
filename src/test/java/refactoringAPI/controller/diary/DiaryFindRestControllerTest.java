@@ -24,8 +24,7 @@ import refactoringAPI.controller.diary.writer.WriterJoinRequestDTO;
 import refactoringAPI.domain.diary.diet.EatTime;
 import refactoringAPI.domain.diary.writer.Role;
 
-import static org.hamcrest.Matchers.closeTo;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -354,6 +353,9 @@ public class DiaryFindRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(0)));
     }
 
+    /*
+    식단 조회 테스트
+     */
     @Transactional
     @Test
     public void findDietsOfInvalidDiary() throws Exception {
@@ -690,4 +692,138 @@ public class DiaryFindRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(closeTo(200.0, 0.005)));
     }
+
+    /*
+    음식 조회 테스트
+     */
+    @Transactional
+    @Test
+    public void findFoodsInDiet() throws Exception {
+        //given
+        String foodUrl = "http://localhost:" + port + "api/diary/food";
+        FoodRequestDTO foodRequestDTO = new FoodRequestDTO(1L, 1L, 1L, "cola");
+
+        mockMvc.perform(post(foodUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(foodRequestDTO)))
+                .andExpect(status().isOk());
+
+        long writerId = 1L;
+        long dietId = 1L;
+        String targetUrl = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diet/" + dietId + "/food/list";
+
+        //when and then
+        mockMvc.perform(get(targetUrl).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(2)));
+    }
+
+    @Transactional
+    @Test
+    public void findOneFoodByIdInDiet() throws Exception {
+        //given
+        long writerId = 1L;
+        long dietId = 1L;
+        long foodId = 1L;
+        String targetUrl = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diet/" + dietId + "/food/" + foodId;
+
+        //when and then
+        mockMvc.perform(get(targetUrl).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.foodId").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.foodName").value("pizza"));
+    }
+
+    @Transactional
+    @Test
+    public void findFoodNamesInDietHigherThanBloodSugar() throws Exception {
+        //given
+        String foodUrl = "http://localhost:" + port + "api/diary/food";
+        FoodRequestDTO foodRequestDTO1 = new FoodRequestDTO(1L, 1L, 1L, "cola");
+
+        mockMvc.perform(post(foodUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(foodRequestDTO1)))
+                .andExpect(status().isOk());
+
+        FoodRequestDTO foodRequestDTO2 = new FoodRequestDTO(1L, 1L, 1L, "chicken");
+
+        mockMvc.perform(post(foodUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(foodRequestDTO2)))
+                .andExpect(status().isOk());
+
+        long writerId = 1L;
+        int bloodSugar = 100;
+        String targetUrl = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diet/ge/" + bloodSugar + "/food/names";
+
+        mockMvc.perform(get(targetUrl).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(3)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasItems("pizza", "chicken", "cola")));
+
+    }
+
+    @Transactional
+    @Test
+    public void findFoodHigherThanAverageBloodSugarOfDiet() throws Exception {
+        //given
+        String postDietUrl = "http://localhost:" + port + "api/diary/diet";
+        String foodUrl = "http://localhost:" + port + "api/diary/food";
+
+        DietRequestDTO dietRequestDTO1 = new DietRequestDTO(1L, 1L, EatTime.Lunch, 210);
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO1)))
+                .andExpect(status().isOk());
+
+        DietRequestDTO dietRequestDTO2 = new DietRequestDTO(1L, 1L, EatTime.Lunch, 220); //<-평균 혈당
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO2)))
+                .andExpect(status().isOk());
+
+        DietRequestDTO dietRequestDTO3 = new DietRequestDTO(1L, 1L, EatTime.Lunch, 230);
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO3)))
+                .andExpect(status().isOk());
+
+        DietRequestDTO dietRequestDTO4 = new DietRequestDTO(1L, 1L, EatTime.Lunch, 240);
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO4)))
+                .andExpect(status().isOk());
+
+        FoodRequestDTO foodRequestDTO1 = new FoodRequestDTO(1L, 1L, 2L, "ham");
+        mockMvc.perform(post(foodUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(foodRequestDTO1)))
+                .andExpect(status().isOk());
+
+        FoodRequestDTO foodRequestDTO2 = new FoodRequestDTO(1L, 1L, 3L, "chicken"); //<-
+        mockMvc.perform(post(foodUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(foodRequestDTO2)))
+                .andExpect(status().isOk());
+
+        FoodRequestDTO foodRequestDTO3 = new FoodRequestDTO(1L, 1L, 4L, "egg"); //<-
+        mockMvc.perform(post(foodUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(foodRequestDTO3)))
+                .andExpect(status().isOk());
+
+        FoodRequestDTO foodRequestDTO4 = new FoodRequestDTO(1L, 1L, 5L, "sprite"); //<-
+        mockMvc.perform(post(foodUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(foodRequestDTO4)))
+                .andExpect(status().isOk());
+
+        long writerId = 1L;
+        String targetUrl = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diet/ge/average/food/names";
+
+        //when and then
+        mockMvc.perform(get(targetUrl).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(3)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasItems("chicken", "egg", "sprite")));
+    }
+
 }

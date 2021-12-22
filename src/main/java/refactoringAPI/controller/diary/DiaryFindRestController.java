@@ -10,11 +10,14 @@ import refactoringAPI.controller.diary.diabetesdiary.DiabetesDiaryFindResponseDT
 import refactoringAPI.controller.diary.diabetesdiary.DiaryListFindResponseDTO;
 import refactoringAPI.controller.diary.diet.DietFindResponseDTO;
 import refactoringAPI.controller.diary.diet.DietListFindResponseDTO;
+import refactoringAPI.controller.diary.food.FoodFindResponseDTO;
+import refactoringAPI.controller.diary.food.FoodListFindResponseDTO;
 import refactoringAPI.controller.diary.writer.WriterFindResponseDTO;
 import refactoringAPI.domain.diary.EntityId;
 import refactoringAPI.domain.diary.diabetesDiary.DiabetesDiary;
 import refactoringAPI.domain.diary.diet.Diet;
 import refactoringAPI.domain.diary.diet.EatTime;
+import refactoringAPI.domain.diary.food.Food;
 import refactoringAPI.domain.diary.writer.Writer;
 import refactoringAPI.service.FindDiaryService;
 
@@ -185,4 +188,40 @@ public class DiaryFindRestController {
         return ApiResult.OK(findDiaryService.getAverageBloodSugarOfDiet(EntityId.of(Writer.class, writerId)));
     }
 
+    /*
+    음식 조회 관련 메서드들
+     */
+
+    @GetMapping("api/diary/owner/{writerId}/diet/{dietId}/food/list")
+    public ApiResult<List<FoodListFindResponseDTO>> findFoodsInDiet(@PathVariable("writerId") Long writerId, @PathVariable("dietId") Long dietId) {
+        logger.info("find Foods In Diet");
+
+        List<Food> foodList = findDiaryService.getFoodsInDiet(EntityId.of(Writer.class, writerId), EntityId.of(Diet.class, dietId));
+        List<FoodListFindResponseDTO> dtoList = foodList.stream().map(
+                FoodListFindResponseDTO::new
+        ).collect(Collectors.toList());
+
+        return ApiResult.OK(dtoList);
+    }
+
+    @GetMapping("api/diary/owner/{writerId}/diet/{dietId}/food/{foodId}")
+    public ApiResult<FoodFindResponseDTO> findOneFoodByIdInDiet(@PathVariable("writerId") Long writerId, @PathVariable("dietId") Long dietId, @PathVariable("foodId") Long foodId) {
+        logger.info("find One Food By Id In Diet");
+
+        return ApiResult.OK(new FoodFindResponseDTO(findDiaryService.getOneFoodByIdInDiet(EntityId.of(Writer.class, writerId), EntityId.of(Diet.class, dietId), EntityId.of(Food.class, foodId))));
+    }
+
+    @GetMapping("api/diary/owner/{writerId}/diet/ge/{bloodSugar}/food/names")
+    public ApiResult<List<String>> findFoodNamesInDietHigherThanBloodSugar(@PathVariable("writerId") Long writerId, @PathVariable("bloodSugar") int bloodSugar) {
+        logger.info("find Food Names In Diet Higher Than BloodSugar");
+
+        return ApiResult.OK(findDiaryService.getFoodNamesInDietHigherThanBloodSugar(EntityId.of(Writer.class, writerId), bloodSugar));
+    }
+
+    @GetMapping("api/diary/owner/{writerId}/diet/ge/average/food/names")
+    public ApiResult<List<String>> findFoodHigherThanAverageBloodSugarOfDiet(@PathVariable("writerId") Long writerId) {
+        logger.info("find Food Higher Than Average BloodSugar Of Diet");
+
+        return ApiResult.OK(findDiaryService.getFoodHigherThanAverageBloodSugarOfDiet(EntityId.of(Writer.class, writerId)));
+    }
 }
