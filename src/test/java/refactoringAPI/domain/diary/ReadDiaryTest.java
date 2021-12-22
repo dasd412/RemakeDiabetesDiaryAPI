@@ -1,5 +1,6 @@
 package refactoringAPI.domain.diary;
 
+import org.hibernate.Hibernate;
 import refactoringAPI.domain.diary.diabetesDiary.DiabetesDiary;
 import refactoringAPI.domain.diary.diabetesDiary.DiaryRepository;
 import refactoringAPI.domain.diary.diet.Diet;
@@ -76,6 +77,55 @@ public class ReadDiaryTest {
         logger.info("maxId : " + maxId);
         assertThat(maxId).isNull();
 
+    }
+
+    //n+1문제 발생. n+1 문제를 테스트하려면 @Transactional 을 제거해야 한다.
+    @Test
+    public void findWriterAllIsNotFetchJoin() {
+        //given
+        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
+        DiabetesDiary diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
+        DiabetesDiary diary2 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
+        DiabetesDiary diary3 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
+        //when
+        Writer found = writerRepository.findAll().get(0);
+
+        //then
+        assertThat(Hibernate.isInitialized(found.getDiaries())).isFalse();
+    }
+
+    //n+1문제 발생. n+1 문제를 테스트하려면 @Transactional 을 제거해야 한다.
+    @Test
+    public void findWriterByIdIsNotFetchJoin() {
+        //given
+        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
+        DiabetesDiary diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
+        DiabetesDiary diary2 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
+        DiabetesDiary diary3 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
+        //when
+        Writer found = writerRepository.findById(me.getId()).orElseThrow(() -> new NoSuchElementException("작성자 없음."));
+
+        //then
+        assertThat(Hibernate.isInitialized(found.getDiaries())).isFalse();
+    }
+
+    //n+1문제 발생. n+1 문제를 테스트하려면 @Transactional 을 제거해야 한다.
+    @Test
+    public void findDiaryOfWriterIsFetchJoin() {
+        //given
+        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
+        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
+        Diet diet1 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 250);
+        Food food1 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet1.getDietId()), "pizza");
+        Food food2 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet1.getDietId()), "chicken");
+        Food food3 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet1.getDietId()), "cola");
+
+        //when
+        DiabetesDiary foundDiary = diaryRepository.findOneDiabetesDiaryByIdInWriter(me.getId(), diary.getId()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 일지입니다."));
+
+        //then
+        assertThat(Hibernate.isInitialized(foundDiary.getDietList())).isFalse();
+        //assertThat(Hibernate.isInitialized(foundDiary.getDietList().get(0).getFoodList())).isFalse(); <- lazy loading 인데 초기화 아직 안되서 에러.
     }
 
     /*
@@ -442,30 +492,6 @@ public class ReadDiaryTest {
         assertThat(foodNames.contains("chicken")).isTrue();
         assertThat(foodNames.contains("cola")).isTrue();
         assertThat(foodNames.contains("ham")).isTrue();
-    }
-
-    @Transactional
-    @Test
-    public void testNPlusOne() {
-        //given
-        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
-        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 200);
-        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 210);
-        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 220);
-        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 230);
-        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 240);
-
-        //when
-        logger.info("find all test");
-        List<DiabetesDiary> diaries = diaryRepository.findAll();
-        for (DiabetesDiary d : diaries) {
-            for (Diet di : d.getDietList()) {
-                logger.info(di.toString());
-            }
-        }
-
-        //todo n+1문제는 안 일어나는 것 처럼 보인다. 하지만 왜 그럴까..?
     }
 
     @Transactional

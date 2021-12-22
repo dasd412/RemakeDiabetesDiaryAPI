@@ -1,8 +1,6 @@
 package refactoringAPI.domain.diary.diabetesDiary;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import refactoringAPI.domain.diary.diet.QDiet;
-import refactoringAPI.domain.diary.food.QFood;
 import refactoringAPI.domain.diary.writer.Writer;
 
 import java.time.LocalDateTime;
