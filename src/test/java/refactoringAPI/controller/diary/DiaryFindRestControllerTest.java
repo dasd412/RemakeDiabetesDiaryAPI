@@ -24,8 +24,7 @@ import refactoringAPI.controller.diary.writer.WriterJoinRequestDTO;
 import refactoringAPI.domain.diary.diet.EatTime;
 import refactoringAPI.domain.diary.writer.Role;
 
-import java.time.LocalDateTime;
-
+import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -325,5 +324,370 @@ public class DiaryFindRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(3)));
+    }
+
+    @Transactional
+    @Test
+    public void findDietsOfDiaryInvalidWriter() throws Exception {
+        //given
+        DietRequestDTO dietRequestDTO1 = new DietRequestDTO(1L, 1L, EatTime.Lunch, 200);
+        String postDietUrl = "http://localhost:" + port + "api/diary/diet";
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO1)))
+                .andExpect(status().isOk());
+
+        DietRequestDTO dietRequestDTO2 = new DietRequestDTO(1L, 1L, EatTime.Lunch, 200);
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO2)))
+                .andExpect(status().isOk());
+
+        long invalidWriterId = 2L;
+        long diaryId = 1L;
+
+        String url = "http://localhost:" + port + "api/diary/owner/" + invalidWriterId + "/diabetes_diary/" + diaryId + "/diet/list";
+
+        //when and then
+        mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(0)));
+    }
+
+    @Transactional
+    @Test
+    public void findDietsOfInvalidDiary() throws Exception {
+        //given
+        DietRequestDTO dietRequestDTO1 = new DietRequestDTO(1L, 1L, EatTime.Lunch, 200);
+        String postDietUrl = "http://localhost:" + port + "api/diary/diet";
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO1)))
+                .andExpect(status().isOk());
+
+        DietRequestDTO dietRequestDTO2 = new DietRequestDTO(1L, 1L, EatTime.Lunch, 200);
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO2)))
+                .andExpect(status().isOk());
+
+        long writerId = 1L;
+        long invalidDiaryId = 2L;
+
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes_diary/" + invalidDiaryId + "/diet/list";
+
+        //when and then
+        mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(0)));
+    }
+
+    @Transactional
+    @Test
+    public void findDietsOfDiary() throws Exception {
+        //given
+        DietRequestDTO dietRequestDTO1 = new DietRequestDTO(1L, 1L, EatTime.Lunch, 200);
+        String postDietUrl = "http://localhost:" + port + "api/diary/diet";
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO1)))
+                .andExpect(status().isOk());
+
+        DietRequestDTO dietRequestDTO2 = new DietRequestDTO(1L, 1L, EatTime.Lunch, 200);
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO2)))
+                .andExpect(status().isOk());
+
+        long writerId = 1L;
+        long diaryId = 1L;
+
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes_diary/" + diaryId + "/diet/list";
+
+        //when and then
+        mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(3)));
+    }
+
+    @Transactional
+    @Test
+    public void findOneDietOfDiary() throws Exception {
+        //given
+        DietRequestDTO dietRequestDTO1 = new DietRequestDTO(1L, 1L, EatTime.Dinner, 300);
+        String postDietUrl = "http://localhost:" + port + "api/diary/diet";
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO1)))
+                .andExpect(status().isOk());
+
+        DietRequestDTO dietRequestDTO2 = new DietRequestDTO(1L, 1L, EatTime.BreakFast, 150);
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO2)))
+                .andExpect(status().isOk());
+
+        long writerId = 1L;
+        long diaryId = 1L;
+        long dietId = 3L;
+
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes_diary/" + diaryId + "/diet/" + dietId;
+        //when and then
+        mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.eatTime").value("BreakFast"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.bloodSugar").value(150));
+    }
+
+    @Transactional
+    @Test
+    public void findHigherThanBloodSugarBetweenTimeInvalidTimeOrder() throws Exception {
+        //given
+        DietRequestDTO dietRequestDTO1 = new DietRequestDTO(1L, 1L, EatTime.Dinner, 300);
+        String postDietUrl = "http://localhost:" + port + "api/diary/diet";
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO1)))
+                .andExpect(status().isOk());
+
+        DietRequestDTO dietRequestDTO2 = new DietRequestDTO(1L, 1L, EatTime.BreakFast, 150);
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO2)))
+                .andExpect(status().isOk());
+
+        long writerId = 1L;
+        String startDate = "2021-09-25T06:49:41";
+        String endDate = "2021-09-22T06:49:41";
+        int bloodSugar = 100;
+
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diet/ge/" + bloodSugar + "/start_date/" + startDate + "/end_date/" + endDate;
+
+        //when and then
+        mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Transactional
+    @Test
+    public void findHigherThanInvalidBloodSugarBetweenTime() throws Exception {
+        //given
+        DietRequestDTO dietRequestDTO1 = new DietRequestDTO(1L, 1L, EatTime.Dinner, 300);
+        String postDietUrl = "http://localhost:" + port + "api/diary/diet";
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO1)))
+                .andExpect(status().isOk());
+
+        DietRequestDTO dietRequestDTO2 = new DietRequestDTO(1L, 1L, EatTime.BreakFast, 150);
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO2)))
+                .andExpect(status().isOk());
+
+        long writerId = 1L;
+        String startDate = "2021-09-25T00:00:00";
+        String endDate = "2021-09-27T23:59:59";
+        int bloodSugar = -100;
+
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diet/ge/" + bloodSugar + "/start_date/" + startDate + "/end_date/" + endDate;
+
+        //when and then
+        mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Transactional
+    @Test
+    public void findHigherThanBloodSugarBetweenTime() throws Exception {
+        //given
+        DietRequestDTO dietRequestDTO1 = new DietRequestDTO(1L, 1L, EatTime.Dinner, 300);
+        String postDietUrl = "http://localhost:" + port + "api/diary/diet";
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO1)))
+                .andExpect(status().isOk());
+
+        DietRequestDTO dietRequestDTO2 = new DietRequestDTO(1L, 1L, EatTime.BreakFast, 150);
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO2)))
+                .andExpect(status().isOk());
+
+        long writerId = 1L;
+        String startDate = "2021-09-25T00:00:00";
+        String endDate = "2021-09-27T23:59:59";
+        int bloodSugar = 100;
+
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diet/ge/" + bloodSugar + "/start_date/" + startDate + "/end_date/" + endDate;
+
+        //when and then
+        mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(3)));
+    }
+
+    @Transactional
+    @Test
+    public void findLowerThanBloodSugarBetweenTime() throws Exception {
+        //given
+        DietRequestDTO dietRequestDTO1 = new DietRequestDTO(1L, 1L, EatTime.Dinner, 300);
+        String postDietUrl = "http://localhost:" + port + "api/diary/diet";
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO1)))
+                .andExpect(status().isOk());
+
+        DietRequestDTO dietRequestDTO2 = new DietRequestDTO(1L, 1L, EatTime.BreakFast, 150);
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO2)))
+                .andExpect(status().isOk());
+
+        long writerId = 1L;
+        String startDate = "2021-09-25T00:00:00";
+        String endDate = "2021-09-27T23:59:59";
+        int bloodSugar = 100;
+
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diet/le/" + bloodSugar + "/start_date/" + startDate + "/end_date/" + endDate;
+
+        //when and then
+        mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(0)));
+    }
+
+    @Transactional
+    @Test
+    public void findHigherThanInvalidBloodSugarInEatTime() throws Exception {
+        //given
+        DietRequestDTO dietRequestDTO1 = new DietRequestDTO(1L, 1L, EatTime.Lunch, 100);
+        String postDietUrl = "http://localhost:" + port + "api/diary/diet";
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO1)))
+                .andExpect(status().isOk());
+
+        DietRequestDTO dietRequestDTO2 = new DietRequestDTO(1L, 1L, EatTime.Lunch, 300);
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO2)))
+                .andExpect(status().isOk());
+
+        long writerId = 1L;
+        int invalidBloodSugar = -200;
+        EatTime eatTime = EatTime.Lunch;
+
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diet/ge/" + invalidBloodSugar + "/eat_time/" + eatTime;
+
+        //when and then
+        mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Transactional
+    @Test
+    public void findHigherThanBloodSugarInEatTime() throws Exception {
+        //given
+        DietRequestDTO dietRequestDTO1 = new DietRequestDTO(1L, 1L, EatTime.Lunch, 100);
+        String postDietUrl = "http://localhost:" + port + "api/diary/diet";
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO1)))
+                .andExpect(status().isOk());
+
+        DietRequestDTO dietRequestDTO2 = new DietRequestDTO(1L, 1L, EatTime.Lunch, 300);
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO2)))
+                .andExpect(status().isOk());
+
+        long writerId = 1L;
+        int invalidBloodSugar = 200;
+        EatTime eatTime = EatTime.Lunch;
+
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diet/ge/" + invalidBloodSugar + "/eat_time/" + eatTime;
+
+        //when and then
+        mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(2)));
+    }
+
+    @Transactional
+    @Test
+    public void findLowerThanBloodSugarInEatTime() throws Exception {
+        //given
+        DietRequestDTO dietRequestDTO1 = new DietRequestDTO(1L, 1L, EatTime.Lunch, 100);
+        String postDietUrl = "http://localhost:" + port + "api/diary/diet";
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO1)))
+                .andExpect(status().isOk());
+
+        DietRequestDTO dietRequestDTO2 = new DietRequestDTO(1L, 1L, EatTime.Lunch, 300);
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO2)))
+                .andExpect(status().isOk());
+
+        long writerId = 1L;
+        int invalidBloodSugar = 150;
+        EatTime eatTime = EatTime.Lunch;
+
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diet/le/" + invalidBloodSugar + "/eat_time/" + eatTime;
+
+        //when and then
+        mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(1)));
+    }
+
+    @Transactional
+    @Test
+    public void findAverageBloodSugarOfDietInvalid() throws Exception {
+        //식단 기록한 적 없는데 식단의 평균 혈당 요청한 경우 테스트
+        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("test@@@", "test123@naver.com", Role.User);
+        String url = "http://localhost:" + port + "/api/diary/writer";
+
+        mockMvc.perform(post(url).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dto)))
+                .andExpect(status().isOk());
+
+        long writerIdWithoutDiet = 2L;
+
+        String targetUrl = "http://localhost:" + port + "api/diary/owner/" + writerIdWithoutDiet + "/diet/average";
+
+        //when and then
+        mockMvc.perform(get(targetUrl).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Transactional
+    @Test
+    public void findAverageBloodSugarOfDiet() throws Exception {
+
+        DietRequestDTO dietRequestDTO1 = new DietRequestDTO(1L, 1L, EatTime.Lunch, 100);
+
+        String postDietUrl = "http://localhost:" + port + "api/diary/diet";
+
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO1)))
+                .andExpect(status().isOk());
+
+        DietRequestDTO dietRequestDTO2 = new DietRequestDTO(1L, 1L, EatTime.Lunch, 300);
+
+        mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dietRequestDTO2)))
+                .andExpect(status().isOk());
+
+        long writerId = 1L;
+
+        String targetUrl = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diet/average";
+
+        //when and then
+        mockMvc.perform(get(targetUrl).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(closeTo(200.0, 0.005)));
     }
 }

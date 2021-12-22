@@ -122,21 +122,37 @@ public class FindDiaryService {
     }
 
     @Transactional(readOnly = true)
-    public List<Diet> getHigherThanBloodSugarBetweenTime(EntityId<Writer, Long> writerEntityId, int bloodSugar, LocalDateTime startDate, LocalDateTime endDate) {
+    public List<Diet> getHigherThanBloodSugarBetweenTime(EntityId<Writer, Long> writerEntityId, int bloodSugar, String startDateString, String endDateString) {
         logger.info("getHigherThanBloodSugarBetweenTime");
         checkNotNull(writerEntityId, "writerId must be provided");
-        checkArgument(startDate.isBefore(endDate), "startDate must be before endDate");
-        checkArgument(bloodSugar > 0, "blood sugar must be higher than zero");
-        return dietRepository.findHigherThanBloodSugarBetweenTime(writerEntityId.getId(), bloodSugar, startDate, endDate);
+        try {
+            LocalDateTime startDate = LocalDateTime.parse(startDateString);
+            LocalDateTime endDate = LocalDateTime.parse(endDateString);
+
+            checkArgument(startDate.isBefore(endDate), "startDate must be before endDate");
+            checkArgument(bloodSugar > 0, "blood sugar must be higher than zero");
+
+            return dietRepository.findHigherThanBloodSugarBetweenTime(writerEntityId.getId(), bloodSugar, startDate, endDate);
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException("LocalDateTime 포맷으로 변경할 수 없는 문자열입니다.");
+        }
     }
 
     @Transactional(readOnly = true)
-    public List<Diet> getLowerThanBloodSugarBetweenTime(EntityId<Writer, Long> writerEntityId, int bloodSugar, LocalDateTime startDate, LocalDateTime endDate) {
+    public List<Diet> getLowerThanBloodSugarBetweenTime(EntityId<Writer, Long> writerEntityId, int bloodSugar, String startDateString, String endDateString) {
         logger.info("getLowerThanBloodSugarBetweenTime");
         checkNotNull(writerEntityId, "writerId must be provided");
-        checkArgument(startDate.isBefore(endDate), "startDate must be before endDate");
-        checkArgument(bloodSugar > 0, "blood sugar must be higher than zero");
-        return dietRepository.findLowerThanBloodSugarBetweenTime(writerEntityId.getId(), bloodSugar, startDate, endDate);
+        try {
+            LocalDateTime startDate = LocalDateTime.parse(startDateString);
+            LocalDateTime endDate = LocalDateTime.parse(endDateString);
+
+            checkArgument(startDate.isBefore(endDate), "startDate must be before endDate");
+            checkArgument(bloodSugar > 0, "blood sugar must be higher than zero");
+
+            return dietRepository.findLowerThanBloodSugarBetweenTime(writerEntityId.getId(), bloodSugar, startDate, endDate);
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException("LocalDateTime 포맷으로 변경할 수 없는 문자열입니다.");
+        }
     }
 
     @Transactional(readOnly = true)

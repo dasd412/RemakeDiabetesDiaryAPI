@@ -4,15 +4,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import refactoringAPI.controller.ApiResult;
 import refactoringAPI.controller.diary.diabetesdiary.DiabetesDiaryFindResponseDTO;
-import refactoringAPI.controller.diary.diabetesdiary.DiaryListBetweenTimeRequestDTO;
 import refactoringAPI.controller.diary.diabetesdiary.DiaryListFindResponseDTO;
+import refactoringAPI.controller.diary.diet.DietFindResponseDTO;
+import refactoringAPI.controller.diary.diet.DietListFindResponseDTO;
 import refactoringAPI.controller.diary.writer.WriterFindResponseDTO;
 import refactoringAPI.domain.diary.EntityId;
 import refactoringAPI.domain.diary.diabetesDiary.DiabetesDiary;
+import refactoringAPI.domain.diary.diet.Diet;
+import refactoringAPI.domain.diary.diet.EatTime;
 import refactoringAPI.domain.diary.writer.Writer;
 import refactoringAPI.service.FindDiaryService;
 
@@ -41,6 +43,9 @@ public class DiaryFindRestController {
         this.findDiaryService = findDiaryService;
     }
 
+    /*
+    일지 관련 조회
+     */
     @GetMapping("api/diary/owner/diabetes_diary/{id}")
     public ApiResult<WriterFindResponseDTO> findOwnerOfDiary(@PathVariable("id") Long diaryId) {
         logger.info("find owner of the diary");
@@ -103,5 +108,81 @@ public class DiaryFindRestController {
         return ApiResult.OK(dtoList);
     }
 
+    /*
+    식단 관련 조회
+     */
+    @GetMapping("api/diary/owner/{writerId}/diabetes_diary/{diaryId}/diet/list")
+    public ApiResult<List<DietListFindResponseDTO>> findDietsOfDiary(@PathVariable("writerId") Long writerId, @PathVariable("diaryId") Long diaryId) {
+        logger.info("find Diets Of Diary");
+
+        List<Diet> dietList = findDiaryService.getDietsOfDiary(EntityId.of(Writer.class, writerId), EntityId.of(DiabetesDiary.class, diaryId));
+        List<DietListFindResponseDTO> dtoList = dietList.stream().map(
+                DietListFindResponseDTO::new
+        ).collect(Collectors.toList());
+
+        return ApiResult.OK(dtoList);
+    }
+
+    @GetMapping("api/diary/owner/{writerId}/diabetes_diary/{diaryId}/diet/{dietId}")
+    public ApiResult<DietFindResponseDTO> findOneDietOfDiary(@PathVariable("writerId") Long writerId, @PathVariable("diaryId") Long diaryId, @PathVariable("dietId") Long dietId) {
+        logger.info("find One Diet Of Diary");
+
+        return ApiResult.OK(new DietFindResponseDTO(findDiaryService.getOneDietOfDiary(EntityId.of(Writer.class, writerId), EntityId.of(DiabetesDiary.class, diaryId), EntityId.of(Diet.class, dietId))));
+    }
+
+    @GetMapping("api/diary/owner/{writerId}/diet/ge/{bloodSugar}/start_date/{startDate}/end_date/{endDate}")
+    public ApiResult<List<DietListFindResponseDTO>> findHigherThanBloodSugarBetweenTime(@PathVariable("writerId") Long writerId, @PathVariable("bloodSugar") int bloodSugar, @PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate) {
+        logger.info("find Higher Than BloodSugar Between Time");
+
+        List<Diet> dietList = findDiaryService.getHigherThanBloodSugarBetweenTime(EntityId.of(Writer.class, writerId), bloodSugar, startDate, endDate);
+        List<DietListFindResponseDTO> dtoList = dietList.stream().map(
+                DietListFindResponseDTO::new
+        ).collect(Collectors.toList());
+
+        return ApiResult.OK(dtoList);
+    }
+
+    @GetMapping("api/diary/owner/{writerId}/diet/le/{bloodSugar}/start_date/{startDate}/end_date/{endDate}")
+    public ApiResult<List<DietListFindResponseDTO>> findLowerThanBloodSugarBetweenTime(@PathVariable("writerId") Long writerId, @PathVariable("bloodSugar") int bloodSugar, @PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate) {
+        logger.info("find Lower Than BloodSugar Between Time");
+
+        List<Diet> dietList = findDiaryService.getLowerThanBloodSugarBetweenTime(EntityId.of(Writer.class, writerId), bloodSugar, startDate, endDate);
+        List<DietListFindResponseDTO> dtoList = dietList.stream().map(
+                DietListFindResponseDTO::new
+        ).collect(Collectors.toList());
+
+        return ApiResult.OK(dtoList);
+    }
+
+    @GetMapping("api/diary/owner/{writerId}/diet/ge/{bloodSugar}/eat_time/{eatTime}")
+    public ApiResult<List<DietListFindResponseDTO>> findHigherThanBloodSugarInEatTime(@PathVariable("writerId") Long writerId, @PathVariable("bloodSugar") int bloodSugar, @PathVariable("eatTime") EatTime eatTime) {
+        logger.info("find Higher Than BloodSugar In EatTime");
+
+        List<Diet> dietList = findDiaryService.getHigherThanBloodSugarInEatTime(EntityId.of(Writer.class, writerId), bloodSugar, eatTime);
+        List<DietListFindResponseDTO> dtoList = dietList.stream().map(
+                DietListFindResponseDTO::new
+        ).collect(Collectors.toList());
+
+        return ApiResult.OK(dtoList);
+    }
+
+    @GetMapping("api/diary/owner/{writerId}/diet/le/{bloodSugar}/eat_time/{eatTime}")
+    public ApiResult<List<DietListFindResponseDTO>> findLowerThanBloodSugarInEatTime(@PathVariable("writerId") Long writerId, @PathVariable("bloodSugar") int bloodSugar, @PathVariable("eatTime") EatTime eatTime) {
+        logger.info("find Lower Than BloodSugar In EatTime");
+
+        List<Diet> dietList = findDiaryService.getLowerThanBloodSugarInEatTime(EntityId.of(Writer.class, writerId), bloodSugar, eatTime);
+        List<DietListFindResponseDTO> dtoList = dietList.stream().map(
+                DietListFindResponseDTO::new
+        ).collect(Collectors.toList());
+
+        return ApiResult.OK(dtoList);
+    }
+
+    @GetMapping("api/diary/owner/{writerId}/diet/average")
+    public ApiResult<Double> findAverageBloodSugarOfDiet(@PathVariable("writerId") Long writerId) {
+        logger.info("find Average BloodSugar Of Diet");
+
+        return ApiResult.OK(findDiaryService.getAverageBloodSugarOfDiet(EntityId.of(Writer.class, writerId)));
+    }
 
 }

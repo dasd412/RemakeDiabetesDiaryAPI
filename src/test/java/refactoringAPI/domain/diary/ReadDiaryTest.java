@@ -79,6 +79,7 @@ public class ReadDiaryTest {
 
     }
 
+    // todo Writer 엔티티 하나를 조회할 때는 Writer 하나만 조회하도록 변경해야 한다. 연관된 엔티티 전부 select 하면 성능 상 매우 안 좋다.
     //n+1문제 발생. n+1 문제를 테스트하려면 @Transactional 을 제거해야 한다.
     @Test
     public void findWriterAllIsNotFetchJoin() {
@@ -109,6 +110,7 @@ public class ReadDiaryTest {
         assertThat(Hibernate.isInitialized(found.getDiaries())).isFalse();
     }
 
+    // todo DiabetesDiary 엔티티 하나를 조회할 때는 연관된 엔티티 "전부"를 함께 조회해야 한다.
     //n+1문제 발생. n+1 문제를 테스트하려면 @Transactional 을 제거해야 한다.
     @Test
     public void findDiaryOfWriterIsFetchJoin() {
