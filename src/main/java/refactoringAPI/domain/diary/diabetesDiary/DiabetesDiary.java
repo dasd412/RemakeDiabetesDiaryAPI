@@ -25,7 +25,7 @@ public class DiabetesDiary{
 
     //Writer 와 일대다 양방향 관계이며, 연관관계의 주인이다. 되도록이면 모든 연관 관계를 지연로딩으로 사용하는 것이 성능에 좋음.
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "writer_id")
     private Writer writer;
 
