@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class FoodTest {
     //예외 캐치용 객체
     @Rule
-    public ExpectedException thrown = ExpectedException.none();
+    public final ExpectedException thrown = ExpectedException.none();
 
     Writer writer;
     DiabetesDiary diary;

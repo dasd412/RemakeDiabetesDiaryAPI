@@ -1,6 +1,5 @@
 package com.dasd412.remake.api.controller.diary.food;
 
-import com.dasd412.remake.api.domain.diary.food.Food;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 

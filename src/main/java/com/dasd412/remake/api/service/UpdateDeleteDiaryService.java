@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.NoSuchElementException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkArgument;
 
 @Service
 public class UpdateDeleteDiaryService {

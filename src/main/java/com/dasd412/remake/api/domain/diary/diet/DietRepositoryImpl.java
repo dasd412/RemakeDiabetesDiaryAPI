@@ -72,8 +72,8 @@ public class DietRepositoryImpl implements DietRepositoryCustom {
 
     @Override
     public List<Diet> findLowerThanBloodSugarBetweenTime(Long writerId, int bloodSugar, LocalDateTime startDate, LocalDateTime endDate) {
-        //Hibernate: select diet0_.diary_id as diary_id0_1_, diet0_.writer_id as writer_i0_1_, diet0_.diet_id as diet_id1_1_, diet0_.diary_id as diary_id4_1_, diet0_.writer_id as writer_i5_1_, diet0_.blood_sugar as blood_su2_1_, diet0_.eat_time as eat_time3_1_ from diet diet0_ inner join diabetes_diary diabetesdi1_ on diet0_.diary_id=diabetesdi1_.diary_id and diet0_.writer_id=diabetesdi1_.writer_id and (diabetesdi1_.writer_id=?) where diet0_.blood_sugar<=? and (diabetesdi1_.written_time between ? and ?)
-        //@Query(value = "SELECT diet FROM Diet diet WHERE diary.writer.writerId = :writer_id AND diet.bloodSugar <= :blood_sugar AND diet.diary.writtenTime BETWEEN :startDate AND :endDate")
+        //Hibernate: select diet0_.diary_id as diary_id0_1_, diet0_.writer_id as writer_i0_1_, diet0_.diet_id as diet_id1_1_, diet0_.diary_id as diary_id4_1_, diet0_.writer_id as writer_i5_1_, diet0_.blood_sugar as blood_su2_1_, diet0_.eat_time as eat_time3_1_ from diet diet0_ inner join diabetes_diary diabetes di1_ on diet0_.diary_id=diabetes di1_.diary_id and diet0_.writer_id=diabetes di1_.writer_id and (diabetes di1_.writer_id=?) where diet0_.blood_sugar<=? and (diabetes di1_.written_time between ? and ?)
+        //@Query(value = "SELECT diet FROM Diet as diet WHERE diary.writer.writerId = :writer_id AND diet.bloodSugar <= :blood_sugar AND diet.diary.writtenTime BETWEEN :startDate AND :endDate")
         return jpaQueryFactory.selectFrom(QDiet.diet)
                 .innerJoin(QDiet.diet.diary, QDiabetesDiary.diabetesDiary)
                 .on(QDiet.diet.diary.writer.writerId.eq(writerId))
@@ -83,8 +83,8 @@ public class DietRepositoryImpl implements DietRepositoryCustom {
 
     @Override
     public List<Diet> findHigherThanBloodSugarInEatTime(Long writerId, int bloodSugar, EatTime eatTime) {
-        //@Query(value = "SELECT diet FROM Diet diet WHERE diary.writer.writerId = :writer_id AND diet.bloodSugar >= :blood_sugar AND diet.eatTime =:eat_time")
-        //Hibernate: select diet0_.diary_id as diary_id0_1_, diet0_.writer_id as writer_i0_1_, diet0_.diet_id as diet_id1_1_, diet0_.diary_id as diary_id4_1_, diet0_.writer_id as writer_i5_1_, diet0_.blood_sugar as blood_su2_1_, diet0_.eat_time as eat_time3_1_ from diet diet0_ inner join diabetes_diary diabetesdi1_ on diet0_.diary_id=diabetesdi1_.diary_id and diet0_.writer_id=diabetesdi1_.writer_id and (diabetesdi1_.writer_id=?) inner join writer writer2_ on diabetesdi1_.writer_id=writer2_.writer_id where diet0_.blood_sugar>=? and diet0_.eat_time=?
+        //@Query(value = "SELECT diet FROM Diet as diet WHERE diary.writer.writerId = :writer_id AND diet.bloodSugar >= :blood_sugar AND diet.eatTime =:eat_time")
+        //Hibernate: select diet0_.diary_id as diary_id0_1_, diet0_.writer_id as writer_i0_1_, diet0_.diet_id as diet_id1_1_, diet0_.diary_id as diary_id4_1_, diet0_.writer_id as writer_i5_1_, diet0_.blood_sugar as blood_su2_1_, diet0_.eat_time as eat_time3_1_ from diet diet0_ inner join diabetes_diary diabetes di1_ on diet0_.diary_id=diabetes di1_.diary_id and diet0_.writer_id=diabetes di1_.writer_id and (diabetes di1_.writer_id=?) inner join writer writer2_ on diabetes di1_.writer_id=writer2_.writer_id where diet0_.blood_sugar>=? and diet0_.eat_time=?
         return jpaQueryFactory.selectFrom(QDiet.diet)
                 .innerJoin(QDiet.diet.diary.writer, QWriter.writer)
                 .on(QDiet.diet.diary.writer.writerId.eq(writerId))
@@ -104,7 +104,7 @@ public class DietRepositoryImpl implements DietRepositoryCustom {
 
     @Override
     public Optional<Double> findAverageBloodSugarOfDiet(Long writerId) {
-        //@Query(value="SELECT AVG(diet.bloodSugar) FROM Diet diet WHERE diet.diary.writer.writerId = :writer_id")
+        //@Query(value="SELECT AVG(diet.bloodSugar) FROM Diet as diet WHERE diet.diary.writer.writerId = :writer_id")
         //jpaQueryFactory.from(QDiet.diet).select(QDiet.diet.bloodSugar.avg()).where(QDiet.diet.diary.writer.writerId.eq(writerId)).fetchOne()); <-크로스 조인 발생하는 코드
         return Optional.ofNullable(jpaQueryFactory.from(QDiet.diet).select(QDiet.diet.bloodSugar.avg())
                 .innerJoin(QDiet.diet.diary.writer, QWriter.writer)
