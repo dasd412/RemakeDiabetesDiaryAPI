@@ -40,14 +40,14 @@ public class DiaryUpdateDeleteRestController {
     /*
     일지 수정 및 삭제 메서드
      */
-    @PutMapping("api/diary/diabetes_diary")
+    @PutMapping("api/diary/diabetes-diary")
     public ApiResult<DiaryUpdateResponseDTO> updateDiabetesDiary(@RequestBody DiaryUpdateRequestDTO dto) {
         logger.info("update diabetes diary");
 
         return ApiResult.OK(new DiaryUpdateResponseDTO(updateDeleteDiaryService.updateDiary(EntityId.of(Writer.class, dto.getWriterId()), EntityId.of(DiabetesDiary.class, dto.getDiaryId()), dto.getFastingPlasmaGlucose(), dto.getRemark())));
     }
 
-    @DeleteMapping("api/diary/owner/{writerId}/diabetes_diary/{diaryId}")
+    @DeleteMapping("api/diary/owner/{writerId}/diabetes-diary/{diaryId}")
     public ApiResult<DiaryDeleteResponseDTO> deleteDiabetesDiary(@PathVariable("writerId") Long writerId, @PathVariable("diaryId") Long diaryId) {
         logger.info("delete Diabetes Diary");
 
@@ -66,7 +66,7 @@ public class DiaryUpdateDeleteRestController {
         return ApiResult.OK(new DietUpdateResponseDTO(updateDeleteDiaryService.updateDiet(EntityId.of(Writer.class, dto.getWriterId()), EntityId.of(DiabetesDiary.class, dto.getDiaryId()), EntityId.of(Diet.class, dto.getDietId()), dto.getEatTime(), dto.getBloodSugar())));
     }
 
-    @DeleteMapping("api/diary/owner/{writerId}/diabetes_diary/{diaryId}/diet/{dietId}")
+    @DeleteMapping("api/diary/owner/{writerId}/diabetes-diary/{diaryId}/diet/{dietId}")
     public ApiResult<DietDeleteResponseDTO> deleteDiet(@PathVariable("writerId") Long writerId, @PathVariable("diaryId") Long diaryId, @PathVariable("dietId") Long dietId) {
         logger.info("delete diet");
 
@@ -85,7 +85,7 @@ public class DiaryUpdateDeleteRestController {
         return ApiResult.OK(new FoodUpdateResponseDTO(updateDeleteDiaryService.updateFood(EntityId.of(Writer.class, dto.getWriterId()), EntityId.of(Diet.class, dto.getDietId()), EntityId.of(Food.class, dto.getFoodId()), dto.getFoodName())));
     }
 
-    @DeleteMapping("api/diary/owner/{writerId}/diabetes_diary/{diaryId}/diet/{dietId}/food/{foodId}")
+    @DeleteMapping("api/diary/owner/{writerId}/diabetes-diary/{diaryId}/diet/{dietId}/food/{foodId}")
     public ApiResult<FoodDeleteResponseDTO> deleteFood(@PathVariable("writerId") Long writerId, @PathVariable("diaryId") Long diaryId, @PathVariable("dietId") Long dietId, @PathVariable("foodId") Long foodId) {
         logger.info("delete food");
 

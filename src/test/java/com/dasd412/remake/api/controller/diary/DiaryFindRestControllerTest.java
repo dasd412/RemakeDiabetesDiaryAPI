@@ -71,7 +71,7 @@ public class DiaryFindRestControllerTest {
 
         DiabetesDiaryRequestDTO diaryRequestDTO = new DiabetesDiaryRequestDTO(1L, 100, "TEST", year, month, day, hour, minute, second);
 
-        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes_diary";
+        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes-diary";
         mockMvc.perform(post(postDiaryUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(diaryRequestDTO)))
                 .andExpect(status().isOk());
@@ -108,7 +108,7 @@ public class DiaryFindRestControllerTest {
     public void findOwnerOfDiary() throws Exception {
         //given
         long validId = 1L;
-        String url = "http://localhost:" + port + "api/diary/owner/diabetes_diary/" + validId;
+        String url = "http://localhost:" + port + "api/diary/owner/diabetes-diary/" + validId;
 
         //when and then
         mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -126,7 +126,7 @@ public class DiaryFindRestControllerTest {
         //given
         DiabetesDiaryRequestDTO diaryRequestDTO1 = new DiabetesDiaryRequestDTO(1L, 200, "TEST@", "2021", "09", "26", "00", "00", "00");
 
-        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes_diary";
+        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes-diary";
         mockMvc.perform(post(postDiaryUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(diaryRequestDTO1)))
                 .andExpect(status().isOk());
@@ -138,7 +138,7 @@ public class DiaryFindRestControllerTest {
                 .andExpect(status().isOk());
 
         long writerId = 1L;
-        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes_diary/list";
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes-diary/list";
 
         //when and then
         mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -189,7 +189,7 @@ public class DiaryFindRestControllerTest {
         //given
         long writerId = 1L;
         long invalidId = 1L;
-        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes_diary/" + invalidId;
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes-diary/" + invalidId;
 
         //when and then
         mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -210,7 +210,7 @@ public class DiaryFindRestControllerTest {
         String endDate = "2021-09-26:06:49:41";
         long writerId = 1L;
 
-        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes_diary/start_date/" + startDate + "/end_date/" + endDate;
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes-diary/start-date/" + startDate + "/end-date/" + endDate;
 
         //when and then
         mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -226,7 +226,7 @@ public class DiaryFindRestControllerTest {
         String endDate = "2021-09-22T06:49:41";
         long writerId = 1L;
 
-        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes_diary/start_date/" + startDate + "/end_date/" + endDate;
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes-diary/start-date/" + startDate + "/end-date/" + endDate;
 
         //when and then
         mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -240,7 +240,7 @@ public class DiaryFindRestControllerTest {
         //given
         DiabetesDiaryRequestDTO diaryRequestDTO1 = new DiabetesDiaryRequestDTO(1L, 200, "TEST@", "2021", "09", "26", "00", "00", "00");
 
-        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes_diary";
+        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes-diary";
         mockMvc.perform(post(postDiaryUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(diaryRequestDTO1)))
                 .andExpect(status().isOk());
@@ -256,7 +256,7 @@ public class DiaryFindRestControllerTest {
         String startDate = "2021-09-25T00:00:00";
         String endDate = "2021-09-27T23:59:59";
 
-        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes_diary/start_date/" + startDate + "/end_date/" + endDate;
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes-diary/start-date/" + startDate + "/end-date/" + endDate;
 
         mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andDo(print())
@@ -271,7 +271,7 @@ public class DiaryFindRestControllerTest {
         //given
         DiabetesDiaryRequestDTO diaryRequestDTO1 = new DiabetesDiaryRequestDTO(1L, 200, "TEST@", "2021", "09", "26", "00", "00", "00");
 
-        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes_diary";
+        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes-diary";
         mockMvc.perform(post(postDiaryUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(diaryRequestDTO1)))
                 .andExpect(status().isOk());
@@ -285,7 +285,7 @@ public class DiaryFindRestControllerTest {
         long writerId = 1L;
         int fastingPlasmaGlucose = 150;
 
-        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes_diary/ge/" + fastingPlasmaGlucose;
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes-diary/ge/" + fastingPlasmaGlucose;
 
         //when and then
         mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -301,7 +301,7 @@ public class DiaryFindRestControllerTest {
         //given
         DiabetesDiaryRequestDTO diaryRequestDTO1 = new DiabetesDiaryRequestDTO(1L, 200, "TEST@", "2021", "09", "26", "00", "00", "00");
 
-        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes_diary";
+        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes-diary";
         mockMvc.perform(post(postDiaryUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(diaryRequestDTO1)))
                 .andExpect(status().isOk());
@@ -315,7 +315,7 @@ public class DiaryFindRestControllerTest {
         long writerId = 1L;
         int fastingPlasmaGlucose = 200;
 
-        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes_diary/le/" + fastingPlasmaGlucose;
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes-diary/le/" + fastingPlasmaGlucose;
 
         //when and then
         mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -343,7 +343,7 @@ public class DiaryFindRestControllerTest {
         long invalidWriterId = 2L;
         long diaryId = 1L;
 
-        String url = "http://localhost:" + port + "api/diary/owner/" + invalidWriterId + "/diabetes_diary/" + diaryId + "/diet/list";
+        String url = "http://localhost:" + port + "api/diary/owner/" + invalidWriterId + "/diabetes-diary/" + diaryId + "/diet/list";
 
         //when and then
         mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -374,7 +374,7 @@ public class DiaryFindRestControllerTest {
         long writerId = 1L;
         long invalidDiaryId = 2L;
 
-        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes_diary/" + invalidDiaryId + "/diet/list";
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes-diary/" + invalidDiaryId + "/diet/list";
 
         //when and then
         mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -402,7 +402,7 @@ public class DiaryFindRestControllerTest {
         long writerId = 1L;
         long diaryId = 1L;
 
-        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes_diary/" + diaryId + "/diet/list";
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes-diary/" + diaryId + "/diet/list";
 
         //when and then
         mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -431,7 +431,7 @@ public class DiaryFindRestControllerTest {
         long diaryId = 1L;
         long dietId = 3L;
 
-        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes_diary/" + diaryId + "/diet/" + dietId;
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes-diary/" + diaryId + "/diet/" + dietId;
         //when and then
         mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andDo(print())
@@ -461,7 +461,7 @@ public class DiaryFindRestControllerTest {
         String endDate = "2021-09-22T06:49:41";
         int bloodSugar = 100;
 
-        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diet/ge/" + bloodSugar + "/start_date/" + startDate + "/end_date/" + endDate;
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diet/ge/" + bloodSugar + "/start-date/" + startDate + "/end-date/" + endDate;
 
         //when and then
         mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -489,7 +489,7 @@ public class DiaryFindRestControllerTest {
         String endDate = "2021-09-27T23:59:59";
         int bloodSugar = -100;
 
-        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diet/ge/" + bloodSugar + "/start_date/" + startDate + "/end_date/" + endDate;
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diet/ge/" + bloodSugar + "/start-date/" + startDate + "/end-date/" + endDate;
 
         //when and then
         mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -517,7 +517,7 @@ public class DiaryFindRestControllerTest {
         String endDate = "2021-09-27T23:59:59";
         int bloodSugar = 100;
 
-        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diet/ge/" + bloodSugar + "/start_date/" + startDate + "/end_date/" + endDate;
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diet/ge/" + bloodSugar + "/start-date/" + startDate + "/end-date/" + endDate;
 
         //when and then
         mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -547,7 +547,7 @@ public class DiaryFindRestControllerTest {
         String endDate = "2021-09-27T23:59:59";
         int bloodSugar = 100;
 
-        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diet/le/" + bloodSugar + "/start_date/" + startDate + "/end_date/" + endDate;
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diet/le/" + bloodSugar + "/start-date/" + startDate + "/end-date/" + endDate;
 
         //when and then
         mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -576,7 +576,7 @@ public class DiaryFindRestControllerTest {
         int invalidBloodSugar = -200;
         EatTime eatTime = EatTime.Lunch;
 
-        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diet/ge/" + invalidBloodSugar + "/eat_time/" + eatTime;
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diet/ge/" + invalidBloodSugar + "/eat-time/" + eatTime;
 
         //when and then
         mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -603,7 +603,7 @@ public class DiaryFindRestControllerTest {
         int invalidBloodSugar = 200;
         EatTime eatTime = EatTime.Lunch;
 
-        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diet/ge/" + invalidBloodSugar + "/eat_time/" + eatTime;
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diet/ge/" + invalidBloodSugar + "/eat-time/" + eatTime;
 
         //when and then
         mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -632,7 +632,7 @@ public class DiaryFindRestControllerTest {
         int invalidBloodSugar = 150;
         EatTime eatTime = EatTime.Lunch;
 
-        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diet/le/" + invalidBloodSugar + "/eat_time/" + eatTime;
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diet/le/" + invalidBloodSugar + "/eat-time/" + eatTime;
 
         //when and then
         mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))

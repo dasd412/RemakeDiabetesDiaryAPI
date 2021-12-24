@@ -107,7 +107,7 @@ public class DiarySaveRestControllerTest {
         String second = "41";
         DiabetesDiaryRequestDTO diaryRequestDTO = new DiabetesDiaryRequestDTO(1L, -2000, "TEST", year, month, day, hour, minute, second);
 
-        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes_diary";
+        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes-diary";
         //when and then
         mockMvc.perform(post(postDiaryUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(diaryRequestDTO))).andDo(print())
@@ -139,7 +139,7 @@ public class DiarySaveRestControllerTest {
 
         DiabetesDiaryRequestDTO diaryRequestDTO = new DiabetesDiaryRequestDTO(1L, 200, remark.toString(), year, month, day, hour, minute, second);
 
-        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes_diary";
+        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes-diary";
         //when and then
         mockMvc.perform(post(postDiaryUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(diaryRequestDTO))).andDo(print())
@@ -167,7 +167,7 @@ public class DiarySaveRestControllerTest {
         String second = "41";
         DiabetesDiaryRequestDTO diaryRequestDTO = new DiabetesDiaryRequestDTO(1L, 100, "TEST", year, month, day, hour, minute, second);
 
-        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes_diary";
+        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes-diary";
         //when and then
         mockMvc.perform(post(postDiaryUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(diaryRequestDTO))).andDo(print())
@@ -200,7 +200,7 @@ public class DiarySaveRestControllerTest {
         String second = "41";
         DiabetesDiaryRequestDTO diaryRequestDTO = new DiabetesDiaryRequestDTO(1L, 100, "TEST", year, month, day, hour, minute, second);
 
-        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes_diary";
+        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes-diary";
         mockMvc.perform(post(postDiaryUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(diaryRequestDTO)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
@@ -236,7 +236,7 @@ public class DiarySaveRestControllerTest {
         String second = "41";
         DiabetesDiaryRequestDTO diaryRequestDTO = new DiabetesDiaryRequestDTO(1L, 100, "TEST", year, month, day, hour, minute, second);
 
-        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes_diary";
+        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes-diary";
         mockMvc.perform(post(postDiaryUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(diaryRequestDTO)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
@@ -279,7 +279,7 @@ public class DiarySaveRestControllerTest {
         String second = "41";
         DiabetesDiaryRequestDTO diaryRequestDTO = new DiabetesDiaryRequestDTO(1L, 100, "TEST", year, month, day, hour, minute, second);
 
-        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes_diary";
+        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes-diary";
         mockMvc.perform(post(postDiaryUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(diaryRequestDTO)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
@@ -329,7 +329,7 @@ public class DiarySaveRestControllerTest {
         String second = "41";
         DiabetesDiaryRequestDTO diaryRequestDTO = new DiabetesDiaryRequestDTO(1L, 100, "TEST", year, month, day, hour, minute, second);
 
-        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes_diary";
+        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes-diary";
         mockMvc.perform(post(postDiaryUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(diaryRequestDTO)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))

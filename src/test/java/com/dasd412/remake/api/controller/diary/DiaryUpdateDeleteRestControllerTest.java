@@ -90,7 +90,7 @@ public class DiaryUpdateDeleteRestControllerTest {
 
         DiabetesDiaryRequestDTO diaryRequestDTO = new DiabetesDiaryRequestDTO(1L, 100, "TEST", year, month, day, hour, minute, second);
 
-        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes_diary";
+        String postDiaryUrl = "http://localhost:" + port + "api/diary/diabetes-diary";
         mockMvc.perform(post(postDiaryUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(diaryRequestDTO)))
                 .andExpect(status().isOk());
@@ -115,7 +115,7 @@ public class DiaryUpdateDeleteRestControllerTest {
         //given
         long invalidDiaryId = 2L;
         DiaryUpdateRequestDTO dto = new DiaryUpdateRequestDTO(1L, invalidDiaryId, 200, "modify");
-        String url = "http://localhost:" + port + "api/diary/diabetes_diary";
+        String url = "http://localhost:" + port + "api/diary/diabetes-diary";
 
         //when
         mockMvc.perform(put(url).contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -128,7 +128,7 @@ public class DiaryUpdateDeleteRestControllerTest {
     public void updateDiaryInvalidSugar() throws Exception {
         //given
         DiaryUpdateRequestDTO dto = new DiaryUpdateRequestDTO(1L, 1L, 20000, "modify");
-        String url = "http://localhost:" + port + "api/diary/diabetes_diary";
+        String url = "http://localhost:" + port + "api/diary/diabetes-diary";
 
         //when
         mockMvc.perform(put(url).contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -144,7 +144,7 @@ public class DiaryUpdateDeleteRestControllerTest {
         IntStream.range(0, 1000).forEach(i -> invalidRemark.append("a"));
 
         DiaryUpdateRequestDTO dto = new DiaryUpdateRequestDTO(1L, 1L, 300, invalidRemark.toString());
-        String url = "http://localhost:" + port + "api/diary/diabetes_diary";
+        String url = "http://localhost:" + port + "api/diary/diabetes-diary";
 
         //when
         mockMvc.perform(put(url).contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -158,7 +158,7 @@ public class DiaryUpdateDeleteRestControllerTest {
         //given
 
         DiaryUpdateRequestDTO dto = new DiaryUpdateRequestDTO(1L, 1L, 300, "modifyTest");
-        String url = "http://localhost:" + port + "api/diary/diabetes_diary";
+        String url = "http://localhost:" + port + "api/diary/diabetes-diary";
 
         //when and then
         mockMvc.perform(put(url).contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -182,7 +182,7 @@ public class DiaryUpdateDeleteRestControllerTest {
         //given
         long writerId = 1L;
         long diaryId = 1L;
-        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes_diary/" + diaryId;
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes-diary/" + diaryId;
 
         //when and then
         mockMvc.perform(delete(url).contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -248,7 +248,7 @@ public class DiaryUpdateDeleteRestControllerTest {
         long diaryId = 1L;
         long dietId = 1L;
 
-        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes_diary/" + diaryId + "/diet/" + dietId;
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes-diary/" + diaryId + "/diet/" + dietId;
 
         //when and then
         mockMvc.perform(delete(url).contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -313,7 +313,7 @@ public class DiaryUpdateDeleteRestControllerTest {
         long dietId = 1L;
         long foodId = 1L;
 
-        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes_diary/" + diaryId + "/diet/" + dietId + "/food/" + foodId;
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes-diary/" + diaryId + "/diet/" + dietId + "/food/" + foodId;
 
         //when and then
         mockMvc.perform(delete(url).contentType(MediaType.APPLICATION_JSON_UTF8))

@@ -49,14 +49,14 @@ public class DiaryFindRestController {
     /*
     일지 관련 조회
      */
-    @GetMapping("api/diary/owner/diabetes_diary/{id}")
+    @GetMapping("api/diary/owner/diabetes-diary/{id}")
     public ApiResult<WriterFindResponseDTO> findOwnerOfDiary(@PathVariable("id") Long diaryId) {
         logger.info("find owner of the diary");
 
         return ApiResult.OK(new WriterFindResponseDTO(findDiaryService.getWriterOfDiary(EntityId.of(DiabetesDiary.class, diaryId))));
     }
 
-    @GetMapping("api/diary/owner/{id}/diabetes_diary/list")
+    @GetMapping("api/diary/owner/{id}/diabetes-diary/list")
     public ApiResult<List<DiaryListFindResponseDTO>> findDiabetesDiariesOfOwner(@PathVariable("id") Long writerId) {
         logger.info("find diabetes diaries of the owner");
 
@@ -68,14 +68,14 @@ public class DiaryFindRestController {
         return ApiResult.OK(dtoList);
     }
 
-    @GetMapping("api/diary/owner/{writerId}/diabetes_diary/{diaryId}")
+    @GetMapping("api/diary/owner/{writerId}/diabetes-diary/{diaryId}")
     public ApiResult<DiabetesDiaryFindResponseDTO> findOneDiabetesDiaryOfOwner(@PathVariable("writerId") Long writerId, @PathVariable("diaryId") Long diaryId) {
         logger.info("find only one diabetes diary of the owner");
 
         return ApiResult.OK(new DiabetesDiaryFindResponseDTO(findDiaryService.getDiabetesDiaryOfWriter(EntityId.of(Writer.class, writerId), EntityId.of(DiabetesDiary.class, diaryId))));
     }
 
-    @GetMapping("api/diary/owner/{writerId}/diabetes_diary/start_date/{startDate}/end_date/{endDate}")
+    @GetMapping("api/diary/owner/{writerId}/diabetes-diary/start-date/{startDate}/end-date/{endDate}")
     public ApiResult<List<DiaryListFindResponseDTO>> findDiariesBetweenTime(@PathVariable("writerId") Long writerId, @PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate) {
         logger.info("find Diaries Between Time ->" + startDate + " : " + endDate);
 
@@ -87,7 +87,7 @@ public class DiaryFindRestController {
         return ApiResult.OK(dtoList);
     }
 
-    @GetMapping("api/diary/owner/{writerId}/diabetes_diary/ge/{fastingPlasmaGlucose}")
+    @GetMapping("api/diary/owner/{writerId}/diabetes-diary/ge/{fastingPlasmaGlucose}")
     public ApiResult<List<DiaryListFindResponseDTO>> findFpgHigherOrEqual(@PathVariable("writerId") Long writerId, @PathVariable("fastingPlasmaGlucose") int fastingPlasmaGlucose) {
         logger.info("find Fpg HigherOrEqual -> " + fastingPlasmaGlucose);
 
@@ -99,7 +99,7 @@ public class DiaryFindRestController {
         return ApiResult.OK(dtoList);
     }
 
-    @GetMapping("api/diary/owner/{writerId}/diabetes_diary/le/{fastingPlasmaGlucose}")
+    @GetMapping("api/diary/owner/{writerId}/diabetes-diary/le/{fastingPlasmaGlucose}")
     public ApiResult<List<DiaryListFindResponseDTO>> findFpgLowerOrEqual(@PathVariable("writerId") Long writerId, @PathVariable("fastingPlasmaGlucose") int fastingPlasmaGlucose) {
         logger.info("find Fpg LowerOrEqual -> " + fastingPlasmaGlucose);
 
@@ -114,7 +114,7 @@ public class DiaryFindRestController {
     /*
     식단 관련 조회
      */
-    @GetMapping("api/diary/owner/{writerId}/diabetes_diary/{diaryId}/diet/list")
+    @GetMapping("api/diary/owner/{writerId}/diabetes-diary/{diaryId}/diet/list")
     public ApiResult<List<DietListFindResponseDTO>> findDietsOfDiary(@PathVariable("writerId") Long writerId, @PathVariable("diaryId") Long diaryId) {
         logger.info("find Diets Of Diary");
 
@@ -126,14 +126,14 @@ public class DiaryFindRestController {
         return ApiResult.OK(dtoList);
     }
 
-    @GetMapping("api/diary/owner/{writerId}/diabetes_diary/{diaryId}/diet/{dietId}")
+    @GetMapping("api/diary/owner/{writerId}/diabetes-diary/{diaryId}/diet/{dietId}")
     public ApiResult<DietFindResponseDTO> findOneDietOfDiary(@PathVariable("writerId") Long writerId, @PathVariable("diaryId") Long diaryId, @PathVariable("dietId") Long dietId) {
         logger.info("find One Diet Of Diary");
 
         return ApiResult.OK(new DietFindResponseDTO(findDiaryService.getOneDietOfDiary(EntityId.of(Writer.class, writerId), EntityId.of(DiabetesDiary.class, diaryId), EntityId.of(Diet.class, dietId))));
     }
 
-    @GetMapping("api/diary/owner/{writerId}/diet/ge/{bloodSugar}/start_date/{startDate}/end_date/{endDate}")
+    @GetMapping("api/diary/owner/{writerId}/diet/ge/{bloodSugar}/start-date/{startDate}/end-date/{endDate}")
     public ApiResult<List<DietListFindResponseDTO>> findHigherThanBloodSugarBetweenTime(@PathVariable("writerId") Long writerId, @PathVariable("bloodSugar") int bloodSugar, @PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate) {
         logger.info("find Higher Than BloodSugar Between Time");
 
@@ -145,7 +145,7 @@ public class DiaryFindRestController {
         return ApiResult.OK(dtoList);
     }
 
-    @GetMapping("api/diary/owner/{writerId}/diet/le/{bloodSugar}/start_date/{startDate}/end_date/{endDate}")
+    @GetMapping("api/diary/owner/{writerId}/diet/le/{bloodSugar}/start-date/{startDate}/end-date/{endDate}")
     public ApiResult<List<DietListFindResponseDTO>> findLowerThanBloodSugarBetweenTime(@PathVariable("writerId") Long writerId, @PathVariable("bloodSugar") int bloodSugar, @PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate) {
         logger.info("find Lower Than BloodSugar Between Time");
 
@@ -157,7 +157,7 @@ public class DiaryFindRestController {
         return ApiResult.OK(dtoList);
     }
 
-    @GetMapping("api/diary/owner/{writerId}/diet/ge/{bloodSugar}/eat_time/{eatTime}")
+    @GetMapping("api/diary/owner/{writerId}/diet/ge/{bloodSugar}/eat-time/{eatTime}")
     public ApiResult<List<DietListFindResponseDTO>> findHigherThanBloodSugarInEatTime(@PathVariable("writerId") Long writerId, @PathVariable("bloodSugar") int bloodSugar, @PathVariable("eatTime") EatTime eatTime) {
         logger.info("find Higher Than BloodSugar In EatTime");
 
@@ -169,7 +169,7 @@ public class DiaryFindRestController {
         return ApiResult.OK(dtoList);
     }
 
-    @GetMapping("api/diary/owner/{writerId}/diet/le/{bloodSugar}/eat_time/{eatTime}")
+    @GetMapping("api/diary/owner/{writerId}/diet/le/{bloodSugar}/eat-time/{eatTime}")
     public ApiResult<List<DietListFindResponseDTO>> findLowerThanBloodSugarInEatTime(@PathVariable("writerId") Long writerId, @PathVariable("bloodSugar") int bloodSugar, @PathVariable("eatTime") EatTime eatTime) {
         logger.info("find Lower Than BloodSugar In EatTime");
 
