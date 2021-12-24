@@ -16,6 +16,7 @@ public class DietUpdateRequestDTO {
 
     private final int bloodSugar;
 
+    //cannot deserialize from Object value (no delegate- or property-based Creator) 에러 때문에 기본 생성자 만듬.
     private DietUpdateRequestDTO() {
         writerId = null;
         diaryId = null;

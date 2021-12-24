@@ -1,10 +1,10 @@
 package com.dasd412.remake.api.controller.diary.food;
 
+import com.dasd412.remake.api.domain.diary.food.Food;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import com.dasd412.remake.api.domain.diary.food.Food;
 
-public class FoodResponseDTO {
+public class FoodUpdateResponseDTO {
 
     private final Long writerId;
 
@@ -16,7 +16,7 @@ public class FoodResponseDTO {
 
     private final String foodName;
 
-    public FoodResponseDTO(Food food) {
+    public FoodUpdateResponseDTO(Food food) {
         this.writerId = food.getDiet().getDiary().getWriter().getId();
         this.diaryId = food.getDiet().getDiary().getId();
         this.dietId = food.getDiet().getDietId();

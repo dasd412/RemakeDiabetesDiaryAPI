@@ -7,9 +7,13 @@ import com.dasd412.remake.api.controller.diary.diabetesdiary.DiaryUpdateResponse
 import com.dasd412.remake.api.controller.diary.diet.DietDeleteResponseDTO;
 import com.dasd412.remake.api.controller.diary.diet.DietUpdateRequestDTO;
 import com.dasd412.remake.api.controller.diary.diet.DietUpdateResponseDTO;
+import com.dasd412.remake.api.controller.diary.food.FoodDeleteResponseDTO;
+import com.dasd412.remake.api.controller.diary.food.FoodUpdateRequestDTO;
+import com.dasd412.remake.api.controller.diary.food.FoodUpdateResponseDTO;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 import com.dasd412.remake.api.domain.diary.diet.Diet;
+import com.dasd412.remake.api.domain.diary.food.Food;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.service.UpdateDeleteDiaryService;
 import org.slf4j.Logger;
@@ -55,7 +59,6 @@ public class DiaryUpdateDeleteRestController {
     /*
     식단 수정 및 삭제 메서드
      */
-
     @PutMapping("api/diary/diet")
     public ApiResult<DietUpdateResponseDTO> updateDiet(@RequestBody DietUpdateRequestDTO dto) {
         logger.info("update diet");
@@ -72,5 +75,23 @@ public class DiaryUpdateDeleteRestController {
         return ApiResult.OK(new DietDeleteResponseDTO(writerId, diaryId, dietId));
     }
 
+    /*
+    음식 수정 및 삭제 메서드
+     */
+    @PutMapping("api/diary/food")
+    public ApiResult<FoodUpdateResponseDTO> updateFood(@RequestBody FoodUpdateRequestDTO dto) {
+        logger.info("update food");
+
+        return ApiResult.OK(new FoodUpdateResponseDTO(updateDeleteDiaryService.updateFood(EntityId.of(Writer.class, dto.getWriterId()), EntityId.of(Diet.class, dto.getDietId()), EntityId.of(Food.class, dto.getFoodId()), dto.getFoodName())));
+    }
+
+    @DeleteMapping("api/diary/owner/{writerId}/diabetes_diary/{diaryId}/diet/{dietId}/food/{foodId}")
+    public ApiResult<FoodDeleteResponseDTO> deleteFood(@PathVariable("writerId") Long writerId, @PathVariable("diaryId") Long diaryId, @PathVariable("dietId") Long dietId, @PathVariable("foodId") Long foodId) {
+        logger.info("delete food");
+
+        updateDeleteDiaryService.deleteFood(EntityId.of(Writer.class, writerId), EntityId.of(DiabetesDiary.class, diaryId), EntityId.of(Diet.class, dietId), EntityId.of(Food.class, foodId));
+
+        return ApiResult.OK(new FoodDeleteResponseDTO(writerId, diaryId, dietId, foodId));
+    }
 
 }

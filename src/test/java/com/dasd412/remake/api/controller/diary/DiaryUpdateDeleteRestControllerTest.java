@@ -6,6 +6,7 @@ import com.dasd412.remake.api.controller.diary.diabetesdiary.DiaryUpdateRequestD
 import com.dasd412.remake.api.controller.diary.diet.DietRequestDTO;
 import com.dasd412.remake.api.controller.diary.diet.DietUpdateRequestDTO;
 import com.dasd412.remake.api.controller.diary.food.FoodRequestDTO;
+import com.dasd412.remake.api.controller.diary.food.FoodUpdateRequestDTO;
 import com.dasd412.remake.api.controller.diary.writer.WriterJoinRequestDTO;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiaryRepository;
@@ -20,8 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -67,8 +67,6 @@ public class DiaryUpdateDeleteRestControllerTest {
     FoodRepository foodRepository;
 
     private MockMvc mockMvc;
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Before
     public void setup() throws Exception {
@@ -268,4 +266,67 @@ public class DiaryUpdateDeleteRestControllerTest {
         assertThat(dietList.size()).isEqualTo(0);
         assertThat(foodList.size()).isEqualTo(0);
     }
+
+    @Transactional
+    @Test
+    public void updateFoodInvalidName() throws Exception {
+        //given
+        StringBuilder invalidName = new StringBuilder();
+        IntStream.range(0, 100).forEach(i -> invalidName.append("a"));
+
+        FoodUpdateRequestDTO dto = new FoodUpdateRequestDTO(1L, 1L, 1L, invalidName.toString());
+
+        String url = "http://localhost:" + port + "api/diary/food";
+
+        //when and then
+        mockMvc.perform(put(url).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dto)))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Transactional
+    @Test
+    public void updateFood() throws Exception {
+        FoodUpdateRequestDTO dto = new FoodUpdateRequestDTO(1L, 1L, 1L, "chicken");
+
+        String url = "http://localhost:" + port + "api/diary/food";
+
+        //when and then
+        mockMvc.perform(put(url).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dto)))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.writerId").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.dietId").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.foodId").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.foodName").value("chicken"));
+    }
+
+    @Transactional
+    @Test
+    public void deleteFood() throws Exception {
+        //given
+        long writerId = 1L;
+        long diaryId = 1L;
+        long dietId = 1L;
+        long foodId = 1L;
+
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes_diary/" + diaryId + "/diet/" + dietId + "/food/" + foodId;
+
+        //when and then
+        mockMvc.perform(delete(url).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.writerId").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.diaryId").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.dietId").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.foodId").value("1"));
+
+        List<Food> foodList = foodRepository.findAll();
+        assertThat(foodList.size()).isEqualTo(0);
+    }
+
 }
