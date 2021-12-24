@@ -4,6 +4,7 @@ package com.dasd412.remake.api.controller.diary;
 import com.dasd412.remake.api.controller.diary.diabetesdiary.DiabetesDiaryRequestDTO;
 import com.dasd412.remake.api.controller.diary.diabetesdiary.DiaryUpdateRequestDTO;
 import com.dasd412.remake.api.controller.diary.diet.DietRequestDTO;
+import com.dasd412.remake.api.controller.diary.diet.DietUpdateRequestDTO;
 import com.dasd412.remake.api.controller.diary.food.FoodRequestDTO;
 import com.dasd412.remake.api.controller.diary.writer.WriterJoinRequestDTO;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
@@ -203,6 +204,68 @@ public class DiaryUpdateDeleteRestControllerTest {
         assertThat(foodList.size()).isEqualTo(0);
     }
 
+    @Transactional
+    @Test
+    public void updateDietInvalidSugar() throws Exception {
+        //given
+        int invalidSugar = 0;
+        DietUpdateRequestDTO dto = new DietUpdateRequestDTO(1L, 1L, 1L, EatTime.BreakFast, invalidSugar);
+        String url = "http://localhost:" + port + "api/diary/diet";
 
+        //when and then
+        mockMvc.perform(put(url).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dto)))
+                .andExpect(status().isBadRequest());
+    }
 
+    @Transactional
+    @Test
+    public void updateDiet() throws Exception {
+        //given
+        DietUpdateRequestDTO dto = new DietUpdateRequestDTO(1L, 1L, 1L, EatTime.BreakFast, 100);
+        String url = "http://localhost:" + port + "api/diary/diet";
+
+        //when and then
+        mockMvc.perform(put(url).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dto)))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.writerId").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.diaryId").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.dietId").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.eatTime").value("BreakFast"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.bloodSugar").value("100"));
+
+        Diet diet = dietRepository.findOneDietByIdInDiary(1L, 1L, 1L).orElseThrow(() -> new NoSuchElementException("식단 없음."));
+        assertThat(diet.getBloodSugar()).isEqualTo(100);
+        assertThat(diet.getEatTime()).isEqualTo(EatTime.BreakFast);
+    }
+
+    @Transactional
+    @Test
+    public void deleteDiet() throws Exception {
+        //given
+        long writerId = 1L;
+        long diaryId = 1L;
+        long dietId = 1L;
+
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes_diary/" + diaryId + "/diet/" + dietId;
+
+        //when and then
+        mockMvc.perform(delete(url).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.writerId").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.diaryId").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.dietId").value("1"));
+
+        //cascade test
+        List<Diet> dietList = dietRepository.findAll();
+        List<Food> foodList = foodRepository.findAll();
+
+        assertThat(dietList.size()).isEqualTo(0);
+        assertThat(foodList.size()).isEqualTo(0);
+    }
 }

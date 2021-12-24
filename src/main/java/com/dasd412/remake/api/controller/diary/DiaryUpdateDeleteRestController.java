@@ -4,8 +4,12 @@ import com.dasd412.remake.api.controller.ApiResult;
 import com.dasd412.remake.api.controller.diary.diabetesdiary.DiaryDeleteResponseDTO;
 import com.dasd412.remake.api.controller.diary.diabetesdiary.DiaryUpdateRequestDTO;
 import com.dasd412.remake.api.controller.diary.diabetesdiary.DiaryUpdateResponseDTO;
+import com.dasd412.remake.api.controller.diary.diet.DietDeleteResponseDTO;
+import com.dasd412.remake.api.controller.diary.diet.DietUpdateRequestDTO;
+import com.dasd412.remake.api.controller.diary.diet.DietUpdateResponseDTO;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
+import com.dasd412.remake.api.domain.diary.diet.Diet;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.service.UpdateDeleteDiaryService;
 import org.slf4j.Logger;
@@ -42,9 +46,30 @@ public class DiaryUpdateDeleteRestController {
     @DeleteMapping("api/diary/owner/{writerId}/diabetes_diary/{diaryId}")
     public ApiResult<DiaryDeleteResponseDTO> deleteDiabetesDiary(@PathVariable("writerId") Long writerId, @PathVariable("diaryId") Long diaryId) {
         logger.info("delete Diabetes Diary");
+
         updateDeleteDiaryService.deleteDiary(EntityId.of(Writer.class, writerId), EntityId.of(DiabetesDiary.class, diaryId));
 
         return ApiResult.OK(new DiaryDeleteResponseDTO(writerId, diaryId));
+    }
+
+    /*
+    식단 수정 및 삭제 메서드
+     */
+
+    @PutMapping("api/diary/diet")
+    public ApiResult<DietUpdateResponseDTO> updateDiet(@RequestBody DietUpdateRequestDTO dto) {
+        logger.info("update diet");
+
+        return ApiResult.OK(new DietUpdateResponseDTO(updateDeleteDiaryService.updateDiet(EntityId.of(Writer.class, dto.getWriterId()), EntityId.of(DiabetesDiary.class, dto.getDiaryId()), EntityId.of(Diet.class, dto.getDietId()), dto.getEatTime(), dto.getBloodSugar())));
+    }
+
+    @DeleteMapping("api/diary/owner/{writerId}/diabetes_diary/{diaryId}/diet/{dietId}")
+    public ApiResult<DietDeleteResponseDTO> deleteDiet(@PathVariable("writerId") Long writerId, @PathVariable("diaryId") Long diaryId, @PathVariable("dietId") Long dietId) {
+        logger.info("delete diet");
+
+        updateDeleteDiaryService.deleteDiet(EntityId.of(Writer.class, writerId), EntityId.of(DiabetesDiary.class, diaryId), EntityId.of(Diet.class, dietId));
+
+        return ApiResult.OK(new DietDeleteResponseDTO(writerId, diaryId, dietId));
     }
 
 
