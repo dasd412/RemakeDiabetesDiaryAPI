@@ -18,6 +18,7 @@ import com.dasd412.remake.api.domain.diary.food.FoodRepository;
 import com.dasd412.remake.api.domain.diary.writer.Role;
 import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +32,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
@@ -109,7 +109,11 @@ public class DiaryUpdateDeleteRestControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @Transactional
+    @After
+    public void clean() {
+        writerRepository.deleteAll();
+    }
+    
     @Test
     public void updateInvalidDiary() throws Exception {
         //given
@@ -123,7 +127,7 @@ public class DiaryUpdateDeleteRestControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    @Transactional
+    
     @Test
     public void updateDiaryInvalidSugar() throws Exception {
         //given
@@ -136,7 +140,7 @@ public class DiaryUpdateDeleteRestControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Transactional
+    
     @Test
     public void updateDiaryInvalidRemark() throws Exception {
         //given
@@ -152,7 +156,7 @@ public class DiaryUpdateDeleteRestControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Transactional
+    
     @Test
     public void updateDiary() throws Exception {
         //given
@@ -176,7 +180,7 @@ public class DiaryUpdateDeleteRestControllerTest {
         assertThat(foundDiary.getRemark()).isEqualTo("modifyTest");
     }
 
-    @Transactional
+    
     @Test
     public void deleteDiary() throws Exception {
         //given
@@ -202,7 +206,7 @@ public class DiaryUpdateDeleteRestControllerTest {
         assertThat(foodList.size()).isEqualTo(0);
     }
 
-    @Transactional
+    
     @Test
     public void updateDietInvalidSugar() throws Exception {
         //given
@@ -216,7 +220,7 @@ public class DiaryUpdateDeleteRestControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Transactional
+    
     @Test
     public void updateDiet() throws Exception {
         //given
@@ -240,7 +244,7 @@ public class DiaryUpdateDeleteRestControllerTest {
         assertThat(diet.getEatTime()).isEqualTo(EatTime.BreakFast);
     }
 
-    @Transactional
+    
     @Test
     public void deleteDiet() throws Exception {
         //given
@@ -267,7 +271,7 @@ public class DiaryUpdateDeleteRestControllerTest {
         assertThat(foodList.size()).isEqualTo(0);
     }
 
-    @Transactional
+    
     @Test
     public void updateFoodInvalidName() throws Exception {
         //given
@@ -285,7 +289,7 @@ public class DiaryUpdateDeleteRestControllerTest {
                 .andDo(print());
     }
 
-    @Transactional
+    
     @Test
     public void updateFood() throws Exception {
         FoodUpdateRequestDTO dto = new FoodUpdateRequestDTO(1L, 1L, 1L, "chicken");
@@ -304,7 +308,7 @@ public class DiaryUpdateDeleteRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.foodName").value("chicken"));
     }
 
-    @Transactional
+    
     @Test
     public void deleteFood() throws Exception {
         //given

@@ -1,6 +1,8 @@
 package com.dasd412.remake.api.controller.diary;
 
+import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +17,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import com.dasd412.remake.api.controller.diary.diabetesdiary.DiabetesDiaryRequestDTO;
 import com.dasd412.remake.api.controller.diary.diet.DietRequestDTO;
@@ -41,6 +42,9 @@ public class DiarySaveRestControllerTest {
     @Autowired
     private WebApplicationContext context;
 
+    @Autowired
+    private WriterRepository writerRepository;
+
     private MockMvc mockMvc;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -52,8 +56,13 @@ public class DiarySaveRestControllerTest {
                 .build();
     }
 
+    @After
+    public void clean() {
+        writerRepository.deleteAll();
+    }
+
     //todo writer 는 스프링 시큐리티 적용 후 빼낼 예정
-    @Transactional
+
     @Test
     public void joinWriterInvalidName() throws Exception {
         //given
@@ -67,7 +76,7 @@ public class DiarySaveRestControllerTest {
                 .andDo(print());
     }
 
-    @Transactional
+
     @Test
     public void joinWriter() throws Exception {
         //given
@@ -86,7 +95,7 @@ public class DiarySaveRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.role").value("User"));
     }
 
-    @Transactional
+
     @Test
     public void postDiaryInvalidFpg() throws Exception {
         //given
@@ -114,7 +123,7 @@ public class DiarySaveRestControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Transactional
+
     @Test
     public void postDiaryInvalidRemark() throws Exception {
         //given
@@ -146,7 +155,7 @@ public class DiarySaveRestControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Transactional
+
     @Test
     public void postDiary() throws Exception {
         //given
@@ -179,7 +188,7 @@ public class DiarySaveRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.writtenTime").value("2021-09-25T06:49:41"));
     }
 
-    @Transactional
+
     @Test
     public void postDietInvalidBloodSugar() throws Exception {
         //given
@@ -215,7 +224,7 @@ public class DiarySaveRestControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Transactional
+
     @Test
     public void postDiet() throws Exception {
         //given
@@ -258,7 +267,7 @@ public class DiarySaveRestControllerTest {
 
     }
 
-    @Transactional
+
     @Test
     public void postInvalidFood() throws Exception {
         //given
@@ -308,7 +317,7 @@ public class DiarySaveRestControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Transactional
+
     @Test
     public void postFood() throws Exception {
         //given

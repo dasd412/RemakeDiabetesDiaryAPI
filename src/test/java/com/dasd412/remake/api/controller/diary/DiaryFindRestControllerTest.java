@@ -6,7 +6,9 @@ import com.dasd412.remake.api.controller.diary.food.FoodRequestDTO;
 import com.dasd412.remake.api.controller.diary.writer.WriterJoinRequestDTO;
 import com.dasd412.remake.api.domain.diary.diet.EatTime;
 import com.dasd412.remake.api.domain.diary.writer.Role;
+import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +23,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.hamcrest.Matchers.*;
@@ -40,6 +41,9 @@ public class DiaryFindRestControllerTest {
 
     @Autowired
     private WebApplicationContext context;
+
+    @Autowired
+    private WriterRepository writerRepository;
 
     private MockMvc mockMvc;
 
@@ -90,7 +94,11 @@ public class DiaryFindRestControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @Transactional
+    @After
+    public void clean() {
+        writerRepository.deleteAll();
+    }
+
     @Test
     public void findInvalidOwnerOfDiary() throws Exception {
         //given
@@ -103,7 +111,7 @@ public class DiaryFindRestControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    @Transactional
+
     @Test
     public void findOwnerOfDiary() throws Exception {
         //given
@@ -120,7 +128,7 @@ public class DiaryFindRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.role").value("User"));
     }
 
-    @Transactional
+
     @Test
     public void findDiabetesDiariesOfWriter() throws Exception {
         //given
@@ -148,7 +156,7 @@ public class DiaryFindRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(3)));
     }
 
-    @Transactional
+
     @Test
     public void findDiaryOfInvalidOwner() throws Exception {
         //given
@@ -169,7 +177,7 @@ public class DiaryFindRestControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    @Transactional
+
     @Test
     public void findInvalidDiaryOfOwner() throws Exception {
         //given
@@ -183,7 +191,7 @@ public class DiaryFindRestControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    @Transactional
+
     @Test
     public void findDiaryOfOwner() throws Exception {
         //given
@@ -202,7 +210,7 @@ public class DiaryFindRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.writtenTime").value("2021-09-25T06:49:41"));
     }
 
-    @Transactional
+
     @Test
     public void findDiariesBetweenTimeInvalidFormat() throws Exception {
         //given
@@ -218,7 +226,7 @@ public class DiaryFindRestControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Transactional
+
     @Test
     public void findDiariesBetweenTimeInvalidTimeOrder() throws Exception {
         //given
@@ -234,7 +242,7 @@ public class DiaryFindRestControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Transactional
+
     @Test
     public void findDiariesBetweenTime() throws Exception {
         //given
@@ -265,7 +273,7 @@ public class DiaryFindRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(3)));
     }
 
-    @Transactional
+
     @Test
     public void findFpgHigherOrEqual() throws Exception {
         //given
@@ -295,7 +303,7 @@ public class DiaryFindRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(2)));
     }
 
-    @Transactional
+
     @Test
     public void findFpgLowerOrEqual() throws Exception {
         //given
@@ -325,7 +333,7 @@ public class DiaryFindRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(3)));
     }
 
-    @Transactional
+
     @Test
     public void findDietsOfDiaryInvalidWriter() throws Exception {
         //given
@@ -356,7 +364,7 @@ public class DiaryFindRestControllerTest {
     /*
     식단 조회 테스트
      */
-    @Transactional
+
     @Test
     public void findDietsOfInvalidDiary() throws Exception {
         //given
@@ -384,7 +392,7 @@ public class DiaryFindRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(0)));
     }
 
-    @Transactional
+
     @Test
     public void findDietsOfDiary() throws Exception {
         //given
@@ -412,7 +420,7 @@ public class DiaryFindRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(3)));
     }
 
-    @Transactional
+
     @Test
     public void findOneDietOfDiary() throws Exception {
         //given
@@ -441,7 +449,7 @@ public class DiaryFindRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.bloodSugar").value(150));
     }
 
-    @Transactional
+
     @Test
     public void findHigherThanBloodSugarBetweenTimeInvalidTimeOrder() throws Exception {
         //given
@@ -469,7 +477,7 @@ public class DiaryFindRestControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Transactional
+
     @Test
     public void findHigherThanInvalidBloodSugarBetweenTime() throws Exception {
         //given
@@ -497,7 +505,7 @@ public class DiaryFindRestControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Transactional
+
     @Test
     public void findHigherThanBloodSugarBetweenTime() throws Exception {
         //given
@@ -527,7 +535,7 @@ public class DiaryFindRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(3)));
     }
 
-    @Transactional
+
     @Test
     public void findLowerThanBloodSugarBetweenTime() throws Exception {
         //given
@@ -557,7 +565,7 @@ public class DiaryFindRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(0)));
     }
 
-    @Transactional
+
     @Test
     public void findHigherThanInvalidBloodSugarInEatTime() throws Exception {
         //given
@@ -584,7 +592,7 @@ public class DiaryFindRestControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Transactional
+
     @Test
     public void findHigherThanBloodSugarInEatTime() throws Exception {
         //given
@@ -613,7 +621,7 @@ public class DiaryFindRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(2)));
     }
 
-    @Transactional
+
     @Test
     public void findLowerThanBloodSugarInEatTime() throws Exception {
         //given
@@ -642,7 +650,7 @@ public class DiaryFindRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(1)));
     }
 
-    @Transactional
+
     @Test
     public void findAverageBloodSugarOfDietInvalid() throws Exception {
         //식단 기록한 적 없는데 식단의 평균 혈당 요청한 경우 테스트
@@ -663,7 +671,7 @@ public class DiaryFindRestControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Transactional
+
     @Test
     public void findAverageBloodSugarOfDiet() throws Exception {
 
@@ -696,7 +704,7 @@ public class DiaryFindRestControllerTest {
     /*
     음식 조회 테스트
      */
-    @Transactional
+
     @Test
     public void findFoodsInDiet() throws Exception {
         //given
@@ -719,7 +727,7 @@ public class DiaryFindRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(2)));
     }
 
-    @Transactional
+
     @Test
     public void findOneFoodByIdInDiet() throws Exception {
         //given
@@ -737,7 +745,7 @@ public class DiaryFindRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.foodName").value("pizza"));
     }
 
-    @Transactional
+
     @Test
     public void findFoodNamesInDietHigherThanBloodSugar() throws Exception {
         //given
@@ -767,7 +775,7 @@ public class DiaryFindRestControllerTest {
 
     }
 
-    @Transactional
+
     @Test
     public void findFoodHigherThanAverageBloodSugarOfDiet() throws Exception {
         //given
