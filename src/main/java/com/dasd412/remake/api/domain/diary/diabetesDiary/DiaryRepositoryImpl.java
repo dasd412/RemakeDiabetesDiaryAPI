@@ -1,5 +1,6 @@
 package com.dasd412.remake.api.domain.diary.diabetesDiary;
 
+import com.dasd412.remake.api.domain.diary.writer.QWriter;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 
@@ -53,6 +54,8 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
     public List<DiabetesDiary> findDiabetesDiariesOfWriter(Long writerId) {
         //@Query(value = "FROM DiabetesDiary diary WHERE diary.writer.writerId = :writer_id")
         return jpaQueryFactory.selectFrom(QDiabetesDiary.diabetesDiary)
+                .innerJoin(QDiabetesDiary.diabetesDiary.writer, QWriter.writer)
+                .fetchJoin()
                 .where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId))
                 .fetch();
     }
