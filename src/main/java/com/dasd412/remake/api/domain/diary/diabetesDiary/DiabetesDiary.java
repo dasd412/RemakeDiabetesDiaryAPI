@@ -15,9 +15,9 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Entity
-@Table(name = "DiabetesDiary",uniqueConstraints = @UniqueConstraint(columnNames = {"diary_id"}))
+@Table(name = "DiabetesDiary", uniqueConstraints = @UniqueConstraint(columnNames = {"diary_id"}))
 @IdClass(DiabetesDiaryId.class)
-public class DiabetesDiary{
+public class DiabetesDiary {
     //식별 관계이므로 복합키 사용.
     @Id
     @Column(name = "diary_id", columnDefinition = "bigint default 0 auto_increment")
@@ -25,7 +25,7 @@ public class DiabetesDiary{
 
     //Writer 와 일대다 양방향 관계이며, 연관관계의 주인이다. 되도록이면 모든 연관 관계를 지연로딩으로 사용하는 것이 성능에 좋음.
     @Id
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writer_id")
     private Writer writer;
 
@@ -45,7 +45,7 @@ public class DiabetesDiary{
     }
 
     public DiabetesDiary(EntityId<DiabetesDiary, Long> diabetesDiaryEntityId, Writer writer, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
-        checkArgument(fastingPlasmaGlucose > 0 && fastingPlasmaGlucose<=1000, "fastingPlasmaGlucose must be between 1 and 1000");
+        checkArgument(fastingPlasmaGlucose > 0 && fastingPlasmaGlucose <= 1000, "fastingPlasmaGlucose must be between 1 and 1000");
         checkArgument(remark.length() <= 500, "remark length should be lower than 501");
         this.diaryId = diabetesDiaryEntityId.getId();
         this.writer = writer;
@@ -63,7 +63,7 @@ public class DiabetesDiary{
     }
 
     private void modifyFastingPlasmaGlucose(int fastingPlasmaGlucose) {
-        checkArgument(fastingPlasmaGlucose > 0 && fastingPlasmaGlucose<=1000, "fastingPlasmaGlucose must be between 1 and 1000");
+        checkArgument(fastingPlasmaGlucose > 0 && fastingPlasmaGlucose <= 1000, "fastingPlasmaGlucose must be between 1 and 1000");
         this.fastingPlasmaGlucose = fastingPlasmaGlucose;
     }
 

@@ -21,7 +21,7 @@ public class Food{
 
     //'다'에 해당하므로 연관 관계의 주인이다. 되도록이면 모든 연관 관계를 지연로딩으로 사용하는 것이 성능에 좋음.
     @Id
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumns({
             @JoinColumn(name = "writer_id", referencedColumnName = "writer_id"),
             @JoinColumn(name = "diary_id", referencedColumnName = "diary_id"),

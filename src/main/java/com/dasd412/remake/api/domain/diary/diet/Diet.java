@@ -24,7 +24,7 @@ public class Diet {
 
     //혈당일지 "일"에 대해 "다"이므로 연관관계의 주인(외래키 관리자)이다. 되도록이면 모든 연관 관계를 지연로딩으로 사용하는 것이 성능에 좋음.
     @Id
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumns({
             @JoinColumn(name = "writer_id", referencedColumnName = "writer_id"),
             @JoinColumn(name = "diary_id", referencedColumnName = "diary_id")

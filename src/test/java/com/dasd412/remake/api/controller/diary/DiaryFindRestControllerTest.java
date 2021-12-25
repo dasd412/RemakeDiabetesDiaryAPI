@@ -55,6 +55,7 @@ public class DiaryFindRestControllerTest {
 
     @Before
     public void setup() throws Exception {
+        logger.info("set up start");
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .build();
@@ -92,10 +93,12 @@ public class DiaryFindRestControllerTest {
         mockMvc.perform(post(foodUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(foodRequestDTO)))
                 .andExpect(status().isOk());
+        logger.info("set up end");
     }
 
     @After
     public void clean() {
+        logger.info("clean up");
         writerRepository.deleteAll();
     }
 
