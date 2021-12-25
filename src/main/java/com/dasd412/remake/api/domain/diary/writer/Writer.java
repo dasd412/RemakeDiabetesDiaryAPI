@@ -17,7 +17,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 @Table(name = "Writer",uniqueConstraints = @UniqueConstraint(columnNames = {"writer_id","email"}))
 public class Writer{
     @Id
-    @Column(name = "writer_id", columnDefinition = "bigint default 0 auto_increment" ,nullable = false)
+    @Column(name = "writer_id", columnDefinition = "bigint default 0" ,nullable = false)
     private Long writerId;
 
     private String name;

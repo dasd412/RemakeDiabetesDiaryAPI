@@ -20,7 +20,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class DiabetesDiary {
     //식별 관계이므로 복합키 사용.
     @Id
-    @Column(name = "diary_id", columnDefinition = "bigint default 0 auto_increment")
+    @Column(name = "diary_id", columnDefinition = "bigint default 0")
     private Long diaryId;
 
     //Writer 와 일대다 양방향 관계이며, 연관관계의 주인이다. 되도록이면 모든 연관 관계를 지연로딩으로 사용하는 것이 성능에 좋음.

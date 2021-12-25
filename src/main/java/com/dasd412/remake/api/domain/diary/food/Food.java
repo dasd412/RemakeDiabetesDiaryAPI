@@ -16,7 +16,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 @IdClass(FoodId.class)
 public class Food{
     @Id
-    @Column(name = "food_id", columnDefinition = "bigint default 0 auto_increment")
+    @Column(name = "food_id", columnDefinition = "bigint default 0")
     private Long foodId;
 
     //'다'에 해당하므로 연관 관계의 주인이다. 되도록이면 모든 연관 관계를 지연로딩으로 사용하는 것이 성능에 좋음.
