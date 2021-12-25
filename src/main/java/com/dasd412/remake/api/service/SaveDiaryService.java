@@ -16,8 +16,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.NoResultException;
 import java.time.LocalDateTime;
-import java.util.NoSuchElementException;
+
 
 @Service
 public class SaveDiaryService {
@@ -95,7 +96,7 @@ public class SaveDiaryService {
     @Transactional
     public DiabetesDiary saveDiaryOfWriterById(EntityId<Writer, Long> writerEntityId, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
         logger.info("saveDiaryOfWriterById");
-        Writer writer = writerRepository.findById(writerEntityId.getId()).orElseThrow(() -> new NoSuchElementException("작성자가 없습니다."));
+        Writer writer = writerRepository.findById(writerEntityId.getId()).orElseThrow(() -> new NoResultException("작성자가 없습니다."));
         DiabetesDiary diary = new DiabetesDiary(getNextIdOfDiary(), writer, fastingPlasmaGlucose, remark, writtenTime);
         writer.addDiary(diary);
         writerRepository.save(writer);
@@ -105,8 +106,8 @@ public class SaveDiaryService {
     @Transactional
     public Diet saveDietOfWriterById(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diaryEntityId, EatTime eatTime, int bloodSugar) {
         logger.info("saveDietOfWriterById");
-        Writer writer = writerRepository.findById(writerEntityId.getId()).orElseThrow(() -> new NoSuchElementException("작성자가 없습니다."));
-        DiabetesDiary diary = diaryRepository.findOneDiabetesDiaryByIdInWriter(writerEntityId.getId(), diaryEntityId.getId()).orElseThrow(() -> new NoSuchElementException("일지가 없습니다."));
+        Writer writer = writerRepository.findById(writerEntityId.getId()).orElseThrow(() -> new NoResultException("작성자가 없습니다."));
+        DiabetesDiary diary = diaryRepository.findOneDiabetesDiaryByIdInWriter(writerEntityId.getId(), diaryEntityId.getId()).orElseThrow(() -> new NoResultException("일지가 없습니다."));
         Diet diet = new Diet(getNextIdOfDiet(), diary, eatTime, bloodSugar);
         diary.addDiet(diet);
         writerRepository.save(writer);
@@ -116,8 +117,8 @@ public class SaveDiaryService {
     @Transactional
     public Food saveFoodOfWriterById(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diaryEntityId, EntityId<Diet, Long> dietEntityId, String foodName) {
         logger.info("saveFoodOfWriterById");
-        Writer writer = writerRepository.findById(writerEntityId.getId()).orElseThrow(() -> new NoSuchElementException("작성자가 없습니다."));
-        Diet diet = dietRepository.findOneDietByIdInDiary(writerEntityId.getId(), diaryEntityId.getId(), dietEntityId.getId()).orElseThrow(() -> new NoSuchElementException("식단이 없습니다."));
+        Writer writer = writerRepository.findById(writerEntityId.getId()).orElseThrow(() -> new NoResultException("작성자가 없습니다."));
+        Diet diet = dietRepository.findOneDietByIdInDiary(writerEntityId.getId(), diaryEntityId.getId(), dietEntityId.getId()).orElseThrow(() -> new NoResultException("식단이 없습니다."));
         Food food = new Food(getNextIdOfFood(), diet, foodName);
         diet.addFood(food);
         writerRepository.save(writer);

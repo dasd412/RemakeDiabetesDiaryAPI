@@ -35,7 +35,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
-import java.util.NoSuchElementException;
+import javax.persistence.NoResultException;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -113,7 +113,7 @@ public class DiaryUpdateDeleteRestControllerTest {
     public void clean() {
         writerRepository.deleteAll();
     }
-    
+
     @Test
     public void updateInvalidDiary() throws Exception {
         //given
@@ -127,7 +127,7 @@ public class DiaryUpdateDeleteRestControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    
+
     @Test
     public void updateDiaryInvalidSugar() throws Exception {
         //given
@@ -140,7 +140,7 @@ public class DiaryUpdateDeleteRestControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    
+
     @Test
     public void updateDiaryInvalidRemark() throws Exception {
         //given
@@ -156,7 +156,7 @@ public class DiaryUpdateDeleteRestControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    
+
     @Test
     public void updateDiary() throws Exception {
         //given
@@ -175,12 +175,12 @@ public class DiaryUpdateDeleteRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.fastingPlasmaGlucose").value("300"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.remark").value("modifyTest"));
 
-        DiabetesDiary foundDiary = diaryRepository.findOneDiabetesDiaryByIdInWriter(1L, 1L).orElseThrow(() -> new NoSuchElementException("일지 없음."));
+        DiabetesDiary foundDiary = diaryRepository.findOneDiabetesDiaryByIdInWriter(1L, 1L).orElseThrow(() -> new NoResultException("일지 없음."));
         assertThat(foundDiary.getFastingPlasmaGlucose()).isEqualTo(300);
         assertThat(foundDiary.getRemark()).isEqualTo("modifyTest");
     }
 
-    
+
     @Test
     public void deleteDiary() throws Exception {
         //given
@@ -206,7 +206,7 @@ public class DiaryUpdateDeleteRestControllerTest {
         assertThat(foodList.size()).isEqualTo(0);
     }
 
-    
+
     @Test
     public void updateDietInvalidSugar() throws Exception {
         //given
@@ -220,7 +220,7 @@ public class DiaryUpdateDeleteRestControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    
+
     @Test
     public void updateDiet() throws Exception {
         //given
@@ -239,12 +239,12 @@ public class DiaryUpdateDeleteRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.eatTime").value("BreakFast"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.bloodSugar").value("100"));
 
-        Diet diet = dietRepository.findOneDietByIdInDiary(1L, 1L, 1L).orElseThrow(() -> new NoSuchElementException("식단 없음."));
+        Diet diet = dietRepository.findOneDietByIdInDiary(1L, 1L, 1L).orElseThrow(() -> new NoResultException("식단 없음."));
         assertThat(diet.getBloodSugar()).isEqualTo(100);
         assertThat(diet.getEatTime()).isEqualTo(EatTime.BreakFast);
     }
 
-    
+
     @Test
     public void deleteDiet() throws Exception {
         //given
@@ -271,7 +271,7 @@ public class DiaryUpdateDeleteRestControllerTest {
         assertThat(foodList.size()).isEqualTo(0);
     }
 
-    
+
     @Test
     public void updateFoodInvalidName() throws Exception {
         //given
@@ -289,7 +289,7 @@ public class DiaryUpdateDeleteRestControllerTest {
                 .andDo(print());
     }
 
-    
+
     @Test
     public void updateFood() throws Exception {
         FoodUpdateRequestDTO dto = new FoodUpdateRequestDTO(1L, 1L, 1L, "chicken");
@@ -308,7 +308,7 @@ public class DiaryUpdateDeleteRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.foodName").value("chicken"));
     }
 
-    
+
     @Test
     public void deleteFood() throws Exception {
         //given

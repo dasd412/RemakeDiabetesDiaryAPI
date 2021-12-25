@@ -22,8 +22,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.NoResultException;
 import java.time.LocalDateTime;
-import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -228,7 +228,7 @@ public class CreateDiaryTest {
         Diet diet = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 100);
 
         //when
-        Writer found = writerRepository.findById(me.getId()).orElseThrow(() -> new NoSuchElementException("작성자가 없습니다."));
+        Writer found = writerRepository.findById(me.getId()).orElseThrow(() -> new NoResultException("작성자가 없습니다."));
 
         //then
         logger.info(found.toString());

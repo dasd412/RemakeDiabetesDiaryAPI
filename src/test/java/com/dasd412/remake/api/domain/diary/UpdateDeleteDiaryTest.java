@@ -28,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
+import javax.persistence.NoResultException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -84,7 +84,7 @@ public class UpdateDeleteDiaryTest {
         //when
         Writer found = writerRepository.findAll().get(0);
         DiabetesDiary foundDiary = diaryRepository.findOneDiabetesDiaryByIdInWriter(me.getId(), diary.getId())
-                .orElseThrow(() -> new NoSuchElementException("일지 없음"));
+                .orElseThrow(() -> new NoResultException("일지 없음"));
 
         //then
         assertThat(found).isEqualTo(me);
@@ -183,9 +183,9 @@ public class UpdateDeleteDiaryTest {
 
         //when
         DiabetesDiary diary = diaryRepository.findOneDiabetesDiaryByIdInWriter(me.getId(), diary1.getId())
-                .orElseThrow(() -> new NoSuchElementException("일지 없음"));
+                .orElseThrow(() -> new NoResultException("일지 없음"));
         Diet diet = dietRepository.findOneDietByIdInDiary(me.getId(), diary1.getId(), diet1.getDietId())
-                .orElseThrow(() -> new NoSuchElementException("식단 없음"));
+                .orElseThrow(() -> new NoResultException("식단 없음"));
 
         //then
         logger.info(diary.getDietList().toString());
@@ -208,7 +208,7 @@ public class UpdateDeleteDiaryTest {
 
         //when
         DiabetesDiary diary = diaryRepository.findOneDiabetesDiaryByIdInWriter(me.getId(), diary1.getId())
-                .orElseThrow(() -> new NoSuchElementException("일지 없음"));
+                .orElseThrow(() -> new NoResultException("일지 없음"));
         List<Diet> dietList = dietRepository.findAll();
 
         //then
@@ -240,9 +240,9 @@ public class UpdateDeleteDiaryTest {
 
         //when
         DiabetesDiary foundDiary1 = diaryRepository.findOneDiabetesDiaryByIdInWriter(me.getId(), diary1.getId())
-                .orElseThrow(() -> new NoSuchElementException("일지 없음"));
+                .orElseThrow(() -> new NoResultException("일지 없음"));
         DiabetesDiary foundDiary2 = diaryRepository.findOneDiabetesDiaryByIdInWriter(me.getId(), diary2.getId())
-                .orElseThrow(() -> new NoSuchElementException("일지 없음"));
+                .orElseThrow(() -> new NoResultException("일지 없음"));
         List<Diet> dietList = dietRepository.findAll();
 
         //then
@@ -326,10 +326,10 @@ public class UpdateDeleteDiaryTest {
 
         //when
         Diet diet = dietRepository.findOneDietByIdInDiary(me.getId(), diary.getId(), diet1.getDietId())
-                .orElseThrow(() -> new NoSuchElementException("식단 없음"));
+                .orElseThrow(() -> new NoResultException("식단 없음"));
 
         Food food = foodRepository.findOneFoodByIdInDiet(me.getId(), diet.getDietId(), food1.getId())
-                .orElseThrow(() -> new NoSuchElementException("음식 없음"));
+                .orElseThrow(() -> new NoResultException("음식 없음"));
 
         //then
         logger.info(diet.getFoodList().toString());
@@ -353,7 +353,7 @@ public class UpdateDeleteDiaryTest {
 
         //when
         Diet diet = dietRepository.findOneDietByIdInDiary(me.getId(), diary.getId(), diet1.getDietId())
-                .orElseThrow(() -> new NoSuchElementException("해당 식단이 존재하지 않습니다."));
+                .orElseThrow(() -> new NoResultException("해당 식단이 존재하지 않습니다."));
         List<Food> foodList = foodRepository.findAll();
 
         //then
@@ -379,7 +379,7 @@ public class UpdateDeleteDiaryTest {
 
         //when
         Diet foundDiet = dietRepository.findOneDietByIdInDiary(me.getId(), diary.getId(), diet.getDietId())
-                .orElseThrow(() -> new NoSuchElementException("해당 식단이 존재하지 않습니다."));
+                .orElseThrow(() -> new NoResultException("해당 식단이 존재하지 않습니다."));
         List<Food> foodList = foodRepository.findAll();
 
         //then

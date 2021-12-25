@@ -14,7 +14,7 @@ import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import java.util.NoSuchElementException;
+import javax.persistence.NoResultException;
 
 @ControllerAdvice
 //전역 예외 처리 핸들러
@@ -31,8 +31,9 @@ public class GlobalExceptionHandler {
         return new ModelAndView("400");
     }
 
+    //NoResultException 은 쿼리 결과가 하나도 없을 때 발생하는 (jpa 가 제공하는) 예외이다.
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler({NoHandlerFoundException.class, NoSuchElementException.class})
+    @ExceptionHandler({NoHandlerFoundException.class,  NoResultException.class})
     public ModelAndView handle404() {
         logger.error("Not found in server");
         return new ModelAndView("404");

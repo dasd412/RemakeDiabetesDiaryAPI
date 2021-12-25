@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
+import javax.persistence.NoResultException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -104,7 +104,7 @@ public class ReadDiaryTest {
         DiabetesDiary diary2 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
         DiabetesDiary diary3 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
         //when
-        Writer found = writerRepository.findById(me.getId()).orElseThrow(() -> new NoSuchElementException("작성자 없음."));
+        Writer found = writerRepository.findById(me.getId()).orElseThrow(() -> new NoResultException("작성자 없음."));
 
         //then
         assertThat(Hibernate.isInitialized(found.getDiaries())).isFalse();
@@ -123,7 +123,7 @@ public class ReadDiaryTest {
         Food food3 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet1.getDietId()), "cola");
 
         //when
-        DiabetesDiary foundDiary = diaryRepository.findOneDiabetesDiaryByIdInWriter(me.getId(), diary.getId()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 일지입니다."));
+        DiabetesDiary foundDiary = diaryRepository.findOneDiabetesDiaryByIdInWriter(me.getId(), diary.getId()).orElseThrow(() -> new NoResultException("존재하지 않는 일지입니다."));
 
         //then
         assertThat(Hibernate.isInitialized(foundDiary.getDietList())).isFalse();
@@ -140,7 +140,7 @@ public class ReadDiaryTest {
         Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
 
         //when
-        Writer found = writerRepository.findById(me.getId()).orElseThrow(() -> new NoSuchElementException("해당 작성자가 존재하지 않습니다."));
+        Writer found = writerRepository.findById(me.getId()).orElseThrow(() -> new NoResultException("해당 작성자가 존재하지 않습니다."));
 
         //then
         assertThat(found).isEqualTo(me);
@@ -158,8 +158,8 @@ public class ReadDiaryTest {
         DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
 
         //when
-        Writer found = writerRepository.findById(me.getId()).orElseThrow(() -> new NoSuchElementException("해당 작성자가 존재하지 않습니다."));
-        Writer foundOfDiary = diaryRepository.findWriterOfDiary(diary.getId()).orElseThrow(() -> new NoSuchElementException("해당 작성자가 존재하지 않습니다."));
+        Writer found = writerRepository.findById(me.getId()).orElseThrow(() -> new NoResultException("해당 작성자가 존재하지 않습니다."));
+        Writer foundOfDiary = diaryRepository.findWriterOfDiary(diary.getId()).orElseThrow(() -> new NoResultException("해당 작성자가 존재하지 않습니다."));
         //then
         assertThat(found).isEqualTo(me);
         assertThat(found.getName()).isEqualTo(me.getName());
@@ -208,7 +208,7 @@ public class ReadDiaryTest {
         DiabetesDiary diary3 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 40, "test3", LocalDateTime.now());
 
         //when
-        DiabetesDiary diary = diaryRepository.findOneDiabetesDiaryByIdInWriter(me.getId(), diary2.getId()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 일지입니다."));
+        DiabetesDiary diary = diaryRepository.findOneDiabetesDiaryByIdInWriter(me.getId(), diary2.getId()).orElseThrow(() -> new NoResultException("존재하지 않는 일지입니다."));
 
         //then
         assertThat(diary).isEqualTo(diary2);
@@ -313,7 +313,7 @@ public class ReadDiaryTest {
 
         //when
         Diet diet = dietRepository.findOneDietByIdInDiary(me.getId(), diary.getId(), diet3.getDietId())
-                .orElseThrow(() -> new NoSuchElementException("해당 식단이 존재하지 않습니다."));
+                .orElseThrow(() -> new NoResultException("해당 식단이 존재하지 않습니다."));
 
         //then
         logger.info(diet.toString());
@@ -454,7 +454,7 @@ public class ReadDiaryTest {
 
         //when
         Food foundFood = foodRepository.findOneFoodByIdInDiet(me.getId(), diet.getDietId(), food3.getId())
-                .orElseThrow(() -> new NoSuchElementException("음식 없음."));
+                .orElseThrow(() -> new NoResultException("음식 없음."));
 
         //then
         logger.info(foundFood.toString());

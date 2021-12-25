@@ -12,13 +12,15 @@ import com.dasd412.remake.api.domain.diary.writer.Writer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.NoResultException;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
+
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -48,7 +50,7 @@ public class FindDiaryService {
     public Writer getWriterOfDiary(EntityId<DiabetesDiary, Long> diaryEntityId) {
         logger.info("getWriterOfDiary");
         checkNotNull(diaryEntityId, "diaryId must be provided");
-        return diaryRepository.findWriterOfDiary(diaryEntityId.getId()).orElseThrow(() -> new NoSuchElementException("해당 일지의 작성자가 없습니다."));
+        return diaryRepository.findWriterOfDiary(diaryEntityId.getId()).orElseThrow(() -> new NoResultException("작성자가 없습니다."));
     }
 
     @Transactional(readOnly = true)
@@ -63,7 +65,7 @@ public class FindDiaryService {
         logger.info("getDiabetesDiaryOfWriter");
         checkNotNull(writerEntityId, "writerId must be provided");
         checkNotNull(diabetesDiaryEntityId, "diaryId must be provided");
-        return diaryRepository.findOneDiabetesDiaryByIdInWriter(writerEntityId.getId(), diabetesDiaryEntityId.getId()).orElseThrow(() -> new NoSuchElementException("작성자의 일지 중, id에 해당하는 일지가 없습니다."));
+        return diaryRepository.findOneDiabetesDiaryByIdInWriter(writerEntityId.getId(), diabetesDiaryEntityId.getId()).orElseThrow(() -> new NoResultException("작성자의 일지 중, id에 해당하는 일지가 없습니다."));
     }
 
     @Transactional(readOnly = true)
@@ -117,7 +119,7 @@ public class FindDiaryService {
         checkNotNull(writerEntityId, "writerId must be provided");
         checkNotNull(diabetesDiaryEntityId, "diaryId must be provided");
         checkNotNull(dietEntityId, "dietId must be provided");
-        return dietRepository.findOneDietByIdInDiary(writerEntityId.getId(), diabetesDiaryEntityId.getId(), dietEntityId.getId()).orElseThrow(() -> new NoSuchElementException("일지에서 해당 식단이 존재하지 않습니다."));
+        return dietRepository.findOneDietByIdInDiary(writerEntityId.getId(), diabetesDiaryEntityId.getId(), dietEntityId.getId()).orElseThrow(() -> new NoResultException("일지에서 해당 식단이 존재하지 않습니다."));
     }
 
     @Transactional(readOnly = true)
@@ -194,7 +196,7 @@ public class FindDiaryService {
         checkNotNull(writerEntityId, "writerId must be provided");
         checkNotNull(dietEntityId, "dietId must be provided");
         checkNotNull(foodEntityId, "foodId must be provided");
-        return foodRepository.findOneFoodByIdInDiet(writerEntityId.getId(), dietEntityId.getId(), foodEntityId.getId()).orElseThrow(() -> new NoSuchElementException("식단에서 해당 음식이 존재하지 않습니다."));
+        return foodRepository.findOneFoodByIdInDiet(writerEntityId.getId(), dietEntityId.getId(), foodEntityId.getId()).orElseThrow(() -> new NoResultException("식단에서 해당 음식이 존재하지 않습니다."));
     }
 
     @Transactional(readOnly = true)
