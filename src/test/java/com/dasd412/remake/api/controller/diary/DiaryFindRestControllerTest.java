@@ -213,6 +213,26 @@ public class DiaryFindRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.writtenTime").value("2021-09-25T06:49:41"));
     }
 
+    @Test
+    public void findOneDiabetesDiaryOfOwnerWithRelation() throws Exception {
+        //given
+        long writerId = 1L;
+        long diaryId = 1L;
+
+        String url = "http://localhost:" + port + "api/diary/owner/" + writerId + "/diabetes-diary/" + diaryId + "/with/relations";
+
+        //when and then
+        mockMvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.diaryId").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.dietList[0].dietId").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.dietList[0].eatTime").value("Lunch"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.dietList[0].bloodSugar").value("200"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.foodList[0].foodId").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.foodList[0].foodName").value("pizza"));
+
+    }
 
     @Test
     public void findDiariesBetweenTimeInvalidFormat() throws Exception {
