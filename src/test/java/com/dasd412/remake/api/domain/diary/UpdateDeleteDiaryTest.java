@@ -159,7 +159,7 @@ public class UpdateDeleteDiaryTest {
         saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test2", LocalDateTime.now());
         saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 30, "test3", LocalDateTime.now());
         saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 40, "test4", LocalDateTime.now());
-        writerRepository.deleteById(me.getId());
+        writerRepository.bulkDeleteWriter(me.getId());
 
         //when
         List<Writer> writers = writerRepository.findAll();
@@ -270,7 +270,7 @@ public class UpdateDeleteDiaryTest {
         Diet diet2 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Lunch, 100);
         Diet diet3 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Dinner, 100);
 
-        writerRepository.deleteById(me.getId());
+        writerRepository.bulkDeleteWriter(me.getId());
 
         //when
         List<Writer> writers = writerRepository.findAll();
@@ -405,7 +405,7 @@ public class UpdateDeleteDiaryTest {
         Food food2 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "chicken");
         Food food3 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "cola");
 
-        writerRepository.delete(me);
+        writerRepository.bulkDeleteWriter(me.getId());
 
         //when
         List<Writer> writers = writerRepository.findAll();

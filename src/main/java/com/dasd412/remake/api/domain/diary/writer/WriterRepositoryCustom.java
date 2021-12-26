@@ -4,4 +4,6 @@ public interface WriterRepositoryCustom {
     Long findCountOfId();
 
     Long findMaxOfId();
+
+    void bulkDeleteWriter(Long writerId);
 }
