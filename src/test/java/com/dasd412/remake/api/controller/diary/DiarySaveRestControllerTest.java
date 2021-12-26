@@ -358,9 +358,6 @@ public class DiarySaveRestControllerTest {
                         .content(new ObjectMapper().writeValueAsString(foodRequestDTO)))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.diaryId").value("1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.writerId").value("1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.dietId").value("1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.foodId").value("1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.foodName").value("pizza"));
     }
