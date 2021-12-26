@@ -18,6 +18,8 @@ public interface DiaryRepositoryCustom {
 
     Optional<DiabetesDiary> findOneDiabetesDiaryByIdInWriter(Long writerId, Long diaryId);
 
+    Optional<DiabetesDiary> findDiabetesDiaryOfWriterWithRelation(Long writerId, Long diaryId);
+
     List<DiabetesDiary> findDiaryBetweenTime(Long writerId, LocalDateTime startDate, LocalDateTime endDate);
 
     List<DiabetesDiary> findFpgHigherOrEqual(Long writerId, int fastingPlasmaGlucose);

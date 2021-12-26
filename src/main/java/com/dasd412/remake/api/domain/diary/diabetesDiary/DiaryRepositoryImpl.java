@@ -1,5 +1,7 @@
 package com.dasd412.remake.api.domain.diary.diabetesDiary;
 
+import com.dasd412.remake.api.domain.diary.diet.QDiet;
+import com.dasd412.remake.api.domain.diary.food.QFood;
 import com.dasd412.remake.api.domain.diary.writer.QWriter;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
@@ -64,6 +66,19 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
     public Optional<DiabetesDiary> findOneDiabetesDiaryByIdInWriter(Long writerId, Long diaryId) {
         //@Query(value = "FROM DiabetesDiary diary WHERE diary.writer.writerId = :writer_id AND diary.diaryId = :diary_id")
         return Optional.ofNullable(jpaQueryFactory.selectFrom(QDiabetesDiary.diabetesDiary)
+                .where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId).and(QDiabetesDiary.diabetesDiary.diaryId.eq(diaryId)))
+                .fetchOne());
+    }
+
+    @Override
+    public Optional<DiabetesDiary> findDiabetesDiaryOfWriterWithRelation(Long writerId, Long diaryId) {
+        return Optional.ofNullable(jpaQueryFactory.selectFrom(QDiabetesDiary.diabetesDiary)
+                .innerJoin(QDiabetesDiary.diabetesDiary.writer, QWriter.writer)
+                .fetchJoin()
+                .innerJoin(QDiabetesDiary.diabetesDiary.dietList, QDiet.diet)
+                .fetchJoin()
+                .innerJoin(QDiet.diet.foodList, QFood.food)
+                .fetchJoin()
                 .where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId).and(QDiabetesDiary.diabetesDiary.diaryId.eq(diaryId)))
                 .fetchOne());
     }

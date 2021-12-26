@@ -4,9 +4,7 @@ import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -14,15 +12,15 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Entity
-@Table(name = "Writer",uniqueConstraints = @UniqueConstraint(columnNames = {"writer_id","email"}))
-public class Writer{
+@Table(name = "Writer", uniqueConstraints = @UniqueConstraint(columnNames = {"writer_id", "email"}))
+public class Writer {
     @Id
-    @Column(name = "writer_id", columnDefinition = "bigint default 0" ,nullable = false)
+    @Column(name = "writer_id", columnDefinition = "bigint default 0", nullable = false)
     private Long writerId;
 
     private String name;
 
-    @Column(name="email")
+    @Column(name = "email")
     private String email;
 
     @Enumerated(EnumType.STRING)
@@ -32,7 +30,7 @@ public class Writer{
     //orphanRemoval=true 로 지정하면, 부모 엔티티 컬렉션에서 자식 엔티티를 삭제할 때 참조가 끊어지면서 db 에도 삭제된다.
     //cascade = CascadeType.ALL 을 적용하면 이 엔티티에 적용된 작업이 연관된 다른 엔티티들에도 모두 적용이 전파된다.
     @OneToMany(mappedBy = "writer", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private final List<DiabetesDiary> diaries = new ArrayList<>();
+    private final Set<DiabetesDiary> diaries = new HashSet<>();
 
     public Writer() {
     }
@@ -76,7 +74,7 @@ public class Writer{
     }
 
     public List<DiabetesDiary> getDiaries() {
-        return diaries;
+        return new ArrayList<>(diaries);
     }
 
     public void addDiary(DiabetesDiary diary) {

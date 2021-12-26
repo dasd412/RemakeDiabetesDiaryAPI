@@ -7,14 +7,12 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Entity
-@Table(name = "Diet",uniqueConstraints = @UniqueConstraint(columnNames = {"diet_id"}))
+@Table(name = "Diet", uniqueConstraints = @UniqueConstraint(columnNames = {"diet_id"}))
 @IdClass(DietId.class)
 public class Diet {
 
@@ -41,13 +39,13 @@ public class Diet {
     //db의 1 대 다 관계에서는 '다' 쪽이 외래키를 갖고 있다. 따라서 '다'에 해당하는 Food 가 연관 관계의 주인이 되어야 한다.
     //'일'에 해당하는 Diet 는 주인이 아니므로 mappedBy 속성을 사용하여 주인이 아님을 지정한다.
     @OneToMany(mappedBy = "diet", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private final List<Food> foodList = new ArrayList<>();
+    private final Set<Food> foodList = new HashSet<>();
 
     public Diet() {
     }
 
     public Diet(EntityId<Diet, Long> dietEntityId, DiabetesDiary diary, EatTime eatTime, int bloodSugar) {
-        checkArgument(bloodSugar > 0 && bloodSugar<=1000, "bloodSugar must be between 1 and 1000");
+        checkArgument(bloodSugar > 0 && bloodSugar <= 1000, "bloodSugar must be between 1 and 1000");
         this.dietId = dietEntityId.getId();
         this.diary = diary;
         this.eatTime = eatTime;
@@ -71,12 +69,12 @@ public class Diet {
     }
 
     private void modifyBloodSugar(int bloodSugar) {
-        checkArgument(bloodSugar > 0 && bloodSugar<=1000, "bloodSugar must be between 1 and 1000");
+        checkArgument(bloodSugar > 0 && bloodSugar <= 1000, "bloodSugar must be between 1 and 1000");
         this.bloodSugar = bloodSugar;
     }
 
     public List<Food> getFoodList() {
-        return foodList;
+        return new ArrayList<>(foodList);
     }
 
     public void addFood(Food food) {

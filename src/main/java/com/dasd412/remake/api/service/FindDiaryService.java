@@ -69,6 +69,14 @@ public class FindDiaryService {
     }
 
     @Transactional(readOnly = true)
+    public DiabetesDiary getDiabetesDiaryOfWriterWithRelation(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diabetesDiaryEntityId){
+        logger.info("getDiabetesDiaryOfWriterWithRelation");
+        checkNotNull(writerEntityId, "writerId must be provided");
+        checkNotNull(diabetesDiaryEntityId, "diaryId must be provided");
+        return diaryRepository.findDiabetesDiaryOfWriterWithRelation(writerEntityId.getId(), diabetesDiaryEntityId.getId()).orElseThrow(() -> new NoResultException("작성자의 일지 중, id에 해당하는 일지가 없습니다."));
+    }
+
+    @Transactional(readOnly = true)
     public List<DiabetesDiary> getDiariesBetweenTime(EntityId<Writer, Long> writerEntityId, String startDateString, String endDateString) {
         logger.info("getDiaryBetweenTime");
 

@@ -1,6 +1,7 @@
 package com.dasd412.remake.api.controller.diary;
 
 import com.dasd412.remake.api.controller.ApiResult;
+import com.dasd412.remake.api.controller.diary.diabetesdiary.DiaryFetchResponseDTO;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.service.FindDiaryService;
 import org.slf4j.Logger;
@@ -73,6 +74,13 @@ public class DiaryFindRestController {
         logger.info("find only one diabetes diary of the owner");
 
         return ApiResult.OK(new DiabetesDiaryFindResponseDTO(findDiaryService.getDiabetesDiaryOfWriter(EntityId.of(Writer.class, writerId), EntityId.of(DiabetesDiary.class, diaryId))));
+    }
+
+    @GetMapping("api/diary/owner/{writerId}/diabetes-diary/{diaryId}/with/relations")
+    public ApiResult<DiaryFetchResponseDTO> findOneDiabetesDiaryOfOwnerWithRelation(@PathVariable("writerId") Long writerId, @PathVariable("diaryId") Long diaryId) {
+        logger.info("find One Diabetes Diary Of Owner With Relation");
+
+        return ApiResult.OK(new DiaryFetchResponseDTO(findDiaryService.getDiabetesDiaryOfWriterWithRelation(EntityId.of(Writer.class, writerId), EntityId.of(DiabetesDiary.class, diaryId))));
     }
 
     @GetMapping("api/diary/owner/{writerId}/diabetes-diary/start-date/{startDate}/end-date/{endDate}")
