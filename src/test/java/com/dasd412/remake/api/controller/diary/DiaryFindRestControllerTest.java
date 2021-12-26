@@ -207,7 +207,6 @@ public class DiaryFindRestControllerTest {
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.diaryId").value("1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.writerId").value("1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.fastingPlasmaGlucose").value("100"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.remark").value("TEST"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.writtenTime").value("2021-09-25T06:49:41"));

@@ -170,7 +170,6 @@ public class DiaryUpdateDeleteRestControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.writerId").value("1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.diaryId").value("1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.fastingPlasmaGlucose").value("300"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.remark").value("modifyTest"));

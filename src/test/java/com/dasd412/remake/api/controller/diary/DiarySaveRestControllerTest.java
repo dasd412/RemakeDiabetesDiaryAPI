@@ -187,7 +187,6 @@ public class DiarySaveRestControllerTest {
                         .content(new ObjectMapper().writeValueAsString(diaryRequestDTO))).andDo(print())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.diaryId").value("1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.writerId").value("1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.fastingPlasmaGlucose").value("100"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.remark").value("TEST"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.writtenTime").value("2021-09-25T06:49:41"));
@@ -218,8 +217,7 @@ public class DiarySaveRestControllerTest {
         mockMvc.perform(post(postDiaryUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(diaryRequestDTO)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.diaryId").value("1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.writerId").value("1"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.diaryId").value("1"));
 
         //when and then
         DietRequestDTO dietRequestDTO = new DietRequestDTO(1L, 1L, EatTime.Lunch, 200000);
@@ -254,8 +252,7 @@ public class DiarySaveRestControllerTest {
         mockMvc.perform(post(postDiaryUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(diaryRequestDTO)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.diaryId").value("1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.writerId").value("1"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.diaryId").value("1"));
 
         //when and then
         DietRequestDTO dietRequestDTO = new DietRequestDTO(1L, 1L, EatTime.Lunch, 200);
@@ -297,8 +294,7 @@ public class DiarySaveRestControllerTest {
         mockMvc.perform(post(postDiaryUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(diaryRequestDTO)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.diaryId").value("1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.writerId").value("1"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.diaryId").value("1"));
 
         DietRequestDTO dietRequestDTO = new DietRequestDTO(1L, 1L, EatTime.Lunch, 200);
         String postDietUrl = "http://localhost:" + port + "api/diary/diet";
@@ -347,8 +343,7 @@ public class DiarySaveRestControllerTest {
         mockMvc.perform(post(postDiaryUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(diaryRequestDTO)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.diaryId").value("1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.writerId").value("1"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.diaryId").value("1"));
 
         DietRequestDTO dietRequestDTO = new DietRequestDTO(1L, 1L, EatTime.Lunch, 200);
         String postDietUrl = "http://localhost:" + port + "api/diary/diet";
