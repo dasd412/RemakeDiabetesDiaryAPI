@@ -1,14 +1,20 @@
 package com.dasd412.remake.api.domain.diary.diabetesDiary;
 
+import com.dasd412.remake.api.domain.diary.diet.Diet;
+import com.dasd412.remake.api.domain.diary.diet.DietRepository;
 import com.dasd412.remake.api.domain.diary.diet.QDiet;
+import com.dasd412.remake.api.domain.diary.food.Food;
 import com.dasd412.remake.api.domain.diary.food.QFood;
 import com.dasd412.remake.api.domain.diary.writer.QWriter;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
@@ -28,6 +34,7 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
     gt >
     goe >=
     */
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public DiaryRepositoryImpl(JPAQueryFactory jpaQueryFactory) {
         this.jpaQueryFactory = jpaQueryFactory;
@@ -105,6 +112,46 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
         return jpaQueryFactory.selectFrom(QDiabetesDiary.diabetesDiary)
                 .where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId).and(QDiabetesDiary.diabetesDiary.fastingPlasmaGlucose.loe(fastingPlasmaGlucose)))
                 .fetch();
+    }
+
+    @Override
+    public void bulkDeleteDiary(Long diaryId) {
+        //select diet id
+        logger.info("select diet id");
+        List<Long> dietIdList = jpaQueryFactory.selectFrom(QDiet.diet)
+                .innerJoin(QDiet.diet.diary, QDiabetesDiary.diabetesDiary)
+                .on(QDiet.diet.diary.diaryId.eq(diaryId))
+                .fetch()
+                .stream().map(
+                        Diet::getDietId
+                ).collect(Collectors.toList());
+
+        //select food id
+        logger.info("select food id");
+        List<Long> foodIdList = jpaQueryFactory.selectFrom(QFood.food)
+                .innerJoin(QFood.food.diet, QDiet.diet)
+                .on(QDiet.diet.dietId.in(dietIdList))
+                .fetch()
+                .stream().map(
+                        Food::getId
+                ).collect(Collectors.toList());
+
+        //bulk delete food
+        logger.info("bulk delete food");
+        jpaQueryFactory.delete(QFood.food)
+                .where(QFood.food.foodId.in(foodIdList))
+                .execute();
+
+        //bulk delete diet
+        logger.info("bulk delete diet");
+        jpaQueryFactory.delete(QDiet.diet)
+                .where(QDiet.diet.dietId.in(dietIdList))
+                .execute();
+
+        logger.info("select diet id");
+        jpaQueryFactory.delete(QDiabetesDiary.diabetesDiary)
+                .where(QDiabetesDiary.diabetesDiary.diaryId.eq(diaryId))
+                .execute();
     }
 
 }

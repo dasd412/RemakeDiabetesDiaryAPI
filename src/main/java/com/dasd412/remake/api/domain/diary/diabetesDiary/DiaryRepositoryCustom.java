@@ -25,4 +25,7 @@ public interface DiaryRepositoryCustom {
     List<DiabetesDiary> findFpgHigherOrEqual(Long writerId, int fastingPlasmaGlucose);
 
     List<DiabetesDiary> findFpgLowerOrEqual(Long writerId, int fastingPlasmaGlucose);
+
+    void bulkDeleteDiary(Long diaryId);
+
 }

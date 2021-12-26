@@ -23,6 +23,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -68,6 +70,9 @@ public class DiaryUpdateDeleteRestControllerTest {
 
     private MockMvc mockMvc;
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+
     @Before
     public void setup() throws Exception {
         mockMvc = MockMvcBuilders
@@ -107,10 +112,12 @@ public class DiaryUpdateDeleteRestControllerTest {
         mockMvc.perform(post(foodUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(foodRequestDTO)))
                 .andExpect(status().isOk());
+        logger.info("set up end");
     }
 
     @After
     public void clean() {
+        logger.info("clear");
         writerRepository.deleteAll();
     }
 
