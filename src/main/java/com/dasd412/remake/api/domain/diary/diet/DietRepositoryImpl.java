@@ -1,13 +1,18 @@
 package com.dasd412.remake.api.domain.diary.diet;
 
 
+import com.dasd412.remake.api.domain.diary.food.Food;
+import com.dasd412.remake.api.domain.diary.food.QFood;
 import com.dasd412.remake.api.domain.diary.writer.QWriter;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.QDiabetesDiary;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class DietRepositoryImpl implements DietRepositoryCustom {
     /*
@@ -26,6 +31,8 @@ public class DietRepositoryImpl implements DietRepositoryCustom {
     goe >=
     */
     private final JPAQueryFactory jpaQueryFactory;
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public DietRepositoryImpl(JPAQueryFactory jpaQueryFactory) {
         this.jpaQueryFactory = jpaQueryFactory;
@@ -110,5 +117,30 @@ public class DietRepositoryImpl implements DietRepositoryCustom {
                 .innerJoin(QDiet.diet.diary.writer, QWriter.writer)
                 .on(QDiet.diet.diary.writer.writerId.eq(writerId))
                 .fetchOne());
+    }
+
+    @Override
+    public void bulkDeleteDiet(Long dietId) {
+        //select food id
+        logger.info("select food id");
+        List<Long> foodIdList = jpaQueryFactory.selectFrom(QFood.food)
+                .innerJoin(QFood.food.diet, QDiet.diet)
+                .on(QDiet.diet.dietId.eq(dietId))
+                .fetch()
+                .stream().map(
+                        Food::getId
+                ).collect(Collectors.toList());
+
+        //bulk delete food
+        logger.info("bulk delete food");
+        jpaQueryFactory.delete(QFood.food)
+                .where(QFood.food.foodId.in(foodIdList))
+                .execute();
+
+        //bulk delete diet
+        logger.info("bulk delete diet");
+        jpaQueryFactory.delete(QDiet.diet)
+                .where(QDiet.diet.dietId.eq(dietId))
+                .execute();
     }
 }

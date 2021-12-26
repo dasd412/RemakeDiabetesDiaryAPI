@@ -23,4 +23,6 @@ public interface DietRepositoryCustom {
     List<Diet> findLowerThanBloodSugarInEatTime(Long writerId, int bloodSugar, EatTime eatTime);
 
     Optional<Double> findAverageBloodSugarOfDiet(Long writerId);
+
+    void bulkDeleteDiet(Long dietId);
 }

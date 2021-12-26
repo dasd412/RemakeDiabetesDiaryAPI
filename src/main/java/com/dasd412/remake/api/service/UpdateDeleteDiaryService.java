@@ -65,8 +65,7 @@ public class UpdateDeleteDiaryService {
 
         logger.info("association detached");
         writer.removeDiary(targetDiary);
-        logger.info("bulk delete");
-
+        logger.info("bulk delete diary");
         diaryRepository.bulkDeleteDiary(diaryEntityId.getId());
     }
 
@@ -100,8 +99,11 @@ public class UpdateDeleteDiaryService {
         Diet targetDiet = dietRepository.findOneDietByIdInDiary(writerEntityId.getId(), diaryEntityId.getId(), dietEntityId.getId())
                 .orElseThrow(() -> new NoResultException("해당 식단이 존재하지 않습니다."));
 
-        //orphanRemoval = true 로 해놓았기 때문에 부모의 컬렉션에서 자식이 null 되면 알아서 delete 쿼리가 나간다.
+        logger.info("association detached");
         diary.removeDiet(targetDiet);
+        logger.info("bulk delete diet");
+        dietRepository.bulkDeleteDiet(dietEntityId.getId());
+
     }
 
     @Transactional
