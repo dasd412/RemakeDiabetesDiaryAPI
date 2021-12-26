@@ -376,19 +376,14 @@ public class CreateDiaryTest {
         logger.info(found.getDiaries().get(0).getDietList().get(0).toString());
 
         //food1
-        assertThat(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(0)).isEqualTo(food1);
-        assertThat(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(0).getFoodName()).isEqualTo(food1.getFoodName());
-        logger.info(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(0).toString());
+        assertThat(found.getDiaries().get(0).getDietList().get(0).getFoodList().contains(food1)).isTrue();
 
         //food2
-        assertThat(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(1)).isEqualTo(food2);
-        assertThat(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(1).getFoodName()).isEqualTo(food2.getFoodName());
-        logger.info(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(1).toString());
+        assertThat(found.getDiaries().get(0).getDietList().get(0).getFoodList().contains(food2)).isTrue();
 
         //food2
-        assertThat(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(2)).isEqualTo(food3);
-        assertThat(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(2).getFoodName()).isEqualTo(food3.getFoodName());
-        logger.info(found.getDiaries().get(0).getDietList().get(0).getFoodList().get(2).toString());
+        assertThat(found.getDiaries().get(0).getDietList().get(0).getFoodList().contains(food3)).isTrue();
+
     }
 
     /*
