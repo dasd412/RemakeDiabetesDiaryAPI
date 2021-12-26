@@ -79,38 +79,6 @@ public class ReadDiaryTest {
 
     }
 
-    // todo Writer 엔티티 하나를 조회할 때는 Writer 하나만 조회하도록 변경해야 한다. 연관된 엔티티 전부 select 하면 성능 상 매우 안 좋다.
-    //n+1문제 발생. n+1 문제를 테스트하려면 @Transactional 을 제거해야 한다.
-    @Test
-    public void findWriterAllIsNotFetchJoin() {
-        //given
-        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        DiabetesDiary diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
-        DiabetesDiary diary2 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
-        DiabetesDiary diary3 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
-        //when
-        Writer found = writerRepository.findAll().get(0);
-
-        //then
-        assertThat(Hibernate.isInitialized(found.getDiaries())).isFalse();
-    }
-
-    //n+1문제 발생. n+1 문제를 테스트하려면 @Transactional 을 제거해야 한다.
-    @Test
-    public void findWriterByIdIsNotFetchJoin() {
-        //given
-        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        DiabetesDiary diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
-        DiabetesDiary diary2 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
-        DiabetesDiary diary3 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
-        //when
-        Writer found = writerRepository.findById(me.getId()).orElseThrow(() -> new NoResultException("작성자 없음."));
-
-        //then
-        assertThat(Hibernate.isInitialized(found.getDiaries())).isFalse();
-    }
-
-    // todo DiabetesDiary 엔티티 하나를 조회할 때는 연관된 엔티티 "전부"를 함께 조회해야 한다.
     //n+1문제 발생. n+1 문제를 테스트하려면 @Transactional 을 제거해야 한다.
     @Test
     public void findDiaryOfWriterIsFetchJoin() {
@@ -123,11 +91,11 @@ public class ReadDiaryTest {
         Food food3 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet1.getDietId()), "cola");
 
         //when
-        DiabetesDiary foundDiary = diaryRepository.findOneDiabetesDiaryByIdInWriter(me.getId(), diary.getId()).orElseThrow(() -> new NoResultException("존재하지 않는 일지입니다."));
+        DiabetesDiary foundDiary = diaryRepository.findDiabetesDiaryOfWriterWithRelation(me.getId(), diary.getId()).orElseThrow(() -> new NoResultException("존재하지 않는 일지입니다."));
 
         //then
-        assertThat(Hibernate.isInitialized(foundDiary.getDietList())).isFalse();
-        //assertThat(Hibernate.isInitialized(foundDiary.getDietList().get(0).getFoodList())).isFalse(); <- lazy loading 인데 초기화 아직 안되서 에러.
+        assertThat(Hibernate.isInitialized(foundDiary.getDietList())).isTrue();
+        assertThat(Hibernate.isInitialized(foundDiary.getDietList().get(0).getFoodList())).isTrue();
     }
 
     /*
