@@ -9,8 +9,6 @@ import java.time.LocalDateTime;
 public class DiaryListFindResponseDTO {
     private final Long diaryId;
 
-    private final Long writerId;
-
     private final int fastingPlasmaGlucose;
 
     private final String remark;
@@ -19,7 +17,6 @@ public class DiaryListFindResponseDTO {
 
     public DiaryListFindResponseDTO(DiabetesDiary diary) {
         this.diaryId = diary.getId();
-        this.writerId = diary.getWriter().getId();
         this.fastingPlasmaGlucose = diary.getFastingPlasmaGlucose();
         this.remark = diary.getRemark();
         this.writtenTime = diary.getWrittenTime();
@@ -27,10 +24,6 @@ public class DiaryListFindResponseDTO {
 
     public Long getDiaryId() {
         return diaryId;
-    }
-
-    public Long getWriterId() {
-        return writerId;
     }
 
     public int getFastingPlasmaGlucose() {
@@ -48,7 +41,6 @@ public class DiaryListFindResponseDTO {
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                .append("writer", writerId)
                 .append("diary", diaryId)
                 .append("fpg", fastingPlasmaGlucose)
                 .append("remark", remark)

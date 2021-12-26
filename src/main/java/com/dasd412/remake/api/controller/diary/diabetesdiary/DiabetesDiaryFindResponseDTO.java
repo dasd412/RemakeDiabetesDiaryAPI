@@ -10,8 +10,6 @@ public class DiabetesDiaryFindResponseDTO {
 
     private final Long diaryId;
 
-    private final Long writerId;
-
     private final int fastingPlasmaGlucose;
 
     private final String remark;
@@ -20,7 +18,6 @@ public class DiabetesDiaryFindResponseDTO {
 
     public DiabetesDiaryFindResponseDTO(DiabetesDiary diary) {
         this.diaryId = diary.getId();
-        this.writerId = diary.getWriter().getId();
         this.fastingPlasmaGlucose = diary.getFastingPlasmaGlucose();
         this.remark = diary.getRemark();
         this.writtenTime = diary.getWrittenTime();
@@ -28,10 +25,6 @@ public class DiabetesDiaryFindResponseDTO {
 
     public Long getDiaryId() {
         return diaryId;
-    }
-
-    public Long getWriterId() {
-        return writerId;
     }
 
     public int getFastingPlasmaGlucose() {
@@ -49,7 +42,6 @@ public class DiabetesDiaryFindResponseDTO {
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                .append("writer", writerId)
                 .append("diary", diaryId)
                 .append("fpg", fastingPlasmaGlucose)
                 .append("remark", remark)
