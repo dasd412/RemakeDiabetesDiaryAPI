@@ -261,8 +261,6 @@ public class DiarySaveRestControllerTest {
                         .content(new ObjectMapper().writeValueAsString(dietRequestDTO)))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.diaryId").value("1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.writerId").value("1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.dietId").value("1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.bloodSugar").value("200"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.eatTime").value("Lunch"));
@@ -301,8 +299,6 @@ public class DiarySaveRestControllerTest {
         mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(dietRequestDTO)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.diaryId").value("1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.writerId").value("1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.dietId").value("1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.bloodSugar").value("200"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.eatTime").value("Lunch"));
@@ -350,8 +346,6 @@ public class DiarySaveRestControllerTest {
         mockMvc.perform(post(postDietUrl).contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(dietRequestDTO)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.diaryId").value("1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.writerId").value("1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.dietId").value("1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.bloodSugar").value("200"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.eatTime").value("Lunch"));
