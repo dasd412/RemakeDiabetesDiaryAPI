@@ -84,6 +84,8 @@ public class Writer {
         return new ArrayList<>(diaries);
     }
 
+    public String getPassword() { return password; }
+
     public void addDiary(DiabetesDiary diary) {
         this.diaries.add(diary);
         //무한 루프 방지

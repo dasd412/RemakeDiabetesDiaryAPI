@@ -35,7 +35,6 @@ public class SaveDiaryService {
         this.foodRepository = foodRepository;
     }
 
-    //todo writer 는 스프링 시큐리티 적용 후 빼낼 예정
     //작성자 id 생성 메서드 (트랜잭션 필수)
     public EntityId<Writer, Long> getNextIdOfWriter() {
         Long count = writerRepository.findCountOfId();
