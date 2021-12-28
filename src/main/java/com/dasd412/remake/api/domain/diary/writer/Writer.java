@@ -23,6 +23,8 @@ public class Writer {
     @Column(name = "email")
     private String email;
 
+    private String password;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -33,11 +35,18 @@ public class Writer {
     public Writer() {
     }
 
+    //시큐리티 없이 사용할 때 쓰인 생성자.
     public Writer(EntityId<Writer, Long> writerEntityId, String name, String email, Role role) {
+        this(writerEntityId, name, email, null, role);
+    }
+
+    //시큐리티 적용 후 쓰이는 생성자.
+    public Writer(EntityId<Writer, Long> writerEntityId, String name, String email, String password, Role role) {
         checkArgument(name.length() > 0 && name.length() <= 50, "name should be between 1 and 50");
         this.writerId = writerEntityId.getId();
         this.name = name;
         this.email = email;
+        this.password = password;
         this.role = role;
     }
 
