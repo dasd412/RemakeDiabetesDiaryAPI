@@ -31,3 +31,4 @@ logs/
 
 ###security###
 application-oauth.properties
+application-database.properties
