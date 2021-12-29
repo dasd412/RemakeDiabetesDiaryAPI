@@ -12,15 +12,16 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Entity
-@Table(name = "Writer", uniqueConstraints = @UniqueConstraint(columnNames = {"writer_id", "email"}))
+@Table(name = "Writer", uniqueConstraints = @UniqueConstraint(columnNames = {"writer_id", "name", "email"}))
 public class Writer {
     @Id
-    @Column(name = "writer_id", columnDefinition = "bigint default 0", nullable = false)
+    @Column(name = "writer_id", columnDefinition = "bigint default 0", nullable = false, unique = true)
     private Long writerId;
 
+    @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(name = "email")
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     private String password;
@@ -84,7 +85,9 @@ public class Writer {
         return new ArrayList<>(diaries);
     }
 
-    public String getPassword() { return password; }
+    public String getPassword() {
+        return password;
+    }
 
     public void addDiary(DiabetesDiary diary) {
         this.diaries.add(diary);
