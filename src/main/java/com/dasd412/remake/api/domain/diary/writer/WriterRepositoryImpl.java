@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class WriterRepositoryImpl implements WriterRepositoryCustom {
@@ -92,5 +93,10 @@ public class WriterRepositoryImpl implements WriterRepositoryCustom {
         jpaQueryFactory.delete(QWriter.writer)
                 .where(QWriter.writer.writerId.eq(writerId))
                 .execute();
+    }
+
+    @Override
+    public Optional<Writer> findWriterByName(String name) {
+        return Optional.ofNullable(jpaQueryFactory.selectFrom(QWriter.writer).where(QWriter.writer.name.eq(name)).fetchOne());
     }
 }
