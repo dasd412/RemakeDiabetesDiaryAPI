@@ -1,4 +1,4 @@
-package com.dasd412.remake.api.service;
+package com.dasd412.remake.api.service.security;
 
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.writer.Role;

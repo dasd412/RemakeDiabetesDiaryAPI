@@ -2,7 +2,7 @@ package com.dasd412.remake.api.controller.security;
 
 import com.dasd412.remake.api.controller.security.writer.UserJoinRequestDTO;
 import com.dasd412.remake.api.domain.diary.writer.Role;
-import com.dasd412.remake.api.service.WriterService;
+import com.dasd412.remake.api.service.security.WriterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

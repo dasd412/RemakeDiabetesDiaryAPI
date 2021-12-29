@@ -1,7 +1,7 @@
 package com.dasd412.remake.api.domain.diary;
 
-import com.dasd412.remake.api.service.SaveDiaryService;
-import com.dasd412.remake.api.service.UpdateDeleteDiaryService;
+import com.dasd412.remake.api.service.domain.SaveDiaryService;
+import com.dasd412.remake.api.service.domain.UpdateDeleteDiaryService;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiaryRepository;
 import com.dasd412.remake.api.domain.diary.diet.Diet;
