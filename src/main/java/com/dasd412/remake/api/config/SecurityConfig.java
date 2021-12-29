@@ -1,6 +1,5 @@
 package com.dasd412.remake.api.config;
 
-import com.dasd412.remake.api.domain.diary.writer.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,6 +27,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()// 로그인이 필요하면
                 .loginPage("/loginForm")// loginForm 뷰로 이동.
                 .loginProcessingUrl("/login")// "/login" 요청이 오면 스프링 시큐리티가 인터셉트해서 대신 로그인 해줌.
-                .defaultSuccessUrl("/");// 로그인 성공하면 이동하는 디폴트 url 설정.
+                .defaultSuccessUrl("/")// 로그인 성공하면 이동하는 디폴트 url 설정.
+                .and()
+                .oauth2Login()//Oauth 로그인 역시 "/loginForm" 으로 이동하게 함.
+                .loginPage("/loginForm");
     }
 }
