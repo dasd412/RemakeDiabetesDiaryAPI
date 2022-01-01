@@ -24,8 +24,8 @@ public class LoginRestController {
         this.writerService = writerService;
     }
 
-    @PostMapping("/join")
-    public ApiResult join(@RequestBody UserJoinRequestDTO dto) {
+    @PostMapping("/signup/user")
+    public ApiResult signup(@RequestBody UserJoinRequestDTO dto) {
         logger.info("writer join");
 
         try {
