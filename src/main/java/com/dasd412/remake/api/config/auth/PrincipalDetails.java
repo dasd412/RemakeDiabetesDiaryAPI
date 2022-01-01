@@ -1,4 +1,4 @@
-package com.dasd412.remake.api.domain.diary.auth;
+package com.dasd412.remake.api.config.auth;
 
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,12 +20,7 @@ public class PrincipalDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collection = new ArrayList<>();
-        collection.add(new GrantedAuthority() {
-            @Override
-            public String getAuthority() {
-                return writer.getRole().name();
-            }
-        });
+        collection.add((GrantedAuthority) () -> writer.getRole().name());
         return collection;
     }
 

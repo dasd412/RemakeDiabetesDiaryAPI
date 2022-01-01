@@ -1,6 +1,5 @@
-package com.dasd412.remake.api.service.security;
+package com.dasd412.remake.api.config.auth;
 
-import com.dasd412.remake.api.domain.diary.auth.PrincipalDetails;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
 import org.springframework.security.core.userdetails.UserDetails;
