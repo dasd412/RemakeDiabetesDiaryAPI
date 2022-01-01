@@ -31,7 +31,8 @@ public class LoginRestController {
         logger.info("writer join");
 
         try {
-            writerService.saveWriterWithSecurity(dto.getName(), dto.getEmail(), dto.getPassword(), Role.User);
+            //사용자 정의 회원 가입 시에는 provider 관련 데이터가 필요없다.
+            writerService.saveWriterWithSecurity(dto.getName(), dto.getEmail(), dto.getPassword(), Role.User,null,null);
         } catch (DuplicateUserNameException nameException) {
             return ApiResult.ERROR("duplicateName", HttpStatus.BAD_REQUEST);
         } catch (DuplicateEmailException emailException) {

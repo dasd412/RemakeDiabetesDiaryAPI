@@ -43,7 +43,7 @@ public class WriterService {
     }
 
     @Transactional
-    public void saveWriterWithSecurity(String name, String email, String password, Role role) throws DuplicateException {
+    public Writer saveWriterWithSecurity(String name, String email, String password, Role role, String provider, String providerId) throws DuplicateException {
         logger.info("join writer with security");
 
         if (writerRepository.existsName(name) == Boolean.TRUE) {
@@ -56,9 +56,15 @@ public class WriterService {
 
         //비밀 번호 암호화
         String encodedPassword = encodePassword(password);
-
         //실제 회원 가입
-        Writer writer = new Writer(getNextIdOfWriter(), name, email, encodedPassword, role);
+        Writer writer = Writer.builder()
+                .writerEntityId(getNextIdOfWriter()).name(name)
+                .email(email).password(encodedPassword).role(role)
+                .provider(provider).providerId(providerId)
+                .build();
+
         writerRepository.save(writer);
+
+        return writer;
     }
 }

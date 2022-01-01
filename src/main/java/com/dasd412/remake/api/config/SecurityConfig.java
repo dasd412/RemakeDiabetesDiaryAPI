@@ -1,5 +1,7 @@
 package com.dasd412.remake.api.config;
 
+import com.dasd412.remake.api.config.oauth.PrincipalOAuth2UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -10,6 +12,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private PrincipalOAuth2UserService principalOAuth2UserService;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -30,7 +35,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/")// 로그인 성공하면 이동하는 디폴트 url 설정.
                 .and()
                 .oauth2Login()//Oauth 로그인 역시 "/loginForm" 으로 이동하게 함.
-                .loginPage("/loginForm");
+                .loginPage("/loginForm")
+                .userInfoEndpoint()
+                .userService(principalOAuth2UserService);//Oauth 로그인 이후의 후처리 담당하는 객체. OAuth2UserService 구현체여야 한다.
 
         //로그아웃 성공 시 인덱스 페이지로 이동.
         http.logout().logoutSuccessUrl("/");

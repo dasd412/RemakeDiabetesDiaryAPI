@@ -6,6 +6,7 @@ import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 import javax.persistence.*;
 import java.util.*;
 
+import lombok.Builder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -29,6 +30,12 @@ public class Writer {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    //OAuth provider
+    private String provider;
+
+    //OAuth provider id
+    private String providerId;
+
     //연관된 엔티티의 컬렉션을 로딩하는 것은 비용이 너무 많이 드므로 지연 로딩.
     @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private final Set<DiabetesDiary> diaries = new HashSet<>();
@@ -41,7 +48,6 @@ public class Writer {
         this(writerEntityId, name, email, null, role);
     }
 
-    //시큐리티 적용 후 쓰이는 생성자.
     public Writer(EntityId<Writer, Long> writerEntityId, String name, String email, String password, Role role) {
         checkArgument(name.length() > 0 && name.length() <= 50, "name should be between 1 and 50");
         this.writerId = writerEntityId.getId();
@@ -49,6 +55,19 @@ public class Writer {
         this.email = email;
         this.password = password;
         this.role = role;
+    }
+
+    //시큐리티 에 쓰이는 생성자
+    @Builder
+    public Writer(EntityId<Writer, Long> writerEntityId, String name, String email, String password, Role role, String provider, String providerId) {
+        checkArgument(name.length() > 0 && name.length() <= 50, "name should be between 1 and 50");
+        this.writerId = writerEntityId.getId();
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.provider = provider;
+        this.providerId = providerId;
     }
 
     public Long getId() {
@@ -87,6 +106,14 @@ public class Writer {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public String getProviderId() {
+        return providerId;
     }
 
     public void addDiary(DiabetesDiary diary) {
