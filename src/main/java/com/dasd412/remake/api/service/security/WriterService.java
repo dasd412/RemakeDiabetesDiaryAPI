@@ -1,6 +1,7 @@
 package com.dasd412.remake.api.service.security;
 
 import com.dasd412.remake.api.controller.exception.DuplicateEmailException;
+import com.dasd412.remake.api.controller.exception.DuplicateException;
 import com.dasd412.remake.api.controller.exception.DuplicateUserNameException;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.writer.Role;
@@ -42,7 +43,7 @@ public class WriterService {
     }
 
     @Transactional
-    public void saveWriterWithSecurity(String name, String email, String password, Role role) {
+    public void saveWriterWithSecurity(String name, String email, String password, Role role) throws DuplicateException {
         logger.info("join writer with security");
 
         if (writerRepository.existsName(name) == Boolean.TRUE) {

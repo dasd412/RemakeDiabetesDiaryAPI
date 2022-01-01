@@ -31,9 +31,9 @@ public class LoginRestController {
         try {
             writerService.saveWriterWithSecurity(dto.getName(), dto.getEmail(), dto.getPassword(), Role.User);
         } catch (DuplicateUserNameException nameException) {
-            return ApiResult.ERROR("중복된 이름입니다.", HttpStatus.BAD_REQUEST);
+            return ApiResult.ERROR("duplicateName", HttpStatus.BAD_REQUEST);
         } catch (DuplicateEmailException emailException) {
-            return ApiResult.ERROR("중복된 이메일입니다.", HttpStatus.BAD_REQUEST);
+            return ApiResult.ERROR("duplicateEmail", HttpStatus.BAD_REQUEST);
         }
 
         return ApiResult.OK("회원 가입 완료하였습니다.");

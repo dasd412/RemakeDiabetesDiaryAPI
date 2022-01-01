@@ -99,12 +99,24 @@ public class JoinTest {
         mockMvc.perform(post(url)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(dto)))
-                .andExpect(status().isBadRequest())
-                .andDo(print());
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("duplicateName"));
     }
 
     @Test
     public void duplicateEmail() throws Exception {
-
+        //given
+        UserJoinRequestDTO dto = new UserJoinRequestDTO("testEmail", "before", "before@naver.com");
+        String url = "http://localhost:" + port + "/signup/user";
+        //when and then
+        mockMvc.perform(post(url)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dto)))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("duplicateEmail"));
     }
 }
