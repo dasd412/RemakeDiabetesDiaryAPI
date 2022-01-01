@@ -1,10 +1,41 @@
 
+function validateEmail(str){
+	const regExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+	return regExp.test(str);
+}
+
 function submitSignup(){
+    const username=$("#username").val();
+    const password=$("#password").val();
+    const email=$("#email").val();
+
+    //front validation guard
+    if (username==null || username==""){
+        swal('',"공백으로 된 이름은 만들 수 없어요.","error");
+        return;
+    }
+    if (password==null||password==""){
+        swal('',"공백으로 된 패스워드는 만들 수 없어요.","error");
+        return;
+    }
+    if (password.length<=6){
+        swal('',"비밀번호는 7자 이상이여야 해요.","error");
+        return;
+    }
+    if (email==null||email==""){
+        swal('',"공백으로 된 이메일은 만들 수 없어요.","error");
+        return;
+    }
+    if (validateEmail(email)==false){
+        swal('',"올바른 형식의 이메일이 아니에요.","error");
+        return;
+    }
+
 
     const userData={
-        name:$("#username").val(),
-        password:$("#password").val(),
-        email:$("#email").val()
+        name:username,
+        password:password,
+        email:email
     };
 
     $.ajax({
