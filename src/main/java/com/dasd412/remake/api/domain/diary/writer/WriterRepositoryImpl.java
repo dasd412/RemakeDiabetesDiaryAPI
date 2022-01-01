@@ -99,4 +99,29 @@ public class WriterRepositoryImpl implements WriterRepositoryCustom {
     public Optional<Writer> findWriterByName(String name) {
         return Optional.ofNullable(jpaQueryFactory.selectFrom(QWriter.writer).where(QWriter.writer.name.eq(name)).fetchOne());
     }
+
+    //Querydsl 에선 exists 사용시 count()를 사용하므로 총 몇건인 지 확인하기 위해 전체를 확인하는 추가 작업이 필요하다.
+    //따라서 Querydsl 이 기본적으로 제공하는 exists 는 성능 상 좋지 않다.
+    //대신 fetchFirst()를 사용하여 limit(1)의 효과를 낼 수 있도록 하면 성능이 개선된다.
+    @Override
+    public Boolean existsName(String name) {
+        Integer fetchFirst = jpaQueryFactory
+                .selectOne()
+                .from(QWriter.writer)
+                .where(QWriter.writer.name.eq(name))
+                .fetchFirst();// 값이 없으면 0이 아니라 null 반환.
+
+        return fetchFirst != null;
+    }
+
+    @Override
+    public Boolean existsEmail(String email) {
+        Integer fetchFirst = jpaQueryFactory
+                .selectOne()
+                .from(QWriter.writer)
+                .where(QWriter.writer.email.eq(email))
+                .fetchFirst();
+
+        return fetchFirst != null;
+    }
 }

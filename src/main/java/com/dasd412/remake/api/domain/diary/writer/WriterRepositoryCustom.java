@@ -10,4 +10,9 @@ public interface WriterRepositoryCustom {
     void bulkDeleteWriter(Long writerId);
 
     Optional<Writer> findWriterByName(String name);
+
+    Boolean existsName(String name);
+
+    Boolean existsEmail(String email);
+
 }

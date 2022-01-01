@@ -31,5 +31,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .oauth2Login()//Oauth 로그인 역시 "/loginForm" 으로 이동하게 함.
                 .loginPage("/loginForm");
+
+        //로그아웃 성공 시 인덱스 페이지로 이동.
+        http.logout().logoutSuccessUrl("/");
     }
 }

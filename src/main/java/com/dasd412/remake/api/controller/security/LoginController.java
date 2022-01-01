@@ -16,13 +16,10 @@ public class LoginController {
 
     private final WriterService writerService;
 
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public LoginController(WriterService writerService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public LoginController(WriterService writerService) {
         this.writerService = writerService;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @GetMapping("/loginForm")
@@ -47,8 +44,7 @@ public class LoginController {
     public String join(@RequestBody UserJoinRequestDTO dto) {
         logger.info("writer join");
 
-        String encodedPassword = bCryptPasswordEncoder.encode(dto.getPassword());
-        writerService.saveWriterWithSecurity(dto.getName(), dto.getEmail(), encodedPassword, Role.User);
+        writerService.saveWriterWithSecurity(dto.getName(), dto.getEmail(), dto.getPassword(), Role.User);
 
         return "redirect:/loginForm";
     }
