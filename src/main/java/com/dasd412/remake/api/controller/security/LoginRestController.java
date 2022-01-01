@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 public class LoginRestController {
 
@@ -25,7 +27,7 @@ public class LoginRestController {
     }
 
     @PostMapping("/signup/user")
-    public ApiResult signup(@RequestBody UserJoinRequestDTO dto) {
+    public ApiResult signup(@RequestBody @Valid UserJoinRequestDTO dto) {
         logger.info("writer join");
 
         try {

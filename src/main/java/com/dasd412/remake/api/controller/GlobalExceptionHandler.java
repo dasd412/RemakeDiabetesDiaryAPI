@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpMediaTypeException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,7 +27,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class,
             TypeMismatchException.class, MissingServletRequestParameterException.class,
-            JSONException.class})
+            JSONException.class,MethodArgumentNotValidException.class})
     public ModelAndView handle400(Throwable throwable) {
         logger.error("Bad Request: {}", throwable.getMessage());
         return new ModelAndView("400");
@@ -62,6 +63,7 @@ public class GlobalExceptionHandler {
         return new ModelAndView("415");
     }
 
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ModelAndView handle500(Throwable throwable) {
         logger.error("Internal server error : {}", throwable.getMessage());

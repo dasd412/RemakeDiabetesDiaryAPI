@@ -26,7 +26,7 @@ import javax.persistence.NoResultException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -116,4 +116,57 @@ public class JoinTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("duplicateEmail"));
     }
+
+    @Test
+    public void emptyName() throws Exception {
+        //given
+        UserJoinRequestDTO dto = new UserJoinRequestDTO("", "empty", "before@naver.com");
+        String url = "http://localhost:" + port + "/signup/user";
+        //when and then
+        mockMvc.perform(post(url)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dto)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void emptyPassword() throws Exception {
+        //given
+        UserJoinRequestDTO dto = new UserJoinRequestDTO("name", "", "before@naver.com");
+        String url = "http://localhost:" + port + "/signup/user";
+        //when and then
+        mockMvc.perform(post(url)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dto)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void emptyEmail() throws Exception {
+        //given
+        UserJoinRequestDTO dto = new UserJoinRequestDTO("name", "pp", "");
+        String url = "http://localhost:" + port + "/signup/user";
+        //when and then
+        mockMvc.perform(post(url)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dto)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void invalidEmail() throws Exception {
+        //given
+        UserJoinRequestDTO dto = new UserJoinRequestDTO("name", "pp", "teasesatas");
+        String url = "http://localhost:" + port + "/signup/user";
+        //when and then
+        mockMvc.perform(post(url)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dto)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
 }
+

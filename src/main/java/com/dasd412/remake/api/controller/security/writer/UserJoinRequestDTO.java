@@ -3,12 +3,23 @@ package com.dasd412.remake.api.controller.security.writer;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 public class UserJoinRequestDTO {
 
+    @NotNull
+    @NotEmpty
     private final String name;
 
+    @NotNull
+    @NotEmpty
     private final String password;
 
+    @NotNull
+    @NotEmpty
+    @Email
     private final String email;
 
     public UserJoinRequestDTO(String name, String password, String email) {
