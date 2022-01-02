@@ -12,12 +12,12 @@ public class FaceBookUserInfo implements OAuth2UserInfo {
 
     @Override
     public String getProvider() {
-        return (String) attributes.get("id");
+        return "facebook";
     }
 
     @Override
     public String getProviderId() {
-        return "facebook";
+        return (String) attributes.get("id");
     }
 
     @Override
