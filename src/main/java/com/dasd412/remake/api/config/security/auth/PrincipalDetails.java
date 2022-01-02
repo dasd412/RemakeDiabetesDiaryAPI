@@ -1,4 +1,4 @@
-package com.dasd412.remake.api.config.auth;
+package com.dasd412.remake.api.config.security.auth;
 
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import org.springframework.security.core.GrantedAuthority;

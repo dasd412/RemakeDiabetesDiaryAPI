@@ -1,6 +1,6 @@
 package com.dasd412.remake.api.config;
 
-import com.dasd412.remake.api.config.oauth.PrincipalOAuth2UserService;
+import com.dasd412.remake.api.config.security.oauth.PrincipalOAuth2UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

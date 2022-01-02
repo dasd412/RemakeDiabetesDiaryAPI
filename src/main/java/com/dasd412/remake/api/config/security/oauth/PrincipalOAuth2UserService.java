@@ -1,10 +1,11 @@
-package com.dasd412.remake.api.config.oauth;
+package com.dasd412.remake.api.config.security.oauth;
 
-import com.dasd412.remake.api.config.auth.PrincipalDetails;
-import com.dasd412.remake.api.config.oauth.provider.FaceBookUserInfo;
-import com.dasd412.remake.api.config.oauth.provider.GitHubUserInfo;
-import com.dasd412.remake.api.config.oauth.provider.GoogleUserInfo;
-import com.dasd412.remake.api.config.oauth.provider.OAuth2UserInfo;
+import com.dasd412.remake.api.config.security.auth.PrincipalDetails;
+import com.dasd412.remake.api.config.security.dto.SessionWriter;
+import com.dasd412.remake.api.config.security.oauth.provider.FaceBookUserInfo;
+import com.dasd412.remake.api.config.security.oauth.provider.GitHubUserInfo;
+import com.dasd412.remake.api.config.security.oauth.provider.GoogleUserInfo;
+import com.dasd412.remake.api.config.security.oauth.provider.OAuth2UserInfo;
 import com.dasd412.remake.api.domain.diary.writer.Role;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
@@ -17,6 +18,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 @Service
@@ -27,10 +29,12 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
 
     private final WriterService writerService;
     private final WriterRepository writerRepository;
+    private final HttpSession httpSession;
 
-    public PrincipalOAuth2UserService(WriterService writerService, WriterRepository writerRepository) {
+    public PrincipalOAuth2UserService(WriterService writerService, WriterRepository writerRepository, HttpSession httpSession) {
         this.writerService = writerService;
         this.writerRepository = writerRepository;
+        this.httpSession = httpSession;
     }
 
     //OAuth 리퀘스트 시 로드됨.
@@ -48,6 +52,7 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
         Writer writer = writerRepository.findWriterByName(username)
                 .orElseGet(() -> writerService.saveWriterWithSecurity(username, oAuth2UserInfo.getEmail(), password, role, oAuth2UserInfo.getProvider(), oAuth2UserInfo.getProviderId()));
 
+        httpSession.setAttribute("user", new SessionWriter(writer));
         //리턴 객체는 스프링 시큐리티 세션 내의 Authentication 에 담기게 된다.
         return new PrincipalDetails(writer, oAuth2User.getAttributes());
     }

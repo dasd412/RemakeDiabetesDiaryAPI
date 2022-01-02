@@ -1,4 +1,4 @@
-package com.dasd412.remake.api.config.oauth.provider;
+package com.dasd412.remake.api.config.security.oauth.provider;
 
 public interface OAuth2UserInfo {
     String getProvider();//Oauth 제공 회사 이름

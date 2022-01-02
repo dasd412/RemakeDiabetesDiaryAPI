@@ -1,4 +1,4 @@
-package com.dasd412.remake.api.config.oauth.provider;
+package com.dasd412.remake.api.config.security.oauth.provider;
 
 import java.util.Map;
 

@@ -38,7 +38,6 @@ public class DiarySaveRestController {
         this.saveDiaryService = saveDiaryService;
     }
 
-    //todo writer 는 스프링 시큐리티 적용 후 빼낼 예정
     @PostMapping("api/diary/writer")
     public ApiResult<WriterJoinResponseDTO> joinWriter(@RequestBody WriterJoinRequestDTO dto) {
         logger.info("join writer : " + dto.toString());
