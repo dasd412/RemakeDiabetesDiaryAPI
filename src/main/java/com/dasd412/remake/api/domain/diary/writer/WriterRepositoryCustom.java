@@ -13,6 +13,6 @@ public interface WriterRepositoryCustom {
 
     Boolean existsName(String name);
 
-    Boolean existsEmail(String email);
+    Boolean existsEmail(String email, String provider);
 
 }

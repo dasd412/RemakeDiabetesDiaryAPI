@@ -13,7 +13,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Entity
-@Table(name = "Writer", uniqueConstraints = @UniqueConstraint(columnNames = {"writer_id", "name", "email"}))
+@Table(name = "Writer", uniqueConstraints = @UniqueConstraint(columnNames = {"writer_id", "name"}))
 public class Writer {
     @Id
     @Column(name = "writer_id", columnDefinition = "bigint default 0", nullable = false, unique = true)
@@ -22,7 +22,7 @@ public class Writer {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", nullable = false)
     private String email;
 
     private String password;

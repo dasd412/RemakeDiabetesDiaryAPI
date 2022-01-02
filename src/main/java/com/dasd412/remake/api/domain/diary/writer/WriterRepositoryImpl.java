@@ -114,14 +114,26 @@ public class WriterRepositoryImpl implements WriterRepositoryCustom {
         return fetchFirst != null;
     }
 
+    //OAuth 회원 가입 시에는 provider 와 email 둘 다를 알 필요가 있다.
+    // 반면, 일반 회원 가입 시에는 email 만 알 필요가 있다. provider 는 null 이다.
     @Override
-    public Boolean existsEmail(String email) {
-        Integer fetchFirst = jpaQueryFactory
-                .selectOne()
-                .from(QWriter.writer)
-                .where(QWriter.writer.email.eq(email))
-                .fetchFirst();
-
+    public Boolean existsEmail(String email, String provider) {
+        Integer fetchFirst;
+        if (provider == null) {
+            fetchFirst = jpaQueryFactory
+                    .selectOne()
+                    .from(QWriter.writer)
+                    .where(QWriter.writer.email.eq(email))
+                    .fetchFirst();
+        } else {
+            //이메일이 같더라도 provider 가 다르면 다른 걸로 인식하게 하기
+            fetchFirst = jpaQueryFactory
+                    .selectOne()
+                    .from(QWriter.writer)
+                    .where(QWriter.writer.email.eq(email).and(QWriter.writer.provider.eq(provider)))
+                    .fetchFirst();
+        }
         return fetchFirst != null;
     }
+
 }

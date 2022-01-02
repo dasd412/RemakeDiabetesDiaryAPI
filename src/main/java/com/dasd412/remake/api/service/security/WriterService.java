@@ -50,7 +50,7 @@ public class WriterService {
             throw new DuplicateUserNameException("이미 존재하는 회원 이름입니다.");
         }
 
-        if (writerRepository.existsEmail(email) == Boolean.TRUE) {
+        if (writerRepository.existsEmail(email, provider) == Boolean.TRUE) {
             throw new DuplicateEmailException("이미 존재하는 이메일입니다.");
         }
 
