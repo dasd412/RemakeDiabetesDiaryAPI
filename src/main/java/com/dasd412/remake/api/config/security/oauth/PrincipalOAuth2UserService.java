@@ -18,7 +18,6 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 @Service
@@ -29,12 +28,10 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
 
     private final WriterService writerService;
     private final WriterRepository writerRepository;
-    private final HttpSession httpSession;
 
-    public PrincipalOAuth2UserService(WriterService writerService, WriterRepository writerRepository, HttpSession httpSession) {
+    public PrincipalOAuth2UserService(WriterService writerService, WriterRepository writerRepository) {
         this.writerService = writerService;
         this.writerRepository = writerRepository;
-        this.httpSession = httpSession;
     }
 
     //OAuth 리퀘스트 시 로드됨.
@@ -51,7 +48,6 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
         Writer writer = writerRepository.findWriterByName(username)
                 .orElseGet(() -> writerService.saveWriterWithSecurity(username, oAuth2UserInfo.getEmail(), password, role, oAuth2UserInfo.getProvider(), oAuth2UserInfo.getProviderId()));
 
-        httpSession.setAttribute("user", new SessionWriter(writer));
         //리턴 객체는 스프링 시큐리티 세션 내의 Authentication 에 담기게 된다.
         return new PrincipalDetails(writer, oAuth2User.getAttributes());
     }
