@@ -137,6 +137,48 @@ form#login-form {
 .input-field input[type="submit"]:hover {
   background: #fe7175;
 }
+
+.input-field #findIdBtn{
+  background: blue;
+  border: medium none;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  letter-spacing: 3px;
+  margin: 5px 0;
+  outline: medium none;
+  overflow: hidden;
+  padding: 14px;
+  text-transform: uppercase;
+  transition: all 0.15s ease-in-out 0s;
+  width: 100%;
+}
+.input-field #findIdBtn:hover {
+  background: #50bcdf;
+}
+
+.input-field #findPasswordBtn{
+  background: black;
+  border: medium none;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  letter-spacing: 3px;
+  margin: 5px 0;
+  outline: medium none;
+  overflow: hidden;
+  padding: 14px;
+  text-transform: uppercase;
+  transition: all 0.15s ease-in-out 0s;
+  width: 100%;
+}
+.input-field #findPasswordBtn:hover {
+  background: gray;
+}
+
+
 .text-p{
   font-size: 14px;
   text-align: center;
