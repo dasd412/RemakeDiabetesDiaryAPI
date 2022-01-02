@@ -63,6 +63,11 @@ function submitSignup(){
     });
 }
 
+function goBackLogin(){
+    window.location.href="/loginForm";
+}
+
 $(document).ready(function () {
     $('#signupBtn').attr('onclick', 'submitSignup()');
+    $('#goLoginBtn').attr('onclick','goBackLogin()');
 });
