@@ -41,7 +41,6 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
-        System.out.println(oAuth2User.getAttributes().toString());
 
         OAuth2UserInfo oAuth2UserInfo = selectProvider(oAuth2User, oAuth2UserRequest).orElseThrow(() -> new IllegalStateException("등록된 provider 가 아닙니다."));
         String username = oAuth2UserInfo.getProvider() + "_" + oAuth2UserInfo.getProviderId();

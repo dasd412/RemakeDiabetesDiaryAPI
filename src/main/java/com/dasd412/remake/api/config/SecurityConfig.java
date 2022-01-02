@@ -1,6 +1,7 @@
 package com.dasd412.remake.api.config;
 
 import com.dasd412.remake.api.config.security.oauth.PrincipalOAuth2UserService;
+import com.dasd412.remake.api.domain.diary.writer.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,8 +27,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
 
         http.authorizeRequests()
-                .antMatchers("/api/diary/**").authenticated()// api/diary/ 로 시작하는 url 은 인증 필요
-                .anyRequest().permitAll() // 그외에는 다 허용
+                .antMatchers("/api/diary/**").hasRole(Role.User.name())
+                .anyRequest().permitAll()
                 .and()
                 .formLogin()// 로그인이 필요하면
                 .loginPage("/loginForm")// loginForm 뷰로 이동.
