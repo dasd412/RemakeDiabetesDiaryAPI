@@ -27,7 +27,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
 
         http.authorizeRequests()
-                .antMatchers("/api/diary/**").hasRole(Role.User.name())
+                .antMatchers("/api/diary/**").hasRole(Role.Admin.name())//기존 컨트롤러 매핑은 writer id가 직접적으로 필요했으므로 쓸 수 없음. 아예 관리자 역할로 막음.
+                .antMatchers("/api/auth/diary/**").hasRole(Role.User.name())//새로운 매핑은 @AuthenticationPrincipal 세션 정보를 토대로 작성자의 id를 판단함.
                 .anyRequest().permitAll()
                 .and()
                 .formLogin()// 로그인이 필요하면
