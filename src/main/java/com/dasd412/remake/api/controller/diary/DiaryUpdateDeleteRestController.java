@@ -15,7 +15,7 @@ import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 import com.dasd412.remake.api.domain.diary.diet.Diet;
 import com.dasd412.remake.api.domain.diary.food.Food;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
-import com.dasd412.remake.api.service.UpdateDeleteDiaryService;
+import com.dasd412.remake.api.service.domain.UpdateDeleteDiaryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;

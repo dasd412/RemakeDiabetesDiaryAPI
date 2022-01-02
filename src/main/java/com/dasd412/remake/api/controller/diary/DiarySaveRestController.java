@@ -2,7 +2,7 @@ package com.dasd412.remake.api.controller.diary;
 
 import com.dasd412.remake.api.controller.ApiResult;
 import com.dasd412.remake.api.domain.diary.EntityId;
-import com.dasd412.remake.api.service.SaveDiaryService;
+import com.dasd412.remake.api.service.domain.SaveDiaryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class WriterRepositoryImpl implements WriterRepositoryCustom {
@@ -93,4 +94,46 @@ public class WriterRepositoryImpl implements WriterRepositoryCustom {
                 .where(QWriter.writer.writerId.eq(writerId))
                 .execute();
     }
+
+    @Override
+    public Optional<Writer> findWriterByName(String name) {
+        return Optional.ofNullable(jpaQueryFactory.selectFrom(QWriter.writer).where(QWriter.writer.name.eq(name)).fetchOne());
+    }
+
+    //Querydsl 에선 exists 사용시 count()를 사용하므로 총 몇건인 지 확인하기 위해 전체를 확인하는 추가 작업이 필요하다.
+    //따라서 Querydsl 이 기본적으로 제공하는 exists 는 성능 상 좋지 않다.
+    //대신 fetchFirst()를 사용하여 limit(1)의 효과를 낼 수 있도록 하면 성능이 개선된다.
+    @Override
+    public Boolean existsName(String name) {
+        Integer fetchFirst = jpaQueryFactory
+                .selectOne()
+                .from(QWriter.writer)
+                .where(QWriter.writer.name.eq(name))
+                .fetchFirst();// 값이 없으면 0이 아니라 null 반환.
+
+        return fetchFirst != null;
+    }
+
+    //OAuth 회원 가입 시에는 provider 와 email 둘 다를 알 필요가 있다.
+    // 반면, 일반 회원 가입 시에는 email 만 알 필요가 있다. provider 는 null 이다.
+    @Override
+    public Boolean existsEmail(String email, String provider) {
+        Integer fetchFirst;
+        if (provider == null) {
+            fetchFirst = jpaQueryFactory
+                    .selectOne()
+                    .from(QWriter.writer)
+                    .where(QWriter.writer.email.eq(email))
+                    .fetchFirst();
+        } else {
+            //이메일이 같더라도 provider 가 다르면 다른 걸로 인식하게 하기
+            fetchFirst = jpaQueryFactory
+                    .selectOne()
+                    .from(QWriter.writer)
+                    .where(QWriter.writer.email.eq(email).and(QWriter.writer.provider.eq(provider)))
+                    .fetchFirst();
+        }
+        return fetchFirst != null;
+    }
+
 }

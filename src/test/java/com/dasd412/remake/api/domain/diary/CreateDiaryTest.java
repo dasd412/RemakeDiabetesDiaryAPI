@@ -1,6 +1,6 @@
 package com.dasd412.remake.api.domain.diary;
 
-import com.dasd412.remake.api.service.SaveDiaryService;
+import com.dasd412.remake.api.service.domain.SaveDiaryService;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 import com.dasd412.remake.api.domain.diary.diet.Diet;
 import com.dasd412.remake.api.domain.diary.diet.EatTime;

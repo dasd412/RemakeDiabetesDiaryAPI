@@ -4,8 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpMediaTypeException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,15 +27,23 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class,
             TypeMismatchException.class, MissingServletRequestParameterException.class,
-            JSONException.class})
+            JSONException.class,MethodArgumentNotValidException.class})
     public ModelAndView handle400(Throwable throwable) {
         logger.error("Bad Request: {}", throwable.getMessage());
         return new ModelAndView("400");
     }
 
+    //허가되지 않은 접근일때 캐치
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(AccessDeniedException.class)
+    public ModelAndView handle403() {
+        logger.info("not authorized");
+        return new ModelAndView("403");
+    }
+
     //NoResultException 은 쿼리 결과가 하나도 없을 때 발생하는 (jpa 가 제공하는) 예외이다.
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler({NoHandlerFoundException.class,  NoResultException.class})
+    @ExceptionHandler({NoHandlerFoundException.class, NoResultException.class})
     public ModelAndView handle404() {
         logger.error("Not found in server");
         return new ModelAndView("404");
@@ -53,6 +63,7 @@ public class GlobalExceptionHandler {
         return new ModelAndView("415");
     }
 
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ModelAndView handle500(Throwable throwable) {
         logger.error("Internal server error : {}", throwable.getMessage());

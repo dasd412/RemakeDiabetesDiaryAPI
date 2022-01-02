@@ -1,4 +1,4 @@
-package com.dasd412.remake.api.service;
+package com.dasd412.remake.api.service.domain;
 
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
