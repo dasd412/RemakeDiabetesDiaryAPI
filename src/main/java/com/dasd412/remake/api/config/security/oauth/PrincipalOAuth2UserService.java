@@ -1,7 +1,6 @@
 package com.dasd412.remake.api.config.security.oauth;
 
 import com.dasd412.remake.api.config.security.auth.PrincipalDetails;
-import com.dasd412.remake.api.config.security.dto.SessionWriter;
 import com.dasd412.remake.api.config.security.oauth.provider.FaceBookUserInfo;
 import com.dasd412.remake.api.config.security.oauth.provider.GitHubUserInfo;
 import com.dasd412.remake.api.config.security.oauth.provider.GoogleUserInfo;

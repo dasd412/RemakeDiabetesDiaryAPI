@@ -1,6 +1,5 @@
 package com.dasd412.remake.api.config.security.auth;
 
-import com.dasd412.remake.api.config.security.dto.SessionWriter;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
 import org.springframework.security.core.userdetails.UserDetails;
