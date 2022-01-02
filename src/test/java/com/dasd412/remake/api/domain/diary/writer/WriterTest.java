@@ -7,12 +7,13 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.springframework.context.annotation.Profile;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
+import org.springframework.test.context.TestPropertySource;
 
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Profile("test")
+@TestPropertySource(locations="classpath:application-test.properties")
 public class WriterTest {
     //예외 캐치용 객체
     @Rule

@@ -11,13 +11,14 @@ import com.dasd412.remake.api.domain.diary.diet.Diet;
 import com.dasd412.remake.api.domain.diary.diet.EatTime;
 import com.dasd412.remake.api.domain.diary.writer.Role;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
+import org.springframework.test.context.TestPropertySource;
 
 import java.time.LocalDateTime;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Profile("test")
+@TestPropertySource(locations="classpath:application-test.properties")
 public class FoodTest {
     //예외 캐치용 객체
     @Rule
