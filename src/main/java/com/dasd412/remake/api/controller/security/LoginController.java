@@ -15,19 +15,20 @@ public class LoginController {
     @GetMapping("/loginForm")
     public String loginForm() {
         logger.info("loginForm view resolve");
-        return "loginForm";
+        return "/login/loginForm";
     }
 
     @GetMapping("/joinForm")
     public String joinForm() {
         logger.info("joinForm view resolve");
-        return "joinForm";
+        return "/login/joinForm";
     }
 
+    //todo 테스트 코드이므로 지울 예정
     @GetMapping("api/diary/diabetes-diary")
     public String diary(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         logger.info("diary view resolve");
-        return "diary";
+        return "/diary/diary";
     }
 
 }

@@ -17,7 +17,7 @@ public class PrincipalDetailsService implements UserDetailsService {
         this.writerRepository = writerRepository;
     }
 
-    //loginForm.html 의 username 과 파라미터 이름이 일치해야 에러 안남.
+    //loginForm.mustache 의 username 과 파라미터 이름이 일치해야 에러 안남.
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Writer user=writerRepository.findWriterByName(username).orElseThrow(()->new UsernameNotFoundException("해당 이름의 작성자가 없습니다."));
