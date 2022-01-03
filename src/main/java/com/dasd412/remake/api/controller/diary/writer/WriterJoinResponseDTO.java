@@ -5,7 +5,6 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.dasd412.remake.api.domain.diary.writer.Role;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 
-//todo 스프링 시큐리티 적용 후 변경 예정. 패키지도.
 public class WriterJoinResponseDTO {
 
     private final Long writerId;

@@ -67,8 +67,6 @@ public class DiarySaveRestControllerTest {
         writerRepository.deleteAll();
     }
 
-    //todo writer 는 스프링 시큐리티 적용 후 빼낼 예정
-
     @Test
     public void joinWriterInvalidName() throws Exception {
         //given
