@@ -32,6 +32,9 @@
                 <a href="#"><span class="fa fa-calendar" ></span> Calendar</a>
             </li>
             <li>
+                <a href="/post"><span class="far fa-edit"></span> Post</a>
+            </li>
+            <li>
                 <a href="#"><span class="fa fa-line-chart"></span> Charts</a>
             </li>
             <li>
@@ -75,6 +78,10 @@
                 </div>
             </div>
         </nav>
+
+        {{#userPK}}
+            <input type="hidden" id="userPk" value="{{userPK}}">
+        {{/userPK}}
 
         {{{layout.content}}}
 
