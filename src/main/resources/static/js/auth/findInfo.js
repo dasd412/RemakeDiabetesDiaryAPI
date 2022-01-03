@@ -1,13 +1,12 @@
-
-function findId(){
+function findId() {
 
 }
 
-function findPassword(){
+function findPassword() {
 
 }
 
 $(document).ready(function () {
     $('#findIdBtn').attr('onclick', 'findId()');
-    $('#findPasswordBtn').attr('onclick','findPassword()');
+    $('#findPasswordBtn').attr('onclick', 'findPassword()');
 });
