@@ -1,5 +1,6 @@
 package com.dasd412.remake.api.config;
 
+import com.dasd412.remake.api.config.security.LoginFailHandler;
 import com.dasd412.remake.api.config.security.oauth.PrincipalOAuth2UserService;
 import com.dasd412.remake.api.domain.diary.writer.Role;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +37,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()// 로그인이 필요하면
                 .loginPage("/loginForm")// loginForm 뷰로 이동.
-                .loginProcessingUrl("/login")// "/login" 요청이 오면 스프링 시큐리티가 인터셉트해서 대신 로그인 해줌.
+                .loginProcessingUrl("/login")
                 .defaultSuccessUrl("/")// 로그인 성공하면 이동하는 디폴트 url 설정.
+                .failureHandler(loginFailHandler())//로그인 실패 시 처리하는 핸들러 등록.
                 .and()
                 .oauth2Login()//Oauth 로그인 역시 "/loginForm" 으로 이동하게 함.
                 .loginPage("/loginForm")
@@ -46,5 +48,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         //로그아웃 성공 시 인덱스 페이지로 이동.
         http.logout().logoutSuccessUrl("/");
+    }
+
+    @Bean
+    public LoginFailHandler loginFailHandler(){
+        return new LoginFailHandler();
     }
 }

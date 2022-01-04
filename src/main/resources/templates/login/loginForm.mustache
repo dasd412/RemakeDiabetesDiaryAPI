@@ -22,6 +22,12 @@
       <span>or</span>
     </div>
 
+    <div class="loginFail">
+      {{#error}}
+        {{exception}}
+      {{/error}}
+    </div>
+
     <div class="input-field">
       <label for="username">user name</label>
       <input type="text" name="username" id="username">
