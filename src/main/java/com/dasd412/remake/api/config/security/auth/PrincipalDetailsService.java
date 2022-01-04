@@ -22,6 +22,14 @@ public class PrincipalDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Writer user = writerRepository.findWriterByName(username).orElseThrow(() -> new UsernameNotFoundException("해당 이름의 작성자가 없습니다."));
+        /*
+        이 메서드는 분명히 인자가 username 뿐이다. 그런데 비밀번호가 틀렸을 때도 인증이 제대로 되지 않았다고 알려준다.
+        비밀번호 체크 코드가 없는데 어떻게 된 일 일까?
+        이유는 DaoAuthenticationProvider 와 PrincipalDetails 때문이다.
+        DaoAuthenticationProvider 는 UserDetails 구현체의 getPassword()를 호출하여 비밀번호가 맞는지 체크해준다.
+        이 메서드의 리턴 값인 PrincipalDetails 는 UserDetails 구현체이기 때문에 getPassword()가 존재한다.
+        따라서 이 메서드가 PrincipalDetails 를 Security 에게 던지면 DaoAuthenticationProvider 가 비밀번호를 직접 체크해주는 것이라 볼 수 있다.
+         */
         return new PrincipalDetails(user);
     }
 }
