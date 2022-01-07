@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,6 +29,7 @@ import com.dasd412.remake.api.domain.diary.writer.Role;
 
 import java.util.stream.IntStream;
 
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -39,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations="classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.properties")
 public class DiarySaveRestControllerTest {
 
     @LocalServerPort
@@ -59,6 +61,7 @@ public class DiarySaveRestControllerTest {
     public void setup() {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(context)
+                .apply(springSecurity())
                 .build();
     }
 
@@ -68,9 +71,10 @@ public class DiarySaveRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void joinWriterInvalidName() throws Exception {
         //given
-        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("", "test@naver.com", Role.User);
+        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("", "test@naver.com", Role.Admin);
         String url = "http://localhost:" + port + "/api/diary/writer";
 
         //when and then
@@ -82,9 +86,10 @@ public class DiarySaveRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void joinWriter() throws Exception {
         //given
-        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("test", "test@naver.com", Role.User);
+        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("test", "test@naver.com", Role.Admin);
         String url = "http://localhost:" + port + "/api/diary/writer";
 
         //when and then
@@ -96,14 +101,15 @@ public class DiarySaveRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.writerId").value("1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.name").value("test"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.email").value("test@naver.com"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.role").value("User"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.role").value("Admin"));
     }
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void postDiaryInvalidFpg() throws Exception {
         //given
-        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("test", "test@naver.com", Role.User);
+        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("test", "test@naver.com", Role.Admin);
         String url = "http://localhost:" + port + "/api/diary/writer";
 
         mockMvc.perform(post(url).contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -129,9 +135,10 @@ public class DiarySaveRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void postDiaryInvalidRemark() throws Exception {
         //given
-        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("test", "test@naver.com", Role.User);
+        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("test", "test@naver.com", Role.Admin);
         String url = "http://localhost:" + port + "/api/diary/writer";
 
         mockMvc.perform(post(url).contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -161,9 +168,10 @@ public class DiarySaveRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void postDiary() throws Exception {
         //given
-        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("test", "test@naver.com", Role.User);
+        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("test", "test@naver.com", Role.Admin);
         String url = "http://localhost:" + port + "/api/diary/writer";
 
         mockMvc.perform(post(url).contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -193,9 +201,10 @@ public class DiarySaveRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void postDietInvalidBloodSugar() throws Exception {
         //given
-        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("test", "test@naver.com", Role.User);
+        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("test", "test@naver.com", Role.Admin);
         String url = "http://localhost:" + port + "/api/diary/writer";
 
         mockMvc.perform(post(url).contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -228,9 +237,10 @@ public class DiarySaveRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void postDiet() throws Exception {
         //given
-        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("test", "test@naver.com", Role.User);
+        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("test", "test@naver.com", Role.Admin);
         String url = "http://localhost:" + port + "/api/diary/writer";
 
         mockMvc.perform(post(url).contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -268,9 +278,10 @@ public class DiarySaveRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void postInvalidFood() throws Exception {
         //given
-        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("test", "test@naver.com", Role.User);
+        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("test", "test@naver.com", Role.Admin);
         String url = "http://localhost:" + port + "/api/diary/writer";
 
         mockMvc.perform(post(url).contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -315,9 +326,10 @@ public class DiarySaveRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void postFood() throws Exception {
         //given
-        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("test", "test@naver.com", Role.User);
+        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("test", "test@naver.com", Role.Admin);
         String url = "http://localhost:" + port + "/api/diary/writer";
 
         mockMvc.perform(post(url).contentType(MediaType.APPLICATION_JSON_UTF8)

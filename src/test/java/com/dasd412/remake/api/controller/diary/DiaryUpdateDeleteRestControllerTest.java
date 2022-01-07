@@ -30,6 +30,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -43,13 +44,14 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations="classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.properties")
 public class DiaryUpdateDeleteRestControllerTest {
     @LocalServerPort
     private int port;
@@ -78,9 +80,10 @@ public class DiaryUpdateDeleteRestControllerTest {
     public void setup() throws Exception {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(context)
+                .apply(springSecurity())
                 .build();
 
-        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("test", "test@naver.com", Role.User);
+        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("test", "test@naver.com", Role.Admin);
         String url = "http://localhost:" + port + "/api/diary/writer";
 
         mockMvc.perform(post(url).contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -123,6 +126,7 @@ public class DiaryUpdateDeleteRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void updateInvalidDiary() throws Exception {
         //given
         long invalidDiaryId = 2L;
@@ -137,6 +141,7 @@ public class DiaryUpdateDeleteRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void updateDiaryInvalidSugar() throws Exception {
         //given
         DiaryUpdateRequestDTO dto = new DiaryUpdateRequestDTO(1L, 1L, 20000, "modify");
@@ -150,6 +155,7 @@ public class DiaryUpdateDeleteRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void updateDiaryInvalidRemark() throws Exception {
         //given
         StringBuilder invalidRemark = new StringBuilder();
@@ -166,6 +172,7 @@ public class DiaryUpdateDeleteRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void updateDiary() throws Exception {
         //given
 
@@ -189,6 +196,7 @@ public class DiaryUpdateDeleteRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void deleteDiary() throws Exception {
         //given
         long writerId = 1L;
@@ -215,6 +223,7 @@ public class DiaryUpdateDeleteRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void updateDietInvalidSugar() throws Exception {
         //given
         int invalidSugar = 0;
@@ -229,6 +238,7 @@ public class DiaryUpdateDeleteRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void updateDiet() throws Exception {
         //given
         DietUpdateRequestDTO dto = new DietUpdateRequestDTO(1L, 1L, 1L, EatTime.BreakFast, 100);
@@ -251,6 +261,7 @@ public class DiaryUpdateDeleteRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void deleteDiet() throws Exception {
         //given
         long writerId = 1L;
@@ -278,6 +289,7 @@ public class DiaryUpdateDeleteRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void updateFoodInvalidName() throws Exception {
         //given
         StringBuilder invalidName = new StringBuilder();
@@ -296,6 +308,7 @@ public class DiaryUpdateDeleteRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void updateFood() throws Exception {
         FoodUpdateRequestDTO dto = new FoodUpdateRequestDTO(1L, 1L, 1L, "chicken");
 
@@ -313,6 +326,7 @@ public class DiaryUpdateDeleteRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void deleteFood() throws Exception {
         //given
         long writerId = 1L;

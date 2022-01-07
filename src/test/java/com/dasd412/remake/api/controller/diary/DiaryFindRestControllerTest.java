@@ -19,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,6 +28,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.hamcrest.Matchers.*;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -34,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations="classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.properties")
 public class DiaryFindRestControllerTest {
 
     @LocalServerPort
@@ -59,9 +61,10 @@ public class DiaryFindRestControllerTest {
         logger.info("set up start");
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(context)
+                .apply(springSecurity())
                 .build();
 
-        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("test", "test@naver.com", Role.User);
+        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("test", "test@naver.com", Role.Admin);
         String url = "http://localhost:" + port + "/api/diary/writer";
 
         mockMvc.perform(post(url).contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -104,6 +107,7 @@ public class DiaryFindRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findInvalidOwnerOfDiary() throws Exception {
         //given
         long invalidId = 2L;
@@ -117,6 +121,7 @@ public class DiaryFindRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findOwnerOfDiary() throws Exception {
         //given
         long validId = 1L;
@@ -129,11 +134,12 @@ public class DiaryFindRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.writerId").value("1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.name").value("test"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.email").value("test@naver.com"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.role").value("User"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.role").value("Admin"));
     }
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findDiabetesDiariesOfWriter() throws Exception {
         //given
         DiabetesDiaryRequestDTO diaryRequestDTO1 = new DiabetesDiaryRequestDTO(1L, 200, "TEST@", "2021", "09", "26", "00", "00", "00");
@@ -162,9 +168,10 @@ public class DiaryFindRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findDiaryOfInvalidOwner() throws Exception {
         //given
-        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("test2", "test2@naver.com", Role.User);
+        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("test2", "test2@naver.com", Role.Admin);
         String url = "http://localhost:" + port + "/api/diary/writer";
 
         mockMvc.perform(post(url).contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -183,6 +190,7 @@ public class DiaryFindRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findInvalidDiaryOfOwner() throws Exception {
         //given
         long writerId = 1L;
@@ -197,6 +205,7 @@ public class DiaryFindRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findDiaryOfOwner() throws Exception {
         //given
         long writerId = 1L;
@@ -214,6 +223,7 @@ public class DiaryFindRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findOneDiabetesDiaryOfOwnerWithRelation() throws Exception {
         //given
         long writerId = 1L;
@@ -235,6 +245,7 @@ public class DiaryFindRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findDiariesBetweenTimeInvalidFormat() throws Exception {
         //given
         String startDate = "2021-09-25-06:49:41";
@@ -251,6 +262,7 @@ public class DiaryFindRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findDiariesBetweenTimeInvalidTimeOrder() throws Exception {
         //given
         String startDate = "2021-09-25T06:49:41";
@@ -267,6 +279,7 @@ public class DiaryFindRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findDiariesBetweenTime() throws Exception {
         //given
         DiabetesDiaryRequestDTO diaryRequestDTO1 = new DiabetesDiaryRequestDTO(1L, 200, "TEST@", "2021", "09", "26", "00", "00", "00");
@@ -298,6 +311,7 @@ public class DiaryFindRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findFpgHigherOrEqual() throws Exception {
         //given
         DiabetesDiaryRequestDTO diaryRequestDTO1 = new DiabetesDiaryRequestDTO(1L, 200, "TEST@", "2021", "09", "26", "00", "00", "00");
@@ -328,6 +342,7 @@ public class DiaryFindRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findFpgLowerOrEqual() throws Exception {
         //given
         DiabetesDiaryRequestDTO diaryRequestDTO1 = new DiabetesDiaryRequestDTO(1L, 200, "TEST@", "2021", "09", "26", "00", "00", "00");
@@ -358,6 +373,7 @@ public class DiaryFindRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findDietsOfDiaryInvalidWriter() throws Exception {
         //given
         DietRequestDTO dietRequestDTO1 = new DietRequestDTO(1L, 1L, EatTime.Lunch, 200);
@@ -389,6 +405,7 @@ public class DiaryFindRestControllerTest {
      */
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findDietsOfInvalidDiary() throws Exception {
         //given
         DietRequestDTO dietRequestDTO1 = new DietRequestDTO(1L, 1L, EatTime.Lunch, 200);
@@ -417,6 +434,7 @@ public class DiaryFindRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findDietsOfDiary() throws Exception {
         //given
         DietRequestDTO dietRequestDTO1 = new DietRequestDTO(1L, 1L, EatTime.Lunch, 200);
@@ -445,6 +463,7 @@ public class DiaryFindRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findOneDietOfDiary() throws Exception {
         //given
         DietRequestDTO dietRequestDTO1 = new DietRequestDTO(1L, 1L, EatTime.Dinner, 300);
@@ -474,6 +493,7 @@ public class DiaryFindRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findHigherThanBloodSugarBetweenTimeInvalidTimeOrder() throws Exception {
         //given
         DietRequestDTO dietRequestDTO1 = new DietRequestDTO(1L, 1L, EatTime.Dinner, 300);
@@ -502,6 +522,7 @@ public class DiaryFindRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findHigherThanInvalidBloodSugarBetweenTime() throws Exception {
         //given
         DietRequestDTO dietRequestDTO1 = new DietRequestDTO(1L, 1L, EatTime.Dinner, 300);
@@ -530,6 +551,7 @@ public class DiaryFindRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findHigherThanBloodSugarBetweenTime() throws Exception {
         //given
         DietRequestDTO dietRequestDTO1 = new DietRequestDTO(1L, 1L, EatTime.Dinner, 300);
@@ -560,6 +582,7 @@ public class DiaryFindRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findLowerThanBloodSugarBetweenTime() throws Exception {
         //given
         DietRequestDTO dietRequestDTO1 = new DietRequestDTO(1L, 1L, EatTime.Dinner, 300);
@@ -590,6 +613,7 @@ public class DiaryFindRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findHigherThanInvalidBloodSugarInEatTime() throws Exception {
         //given
         DietRequestDTO dietRequestDTO1 = new DietRequestDTO(1L, 1L, EatTime.Lunch, 100);
@@ -617,6 +641,7 @@ public class DiaryFindRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findHigherThanBloodSugarInEatTime() throws Exception {
         //given
         DietRequestDTO dietRequestDTO1 = new DietRequestDTO(1L, 1L, EatTime.Lunch, 100);
@@ -646,6 +671,7 @@ public class DiaryFindRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findLowerThanBloodSugarInEatTime() throws Exception {
         //given
         DietRequestDTO dietRequestDTO1 = new DietRequestDTO(1L, 1L, EatTime.Lunch, 100);
@@ -675,9 +701,10 @@ public class DiaryFindRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findAverageBloodSugarOfDietInvalid() throws Exception {
         //식단 기록한 적 없는데 식단의 평균 혈당 요청한 경우 테스트
-        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("test@@@", "test123@naver.com", Role.User);
+        WriterJoinRequestDTO dto = new WriterJoinRequestDTO("test@@@", "test123@naver.com", Role.Admin);
         String url = "http://localhost:" + port + "/api/diary/writer";
 
         mockMvc.perform(post(url).contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -696,6 +723,7 @@ public class DiaryFindRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findAverageBloodSugarOfDiet() throws Exception {
 
         DietRequestDTO dietRequestDTO1 = new DietRequestDTO(1L, 1L, EatTime.Lunch, 100);
@@ -729,6 +757,7 @@ public class DiaryFindRestControllerTest {
      */
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findFoodsInDiet() throws Exception {
         //given
         String foodUrl = "http://localhost:" + port + "api/diary/food";
@@ -752,6 +781,7 @@ public class DiaryFindRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findOneFoodByIdInDiet() throws Exception {
         //given
         long writerId = 1L;
@@ -770,6 +800,7 @@ public class DiaryFindRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findFoodNamesInDietHigherThanBloodSugar() throws Exception {
         //given
         String foodUrl = "http://localhost:" + port + "api/diary/food";
@@ -800,6 +831,7 @@ public class DiaryFindRestControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "Admin")
     public void findFoodHigherThanAverageBloodSugarOfDiet() throws Exception {
         //given
         String postDietUrl = "http://localhost:" + port + "api/diary/diet";
