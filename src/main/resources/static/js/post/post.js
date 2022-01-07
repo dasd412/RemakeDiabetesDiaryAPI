@@ -3,6 +3,12 @@ function addBreakFastFood() {
     console.log($("#breakFastFoods li").length);
 
     const breakFastFoodName=$("#breakFastFoodName").val();
+
+    if (breakFastFoodName.length<=0 || breakFastFoodName.length>50){
+        swal('', "아침 음식 이름은 길이가 1이상 50이하여야 합니다.", "error");
+        return;
+    }
+
     $("#breakFastFoods").append("<li>" +
         breakFastFoodName +
         "<span class='close'>x</span></li>"
@@ -12,7 +18,13 @@ function addBreakFastFood() {
 function addLunchFood() {
     console.log('addLunchFood');
     console.log($("#lunchFoods li").length);
+
     const lunchFoodName=$("#lunchFoodName").val();
+
+    if (lunchFoodName.length<=0 || lunchFoodName.length>50){
+        swal('', "점심 음식 이름은 길이가 1이상 50이하여야 합니다.", "error");
+        return;
+    }
     $("#lunchFoods").append("<li>" +
         lunchFoodName
         + "<span class='close'>x</span></li>"
@@ -22,7 +34,14 @@ function addLunchFood() {
 function addDinnerFood() {
     console.log('addDinnerFood');
     console.log($("#dinnerFoods li").length);
+
     const dinnerFoodName=$("#dinnerFoodName").val();
+
+    if (dinnerFoodName.length<=0 || dinnerFoodName.length>50){
+        swal('', "저녁 음식 이름은 길이가 1이상 50이하여야 합니다.", "error");
+        return;
+    }
+
     $("#dinnerFoods").append("<li>" +
         dinnerFoodName
         + "<span class='close'>x</span></li>"
