@@ -15,8 +15,6 @@ public class GlobalControllerAdvice {
     public void modelAddSessionInfo(Model model, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         if (principalDetails != null && principalDetails.getWriter() != null) {
             Writer user = principalDetails.getWriter();
-            model.addAttribute("userPK", user.getId());
-            model.addAttribute("userNickName", user.getName());
             model.addAttribute("userEmail", user.getEmail());
         }
     }
