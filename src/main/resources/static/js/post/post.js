@@ -14,7 +14,7 @@ function apiPostTest() {
 
     $.ajax({
         type: 'POST',
-        url: 'api/diary/diabetes-diary',
+        url: 'api/diary/user/diabetes-diary',
         dataType: 'json',
         contentType: 'application/json;charset=utf-8',
         data: JSON.stringify(data)
