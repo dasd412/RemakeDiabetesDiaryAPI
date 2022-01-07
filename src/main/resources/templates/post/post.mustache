@@ -1,9 +1,48 @@
 {{#layout}}
+  <link href="/css/post/post.css" rel='stylesheet' type="text/css"/>
 
-  <h1>일지 게시 </h1>
+  <div class="container">
+    <div class="row">
 
-  <input type="button" value="api post 테스트" id="apiPostBtn"/>
-  <input type="button" value="api get 테스트" id="apiGetBtn"/>
+      <div class="col-md-8 col-md-offset-2">
+
+        <h1>혈당 일지 작성하기</h1>
+        <br>
+
+        <form action="" method="POST">
+
+          <div class="form-group">
+            <label for="fastingPlasmaGlucose">공복 혈당 <span class="require">*</span></label>
+            <input type="text" class="form-control" name="fastingPlasmaGlucose"/>
+          </div>
+
+          <div class="form-group">
+            <label for="remark">비고</label>
+            <textarea rows="5" class="form-control" name="remark"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="writtenTime">작성 시간 <span class="require">*</span></label>
+            <input type="text" class="form-control" name="writtenTime"/>
+          </div>
+
+
+
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary">
+              작성하기
+            </button>
+            <button class="btn btn-default">
+              취소하기
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+
 
   <script src="/js/post/post.js"></script>
 {{/layout}}

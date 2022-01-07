@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class SecuritySaveRestController {
-    //시큐리티에서는 인증이 이미 되있기 때문에 기존 url 은
+    //시큐리티에서는 인증이 이미 되있기 때문에 기존 url 은 관리자만 진입가능하게 바꿨다.
     // '/api/diary/user/'
     private final SaveDiaryService saveDiaryService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
