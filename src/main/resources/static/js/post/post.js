@@ -1,8 +1,7 @@
 function apiPostTest() {
-    console.log($("#userPk").val());
 
     const data = {
-        writerId: $("#userPk").val(),
+        writerId: 1,
         fastingPlasmaGlucose: 100,
         remark: "test",
         year: "2022",
@@ -30,7 +29,7 @@ function apiGetTest() {
 
     $.ajax({
         type: 'GET',
-        url: 'api/diary/owner/' + $("#userPk").val() + '/diabetes-diary/list',
+        url: 'api/diary/user/diabetes-diary/list',
         contentType: 'application/json; charset=utf-8',
     }).done(function (data) {
         console.log(data);

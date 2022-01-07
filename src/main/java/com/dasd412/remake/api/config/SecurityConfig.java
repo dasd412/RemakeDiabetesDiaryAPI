@@ -28,12 +28,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
 
         http.authorizeRequests()
-                .antMatchers("/api/diary/owner/**").hasRole(Role.Admin.name())//기존 매핑은 관리자만 허락하게 바꿈.1
-                .antMatchers("/api/diary/**").authenticated()
+
+                .antMatchers("/api/diary/user/**").authenticated()
                 .antMatchers("/post/**").authenticated()
                 .antMatchers("/calendar/**").authenticated()
                 .antMatchers("/chart/**").authenticated()
-                .antMatchers("/api/diary/writer").hasRole(Role.Admin.name())
+                //기존에 테스트 용도로만 쓰는 url 들 접근 막기
+                .antMatchers("/api/diary/owner/**").hasRole(Role.Admin.name())//기존 매핑은 관리자만 허락하게 바꿈.
+                .antMatchers("/api/diary/writer/**").hasRole(Role.Admin.name())
+                .antMatchers("/api/diary/diabetes-diary/**").hasRole(Role.Admin.name())
+                .antMatchers("/api/diary/diet/**").hasRole(Role.Admin.name())
+                .antMatchers("/api/diary/food/**").hasRole(Role.Admin.name())
                 .anyRequest().permitAll()
                 .and()
                 .formLogin()// 로그인이 필요하면
