@@ -28,11 +28,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
 
         http.authorizeRequests()
+                .antMatchers("/api/diary/owner/**").hasRole(Role.Admin.name())//기존 매핑은 관리자만 허락하게 바꿈.1
                 .antMatchers("/api/diary/**").authenticated()
                 .antMatchers("/post/**").authenticated()
                 .antMatchers("/calendar/**").authenticated()
                 .antMatchers("/chart/**").authenticated()
-                .antMatchers("api/diary/writer").hasRole(Role.Admin.name())
+                .antMatchers("/api/diary/writer").hasRole(Role.Admin.name())
                 .anyRequest().permitAll()
                 .and()
                 .formLogin()// 로그인이 필요하면
@@ -51,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public LoginFailHandler loginFailHandler(){
+    public LoginFailHandler loginFailHandler() {
         return new LoginFailHandler();
     }
 }
