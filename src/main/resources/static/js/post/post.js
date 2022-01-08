@@ -8,7 +8,7 @@ const PostManipulator = {
     lunchFoods: null,
     dinnerFoods: null,
     foodDataDict: null,
-    dataLengthDict: null,
+    foodIdDict: null,
     init: function () {
         //음식 이름 set (중복 방지)
         this.breakFastFoods = new Set();
@@ -19,7 +19,7 @@ const PostManipulator = {
         this.foodDataDict = {"breakFast": [], "lunch": [], "dinner": []};
 
         //각 식사의 li id 지급용 딕셔너리 increment by 1
-        this.dataLengthDict = {"breakFast": 0, "lunch": 0, "dinner": 0};
+        this.foodIdDict = {"breakFast": 0, "lunch": 0, "dinner": 0};
 
         $("#breakFastFoodsAddBtn").attr('onclick', 'addFood(this)');
         $("#lunchFoodsAddBtn").attr('onclick', 'addFood(this)');
@@ -49,13 +49,11 @@ const PostManipulator = {
                 break;
         }
 
-        this.dataLengthDict[key] += 1
+        //auto increment 방식으로 id를 관리할 예정. 무조건 + 만 한다.
+        this.foodIdDict[key] += 1
     },
     cacheRemoveFoods: function (e, key) {
 
-        if (this.dataLengthDict[key] > 0) {
-            this.dataLengthDict[key] -= 1;
-        }
     },
     alreadyHasFoodName: function (key, foodName) {
         switch (key) {
@@ -82,7 +80,7 @@ const PostManipulator = {
         return false;
     },
     getLiId: function (key) {
-        return this.dataLengthDict[key];
+        return this.foodIdDict[key];
     },
     save: function () {
 
