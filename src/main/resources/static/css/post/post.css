@@ -126,3 +126,8 @@ label {
     top: 1px;
 }
 
+
+#breakFastFoodAmount, #lunchFoodAmount,#dinnerFoodAmount{
+    margin-top:3px;
+    margin-bottom: 4px;
+}
