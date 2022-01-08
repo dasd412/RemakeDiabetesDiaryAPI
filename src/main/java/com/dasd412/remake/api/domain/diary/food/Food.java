@@ -12,9 +12,9 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Entity
-@Table(name = "Food",uniqueConstraints = @UniqueConstraint(columnNames = {"food_id"}))
+@Table(name = "Food", uniqueConstraints = @UniqueConstraint(columnNames = {"food_id"}))
 @IdClass(FoodId.class)
-public class Food{
+public class Food {
     @Id
     @Column(name = "food_id", columnDefinition = "bigint default 0")
     private Long foodId;
@@ -31,14 +31,22 @@ public class Food{
 
     private String foodName;
 
+    private double amount;
+
     public Food() {
     }
 
     public Food(EntityId<Food, Long> foodEntityId, Diet diet, String foodName) {
+        this(foodEntityId, diet, foodName, 0.1);
+    }
+
+    public Food(EntityId<Food, Long> foodEntityId, Diet diet, String foodName, double amount) {
         checkArgument(foodName.length() > 0 && foodName.length() <= 50, "food name length should be between 1 and 50");
+        checkArgument(amount > 0 && amount <= 10000, "amount unit is gram. it should be between 1g and 10kg");
         this.foodId = foodEntityId.getId();
         this.diet = diet;
         this.foodName = foodName;
+        this.amount = amount;
     }
 
     public Long getId() {
@@ -49,9 +57,16 @@ public class Food{
         return foodName;
     }
 
+    public double getAmount() { return amount; }
+
     private void modifyFoodName(String foodName) {
         checkArgument(foodName.length() > 0 && foodName.length() <= 50, "food name length should be between 1 and 50");
         this.foodName = foodName;
+    }
+
+    private void modifyAmount(double amount) {
+        checkArgument(amount > 0 && amount <= 10000, "amount unit is gram. it should be between 1g and 10kg");
+        this.amount = amount;
     }
 
     public Diet getDiet() {
@@ -78,6 +93,7 @@ public class Food{
                 .append("id", foodId)
                 .append("diet", diet)
                 .append("foodName", foodName)
+                .append("amount", amount)
                 .toString();
     }
 
@@ -100,6 +116,11 @@ public class Food{
 
     public void update(String foodName) {
         modifyFoodName(foodName);
+    }
+
+    public void update(String foodName, double amount) {
+        modifyFoodName(foodName);
+        modifyAmount(amount);
     }
 
 }
