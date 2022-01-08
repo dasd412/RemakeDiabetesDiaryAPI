@@ -1,51 +1,37 @@
-function addBreakFastFood() {
-    console.log('addBreakFastFood');
-    console.log($("#breakFastFoods li").length);
+function closeList(e){
+    e.parentElement.style.display='none';
+}
 
-    const breakFastFoodName=$("#breakFastFoodName").val();
+function addFood(button){
+    let foodName;
+    let ulName;
 
-    if (breakFastFoodName.length<=0 || breakFastFoodName.length>50){
-        swal('', "아침 음식 이름은 길이가 1이상 50이하여야 합니다.", "error");
+
+    if(button.id==="breakFastFoodsAddBtn"){
+        foodName=$("#breakFastFoodName").val();
+        ulName="#breakFastFoods";
+        let breakFastLength=$("#breakFastFoods li").length;
+    }else if (button.id==="lunchFoodsAddBtn"){
+        foodName=$("#lunchFoodName").val();
+        ulName="#lunchFoods";
+        let lunchLength=$("#lunchFoods li").length;
+    }else{
+        foodName=$("#dinnerFoodName").val();
+        ulName="#dinnerFoods";
+        let dinnerLength=$("#dinnerFoods li").length;
+    }
+
+    if (foodName.length<=0 || foodName.length>50){
+        swal('', "음식 이름은 길이가 1이상 50이하여야 합니다.", "error");
         return;
     }
 
-    $("#breakFastFoods").append("<li>" +
-        breakFastFoodName +
+    $(ulName).append("<li>" +
+        foodName +
         "<span class='close'>x</span></li>"
         + "</li>");
-}
+    $(".close").attr('onclick', 'closeList(this)');
 
-function addLunchFood() {
-    console.log('addLunchFood');
-    console.log($("#lunchFoods li").length);
-
-    const lunchFoodName=$("#lunchFoodName").val();
-
-    if (lunchFoodName.length<=0 || lunchFoodName.length>50){
-        swal('', "점심 음식 이름은 길이가 1이상 50이하여야 합니다.", "error");
-        return;
-    }
-    $("#lunchFoods").append("<li>" +
-        lunchFoodName
-        + "<span class='close'>x</span></li>"
-        + "</li>");
-}
-
-function addDinnerFood() {
-    console.log('addDinnerFood');
-    console.log($("#dinnerFoods li").length);
-
-    const dinnerFoodName=$("#dinnerFoodName").val();
-
-    if (dinnerFoodName.length<=0 || dinnerFoodName.length>50){
-        swal('', "저녁 음식 이름은 길이가 1이상 50이하여야 합니다.", "error");
-        return;
-    }
-
-    $("#dinnerFoods").append("<li>" +
-        dinnerFoodName
-        + "<span class='close'>x</span></li>"
-        + "</li>");
 }
 
 
@@ -58,18 +44,9 @@ function goToBack() {
 }
 
 $(document).ready(function () {
-    // let closeButtons = document.getElementsByClassName("close");
-    // let i;
-    //
-    // for (i = 0; i < closeButtons.length; i++) {
-    //     closeButtons[i].addEventListener("click", function () {
-    //         this.parentElement.style.display = 'none';
-    //     });
-    // }
-
-    $("#breakFastFoodsAddBtn").attr('onclick', 'addBreakFastFood()');
-    $("#lunchFoodsAddBtn").attr('onclick', 'addLunchFood()');
-    $("#dinnerFoodsAddBtn").attr('onclick', 'addDinnerFood()');
+    $("#breakFastFoodsAddBtn").attr('onclick', 'addFood(this)');
+    $("#lunchFoodsAddBtn").attr('onclick', 'addFood(this)');
+    $("#dinnerFoodsAddBtn").attr('onclick', 'addFood(this)');
     $("#createBtn").attr('onclick', 'postDiary()');
     $("#cancelBtn").attr('onclick', 'goToBack()');
 });
