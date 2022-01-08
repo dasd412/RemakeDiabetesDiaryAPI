@@ -12,7 +12,7 @@
 
           <div class="form-group">
             <label for="fastingPlasmaGlucose">공복 혈당 <span class="require">*</span></label>
-            <input type="text" class="form-control" name="fastingPlasmaGlucose"/>
+            <input type="text" class="form-control" id="fastingPlasmaGlucose"/>
           </div>
 
           <br>
@@ -20,7 +20,7 @@
             <div class="child left">
               <div class="breakFastContainer">
                 <label for="breakFast">아침 식사</label>
-                <input type="text" class="form-control" name="breakFastSugar" placeholder="아침 혈당"/>
+                <input type="text" class="form-control" id="breakFast" placeholder="아침 혈당"/>
               </div>
 
               <button type="button" id="breakFastFoodsAddBtn">+</button>
@@ -37,7 +37,7 @@
             <div class="child center">
               <div class="lunchContainer">
                 <label for="lunch">점심 식사</label>
-                <input type="text" class="form-control" name="lunch" placeholder="점심 혈당"/>
+                <input type="text" class="form-control" id="lunch" placeholder="점심 혈당"/>
               </div>
 
               <button type="button" id="lunchFoodsAddBtn">+</button>
@@ -54,8 +54,7 @@
             <div class="child right">
               <div class="dinnerContainer">
                 <label for="dinner">저녁 식사</label>
-
-                <input type="text" class="form-control" name="dinner" placeholder="저녁 혈당"/>
+                <input type="text" class="form-control" id="dinner" placeholder="저녁 혈당"/>
               </div>
 
               <button type="button" id="dinnerFoodsAddBtn">+</button>
@@ -75,19 +74,18 @@
 
           <div class="form-group" id="remarkDiv">
             <label for="remark">비고</label>
-            <textarea rows="3" class="form-control" name="remark"></textarea>
-          </div>
-
-          <div class="form-group">
-            <button type="submit" class="btn btn-primary" id="createBtn">
-              작성하기
-            </button>
-            <button class="btn btn-secondary" id="cancelBtn">
-              취소하기
-            </button>
+            <textarea rows="3" class="form-control" id="remark"></textarea>
           </div>
 
         </form>
+        <div class="form-group">
+          <button type="button" class="btn btn-primary" id="createBtn">
+            작성하기
+          </button>
+          <button class="btn btn-secondary" id="cancelBtn">
+            취소하기
+          </button>
+        </div>
       </div>
 
     </div>

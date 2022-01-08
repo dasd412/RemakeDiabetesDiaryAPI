@@ -9,6 +9,8 @@ const PostManipulator = {
     foodDataDict: null,
     foodIdDict: null,
     init: function () {
+        const _this = this;
+
         //음식 이름 set (중복 방지)
         this.foodNameSetDict = {"breakFast": new Set(), "lunch": new Set(), "dinner": new Set()};
 
@@ -23,10 +25,10 @@ const PostManipulator = {
         $("#dinnerFoodsAddBtn").attr('onclick', 'addFood(this)');
 
         $("#createBtn").on('click', function () {
-            this.save();
+            _this.save();
         });
         $("#cancelBtn").on('click', function () {
-            this.goToBack();
+            _this.goToBack();
         });
     },
     cacheAddFoods: function (liId, foodName, foodAmount, key) {
@@ -84,6 +86,62 @@ const PostManipulator = {
         return this.foodIdDict[mealKey];
     },
     save: function () {
+        //ajax 보내기전 유효성 검증
+        const fastingPlasmaGlucose = $("#fastingPlasmaGlucose").val()
+        const breakFastSugar = $("#breakFast").val();
+        const lunchSugar = $("#lunch").val();
+        const dinnerSugar = $("#dinner").val();
+
+        if (fastingPlasmaGlucose !== "" && isNaN(fastingPlasmaGlucose)) {
+            swal('', "공복혈당은 공백 또는 숫자로 표현해야 해요", "error");
+            return;
+        }
+
+        if (breakFastSugar !== "" && isNaN(breakFastSugar)) {
+            swal('', "아침혈당은 공백 또는 숫자로 표현해야 해요", "error");
+            return;
+        }
+
+        if (lunchSugar !== "" && isNaN(lunchSugar)) {
+            swal('', "점심혈당은 공백 또는 숫자로 표현해야 해요", "error");
+            return;
+        }
+
+        if (dinnerSugar !== "" && isNaN(dinnerSugar)) {
+            swal('', "저녁혈당은 공백 또는 숫자로 표현해야 해요", "error");
+            return;
+        }
+
+        const data = {
+            fastingPlasmaGlucose: fastingPlasmaGlucose,
+            remark: $("#remark").val(),
+            //todo 작성 날짜 데이터 추가 필요
+            year: "2021",
+            month: "12",
+            day: "31",
+            hour: "00",
+            minute: "00",
+            second: "00",
+            breakFastSugar: breakFastSugar,
+            lunchSugar: lunchSugar,
+            dinnerSugar: dinnerSugar,
+            breakFastFoods: this.foodDataDict['breakFast'].map(elem => ({
+                foodName: elem['name'],
+                amount: elem['amount']
+            })),
+            lunchFoods: this.foodDataDict['lunch'].map(elem => ({foodName: elem['name'], amount: elem['amount']})),
+            dinnerFoods: this.foodDataDict['dinner'].map(elem => ({foodName: elem['name'], amount: elem['amount']}))
+        };
+        console.log(JSON.stringify(data));
+        $.ajax({
+            type: 'POST',
+            url: '/api/diary/user/diabetes-diary',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(data)
+        }).done(function (response) {
+            console.log(response);
+        });
 
     },
     goToBack: function () {
