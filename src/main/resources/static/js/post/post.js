@@ -1,4 +1,5 @@
-function FoodData(name, amount) {
+function FoodData(liId,name, amount) {
+    this.liId=liId;
     this.name = name;
     this.amount = amount;
 }
@@ -15,7 +16,7 @@ const PostManipulator = {
         this.lunchFoods = new Set();
         this.dinnerFoods = new Set();
 
-        //(음식 이름, 중량)의 딕셔너리
+        //(liId, 음식 이름, 음식 양)의 딕셔너리
         this.foodDataDict = {"breakFast": [], "lunch": [], "dinner": []};
 
         //각 식사의 li id 지급용 딕셔너리 increment by 1
@@ -32,28 +33,47 @@ const PostManipulator = {
             this.goToBack();
         });
     },
-    cacheAddFoods: function (foodName, foodAmount, key) {
+    cacheAddFoods: function (liId,foodName, foodAmount, key) {
         switch (key) {
             case "breakFast":
                 this.breakFastFoods.add(foodName);
-                this.foodDataDict[key].push(new FoodData(foodName, foodAmount));
                 break;
             case "lunch":
                 this.lunchFoods.add(foodName);
-                this.foodDataDict[key].push(new FoodData(foodName, foodAmount));
                 break;
 
             case "dinner":
                 this.dinnerFoods.add(foodName);
-                this.foodDataDict[key].push(new FoodData(foodName, foodAmount));
                 break;
         }
 
+        this.foodDataDict[key].push(new FoodData(liId,foodName, foodAmount));
         //auto increment 방식으로 id를 관리할 예정. 무조건 + 만 한다.
         this.foodIdDict[key] += 1
     },
-    cacheRemoveFoods: function (e, key) {
+    cacheRemoveFoods: function (liId, key) {
+        let i=0;
+        for(;i<this.foodDataDict[key].length;i++){
+            if (this.foodDataDict[key][i]['liId']===liId){
+                break;
+            }
+        }
+        const foodName=this.foodDataDict[key][i]['name'];
+        console.log("deleted"+foodName);
+        switch (key) {
+            case "breakFast":
+                this.breakFastFoods.delete(foodName);
+                break;
+            case "lunch":
+                this.lunchFoods.delete(foodName);
+                break;
 
+            case "dinner":
+                this.dinnerFoods.delete(foodName);
+                break;
+        }
+        this.foodDataDict[key].splice(i,1);
+        console.log(this.foodDataDict[key]);
     },
     alreadyHasFoodName: function (key, foodName) {
         switch (key) {
@@ -79,7 +99,7 @@ const PostManipulator = {
 
         return false;
     },
-    getLiId: function (key) {
+    getNextLiId: function (key) {
         return this.foodIdDict[key];
     },
     save: function () {
@@ -97,11 +117,12 @@ const PostManipulator = {
 }
 
 function closeList(span) {
-    //, key, foodName, foodAmount
     console.log(span.parentElement.id, span.parentElement.className);
+    const liId=span.parentElement.id;
+    const key=span.parentElement.className;
 
-    // PostManipulator.cacheRemoveFoods(e);
-    // e.parentElement.style.display = 'none';
+    PostManipulator.cacheRemoveFoods(Number(liId),key);
+    span.parentElement.style.display = 'none';
 }
 
 function addFood(button) {
@@ -154,8 +175,8 @@ function addFood(button) {
 
     //중복된 데이터가 없을 경우에만 캐시 추가.
     if (!PostManipulator.alreadyHasFoodName(mealKey, foodName)) {
-        const liId = PostManipulator.getLiId(mealKey);
-
+        const liId = PostManipulator.getNextLiId(mealKey);
+        console.log("liId : "+liId);
         $(ulName).append("<li>" +
             foodName + " "
             + foodAmount + "g" +
@@ -165,7 +186,7 @@ function addFood(button) {
         $(lastLi).attr('class', mealKey);
         $(lastLi).attr('id', liId);
 
-        PostManipulator.cacheAddFoods(foodName, foodAmount, mealKey);
+        PostManipulator.cacheAddFoods(liId,foodName, foodAmount, mealKey);
     }
 }
 
