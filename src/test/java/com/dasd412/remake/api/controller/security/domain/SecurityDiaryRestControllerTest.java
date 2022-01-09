@@ -1,7 +1,14 @@
 package com.dasd412.remake.api.controller.security.domain;
 
+import com.dasd412.remake.api.config.security.auth.PrincipalDetails;
+import com.dasd412.remake.api.controller.security.domain.dto.SecurityDiaryPostRequestDTO;
+import com.dasd412.remake.api.controller.security.domain.dto.SecurityFoodDTO;
+import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiaryRepository;
+import com.dasd412.remake.api.domain.diary.writer.Role;
+import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
+import com.dasd412.remake.api.service.domain.SaveDiaryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
 import org.junit.Before;
@@ -13,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,6 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -45,25 +52,47 @@ public class SecurityDiaryRestControllerTest {
     @Autowired
     private DiaryRepository diaryRepository;
 
+    @Autowired
+    private SaveDiaryService saveDiaryService;
+
+    private final TestUserDetailsService testUserDetailsService = new TestUserDetailsService();
+
+    private PrincipalDetails principalDetails;
+
     private MockMvc mockMvc;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Before
     public void setup() {
+        logger.info("set up");
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .apply(springSecurity())
                 .build();
+        //Writer[id=1,name=user@example.com,email=user@example.com,role=User]
+        Writer entity = Writer.builder()
+                .writerEntityId(EntityId.of(Writer.class, 1L))
+                .name(TestUserDetailsService.USERNAME)
+                .email(TestUserDetailsService.USERNAME)
+                .password("test")
+                .role(Role.User)
+                .provider(null)
+                .providerId(null)
+                .build();
+
+        writerRepository.save(entity);
+        principalDetails = (PrincipalDetails) testUserDetailsService.loadUserByUsername(TestUserDetailsService.USERNAME);
+        logger.info("set end \n");
     }
 
     @After
     public void clean() {
+        logger.info("\n clean");
         writerRepository.deleteAll();
     }
 
     @Test
-    @WithMockUser(roles = "User")
     public void methodAccessTest_PostDiaryWithSecurity() throws Exception {
         //given
         String url = "/api/diary/user/diabetes-diary";
@@ -81,9 +110,9 @@ public class SecurityDiaryRestControllerTest {
                 .breakFastFoods(breakFast).lunchFoods(lunch).dinnerFoods(dinner).build();
 
         //when and then
-        mockMvc.perform(post(url).secure(true)
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(new ObjectMapper().writeValueAsString(dto)))
+        mockMvc.perform(post(url).with(user(principalDetails))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dto)))
                 .andExpect(status().isOk());
     }
 
