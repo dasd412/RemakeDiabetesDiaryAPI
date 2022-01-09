@@ -81,6 +81,10 @@ const PostManipulator = {
 
         return false;
     },
+    getDictLength: function (mealKey) {
+        //각 식단의 딕셔너리 길이 리턴. 길이 제한 5를 확인하기 위함.
+        return this.foodDataDict[mealKey].length;
+    },
     getNextLiId: function (mealKey) {
         //mealKey 에 해당하는 식단의 다음 li 태그 id를 지급하는 함수.
         return this.foodIdDict[mealKey];
@@ -213,7 +217,11 @@ function addFood(button) {
         swal('', "음식 양은 1g 이상 1kg 미만이여야 합니다.", "error");
         return;
     }
-
+    //각 식단에서 길이가 5이하 인지 확인.
+    if (PostManipulator.getDictLength(mealKey) >=5) {
+        swal('', mealKey + "'의 음식 개수는 최대 5개 입니다.", "error");
+        return;
+    }
     //중복된 음식 이름의 데이터가 없는지 체크한다.
     if (!PostManipulator.alreadyHasFoodName(mealKey, foodName)) {
         //해당 식단에서 중복된 이름의 음식이 아니라면, auto increment 방식과 유사하게 li 태그의 다음 id 를 발급받는다.
