@@ -41,7 +41,7 @@ public class DiabetesDiaryTest {
     @Test
     public void createInvalidBloodSugar() {
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("fastingPlasmaGlucose must be between 1 and 1000");
+        thrown.expectMessage("fastingPlasmaGlucose must be between 0 and 1000");
         DiabetesDiary invalid = new DiabetesDiary(EntityId.of(DiabetesDiary.class, 2L), writer, 10000, "test", LocalDateTime.now());
     }
 
@@ -67,7 +67,7 @@ public class DiabetesDiaryTest {
     @Test
     public void updateInvalidBloodSugar() {
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("fastingPlasmaGlucose must be between 1 and 1000");
+        thrown.expectMessage("fastingPlasmaGlucose must be between 0 and 1000");
         diary.update(-2000,"");
     }
 

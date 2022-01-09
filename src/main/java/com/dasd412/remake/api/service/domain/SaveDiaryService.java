@@ -125,4 +125,14 @@ public class SaveDiaryService {
         return food;
     }
 
+    @Transactional
+    public Food saveFoodAndAmountOfWriterById(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diaryEntityId, EntityId<Diet, Long> dietEntityId, String foodName,double amount) {
+        logger.info("saveFoodOfWriterById");
+        Writer writer = writerRepository.findById(writerEntityId.getId()).orElseThrow(() -> new NoResultException("작성자가 없습니다."));
+        Diet diet = dietRepository.findOneDietByIdInDiary(writerEntityId.getId(), diaryEntityId.getId(), dietEntityId.getId()).orElseThrow(() -> new NoResultException("식단이 없습니다."));
+        Food food = new Food(getNextIdOfFood(), diet, foodName,amount);
+        diet.addFood(food);
+        writerRepository.save(writer);
+        return food;
+    }
 }

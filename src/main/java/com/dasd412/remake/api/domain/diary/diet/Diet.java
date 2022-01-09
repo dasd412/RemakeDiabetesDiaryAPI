@@ -45,7 +45,7 @@ public class Diet {
     }
 
     public Diet(EntityId<Diet, Long> dietEntityId, DiabetesDiary diary, EatTime eatTime, int bloodSugar) {
-        checkArgument(bloodSugar > 0 && bloodSugar <= 1000, "bloodSugar must be between 1 and 1000");
+        checkArgument(bloodSugar >= 0 && bloodSugar <= 1000, "bloodSugar must be between 0 and 1000");
         this.dietId = dietEntityId.getId();
         this.diary = diary;
         this.eatTime = eatTime;
@@ -69,7 +69,7 @@ public class Diet {
     }
 
     private void modifyBloodSugar(int bloodSugar) {
-        checkArgument(bloodSugar > 0 && bloodSugar <= 1000, "bloodSugar must be between 1 and 1000");
+        checkArgument(bloodSugar >= 0 && bloodSugar <= 1000, "bloodSugar must be between 0 and 1000");
         this.bloodSugar = bloodSugar;
     }
 

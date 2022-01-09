@@ -43,7 +43,7 @@ public class DietTest {
     @Test
     public void createInvalidBloodSugar() {
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("bloodSugar must be between 1 and 1000");
+        thrown.expectMessage("bloodSugar must be between 0 and 1000");
         new Diet(EntityId.of(Diet.class, 1L), diary, EatTime.Lunch, 15000);
     }
 
@@ -58,8 +58,8 @@ public class DietTest {
     @Test
     public void updateInvalidBloodSugar() {
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("bloodSugar must be between 1 and 1000");
-        diet.update(EatTime.Dinner, 0);
+        thrown.expectMessage("bloodSugar must be between 0 and 1000");
+        diet.update(EatTime.Dinner, -1);
     }
 
     @Test

@@ -485,7 +485,7 @@ public class UpdateDeleteDiaryTest {
     @Test
     public void updateDiaryBloodSugarInappropriate() {
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("fastingPlasmaGlucose must be between 1 and 1000");
+        thrown.expectMessage("fastingPlasmaGlucose must be between 0 and 1000");
 
         Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
         DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 200, "test", LocalDateTime.now());
@@ -496,7 +496,7 @@ public class UpdateDeleteDiaryTest {
     @Test
     public void updateDietBloodSugarInappropriate() {
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("bloodSugar must be between 1 and 1000");
+        thrown.expectMessage("bloodSugar must be between 0 and 1000");
 
         Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
         DiabetesDiary diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));

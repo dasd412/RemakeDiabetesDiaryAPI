@@ -44,7 +44,7 @@ public class DiabetesDiary {
     }
 
     public DiabetesDiary(EntityId<DiabetesDiary, Long> diabetesDiaryEntityId, Writer writer, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
-        checkArgument(fastingPlasmaGlucose > 0 && fastingPlasmaGlucose <= 1000, "fastingPlasmaGlucose must be between 1 and 1000");
+        checkArgument(fastingPlasmaGlucose >=0 && fastingPlasmaGlucose <= 1000, "fastingPlasmaGlucose must be between 0 and 1000");
         checkArgument(remark.length() <= 500, "remark length should be lower than 501");
         this.diaryId = diabetesDiaryEntityId.getId();
         this.writer = writer;
@@ -62,7 +62,7 @@ public class DiabetesDiary {
     }
 
     private void modifyFastingPlasmaGlucose(int fastingPlasmaGlucose) {
-        checkArgument(fastingPlasmaGlucose > 0 && fastingPlasmaGlucose <= 1000, "fastingPlasmaGlucose must be between 1 and 1000");
+        checkArgument(fastingPlasmaGlucose >= 0 && fastingPlasmaGlucose <= 1000, "fastingPlasmaGlucose must be between 0 and 1000");
         this.fastingPlasmaGlucose = fastingPlasmaGlucose;
     }
 

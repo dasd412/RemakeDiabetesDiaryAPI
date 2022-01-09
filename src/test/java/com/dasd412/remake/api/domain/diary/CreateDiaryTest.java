@@ -398,39 +398,22 @@ public class CreateDiaryTest {
         Writer me = saveDiaryService.saveWriter("", "TEST@NAVER.COM", Role.User);
     }
 
-    @Transactional
-    @Test
-    public void saveDiaryZeroBloodSugar() {
-        thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("fastingPlasmaGlucose must be between 1 and 1000");
-        Writer me = saveDiaryService.saveWriter("me", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 0, "", LocalDateTime.now());
-    }
 
     @Transactional
     @Test
     public void saveDiaryNegativeBloodSugar() {
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("fastingPlasmaGlucose must be between 1 and 1000");
+        thrown.expectMessage("fastingPlasmaGlucose must be between 0 and 1000");
         Writer me = saveDiaryService.saveWriter("me", "TEST@NAVER.COM", Role.User);
         DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), -1, "", LocalDateTime.now());
     }
 
-    @Transactional
-    @Test
-    public void saveDietZeroBloodSugar() {
-        thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("bloodSugar must be between 1 and 1000");
-        Writer me = saveDiaryService.saveWriter("me", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 100, "", LocalDateTime.now());
-        Diet diet = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 0);
-    }
 
     @Transactional
     @Test
     public void saveDietNegativeBloodSugar() {
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("bloodSugar must be between 1 and 1000");
+        thrown.expectMessage("bloodSugar must be between 0 and 1000");
         Writer me = saveDiaryService.saveWriter("me", "TEST@NAVER.COM", Role.User);
         DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 100, "", LocalDateTime.now());
         Diet diet = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, -200);

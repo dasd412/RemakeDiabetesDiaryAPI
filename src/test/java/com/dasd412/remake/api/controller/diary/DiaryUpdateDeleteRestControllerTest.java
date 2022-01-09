@@ -226,7 +226,7 @@ public class DiaryUpdateDeleteRestControllerTest {
     @WithMockUser(roles = "Admin")
     public void updateDietInvalidSugar() throws Exception {
         //given
-        int invalidSugar = 0;
+        int invalidSugar = -1;
         DietUpdateRequestDTO dto = new DietUpdateRequestDTO(1L, 1L, 1L, EatTime.BreakFast, invalidSugar);
         String url = "http://localhost:" + port + "api/diary/diet";
 
