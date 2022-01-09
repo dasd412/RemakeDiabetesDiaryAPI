@@ -137,6 +137,32 @@ public class SecurityDiaryRestControllerTest {
     }
 
     @Test
+    public void postDiaryInvalidSizeWithSecurity() throws Exception {
+        //given
+        String url = "/api/diary/user/diabetes-diary";
+
+        List<SecurityFoodDTO> breakFast = IntStream.rangeClosed(0, 5).mapToObj(i -> new SecurityFoodDTO("breakFast" + i, i))
+                .collect(Collectors.toList());
+        List<SecurityFoodDTO> lunch = IntStream.rangeClosed(0, 6).mapToObj(i -> new SecurityFoodDTO("lunch" + i, i))
+                .collect(Collectors.toList());
+        List<SecurityFoodDTO> dinner = IntStream.rangeClosed(0, 7).mapToObj(i -> new SecurityFoodDTO("dinner" + i, i))
+                .collect(Collectors.toList());
+
+        SecurityDiaryPostRequestDTO dto = SecurityDiaryPostRequestDTO.builder().fastingPlasmaGlucose(0).remark("test")
+                .year("2021").month("12").day("22").hour("00").minute("00").second("00")
+                .breakFastSugar(0).lunchSugar(0).dinnerSugar(0)
+                .breakFastFoods(breakFast).lunchFoods(lunch).dinnerFoods(dinner).build();
+
+        //when and then
+        mockMvc.perform(post(url).with(user(principalDetails))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dto)))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+
+    }
+
+    @Test
     public void postDiaryWithSecurity() throws Exception {
         //given
         String url = "/api/diary/user/diabetes-diary";

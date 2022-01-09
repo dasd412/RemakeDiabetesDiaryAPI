@@ -8,6 +8,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -47,8 +48,13 @@ public class SecurityDiaryPostRequestDTO {
     private final int lunchSugar;
     private final int dinnerSugar;
 
+    @Size(max = 5)
     private final List<SecurityFoodDTO> breakFastFoods;
+
+    @Size(max = 5)
     private final List<SecurityFoodDTO> lunchFoods;
+
+    @Size(max = 5)
     private final List<SecurityFoodDTO> dinnerFoods;
 
 
