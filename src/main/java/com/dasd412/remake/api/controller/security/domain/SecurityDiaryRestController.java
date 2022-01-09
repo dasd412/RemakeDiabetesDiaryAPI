@@ -25,7 +25,6 @@ public class SecurityDiaryRestController {
     @PostMapping("/api/diary/user/diabetes-diary")
     public void postDiary(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody @Valid SecurityDiaryPostRequestDTO dto) {
         logger.info("post diary with authenticated user");
-        logger.info(principalDetails.getWriter().toString());
         logger.info(dto.toString());
     }
 }
