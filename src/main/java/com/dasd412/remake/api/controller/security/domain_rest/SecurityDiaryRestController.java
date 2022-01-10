@@ -1,15 +1,13 @@
-package com.dasd412.remake.api.controller.security.domain;
+package com.dasd412.remake.api.controller.security.domain_rest;
 
 import com.dasd412.remake.api.config.security.auth.PrincipalDetails;
 import com.dasd412.remake.api.controller.ApiResult;
-import com.dasd412.remake.api.controller.security.domain.dto.SecurityDiaryPostRequestDTO;
-import com.dasd412.remake.api.controller.security.domain.dto.SecurityDiaryPostResponseDTO;
-import com.dasd412.remake.api.controller.security.domain.dto.SecurityFoodDTO;
+import com.dasd412.remake.api.controller.security.domain_rest.dto.SecurityDiaryPostRequestDTO;
+import com.dasd412.remake.api.controller.security.domain_rest.dto.SecurityDiaryPostResponseDTO;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 import com.dasd412.remake.api.domain.diary.diet.Diet;
 import com.dasd412.remake.api.domain.diary.diet.EatTime;
-import com.dasd412.remake.api.domain.diary.food.Food;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.service.domain.SaveDiaryService;
 import org.slf4j.Logger;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 @RestController
 public class SecurityDiaryRestController {

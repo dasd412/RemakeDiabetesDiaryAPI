@@ -1,6 +1,5 @@
 package com.dasd412.remake.api.domain.diary.food;
 
-import com.dasd412.remake.api.controller.security.domain.dto.SecurityFoodDTO;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.diet.Diet;
 import org.apache.commons.lang3.builder.ToStringBuilder;

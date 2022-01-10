@@ -1,4 +1,4 @@
-package com.dasd412.remake.api.controller.security.domain.dto;
+package com.dasd412.remake.api.controller.security.domain_rest.dto;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -1,8 +1,8 @@
-package com.dasd412.remake.api.controller.security.domain;
+package com.dasd412.remake.api.controller.security.domain_rest;
 
 import com.dasd412.remake.api.config.security.auth.PrincipalDetails;
-import com.dasd412.remake.api.controller.security.domain.dto.SecurityDiaryPostRequestDTO;
-import com.dasd412.remake.api.controller.security.domain.dto.SecurityFoodDTO;
+import com.dasd412.remake.api.controller.security.domain_rest.dto.SecurityDiaryPostRequestDTO;
+import com.dasd412.remake.api.controller.security.domain_rest.dto.SecurityFoodDTO;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiaryRepository;
