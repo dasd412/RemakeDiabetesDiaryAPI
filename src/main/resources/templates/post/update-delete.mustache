@@ -38,6 +38,9 @@
               <div class="breakFastFoodContainer">
                 <label for="breakFastFoods">아침 음식</label>
                 <ul id="breakFastFoods">
+                  {{#diary.breakFastFoods}}
+                    <li>{{foodName}} {{amount}}g <span class='close' onclick='closeList(this)'>x</span></li>
+                  {{/diary.breakFastFoods}}
 
                 </ul>
               </div>
