@@ -8,14 +8,17 @@
 
         <h1 class="headline3">혈당 일지 수정/삭제 하기</h1>
         <label for="writtenTime">작성 날짜</label>
-        {{#writtenTime}}
-          <input type="text" value={{writtenTime}} readonly/>
-        {{/writtenTime}}
+        {{#diary.writtenTime}}
+          {{diary.writtenTime}}
+        {{/diary.writtenTime}}
 
         <form action="" method="POST">
           <div class="form-group">
             <label for="fastingPlasmaGlucose">공복 혈당</label>
-            <input type="text" class="form-control" id="fastingPlasmaGlucose"/>
+            {{#diary.fastingPlasmaGlucose}}
+              <input type="text" class="form-control" id="fastingPlasmaGlucose"
+                     value={{diary.fastingPlasmaGlucose}}>
+            {{/diary.fastingPlasmaGlucose}}
           </div>
 
           <br>
@@ -23,12 +26,14 @@
             <div class="child left">
               <div class="breakFastContainer">
                 <label for="breakFast">아침 식사</label>
-                <input type="text" class="form-control" id="breakFast" placeholder="아침 혈당"/>
+                {{#diary.breakFastSugar}}
+                  <input type="text" class="form-control" id="breakFast" value={{diary.breakFastSugar}}>
+                {{/diary.breakFastSugar}}
               </div>
 
               <button type="button" id="breakFastFoodsAddBtn">+</button>
-              <input type='text' class='form-control' name='foodName' id="breakFastFoodName" placeholder='음식 이름'/>
-              <input type="text" class='form-control' id="breakFastFoodAmount" placeholder="음식 양 (그램 단위)"/>
+              <input type='text' class='form-control' name='foodName' id="breakFastFoodName" value='음식 이름'/>
+              <input type="text" class='form-control' id="breakFastFoodAmount" value="음식 양 (그램 단위)"/>
 
               <div class="breakFastFoodContainer">
                 <label for="breakFastFoods">아침 음식</label>
@@ -37,15 +42,18 @@
                 </ul>
               </div>
             </div>
+
             <div class="child center">
               <div class="lunchContainer">
                 <label for="lunch">점심 식사</label>
-                <input type="text" class="form-control" id="lunch" placeholder="점심 혈당"/>
+                {{#diary.lunchSugar}}
+                  <input type="text" class="form-control" id="lunch" value={{diary.lunchSugar}}>
+                {{/diary.lunchSugar}}
               </div>
 
               <button type="button" id="lunchFoodsAddBtn">+</button>
-              <input type='text' class='form-control' name='foodName' id="lunchFoodName" placeholder='음식 이름'/>
-              <input type="text" class='form-control' id="lunchFoodAmount" placeholder="음식 양 (그램 단위)"/>
+              <input type='text' class='form-control' name='foodName' id="lunchFoodName" value='음식 이름'/>
+              <input type="text" class='form-control' id="lunchFoodAmount" value="음식 양 (그램 단위)"/>
 
               <div class="lunchFoodContainer">
                 <label for="lunchFoods">점심 음식</label>
@@ -54,15 +62,18 @@
                 </ul>
               </div>
             </div>
+
             <div class="child right">
               <div class="dinnerContainer">
                 <label for="dinner">저녁 식사</label>
-                <input type="text" class="form-control" id="dinner" placeholder="저녁 혈당"/>
+                {{#diary.dinnerSugar}}
+                  <input type="text" class="form-control" id="dinner" value={{diary.dinnerSugar}}>
+                {{/diary.dinnerSugar}}
               </div>
 
               <button type="button" id="dinnerFoodsAddBtn">+</button>
-              <input type='text' class='form-control' name='foodName' id="dinnerFoodName" placeholder='음식 이름'/>
-              <input type="text" class='form-control' id="dinnerFoodAmount" placeholder="음식 양 (그램 단위)"/>
+              <input type='text' class='form-control' name='foodName' id="dinnerFoodName" value='음식 이름'/>
+              <input type="text" class='form-control' id="dinnerFoodAmount" value="음식 양 (그램 단위)"/>
 
               <div class="dinnerFoodContainer">
                 <label for="dinnerFoods">저녁 음식</label>
@@ -77,7 +88,9 @@
 
           <div class="form-group" id="remarkDiv">
             <label for="remark">비고</label>
-            <textarea rows="3" class="form-control" id="remark"></textarea>
+            {{#diary.remark}}
+              <textarea rows="3" class="form-control" id="remark">{{diary.remark}}</textarea>
+            {{/diary.remark}}
           </div>
 
         </form>
