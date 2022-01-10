@@ -6,8 +6,6 @@ import java.util.Optional;
 
 public interface DietRepositoryCustom {
 
-    Long findCountOfId();
-
     Long findMaxOfId();
 
     List<Diet> findDietsInDiary(Long writerId, Long diaryId);

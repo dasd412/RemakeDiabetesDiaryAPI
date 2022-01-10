@@ -38,48 +38,36 @@ public class SaveDiaryService {
 
     //작성자 id 생성 메서드 (트랜잭션 필수)
     public EntityId<Writer, Long> getNextIdOfWriter() {
-        Long count = writerRepository.findCountOfId();
-        Long writerId;
-        if (count == 0) {
+        Long writerId = writerRepository.findMaxOfId();
+        if (writerId == null) {
             writerId = 0L;
-        } else {
-            writerId = writerRepository.findMaxOfId();
         }
         return EntityId.of(Writer.class, writerId + 1);
     }
 
     //일지 id 생성 메서드 (트랜잭션 필수)
     public EntityId<DiabetesDiary, Long> getNextIdOfDiary() {
-        Long count = diaryRepository.findCountOfId();
-        Long diaryId;
-        if (count == 0) {
+        Long diaryId = diaryRepository.findMaxOfId();
+        if (diaryId == null) {
             diaryId = 0L;
-        } else {
-            diaryId = diaryRepository.findMaxOfId();
         }
         return EntityId.of(DiabetesDiary.class, diaryId + 1);
     }
 
     //식단 id 생성 메서드 (트랜잭션 필수)
     public EntityId<Diet, Long> getNextIdOfDiet() {
-        Long count = dietRepository.findCountOfId();
-        Long dietId;
-        if (count == 0) {
+        Long dietId = dietRepository.findMaxOfId();
+        if (dietId == null) {
             dietId = 0L;
-        } else {
-            dietId = dietRepository.findMaxOfId();
         }
         return EntityId.of(Diet.class, dietId + 1);
     }
 
     //음식 id 생성 메서드 (트랜잭션 필수)
     public EntityId<Food, Long> getNextIdOfFood() {
-        Long count = foodRepository.findCountOfId();
-        Long foodId;
-        if (count == 0) {
+        Long foodId = foodRepository.findMaxOfId();
+        if (foodId == null) {
             foodId = 0L;
-        } else {
-            foodId = foodRepository.findMaxOfId();
         }
         return EntityId.of(Food.class, foodId + 1);
     }
@@ -126,11 +114,11 @@ public class SaveDiaryService {
     }
 
     @Transactional
-    public Food saveFoodAndAmountOfWriterById(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diaryEntityId, EntityId<Diet, Long> dietEntityId, String foodName,double amount) {
+    public Food saveFoodAndAmountOfWriterById(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diaryEntityId, EntityId<Diet, Long> dietEntityId, String foodName, double amount) {
         logger.info("saveFoodOfWriterById");
         Writer writer = writerRepository.findById(writerEntityId.getId()).orElseThrow(() -> new NoResultException("작성자가 없습니다."));
         Diet diet = dietRepository.findOneDietByIdInDiary(writerEntityId.getId(), diaryEntityId.getId(), dietEntityId.getId()).orElseThrow(() -> new NoResultException("식단이 없습니다."));
-        Food food = new Food(getNextIdOfFood(), diet, foodName,amount);
+        Food food = new Food(getNextIdOfFood(), diet, foodName, amount);
         diet.addFood(food);
         writerRepository.save(writer);
         return food;

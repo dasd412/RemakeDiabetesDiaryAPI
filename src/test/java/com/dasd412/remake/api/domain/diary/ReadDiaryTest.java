@@ -67,16 +67,11 @@ public class ReadDiaryTest {
 
     @Transactional
     @Test
-    public void countAndMaxOfIdWhenEmpty() {
+    public void maxOfIdWhenEmpty() {
         //given
-        Long count = writerRepository.findCountOfId();
-        logger.info("count : " + count);
-        assertThat(count).isEqualTo(0L);
-
         Long maxId = writerRepository.findMaxOfId();
         logger.info("maxId : " + maxId);
         assertThat(maxId).isNull();
-
     }
 
     //n+1문제 발생. n+1 문제를 테스트하려면 @Transactional 을 제거해야 한다.

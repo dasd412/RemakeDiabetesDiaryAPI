@@ -27,12 +27,9 @@ public class WriterService {
 
     //작성자 id 생성 메서드 (트랜잭션 필수)
     private EntityId<Writer, Long> getNextIdOfWriter() {
-        Long count = writerRepository.findCountOfId();
-        Long writerId;
-        if (count == 0) {
+        Long writerId = writerRepository.findMaxOfId();
+        if (writerId == null) {
             writerId = 0L;
-        } else {
-            writerId = writerRepository.findMaxOfId();
         }
         return EntityId.of(Writer.class, writerId + 1);
     }

@@ -41,11 +41,6 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
     }
 
     @Override
-    public Long findCountOfId() {
-        return jpaQueryFactory.from(QDiabetesDiary.diabetesDiary).fetchCount();
-    }
-
-    @Override
     public Long findMaxOfId() {
         return jpaQueryFactory.from(QDiabetesDiary.diabetesDiary).select(QDiabetesDiary.diabetesDiary.diaryId.max())
                 .fetchOne();

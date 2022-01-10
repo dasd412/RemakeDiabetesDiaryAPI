@@ -8,8 +8,6 @@ import java.util.Optional;
 
 public interface DiaryRepositoryCustom {
 
-    Long findCountOfId();
-
     Long findMaxOfId();
 
     Optional<Writer> findWriterOfDiary(Long diaryId);

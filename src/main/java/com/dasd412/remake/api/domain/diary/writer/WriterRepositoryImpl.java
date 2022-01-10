@@ -30,11 +30,6 @@ public class WriterRepositoryImpl implements WriterRepositoryCustom {
     }
 
     @Override
-    public Long findCountOfId() {
-        return jpaQueryFactory.from(QWriter.writer).fetchCount();
-    }
-
-    @Override
     public Long findMaxOfId() {
         return jpaQueryFactory.from(QWriter.writer).select(QWriter.writer.writerId.max()).fetchOne();
     }

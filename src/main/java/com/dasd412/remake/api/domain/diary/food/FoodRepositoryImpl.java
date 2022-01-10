@@ -31,11 +31,6 @@ public class FoodRepositoryImpl implements FoodRepositoryCustom {
     }
 
     @Override
-    public Long findCountOfId() {
-        return jpaQueryFactory.from(QFood.food).fetchCount();
-    }
-
-    @Override
     public Long findMaxOfId() {
         return jpaQueryFactory.from(QFood.food).select(QFood.food.foodId.max()).fetchOne();
     }
