@@ -77,9 +77,9 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
         return Optional.ofNullable(jpaQueryFactory.selectFrom(QDiabetesDiary.diabetesDiary)
                 .innerJoin(QDiabetesDiary.diabetesDiary.writer, QWriter.writer)
                 .fetchJoin()
-                .innerJoin(QDiabetesDiary.diabetesDiary.dietList, QDiet.diet)
+                .leftJoin(QDiabetesDiary.diabetesDiary.dietList, QDiet.diet)
                 .fetchJoin()
-                .innerJoin(QDiet.diet.foodList, QFood.food)
+                .leftJoin(QDiet.diet.foodList, QFood.food)
                 .fetchJoin()
                 .where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId).and(QDiabetesDiary.diabetesDiary.diaryId.eq(diaryId)))
                 .fetchOne());
