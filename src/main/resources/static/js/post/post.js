@@ -144,7 +144,7 @@ const PostManipulator = {
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(data)
         }).done(function (response) {
-            console.log(response);
+            window.location.href = "/";
         });
 
     },
@@ -218,7 +218,7 @@ function addFood(button) {
         return;
     }
     //각 식단에서 길이가 5이하 인지 확인.
-    if (PostManipulator.getDictLength(mealKey) >=5) {
+    if (PostManipulator.getDictLength(mealKey) >= 5) {
         swal('', mealKey + "'의 음식 개수는 최대 5개 입니다.", "error");
         return;
     }
