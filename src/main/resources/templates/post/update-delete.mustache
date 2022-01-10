@@ -1,15 +1,18 @@
 {{#layout}}
-  <link href="/css/post/post.css" rel='stylesheet' type="text/css"/>
+  <link href="/css/update_delete/update_delete.css" rel='stylesheet' type="text/css"/>
 
   <div class="container">
     <div class="row">
 
       <div class="col-md-8 col-md-offset-2">
 
-        <h1>혈당 일지 작성하기</h1>
-        <br>
-        <form action="" method="POST">
+        <h1>혈당 일지 수정/삭제 하기</h1>
+        <label for="writtenTime">작성 날짜</label>
+        {{#writtenTime}}
+          <input type="text" value={{writtenTime}} readonly/>
+        {{/writtenTime}}
 
+        <form action="" method="POST">
           <div class="form-group">
             <label for="fastingPlasmaGlucose">공복 혈당</label>
             <input type="text" class="form-control" id="fastingPlasmaGlucose"/>
@@ -79,8 +82,11 @@
 
         </form>
         <div class="form-group">
-          <button type="button" class="btn btn-primary" id="createBtn">
-            작성하기
+          <button type="button" class="btn btn-warning" id="updateBtn">
+            수정하기
+          </button>
+          <button type="button" class="btn btn-danger" id="deleteBtn">
+            삭제하기
           </button>
           <button class="btn btn-secondary" id="cancelBtn">
             취소하기
@@ -92,5 +98,5 @@
   </div>
 
 
-  <script src="/js/post/post.js"></script>
+  <script src="/js/update_delete/update_delete.js"></script>
 {{/layout}}

@@ -30,6 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/api/diary/user/**").authenticated()
                 .antMatchers("/post/**").authenticated()
+                .antMatchers("/update-delete/**").authenticated()
                 .antMatchers("/calendar/**").authenticated()
                 .antMatchers("/chart/**").authenticated()
                 .antMatchers("/search/**").authenticated()

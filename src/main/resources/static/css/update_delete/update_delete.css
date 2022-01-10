@@ -1,0 +1,133 @@
+.require {
+    color: #666;
+}
+
+label small {
+    color: #999;
+    font-weight: normal;
+}
+
+.diet {
+    display: flex;
+    padding: 6px;
+}
+
+.diet .child {
+    flex: 1;
+    padding: 6px;
+}
+
+#remarkDiv {
+    padding: 4px;
+}
+
+.breakFastContainer {
+    padding-bottom: 10px;
+}
+
+.lunchContainer {
+    padding-bottom: 10px;
+}
+
+.dinnerContainer {
+    padding-bottom: 10px;
+}
+
+.breakFastFoodContainer {
+    padding-top: 10px;
+}
+
+.lunchFoodContainer {
+    padding-top: 10px;
+}
+
+.dinnerFoodContainer {
+    padding-top: 10px;
+}
+
+label {
+
+    font-family: 'Heebo', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.025rem;
+    font-style: normal;
+    text-transform: uppercase;
+    color: black;
+    background-color: #FFFFFF;
+    border-radius: 1.25rem;
+    -webkit-border-radius: 1.25rem;
+    -moz-border-radius: 1.25rem;
+    padding: 0.35rem 0.75rem;
+    border-style: solid;
+    border-width: 0.125rem;
+    border-color: blueviolet;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    -box-shadow: none;
+
+}
+
+.diet ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.diet ul li:hover {
+    background-color: #eee;
+}
+
+.close {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    right: 0%;
+    padding: 12px 16px;
+    transform: translate(0%, -50%);
+}
+
+.close:hover {background: #bbb;}
+
+.diet ul li {
+    border: 1px solid #ddd;
+    margin-top: -1px; /* Prevent double borders */
+    background-color: #f6f6f6;
+    padding: 12px;
+    text-decoration: none;
+    font-size: 18px;
+    color: black;
+    display: block;
+    position: relative;
+}
+
+#breakFastFoodsAddBtn, #lunchFoodsAddBtn, #dinnerFoodsAddBtn {
+    box-shadow: inset 0px 39px 0px -24px #3dc21b;
+    background-color: #44c767;
+    border-radius: 4px;
+    border: 1px solid #18ab29;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-family: Arial;
+    font-size: 15px;
+    padding: 6px 15px;
+    text-decoration: none;
+    text-shadow: 0px 1px 0px #2f6627;
+    margin-bottom: 5px;
+}
+
+#breakFastFoodsAddBtn:hover, #lunchFoodsAddBtn:hover, #dinnerFoodsAddBtn:hover {
+    background-color: #5cbf2a;
+}
+
+#breakFastFoodsAddBtn:active, #lunchFoodsAddBtn:active, #dinnerFoodsAddBtn:active {
+    position: relative;
+    top: 1px;
+}
+
+
+#breakFastFoodAmount, #lunchFoodAmount,#dinnerFoodAmount{
+    margin-top:3px;
+    margin-bottom: 4px;
+}

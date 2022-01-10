@@ -11,8 +11,14 @@ public class PostController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @GetMapping("/post")
-    public String loginForm() {
+    public String postForm() {
         logger.info("post view resolve");
         return "/post/post";
+    }
+
+    @GetMapping("/update-delete")
+    public String updateDeleteForm() {
+        logger.info("update delete view resolve");
+        return "/post/update-delete";
     }
 }
