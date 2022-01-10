@@ -57,19 +57,6 @@ public class SecurityDiaryPostRequestDTO {
     @Size(max = 5)
     private final List<SecurityFoodDTO> dinnerFoods;
 
-
-    public List<SecurityFoodDTO> getBreakFastFoods() {
-        return breakFastFoods;
-    }
-
-    public List<SecurityFoodDTO> getLunchFoods() {
-        return lunchFoods;
-    }
-
-    public List<SecurityFoodDTO> getDinnerFoods() {
-        return dinnerFoods;
-    }
-
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
                 .append("fpg", fastingPlasmaGlucose)
