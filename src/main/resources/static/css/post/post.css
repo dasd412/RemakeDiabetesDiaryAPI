@@ -78,7 +78,7 @@ label {
     background-color: #eee;
 }
 
-.close {
+#close {
     cursor: pointer;
     position: absolute;
     top: 50%;
@@ -87,7 +87,7 @@ label {
     transform: translate(0%, -50%);
 }
 
-.close:hover {background: #bbb;}
+#close:hover {background: #bbb;}
 
 .diet ul li {
     border: 1px solid #ddd;

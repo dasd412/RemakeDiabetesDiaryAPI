@@ -78,7 +78,7 @@ label {
     background-color: #eee;
 }
 
-.close {
+#close {
     cursor: pointer;
     position: absolute;
     top: 50%;
@@ -87,7 +87,9 @@ label {
     transform: translate(0%, -50%);
 }
 
-.close:hover {background: #bbb;}
+#close:hover {
+    background: #bbb;
+}
 
 .diet ul li {
     border: 1px solid #ddd;
@@ -127,7 +129,20 @@ label {
 }
 
 
-#breakFastFoodAmount, #lunchFoodAmount,#dinnerFoodAmount{
-    margin-top:3px;
+#breakFastFoodAmount, #lunchFoodAmount, #dinnerFoodAmount {
+    margin-top: 3px;
     margin-bottom: 4px;
+}
+
+#modify {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    right: 20%;
+    padding: 12px 16px;
+    transform: translate(0%, -50%);
+}
+
+#modify:hover {
+    background: #bbb;
 }

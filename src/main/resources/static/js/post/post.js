@@ -231,7 +231,7 @@ function addFood(button) {
         $(ulName).append("<li>" +
             foodName + " "
             + foodAmount + "g" +
-            "<span class='close' onclick='closeList(this)'>x</span></li>"
+            "<span class=\"fas fa-times\" id='close' onclick='closeList(this)'></span></li>"
             + "</li>");
         //마지막으로 추가한 li 태그, 즉 방금 생성한 li 태그를 가리킨다.
         const lastLi = $(ulName).children().last();

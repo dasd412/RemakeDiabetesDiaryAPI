@@ -19,8 +19,26 @@ const FoodData = {
 
 const UpdateDeleteManipulator = {
 
+    //document ready 했을 때 최초의 데이터들
+    originalCache: {
+        //일지 원본 데이터
+        fastingPlasmaGlucose: $("#fastingPlasmaGlucose").val(),
+        remark: $("#remark").val(),
+
+        //식단 원본 데이터
+        breakFastSugar: $("#breakFast").val(),
+        lunchSugar: $("#lunch").val(),
+        dinnerSugar: $("#dinner").val()
+
+        //음식 원본 데이터
+
+    },
+
     init: function () {
         const _this = this;
+
+        console.log("origin");
+        console.log(this.originalCache);
 
         $("#updateBtn").on('click', function () {
             _this.update();
@@ -55,6 +73,10 @@ const UpdateDeleteManipulator = {
     goToBack: function () {
         window.location.href = "/";
     }
+}
+
+function modifyFood(){
+
 }
 
 
