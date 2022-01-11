@@ -23,8 +23,13 @@ public class PostForUpdateDTO {
     private final String remark;
 
     //식단 정보
+    private Long breakFastId;
     private int breakFastSugar;
+
+    private Long lunchId;
     private int lunchSugar;
+
+    private Long dinnerId;
     private int dinnerSugar;
 
     //음식 정보
@@ -48,6 +53,7 @@ public class PostForUpdateDTO {
         for (Diet diet : targetDiary.getDietList()) {
             switch (diet.getEatTime()) {
                 case BreakFast:
+                    this.breakFastId = diet.getDietId();
                     this.breakFastSugar = diet.getBloodSugar();
 
                     this.breakFastFoods = diet.getFoodList()
@@ -57,6 +63,7 @@ public class PostForUpdateDTO {
                     break;
 
                 case Lunch:
+                    this.lunchId = diet.getDietId();
                     this.lunchSugar = diet.getBloodSugar();
 
                     this.lunchFoods = diet.getFoodList()
@@ -67,6 +74,7 @@ public class PostForUpdateDTO {
                     break;
 
                 case Dinner:
+                    this.dinnerId = diet.getDietId();
                     this.dinnerSugar = diet.getBloodSugar();
 
                     this.dinnerFoods = diet.getFoodList()

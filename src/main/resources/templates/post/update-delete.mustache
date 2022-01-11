@@ -29,6 +29,7 @@
           <div class="diet">
             <div class="child left">
               <div class="breakFastContainer">
+                <input type="hidden" value={{diary.breakFastId}} id="breakFastPK">
                 <label for="breakFast">아침 식사</label>
                 {{#diary.breakFastSugar}}
                   <input type="text" class="form-control" id="breakFast" value={{diary.breakFastSugar}}>
@@ -58,6 +59,7 @@
             </div>
             <div class="child center">
               <div class="lunchContainer">
+                <input type="hidden" value={{diary.lunchId}} id="lunchPK">
                 <label for="lunch">점심 식사</label>
                 {{#diary.lunchSugar}}
                   <input type="text" class="form-control" id="lunch" value={{diary.lunchSugar}}>
@@ -87,6 +89,7 @@
 
             <div class="child right">
               <div class="dinnerContainer">
+                <input type="hidden" value={{diary.dinnerId}} id="dinnerPK">
                 <label for="dinner">저녁 식사</label>
                 {{#diary.dinnerSugar}}
                   <input type="text" class="form-control" id="dinner" value={{diary.dinnerSugar}}>
