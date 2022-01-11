@@ -16,20 +16,20 @@ const UpdateDeleteManipulator = {
 
     //document ready 했을 때 최초의 데이터들 저장해 놓은 캐시.
     originalCache: {
-        //일지 원본 데이터
-        diaryId: $("#diaryId").val(),
-        fastingPlasmaGlucose: $("#fastingPlasmaGlucose").val(),
-        remark: $("#remark").val(),
-
-        //식단 원본 데이터
-        breakFastId: $("#breakFastPK").val(),
-        breakFastSugar: $("#breakFast").val(),
-
-        lunchId: $("#lunchPK").val(),
-        lunchSugar: $("#lunch").val(),
-
-        dinnerId: $("#dinnerPK").val(),
-        dinnerSugar: $("#dinner").val(),
+        // //일지 원본 데이터
+        // diaryId: $("#diaryId").val(),
+        // fastingPlasmaGlucose: $("#fastingPlasmaGlucose").val(),
+        // remark: $("#remark").val(),
+        //
+        // //식단 원본 데이터
+        // breakFastId: $("#breakFastPK").val(),
+        // breakFastSugar: $("#breakFast").val(),
+        //
+        // lunchId: $("#lunchPK").val(),
+        // lunchSugar: $("#lunch").val(),
+        //
+        // dinnerId: $("#dinnerPK").val(),
+        // dinnerSugar: $("#dinner").val(),
 
         //음식 원본 데이터
         breakFastFoods: [],

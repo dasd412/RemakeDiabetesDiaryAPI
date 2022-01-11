@@ -33,15 +33,26 @@ public class SecurityDiaryUpdateDTO {
     private final int dinnerSugar;
     private final boolean dinnerDirty;
 
-    //음식 (id,음식이름, 양)의 형태. 만약 id가 null 이면 새로이 만들어진 것.
+    //기존 음식 엔티티들. 삭제 용이라서 id 존재
     @Size(max = 5)
-    private final List<SecurityFoodForUpdateDTO> breakFastFoods;
+    private final List<SecurityFoodForUpdateDTO> oldBreakFastFoods;
 
     @Size(max = 5)
-    private final List<SecurityFoodForUpdateDTO> lunchFoods;
+    private final List<SecurityFoodForUpdateDTO> oldLunchFoods;
 
     @Size(max = 5)
-    private final List<SecurityFoodForUpdateDTO> dinnerFoods;
+    private final List<SecurityFoodForUpdateDTO> oldDinnerFoods;
+
+    //수정된 음식 엔티티들. 삽입 용이라서 id 없음.
+    @Size(max = 5)
+    private final List<SecurityFoodDTO> newBreakFastFoods;
+
+    @Size(max = 5)
+    private final List<SecurityFoodDTO> newLunchFoods;
+
+    @Size(max = 5)
+    private final List<SecurityFoodDTO> newDinnerFoods;
+
 
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
@@ -58,9 +69,12 @@ public class SecurityDiaryUpdateDTO {
                 .append("dinnerId", dinnerId)
                 .append("dinnerSugar", dinnerSugar)
                 .append("isDinnerDirty", dinnerDirty)
-                .append("breakFastFoods", breakFastFoods)
-                .append("lunchFoods", lunchFoods)
-                .append("dinnerFoods", dinnerFoods)
+                .append("oldBreakFastFoods", oldBreakFastFoods)
+                .append("oldLunchFoods", oldLunchFoods)
+                .append("oldDinnerFoods", oldDinnerFoods)
+                .append("newBreakFastFoods", newBreakFastFoods)
+                .append("newLunchFoods", newLunchFoods)
+                .append("newDinnerFoods", newDinnerFoods)
                 .toString();
     }
 }

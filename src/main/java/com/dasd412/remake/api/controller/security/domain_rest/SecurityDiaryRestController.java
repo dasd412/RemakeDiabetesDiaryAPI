@@ -86,6 +86,28 @@ public class SecurityDiaryRestController {
     public void updateDiary(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody SecurityDiaryUpdateDTO dto) {
         logger.info("update diabetes diary from browser");
         logger.info(dto.toString());
+        EntityId<Writer, Long> writerLongEntityId = EntityId.of(Writer.class, principalDetails.getWriter().getId());
+        EntityId<DiabetesDiary, Long> diabetesDiaryLongEntityId = EntityId.of(DiabetesDiary.class, dto.getDiaryId());
+
+        if (dto.isDiaryDirty()) {
+            updateDeleteDiaryService.updateDiary(writerLongEntityId, diabetesDiaryLongEntityId, dto.getFastingPlasmaGlucose(), dto.getRemark());
+        }
+
+        if (dto.isBreakFastDirty()) {
+            EntityId<Diet, Long> breakFastEntityId = EntityId.of(Diet.class, dto.getBreakFastId());
+            updateDeleteDiaryService.updateDiet(writerLongEntityId, diabetesDiaryLongEntityId, breakFastEntityId, EatTime.BreakFast, dto.getBreakFastSugar());
+        }
+
+        if (dto.isLunchDirty()) {
+            EntityId<Diet, Long> lunchEntityId = EntityId.of(Diet.class, dto.getLunchId());
+            updateDeleteDiaryService.updateDiet(writerLongEntityId, diabetesDiaryLongEntityId, lunchEntityId, EatTime.Lunch, dto.getLunchSugar());
+        }
+
+        if (dto.isDinnerDirty()) {
+            EntityId<Diet, Long> dinnerEntityId = EntityId.of(Diet.class, dto.getDinnerId());
+            updateDeleteDiaryService.updateDiet(writerLongEntityId, diabetesDiaryLongEntityId, dinnerEntityId, EatTime.Dinner, dto.getDinnerSugar());
+        }
+
 
     }
 

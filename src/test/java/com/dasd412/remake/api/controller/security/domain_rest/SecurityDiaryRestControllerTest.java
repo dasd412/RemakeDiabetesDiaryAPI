@@ -277,16 +277,28 @@ public class SecurityDiaryRestControllerTest {
         DiabetesDiary targetDiary = findDiaryService.getDiabetesDiaryOfWriterWithRelation(EntityId.of(Writer.class, principalDetails.getWriter().getId()), EntityId.of(DiabetesDiary.class, 1L));
         PostForUpdateDTO viewDTO = new PostForUpdateDTO(targetDiary);
 
-        List<SecurityFoodForUpdateDTO> newBreakFast = viewDTO.getBreakFastFoods()
-                .stream().map(elem -> new SecurityFoodForUpdateDTO(elem.getId(), "pizza", 100.0))
+        List<SecurityFoodForUpdateDTO> oldBreakFast = viewDTO.getBreakFastFoods()
+                .stream().map(elem -> new SecurityFoodForUpdateDTO(elem.getId(), breakFast.get(0).getFoodName(), breakFast.get(0).getAmount()))
                 .collect(Collectors.toList());
 
-        List<SecurityFoodForUpdateDTO> newLunch = viewDTO.getLunchFoods()
-                .stream().map(elem -> new SecurityFoodForUpdateDTO(elem.getId(), "chicken", 200.0))
+        List<SecurityFoodForUpdateDTO> oldLunch = viewDTO.getLunchFoods()
+                .stream().map(elem -> new SecurityFoodForUpdateDTO(elem.getId(), lunch.get(0).getFoodName(), lunch.get(0).getAmount()))
                 .collect(Collectors.toList());
 
-        List<SecurityFoodForUpdateDTO> newDinner = viewDTO.getDinnerFoods()
-                .stream().map(elem -> new SecurityFoodForUpdateDTO(elem.getId(), "kimchi", 50.0))
+        List<SecurityFoodForUpdateDTO> oldDinner = viewDTO.getDinnerFoods()
+                .stream().map(elem -> new SecurityFoodForUpdateDTO(elem.getId(), dinner.get(0).getFoodName(), dinner.get(0).getAmount()))
+                .collect(Collectors.toList());
+
+        List<SecurityFoodDTO> newBreakFast = viewDTO.getBreakFastFoods()
+                .stream().map(elem -> new SecurityFoodDTO("pizza", 100.0))
+                .collect(Collectors.toList());
+
+        List<SecurityFoodDTO> newLunch = viewDTO.getLunchFoods()
+                .stream().map(elem -> new SecurityFoodDTO( "chicken", 200.0))
+                .collect(Collectors.toList());
+
+        List<SecurityFoodDTO> newDinner = viewDTO.getDinnerFoods()
+                .stream().map(elem -> new SecurityFoodDTO("kimchi", 50.0))
                 .collect(Collectors.toList());
 
 
@@ -295,7 +307,9 @@ public class SecurityDiaryRestControllerTest {
                 .breakFastId(viewDTO.getBreakFastId()).breakFastSugar(210).breakFastDirty(true)
                 .lunchId(viewDTO.getLunchId()).lunchSugar(220).lunchDirty(true)
                 .dinnerId(viewDTO.getDinnerId()).dinnerSugar(230).dinnerDirty(true)
-                .breakFastFoods(newBreakFast).lunchFoods(newLunch).dinnerFoods(newDinner).build();
+                .oldBreakFastFoods(oldBreakFast).newBreakFastFoods(newBreakFast)
+                .oldLunchFoods(oldLunch).newLunchFoods(newLunch)
+                .oldDinnerFoods(oldDinner).newDinnerFoods(newDinner).build();
 
         String updateURL = "/api/diary/user/diabetes-diary";
 
