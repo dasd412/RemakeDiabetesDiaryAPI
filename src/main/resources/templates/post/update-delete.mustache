@@ -44,7 +44,10 @@
                 <ul id="breakFastFoods">
                   {{#diary.breakFastFoods}}
                     <input type="hidden" value={{id}} class="breakFastFood">
-                    <li>{{foodName}} {{amount}}g
+                    <li>
+                      <div class="foodElement">
+                        <div class="child foodName">{{foodName}}</div><div class="child amount">{{amount}}</div><div class="child gram">g</div>
+                      </div>
                       <span class="fas fa-pen" id='modify' onclick="modifyFood(this)"></span>
                       <span class="fas fa-times" id='close' onclick='closeList(this)'></span>
                     </li>
@@ -70,7 +73,10 @@
                 <ul id="lunchFoods">
                   {{#diary.lunchFoods}}
                     <input type="hidden" value={{id}} class="lunchFood">
-                    <li>{{foodName}} {{amount}}g
+                    <li>
+                      <div class="foodElement">
+                        <div class="child foodName">{{foodName}}</div><div class="child amount">{{amount}}</div><div class="child gram">g</div>
+                      </div>
                       <span class="fas fa-pen" id='modify' onclick="modifyFood(this)"></span>
                       <span class="fas fa-times" id='close' onclick='closeList(this)'></span>
                     </li>
@@ -96,7 +102,10 @@
                 <ul id="dinnerFoods">
                   {{#diary.dinnerFoods}}
                     <input type="hidden" value={{id}} class="dinnerFood">
-                    <li>{{foodName}} {{amount}}g
+                    <li>
+                      <div class="foodElement">
+                        <div class="child foodName">{{foodName}}</div><div class="child amount">{{amount}}</div><div class="child gram">g</div>
+                      </div>
                       <span class="fas fa-pen" id='modify' onclick="modifyFood(this)"></span>
                       <span class="fas fa-times" id='close' onclick='closeList(this)'></span>
                     </li>
