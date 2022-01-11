@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 public class PostForUpdateDTO {
 
     //일지 정보
+    private final Long diaryId;
     private final int fastingPlasmaGlucose;
     private final String writtenTime;
     private final String remark;
@@ -37,6 +38,7 @@ public class PostForUpdateDTO {
 
     public PostForUpdateDTO(DiabetesDiary targetDiary) {
         //unwrap diary
+        this.diaryId=targetDiary.getId();
         this.fastingPlasmaGlucose = targetDiary.getFastingPlasmaGlucose();
         this.remark = targetDiary.getRemark();
         this.writtenTime = targetDiary.getWrittenTime().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
@@ -78,6 +80,7 @@ public class PostForUpdateDTO {
 
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append("diaryId",diaryId)
                 .append("fpg", fastingPlasmaGlucose)
                 .append("remark", remark)
                 .append("writtenTime", writtenTime)

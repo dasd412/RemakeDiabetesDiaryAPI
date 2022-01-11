@@ -136,14 +136,14 @@ const PostManipulator = {
             lunchFoods: this.foodDataDict['lunch'].map(elem => ({foodName: elem['name'], amount: elem['amount']})),
             dinnerFoods: this.foodDataDict['dinner'].map(elem => ({foodName: elem['name'], amount: elem['amount']}))
         };
-        console.log(JSON.stringify(data));
+
         $.ajax({
             type: 'POST',
             url: '/api/diary/user/diabetes-diary',
             dataType: 'json',
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(data)
-        }).done(function (response) {
+        }).done(function () {
             window.location.href = "/";
         });
 
