@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
-public class DiaryPostController {
+public class DiaryFormController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final FindDiaryService findDiaryService;
 
-    public DiaryPostController(FindDiaryService findDiaryService) {
+    public DiaryFormController(FindDiaryService findDiaryService) {
         this.findDiaryService = findDiaryService;
     }
 

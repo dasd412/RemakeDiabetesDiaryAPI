@@ -1,6 +1,7 @@
 package com.dasd412.remake.api.controller.security.domain_view.dto;
 
 import com.dasd412.remake.api.controller.security.domain_rest.dto.SecurityFoodDTO;
+import com.dasd412.remake.api.controller.security.domain_rest.dto.SecurityFoodForUpdateDTO;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 import com.dasd412.remake.api.domain.diary.diet.Diet;
 import lombok.Getter;
@@ -28,17 +29,17 @@ public class PostForUpdateDTO {
 
     //음식 정보
     @Size(max = 5)
-    private List<SecurityFoodDTO> breakFastFoods;
+    private List<SecurityFoodForUpdateDTO> breakFastFoods;
 
     @Size(max = 5)
-    private List<SecurityFoodDTO> lunchFoods;
+    private List<SecurityFoodForUpdateDTO> lunchFoods;
 
     @Size(max = 5)
-    private List<SecurityFoodDTO> dinnerFoods;
+    private List<SecurityFoodForUpdateDTO> dinnerFoods;
 
     public PostForUpdateDTO(DiabetesDiary targetDiary) {
         //unwrap diary
-        this.diaryId=targetDiary.getId();
+        this.diaryId = targetDiary.getId();
         this.fastingPlasmaGlucose = targetDiary.getFastingPlasmaGlucose();
         this.remark = targetDiary.getRemark();
         this.writtenTime = targetDiary.getWrittenTime().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
@@ -51,7 +52,7 @@ public class PostForUpdateDTO {
 
                     this.breakFastFoods = diet.getFoodList()
                             .stream()
-                            .map(food -> new SecurityFoodDTO(food.getFoodName(), food.getAmount()))
+                            .map(food -> new SecurityFoodForUpdateDTO(food.getId(), food.getFoodName(), food.getAmount()))
                             .collect(Collectors.toList());
                     break;
 
@@ -60,7 +61,7 @@ public class PostForUpdateDTO {
 
                     this.lunchFoods = diet.getFoodList()
                             .stream()
-                            .map(food -> new SecurityFoodDTO(food.getFoodName(), food.getAmount()))
+                            .map(food -> new SecurityFoodForUpdateDTO(food.getId(), food.getFoodName(), food.getAmount()))
                             .collect(Collectors.toList());
 
                     break;
@@ -70,7 +71,7 @@ public class PostForUpdateDTO {
 
                     this.dinnerFoods = diet.getFoodList()
                             .stream()
-                            .map(food -> new SecurityFoodDTO(food.getFoodName(), food.getAmount()))
+                            .map(food -> new SecurityFoodForUpdateDTO(food.getId(), food.getFoodName(), food.getAmount()))
                             .collect(Collectors.toList());
                     break;
             }
@@ -80,7 +81,7 @@ public class PostForUpdateDTO {
 
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                .append("diaryId",diaryId)
+                .append("diaryId", diaryId)
                 .append("fpg", fastingPlasmaGlucose)
                 .append("remark", remark)
                 .append("writtenTime", writtenTime)
