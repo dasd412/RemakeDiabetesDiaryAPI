@@ -4,6 +4,7 @@ import com.dasd412.remake.api.config.security.auth.PrincipalDetails;
 import com.dasd412.remake.api.controller.ApiResult;
 import com.dasd412.remake.api.controller.security.domain_rest.dto.SecurityDiaryPostRequestDTO;
 import com.dasd412.remake.api.controller.security.domain_rest.dto.SecurityDiaryPostResponseDTO;
+import com.dasd412.remake.api.controller.security.domain_rest.dto.SecurityDiaryUpdateDTO;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 import com.dasd412.remake.api.domain.diary.diet.Diet;
@@ -81,9 +82,10 @@ public class SecurityDiaryRestController {
         return ApiResult.OK(new SecurityDiaryPostResponseDTO(diaryId));
     }
 
-    @PutMapping("/api/diary/user/diabetes-diary/{diaryId}")
-    public void updateDiary(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable Long diaryId) {
+    @PutMapping("/api/diary/user/diabetes-diary")
+    public void updateDiary(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody SecurityDiaryUpdateDTO dto) {
         logger.info("update diabetes diary from browser");
+        logger.info(dto.toString());
 
     }
 
