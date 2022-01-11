@@ -29,9 +29,14 @@ const UpdateDeleteManipulator = {
         $("#deleteBtn").on('click', function () {
             _this.delete();
         });
+
+        $("#updateCancelBtn").on('click', function () {
+            _this.goToBack();
+        });
     },
 
     update: function () {
+        const diaryId = $("#diaryId").val();
 
     },
 
@@ -45,6 +50,10 @@ const UpdateDeleteManipulator = {
         }).done(function () {
             window.location.href = "/";
         })
+    },
+
+    goToBack: function () {
+        window.location.href = "/";
     }
 }
 
