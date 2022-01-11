@@ -56,34 +56,28 @@ public class SecurityDiaryRestController {
 
         //음식 저장
         dto.getBreakFastFoods()
-                .forEach(elem -> {
-                    saveDiaryService.saveFoodAndAmountOfWriterById
-                            (EntityId.of(Writer.class, writerId),
-                                    EntityId.of(DiabetesDiary.class, diaryId),
-                                    EntityId.of(Diet.class, breakFast.getDietId()),
-                                    elem.getFoodName(), elem.getAmount()
-                            );
-                });
+                .forEach(elem -> saveDiaryService.saveFoodAndAmountOfWriterById
+                        (EntityId.of(Writer.class, writerId),
+                                EntityId.of(DiabetesDiary.class, diaryId),
+                                EntityId.of(Diet.class, breakFast.getDietId()),
+                                elem.getFoodName(), elem.getAmount()
+                        ));
 
         dto.getLunchFoods()
-                .forEach(elem -> {
-                    saveDiaryService.saveFoodAndAmountOfWriterById
-                            (EntityId.of(Writer.class, writerId),
-                                    EntityId.of(DiabetesDiary.class, diaryId),
-                                    EntityId.of(Diet.class, lunch.getDietId()),
-                                    elem.getFoodName(), elem.getAmount()
-                            );
-                });
+                .forEach(elem -> saveDiaryService.saveFoodAndAmountOfWriterById
+                        (EntityId.of(Writer.class, writerId),
+                                EntityId.of(DiabetesDiary.class, diaryId),
+                                EntityId.of(Diet.class, lunch.getDietId()),
+                                elem.getFoodName(), elem.getAmount()
+                        ));
 
         dto.getDinnerFoods()
-                .forEach(elem -> {
-                    saveDiaryService.saveFoodAndAmountOfWriterById
-                            (EntityId.of(Writer.class, writerId),
-                                    EntityId.of(DiabetesDiary.class, diaryId),
-                                    EntityId.of(Diet.class, dinner.getDietId()),
-                                    elem.getFoodName(), elem.getAmount()
-                            );
-                });
+                .forEach(elem -> saveDiaryService.saveFoodAndAmountOfWriterById
+                        (EntityId.of(Writer.class, writerId),
+                                EntityId.of(DiabetesDiary.class, diaryId),
+                                EntityId.of(Diet.class, dinner.getDietId()),
+                                elem.getFoodName(), elem.getAmount()
+                        ));
         return ApiResult.OK(new SecurityDiaryPostResponseDTO(diaryId));
     }
 
@@ -127,34 +121,28 @@ public class SecurityDiaryRestController {
 
         //음식 엔티티 새로이 생성
         dto.getNewBreakFastFoods()
-                .forEach(elem -> {
-                    saveDiaryService.saveFoodAndAmountOfWriterById
-                            (writerLongEntityId,
-                                    diabetesDiaryLongEntityId,
-                                    breakFastEntityId,
-                                    elem.getFoodName(), elem.getAmount()
-                            );
-                });
+                .forEach(elem -> saveDiaryService.saveFoodAndAmountOfWriterById
+                        (writerLongEntityId,
+                                diabetesDiaryLongEntityId,
+                                breakFastEntityId,
+                                elem.getFoodName(), elem.getAmount()
+                        ));
 
         dto.getNewLunchFoods()
-                .forEach(elem -> {
-                    saveDiaryService.saveFoodAndAmountOfWriterById
-                            (writerLongEntityId,
-                                    diabetesDiaryLongEntityId,
-                                    lunchEntityId,
-                                    elem.getFoodName(), elem.getAmount()
-                            );
-                });
+                .forEach(elem -> saveDiaryService.saveFoodAndAmountOfWriterById
+                        (writerLongEntityId,
+                                diabetesDiaryLongEntityId,
+                                lunchEntityId,
+                                elem.getFoodName(), elem.getAmount()
+                        ));
 
         dto.getNewDinnerFoods()
-                .forEach(elem -> {
-                    saveDiaryService.saveFoodAndAmountOfWriterById
-                            (writerLongEntityId,
-                                    diabetesDiaryLongEntityId,
-                                    dinnerEntityId,
-                                    elem.getFoodName(), elem.getAmount()
-                            );
-                });
+                .forEach(elem -> saveDiaryService.saveFoodAndAmountOfWriterById
+                        (writerLongEntityId,
+                                diabetesDiaryLongEntityId,
+                                dinnerEntityId,
+                                elem.getFoodName(), elem.getAmount()
+                        ));
     }
 
     @DeleteMapping("/api/diary/user/diabetes-diary/{diaryId}")

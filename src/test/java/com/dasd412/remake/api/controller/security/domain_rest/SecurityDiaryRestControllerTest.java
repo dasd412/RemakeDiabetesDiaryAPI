@@ -19,6 +19,7 @@ import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
 import com.dasd412.remake.api.service.domain.FindDiaryService;
 import com.dasd412.remake.api.service.domain.SaveDiaryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.assertj.core.data.Percentage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -294,7 +295,7 @@ public class SecurityDiaryRestControllerTest {
                 .collect(Collectors.toList());
 
         List<SecurityFoodDTO> newLunch = viewDTO.getLunchFoods()
-                .stream().map(elem -> new SecurityFoodDTO( "chicken", 200.0))
+                .stream().map(elem -> new SecurityFoodDTO("chicken", 200.0))
                 .collect(Collectors.toList());
 
         List<SecurityFoodDTO> newDinner = viewDTO.getDinnerFoods()
@@ -311,13 +312,50 @@ public class SecurityDiaryRestControllerTest {
                 .oldLunchFoods(oldLunch).newLunchFoods(newLunch)
                 .oldDinnerFoods(oldDinner).newDinnerFoods(newDinner).build();
 
-        String updateURL = "/api/diary/user/diabetes-diary";
 
-        //when and then
+        //when
+        String updateURL = "/api/diary/user/diabetes-diary";
         mockMvc.perform(put(updateURL).with(user(principalDetails))
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(updateDTO)))
                 .andDo(print());
+
+        //then
+        List<DiabetesDiary> diaries = diaryRepository.findAll();
+        List<Diet> dietList = dietRepository.findAll();
+        List<Food> foodList = foodRepository.findAll();
+
+        assertThat(diaries.size()).isEqualTo(1);
+        assertThat(diaries.get(0).getId()).isEqualTo(viewDTO.getDiaryId());
+        assertThat(diaries.get(0).getFastingPlasmaGlucose()).isEqualTo(200);
+        assertThat(diaries.get(0).getRemark()).isEqualTo("modify");
+
+        assertThat(dietList.size()).isEqualTo(3);
+        for (Diet diet : dietList) {
+            switch (diet.getEatTime()) {
+                case BreakFast:
+                    assertThat(diet.getDietId()).isEqualTo(viewDTO.getBreakFastId());
+                    assertThat(diet.getBloodSugar()).isEqualTo(210);
+                    break;
+                case Lunch:
+                    assertThat(diet.getDietId()).isEqualTo(viewDTO.getLunchId());
+                    assertThat(diet.getBloodSugar()).isEqualTo(220);
+                    break;
+                case Dinner:
+                    assertThat(diet.getDietId()).isEqualTo(viewDTO.getDinnerId());
+                    assertThat(diet.getBloodSugar()).isEqualTo(230);
+                    break;
+            }
+        }
+
+        assertThat(foodList.size()).isEqualTo(3);
+
+        assertThat(foodList.get(0).getFoodName()).isEqualTo("pizza");
+        assertThat(foodList.get(0).getAmount()).isCloseTo(100.0, Percentage.withPercentage(0.05));
+        assertThat(foodList.get(1).getFoodName()).isEqualTo("chicken");
+        assertThat(foodList.get(1).getAmount()).isCloseTo(200.0, Percentage.withPercentage(0.05));
+        assertThat(foodList.get(2).getFoodName()).isEqualTo("kimchi");
+        assertThat(foodList.get(2).getAmount()).isCloseTo(50.0, Percentage.withPercentage(0.05));
     }
 
 }
