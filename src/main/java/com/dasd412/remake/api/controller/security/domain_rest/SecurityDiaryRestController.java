@@ -10,12 +10,11 @@ import com.dasd412.remake.api.domain.diary.diet.Diet;
 import com.dasd412.remake.api.domain.diary.diet.EatTime;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.service.domain.SaveDiaryService;
+import com.dasd412.remake.api.service.domain.UpdateDeleteDiaryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -25,10 +24,14 @@ import java.time.format.DateTimeFormatter;
 public class SecurityDiaryRestController {
     //시큐리티에서는 인증이 이미 되있기 때문에 기존 url 은 관리자만 진입가능하게 바꿨다.
     private final SaveDiaryService saveDiaryService;
+
+    private final UpdateDeleteDiaryService updateDeleteDiaryService;
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public SecurityDiaryRestController(SaveDiaryService saveDiaryService) {
+    public SecurityDiaryRestController(SaveDiaryService saveDiaryService, UpdateDeleteDiaryService updateDeleteDiaryService) {
         this.saveDiaryService = saveDiaryService;
+        this.updateDeleteDiaryService = updateDeleteDiaryService;
     }
 
     @PostMapping("/api/diary/user/diabetes-diary")
@@ -76,5 +79,17 @@ public class SecurityDiaryRestController {
                             );
                 });
         return ApiResult.OK(new SecurityDiaryPostResponseDTO(diaryId));
+    }
+
+    @PutMapping("/api/diary/user/diabetes-diary/{diaryId}")
+    public void updateDiary(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable Long diaryId) {
+        logger.info("update diabetes diary from browser");
+
+    }
+
+    @DeleteMapping("/api/diary/user/diabetes-diary/{diaryId}")
+    public void bulkDeleteDiary(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable Long diaryId) {
+        logger.info("bulk delete Diabetes Diary from browser");
+        updateDeleteDiaryService.deleteDiary(EntityId.of(Writer.class, principalDetails.getWriter().getId()), EntityId.of(DiabetesDiary.class, diaryId));
     }
 }

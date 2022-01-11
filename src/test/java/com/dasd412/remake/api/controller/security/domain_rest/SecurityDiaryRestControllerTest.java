@@ -6,6 +6,8 @@ import com.dasd412.remake.api.controller.security.domain_rest.dto.SecurityFoodDT
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiaryRepository;
+import com.dasd412.remake.api.domain.diary.diet.Diet;
+import com.dasd412.remake.api.domain.diary.diet.DietRepository;
 import com.dasd412.remake.api.domain.diary.food.Food;
 import com.dasd412.remake.api.domain.diary.food.FoodRepository;
 import com.dasd412.remake.api.domain.diary.writer.Role;
@@ -37,6 +39,7 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -59,10 +62,10 @@ public class SecurityDiaryRestControllerTest {
     private DiaryRepository diaryRepository;
 
     @Autowired
-    private FoodRepository foodRepository;
+    private DietRepository dietRepository;
 
     @Autowired
-    private SaveDiaryService saveDiaryService;
+    private FoodRepository foodRepository;
 
     private final TestUserDetailsService testUserDetailsService = new TestUserDetailsService();
 
@@ -194,6 +197,50 @@ public class SecurityDiaryRestControllerTest {
         assertThat(found.getRemark()).isEqualTo("test");
         assertThat(found.getDietList().size()).isEqualTo(3);
         assertThat(foodList.size()).isEqualTo(breakFast.size() + lunch.size() + dinner.size());
+
+    }
+
+    @Test
+    public void deleteDiary() throws Exception {
+        //일지뿐만 아니라 연관된 식단, 음식도 전부 삭제하는 것이 목적이다.
+
+        //given
+        String url = "/api/diary/user/diabetes-diary";
+
+        List<SecurityFoodDTO> breakFast = IntStream.rangeClosed(1, 3).mapToObj(i -> new SecurityFoodDTO("breakFast" + i, i))
+                .collect(Collectors.toList());
+        List<SecurityFoodDTO> lunch = IntStream.rangeClosed(1, 3).mapToObj(i -> new SecurityFoodDTO("lunch" + i, i))
+                .collect(Collectors.toList());
+        List<SecurityFoodDTO> dinner = IntStream.rangeClosed(1, 1).mapToObj(i -> new SecurityFoodDTO("dinner" + i, i))
+                .collect(Collectors.toList());
+
+        SecurityDiaryPostRequestDTO dto = SecurityDiaryPostRequestDTO.builder().fastingPlasmaGlucose(100).remark("test")
+                .year("2021").month("12").day("22").hour("00").minute("00").second("00")
+                .breakFastSugar(110).lunchSugar(120).dinnerSugar(130)
+                .breakFastFoods(breakFast).lunchFoods(lunch).dinnerFoods(dinner).build();
+
+        mockMvc.perform(post(url).with(user(principalDetails))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value("true"))
+                .andExpect(jsonPath("$.response.id").value(1));
+
+        DiabetesDiary found = diaryRepository.findAll().get(0);
+
+
+        //when and then
+        String deleteUrl = "/api/diary/user/diabetes-diary/" + found.getId();
+        mockMvc.perform(delete(deleteUrl).with(user(principalDetails)))
+                .andDo(print());
+
+        List<DiabetesDiary> diaries = diaryRepository.findAll();
+        List<Diet> dietList = dietRepository.findAll();
+        List<Food> foodList = foodRepository.findAll();
+
+        assertThat(diaries.size()).isEqualTo(0);
+        assertThat(dietList.size()).isEqualTo(0);
+        assertThat(foodList.size()).isEqualTo(0);
 
     }
 
