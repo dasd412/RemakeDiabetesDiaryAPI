@@ -14,4 +14,6 @@ public interface FoodRepositoryCustom {
     List<String> findFoodNamesInDietHigherThanBloodSugar(Long writerId, int bloodSugar);
 
     List<String> findFoodHigherThanAverageBloodSugarOfDiet(Long writerId);
+
+    void bulkDeleteFood(List<Long>foodIds);
 }

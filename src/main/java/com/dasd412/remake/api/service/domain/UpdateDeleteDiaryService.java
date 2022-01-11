@@ -18,6 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 @Service
@@ -137,5 +140,12 @@ public class UpdateDeleteDiaryService {
 
         //orphanRemoval = true 로 해놓았기 때문에 부모의 컬렉션에서 자식이 null 되면 알아서 delete 쿼리가 나간다.
         diet.removeFood(targetFood);
+    }
+
+    @Transactional
+    public void bulkDeleteFoods(List<EntityId<Food, Long>> foodEntityIds) {
+        logger.info("bulk delete food service");
+        List<Long> foodIds = foodEntityIds.stream().map(EntityId::getId).collect(Collectors.toList());
+        foodRepository.bulkDeleteFood(foodIds);
     }
 }

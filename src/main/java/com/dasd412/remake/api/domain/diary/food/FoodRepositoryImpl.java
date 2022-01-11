@@ -3,6 +3,8 @@ package com.dasd412.remake.api.domain.diary.food;
 import com.dasd412.remake.api.domain.diary.diet.QDiet;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +27,8 @@ public class FoodRepositoryImpl implements FoodRepositoryCustom {
     */
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public FoodRepositoryImpl(JPAQueryFactory jpaQueryFactory) {
         this.jpaQueryFactory = jpaQueryFactory;
@@ -79,5 +83,13 @@ public class FoodRepositoryImpl implements FoodRepositoryCustom {
                                 .from(QDiet.diet)
                 ))
                 .fetch();
+    }
+
+    @Override
+    public void bulkDeleteFood(List<Long> foodIds) {
+        logger.info("bulk delete food in foodIds");
+        jpaQueryFactory.delete(QFood.food)
+                .where(QFood.food.foodId.in(foodIds))
+                .execute();
     }
 }
