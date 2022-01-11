@@ -2,7 +2,10 @@ package com.dasd412.remake.api.controller.security.domain_rest;
 
 import com.dasd412.remake.api.config.security.auth.PrincipalDetails;
 import com.dasd412.remake.api.controller.security.domain_rest.dto.SecurityDiaryPostRequestDTO;
+import com.dasd412.remake.api.controller.security.domain_rest.dto.SecurityDiaryUpdateDTO;
 import com.dasd412.remake.api.controller.security.domain_rest.dto.SecurityFoodDTO;
+import com.dasd412.remake.api.controller.security.domain_rest.dto.SecurityFoodForUpdateDTO;
+import com.dasd412.remake.api.controller.security.domain_view.dto.PostForUpdateDTO;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiaryRepository;
@@ -13,6 +16,7 @@ import com.dasd412.remake.api.domain.diary.food.FoodRepository;
 import com.dasd412.remake.api.domain.diary.writer.Role;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
+import com.dasd412.remake.api.service.domain.FindDiaryService;
 import com.dasd412.remake.api.service.domain.SaveDiaryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
@@ -39,8 +43,7 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -66,6 +69,9 @@ public class SecurityDiaryRestControllerTest {
 
     @Autowired
     private FoodRepository foodRepository;
+
+    @Autowired
+    private FindDiaryService findDiaryService;
 
     private final TestUserDetailsService testUserDetailsService = new TestUserDetailsService();
 
@@ -242,6 +248,62 @@ public class SecurityDiaryRestControllerTest {
         assertThat(dietList.size()).isEqualTo(0);
         assertThat(foodList.size()).isEqualTo(0);
 
+    }
+
+    @Test
+    public void updateDiary() throws Exception {
+        //given
+        String url = "/api/diary/user/diabetes-diary";
+
+        List<SecurityFoodDTO> breakFast = IntStream.rangeClosed(1, 1).mapToObj(i -> new SecurityFoodDTO("breakFast" + i, i))
+                .collect(Collectors.toList());
+        List<SecurityFoodDTO> lunch = IntStream.rangeClosed(1, 1).mapToObj(i -> new SecurityFoodDTO("lunch" + i, i))
+                .collect(Collectors.toList());
+        List<SecurityFoodDTO> dinner = IntStream.rangeClosed(1, 1).mapToObj(i -> new SecurityFoodDTO("dinner" + i, i))
+                .collect(Collectors.toList());
+
+        SecurityDiaryPostRequestDTO dto = SecurityDiaryPostRequestDTO.builder().fastingPlasmaGlucose(100).remark("test")
+                .year("2021").month("12").day("22").hour("00").minute("00").second("00")
+                .breakFastSugar(110).lunchSugar(120).dinnerSugar(130)
+                .breakFastFoods(breakFast).lunchFoods(lunch).dinnerFoods(dinner).build();
+
+        mockMvc.perform(post(url).with(user(principalDetails))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value("true"))
+                .andExpect(jsonPath("$.response.id").value(1));
+
+        DiabetesDiary targetDiary = findDiaryService.getDiabetesDiaryOfWriterWithRelation(EntityId.of(Writer.class, principalDetails.getWriter().getId()), EntityId.of(DiabetesDiary.class, 1L));
+        PostForUpdateDTO viewDTO = new PostForUpdateDTO(targetDiary);
+
+        List<SecurityFoodForUpdateDTO> newBreakFast = viewDTO.getBreakFastFoods()
+                .stream().map(elem -> new SecurityFoodForUpdateDTO(elem.getId(), "pizza", 100.0))
+                .collect(Collectors.toList());
+
+        List<SecurityFoodForUpdateDTO> newLunch = viewDTO.getLunchFoods()
+                .stream().map(elem -> new SecurityFoodForUpdateDTO(elem.getId(), "chicken", 200.0))
+                .collect(Collectors.toList());
+
+        List<SecurityFoodForUpdateDTO> newDinner = viewDTO.getDinnerFoods()
+                .stream().map(elem -> new SecurityFoodForUpdateDTO(elem.getId(), "kimchi", 50.0))
+                .collect(Collectors.toList());
+
+
+        SecurityDiaryUpdateDTO updateDTO = SecurityDiaryUpdateDTO.builder()
+                .diaryId(viewDTO.getDiaryId()).fastingPlasmaGlucose(200).remark("modify").diaryDirty(true)
+                .breakFastId(viewDTO.getBreakFastId()).breakFastSugar(210).breakFastDirty(true)
+                .lunchId(viewDTO.getLunchId()).lunchSugar(220).lunchDirty(true)
+                .dinnerId(viewDTO.getDinnerId()).dinnerSugar(230).dinnerDirty(true)
+                .breakFastFoods(newBreakFast).lunchFoods(newLunch).dinnerFoods(newDinner).build();
+
+        String updateURL = "/api/diary/user/diabetes-diary";
+
+        //when and then
+        mockMvc.perform(put(updateURL).with(user(principalDetails))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(updateDTO)))
+                .andDo(print());
     }
 
 }
