@@ -69,11 +69,6 @@ function scheduleAdd(year, month, day) {
     window.location.href = "/post?year=" + year + "&month=" + month + "&day=" + day;
 }
 
-function selectCalendarEvent(eventKey, year, month, day) {
-
-}//get data selected
-
-
 function monthDayIndex(month, day) {
     for (let i = 0; i < month.length; i++) {
         if (month[i] === day) {
@@ -101,6 +96,11 @@ function moveFastMonthNext() {
     locationOfYear++;
     screenWriteMonth();
 }
+
+let startMonth = "";
+let startDay = "";
+let endMonth = "";
+let endDay = "";
 
 function screenWriteMonth() {
 
@@ -131,10 +131,17 @@ function screenWriteMonth() {
     let startIndex = monthDayIndex(monthDay, 1);
     let lastIndex = monthDayIndex(calendar.makeOneCalendarArray(year, months[1]), calendar.getMaxDateNumberOfYear(year, months[1])) + startIndex;
 
+    //현재 달력의  시작월과 시작일 ~ 끝월과 끝일을 나타낸다.
+    let startMonth = "";
+    let startDay = "";
+    let endMonth = "";
+    let endDay = "";
+
     for (let i = 0; i < monthDay.length; i++) {
         let trIndex = parseInt(i / 7);
         let tr = $("#tbody tr").eq(trIndex);
         let td = tr.children().eq((i % 7) + 1);
+
         let monthForSchedule;
 
         let sb = new StringBuffer();
@@ -174,13 +181,28 @@ function screenWriteMonth() {
 
         td.attr("id", sb.toString());
 
-        td.mouseover(function () {
+
+        td.html("<a onclick='scheduleAdd(" + year + "," + monthForSchedule + "," + monthDay[i] + ")'>" + formatter.formatNumber((monthDay[i]) + "</a>"));
+
+        let a = td.children("a");
+
+        a.on('mouseover', function () {
             td.css('cursor', 'pointer');
         });
-        td.mouseleave(function () {
+
+        a.mouseleave(function () {
             td.css('cursor', 'default');
-        })
-        td.html("<a onclick='scheduleAdd(" + year + "," + monthForSchedule + "," + monthDay[i] + ")'>" + formatter.formatNumber((monthDay[i]) + "</a>"));
+        });
+
+        if (i === 0) {
+            startMonth = monthForSchedule;
+            startDay = monthDay[i];
+        }
+
+        if (i === monthDay.length - 1) {
+            endMonth = monthForSchedule;
+            endDay = monthDay[i];
+        }
     }//날짜 그리기
 
     for (let i = 0; i < 5; i++) {
@@ -196,8 +218,12 @@ function screenWriteMonth() {
 
     $("#yearMonth").text(year + "." + formatter.formatNumber(months[1]));
 
+    findDiariesBetweenTime(startMonth,startDay,endMonth,endDay);
 }//screen write month()
 
+function findDiariesBetweenTime(startMonth,startDay,endMonth,endDay){
+
+}
 
 function eventTagFormat(fastingPlasmaGlucose) {
 
