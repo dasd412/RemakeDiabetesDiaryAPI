@@ -9,6 +9,7 @@ import com.dasd412.remake.api.domain.diary.diet.Diet;
 import com.dasd412.remake.api.domain.diary.diet.EatTime;
 import com.dasd412.remake.api.domain.diary.food.Food;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
+import com.dasd412.remake.api.service.domain.FindDiaryService;
 import com.dasd412.remake.api.service.domain.SaveDiaryService;
 import com.dasd412.remake.api.service.domain.UpdateDeleteDiaryService;
 import org.slf4j.Logger;
@@ -30,11 +31,14 @@ public class SecurityDiaryRestController {
 
     private final UpdateDeleteDiaryService updateDeleteDiaryService;
 
+    private final FindDiaryService findDiaryService;
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public SecurityDiaryRestController(SaveDiaryService saveDiaryService, UpdateDeleteDiaryService updateDeleteDiaryService) {
+    public SecurityDiaryRestController(SaveDiaryService saveDiaryService, UpdateDeleteDiaryService updateDeleteDiaryService, FindDiaryService findDiaryService) {
         this.saveDiaryService = saveDiaryService;
         this.updateDeleteDiaryService = updateDeleteDiaryService;
+        this.findDiaryService = findDiaryService;
     }
 
     @PostMapping("/api/diary/user/diabetes-diary")
@@ -147,5 +151,24 @@ public class SecurityDiaryRestController {
     public void bulkDeleteDiary(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable Long diaryId) {
         logger.info("bulk delete Diabetes Diary from browser");
         updateDeleteDiaryService.deleteDiary(EntityId.of(Writer.class, principalDetails.getWriter().getId()), EntityId.of(DiabetesDiary.class, diaryId));
+    }
+
+    @GetMapping("/api/diary/user/diabetes-diary/list")
+    public void getDiariesBetweenStartAndEnd(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                             @RequestParam(value = "year") int year, @RequestParam(value = "startMonth") int startMonth,
+                                             @RequestParam(value = "startDay") int startDay, @RequestParam(value = "endMonth") int endMonth,
+                                             @RequestParam(value = "endDay") int endDay) {
+        logger.info("get diaries between time");
+        LocalDateTime startDate = LocalDateTime.of(year, startMonth, startDay, 0, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(year, endMonth, endDay, 0, 0, 0);
+        logger.info(startDate + " ~ " + endDate);
+        //fetch join 안했음. 달력에서는 id 값만 필요하기 때문.
+        List<DiabetesDiary> diaries =
+                findDiaryService.getDiariesBetweenTime(EntityId.of(Writer.class, principalDetails.getWriter().getId()),
+                        startDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")),
+                        endDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+        
+        //todo ArrayList(일지 id,작성 시간)의 형태로 dto 만들어서 리턴하기
+        
     }
 }

@@ -218,11 +218,18 @@ function screenWriteMonth() {
 
     $("#yearMonth").text(year + "." + formatter.formatNumber(months[1]));
 
-    findDiariesBetweenTime(startMonth,startDay,endMonth,endDay);
+    findDiariesBetweenTime(year, startMonth, startDay, endMonth, endDay);
 }//screen write month()
 
-function findDiariesBetweenTime(startMonth,startDay,endMonth,endDay){
+function findDiariesBetweenTime(year, startMonth, startDay, endMonth, endDay) {
 
+    $.ajax({
+        type: 'GET',
+        url: '/api/diary/user/diabetes-diary/list?year='+year+"&startMonth="+startMonth+"&startDay="+startDay+"&endMonth="+endMonth+"&endDay="+endDay,
+        contentType: 'application/json; charset=utf-8'
+    }).done(function () {
+        console.log('success');
+    });
 }
 
 function eventTagFormat(fastingPlasmaGlucose) {
