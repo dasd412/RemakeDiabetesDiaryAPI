@@ -3,33 +3,26 @@ function OriginFoodData(id, name, amount) {
     this.id = id;
     this.name = name;
     this.amount = amount;
-};
-
-//새로운 데이터 삽입 시 사용되는 생성자. 새로운 데이터는 db에 아직 없으므로 PK가 없다.
-function FoodData(name, amount) {
-    this.name = name;
-    this.amount = amount;
-};
-
+}
 
 const UpdateDeleteManipulator = {
 
     //document ready 했을 때 최초의 데이터들 저장해 놓은 캐시.
     originalCache: {
-        // //일지 원본 데이터
-        // diaryId: $("#diaryId").val(),
-        // fastingPlasmaGlucose: $("#fastingPlasmaGlucose").val(),
-        // remark: $("#remark").val(),
-        //
-        // //식단 원본 데이터
-        // breakFastId: $("#breakFastPK").val(),
-        // breakFastSugar: $("#breakFast").val(),
-        //
-        // lunchId: $("#lunchPK").val(),
-        // lunchSugar: $("#lunch").val(),
-        //
-        // dinnerId: $("#dinnerPK").val(),
-        // dinnerSugar: $("#dinner").val(),
+        //일지 원본 데이터
+        diaryId: $("#diaryId").val(),
+        fastingPlasmaGlucose: $("#fastingPlasmaGlucose").val(),
+        remark: $("#remark").val(),
+
+        //식단 원본 데이터
+        breakFastId: $("#breakFastPK").val(),
+        breakFastSugar: $("#breakFast").val(),
+
+        lunchId: $("#lunchPK").val(),
+        lunchSugar: $("#lunch").val(),
+
+        dinnerId: $("#dinnerPK").val(),
+        dinnerSugar: $("#dinner").val(),
 
         //음식 원본 데이터
         breakFastFoods: [],
@@ -37,6 +30,7 @@ const UpdateDeleteManipulator = {
         dinnerFoods: []
     },
 
+    //원본 캐시에 저장될 음식 데이터 만들기 (실제 수정 시에는 삭제 작업이 이루어진다.)
     makeOriginFoodData: function (eatTime) {
         let eachLiSelector;
         let foodIdSelector;
@@ -59,12 +53,20 @@ const UpdateDeleteManipulator = {
                 break;
         }
 
+        let liId = 0;
         $(eachLiSelector).each(function () {
+
+            $(this).attr('class', eatTime);
+            $(this).attr('id', liId);
+
             const foodId = $(this).children(foodIdSelector).val();
             $(this).children(".foodElement").each(function () {
                 const foodName = $(this).children(".child.foodName").text();
                 const amount = $(this).children(".child.amount").text();
+
                 targetFoods.push(new OriginFoodData(foodId, foodName, amount));
+                PostManipulator.cacheAddFoods(liId, foodName, amount, eatTime);
+                liId++;
             });
         });
 
@@ -89,7 +91,68 @@ const UpdateDeleteManipulator = {
         });
     },
 
+    //변경이 감지되었는지 체크하는 함수들.
+    isDiaryModified: function () {
+        return !(this.originalCache.fastingPlasmaGlucose === $("#fastingPlasmaGlucose").val() && this.originalCache.remark === $("#remark").val());
+    },
+    isBreakFastModified: function () {
+        return !(this.originalCache.breakFastSugar === $("#breakFast").val());
+    },
+    isLunchModified: function () {
+        return !(this.originalCache.lunchSugar === $("#lunch").val());
+    },
+
+    isDinnerModified: function () {
+        return !(this.originalCache.dinnerSugar === $("#dinner").val());
+    },
+
     update: function () {
+
+        const data = {
+            diaryId: this.originalCache.diaryId,
+            fastingPlasmaGlucose: $("#fastingPlasmaGlucose").val(),
+            remark: $("#remark").val(),
+            diaryDirty: this.isDiaryModified(),
+
+            breakFastId: this.originalCache.breakFastId,
+            breakFastSugar: $("#breakFast").val(),
+            breakFastDirty: this.isBreakFastModified(),
+
+            lunchId: this.originalCache.lunchId,
+            lunchSugar: $("#lunch").val(),
+            lunchDirty: this.isLunchModified(),
+
+            dinnerId: this.originalCache.dinnerId,
+            dinnerSugar: $("#dinner").val(),
+            dinnerDirty: this.isDinnerModified(),
+
+            oldBreakFastFoods: this.originalCache.breakFastFoods,
+            oldLunchFoods: this.originalCache.lunchFoods,
+            oldDinnerFoods: this.originalCache.dinnerFoods,
+
+            newBreakFastFoods: PostManipulator.foodDataDict['breakFast'].map(elem => ({
+                foodName: elem['name'],
+                amount: elem['amount']
+            })),
+            newLunchFoods: PostManipulator.foodDataDict['lunch'].map(elem => ({
+                foodName: elem['name'],
+                amount: elem['amount']
+            })),
+            newDinnerFoods: PostManipulator.foodDataDict['dinner'].map(elem => ({
+                foodName: elem['name'],
+                amount: elem['amount']
+            }))
+        }
+
+        $.ajax({
+            type: 'PUT',
+            url: '/api/diary/user/diabetes-diary',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(data)
+        }).done(function () {
+            window.location.href = "/";
+        });
 
     },
 
@@ -109,11 +172,6 @@ const UpdateDeleteManipulator = {
         window.location.href = "/";
     }
 }
-
-function modifyFood() {
-
-}
-
 
 $(document).ready(function () {
     UpdateDeleteManipulator.init();

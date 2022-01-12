@@ -158,7 +158,6 @@ function closeList(span) {
     // span 의 부모인 li 태그의 id (발급 id)와 class (식단)을 찾는다.
     const liId = span.parentElement.id;
     const key = span.parentElement.className;
-
     //'x' 가 눌린 li 태그에 해당하는 캐시 값을 삭제해달라고 요청한다.
     PostManipulator.cacheRemoveFoods(Number(liId), key);
 
