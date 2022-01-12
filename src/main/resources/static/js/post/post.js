@@ -116,13 +116,22 @@ const PostManipulator = {
             return;
         }
 
+        let month = "" + $("#month").text();
+        if ($("#month").text() < 10 && month.indexOf('0') === -1 || month.length === 1) {
+            month = "0" + $("#month").text();
+        }
+
+        let day = "" + $("#day").text();
+        if ($("#day").text() < 10 && day.indexOf('0') === -1 || day.length === 1) {
+            day = "0" + $("#day").text();
+        }
+
         const data = {
             fastingPlasmaGlucose: fastingPlasmaGlucose,
             remark: $("#remark").val(),
-            //todo 작성 날짜 데이터 추가 필요
-            year: "2021",
-            month: "12",
-            day: "31",
+            year: $("#year").text(),
+            month: month,
+            day: day,
             hour: "00",
             minute: "00",
             second: "00",
@@ -136,6 +145,8 @@ const PostManipulator = {
             lunchFoods: this.foodDataDict['lunch'].map(elem => ({foodName: elem['name'], amount: elem['amount']})),
             dinnerFoods: this.foodDataDict['dinner'].map(elem => ({foodName: elem['name'], amount: elem['amount']}))
         };
+
+        console.log(data.year);
 
         $.ajax({
             type: 'POST',

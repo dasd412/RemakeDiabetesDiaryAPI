@@ -87,7 +87,9 @@ label {
     transform: translate(0%, -50%);
 }
 
-#close:hover {background: #bbb;}
+#close:hover {
+    background: #bbb;
+}
 
 .diet ul li {
     border: 1px solid #ddd;
@@ -126,8 +128,11 @@ label {
     top: 1px;
 }
 
-
-#breakFastFoodAmount, #lunchFoodAmount,#dinnerFoodAmount{
-    margin-top:3px;
+#breakFastFoodAmount, #lunchFoodAmount, #dinnerFoodAmount {
+    margin-top: 3px;
     margin-bottom: 4px;
+}
+
+#year, #month, #day {
+    display: inline-block;
 }
