@@ -1,0 +1,50 @@
+
+thead{
+    text-align: center;
+}
+
+
+
+#calendarTable{
+    position: relative;
+    width: 100%;
+}
+
+#calendarThead{
+    font-family: ArialRounded;
+    font-size: 20px;
+    font-weight: bold;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.16;
+    letter-spacing: normal;
+    table-layout: auto;
+    margin-bottom: 1px;
+    background-color: transparent;
+
+}
+
+.weekTd{
+    background-color: #ebebeb;
+}
+
+.calendarTop{
+    background-image: linear-gradient(93deg, #a426b4, #581bc9 94%);
+}
+
+.calendarTopTitle{
+    text-align: center;
+    font-family: ArialRounded;
+    font-size: 25px;
+    font-weight: bold;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.16;
+    letter-spacing: normal;
+    color: #fffdfd;
+}
+
+#fastPre,#pre,#next,#fastNext{
+    margin:10px;
+    color: #fffdfd;
+}
