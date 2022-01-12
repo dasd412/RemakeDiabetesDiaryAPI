@@ -37,8 +37,8 @@
               </div>
 
               <button type="button" id="breakFastFoodsAddBtn">+</button>
-              <input type='text' class='form-control' name='foodName' id="breakFastFoodName" value='음식 이름'/>
-              <input type="text" class='form-control' id="breakFastFoodAmount" value="음식 양 (그램 단위)"/>
+              <input type='text' class='form-control' name='foodName' id="breakFastFoodName" placeholder='음식 이름'/>
+              <input type="text" class='form-control' id="breakFastFoodAmount" placeholder="음식 양 (그램 단위)"/>
 
               <div class="breakFastFoodContainer">
                 <label for="breakFastFoods">아침 음식</label>
@@ -49,7 +49,6 @@
                       <div class="foodElement">
                         <div class="child foodName">{{foodName}}</div><div class="child amount">{{amount}}</div><div class="child gram">g</div>
                       </div>
-                      <span class="fas fa-pen" id='modify' onclick="modifyFood(this)"></span>
                       <span class="fas fa-times" id='close' onclick='closeList(this)'></span>
                     </li>
                   {{/diary.breakFastFoods}}
@@ -67,8 +66,8 @@
               </div>
 
               <button type="button" id="lunchFoodsAddBtn">+</button>
-              <input type='text' class='form-control' name='foodName' id="lunchFoodName" value='음식 이름'/>
-              <input type="text" class='form-control' id="lunchFoodAmount" value="음식 양 (그램 단위)"/>
+              <input type='text' class='form-control' name='foodName' id="lunchFoodName" placeholder='음식 이름'/>
+              <input type="text" class='form-control' id="lunchFoodAmount" placeholder="음식 양 (그램 단위)"/>
 
               <div class="lunchFoodContainer">
                 <label for="lunchFoods">점심 음식</label>
@@ -79,7 +78,6 @@
                       <div class="foodElement">
                         <div class="child foodName">{{foodName}}</div><div class="child amount">{{amount}}</div><div class="child gram">g</div>
                       </div>
-                      <span class="fas fa-pen" id='modify' onclick="modifyFood(this)"></span>
                       <span class="fas fa-times" id='close' onclick='closeList(this)'></span>
                     </li>
                   {{/diary.lunchFoods}}
@@ -97,8 +95,8 @@
               </div>
 
               <button type="button" id="dinnerFoodsAddBtn">+</button>
-              <input type='text' class='form-control' name='foodName' id="dinnerFoodName" value='음식 이름'/>
-              <input type="text" class='form-control' id="dinnerFoodAmount" value="음식 양 (그램 단위)"/>
+              <input type='text' class='form-control' name='foodName' id="dinnerFoodName" placeholder='음식 이름'/>
+              <input type="text" class='form-control' id="dinnerFoodAmount" placeholder="음식 양 (그램 단위)"/>
 
               <div class="dinnerFoodContainer">
                 <label for="dinnerFoods">저녁 음식</label>
@@ -109,7 +107,6 @@
                       <div class="foodElement">
                         <div class="child foodName">{{foodName}}</div><div class="child amount">{{amount}}</div><div class="child gram">g</div>
                       </div>
-                      <span class="fas fa-pen" id='modify' onclick="modifyFood(this)"></span>
                       <span class="fas fa-times" id='close' onclick='closeList(this)'></span>
                     </li>
                   {{/diary.dinnerFoods}}
@@ -143,6 +140,6 @@
     </div>
   </div>
 
-
+  <script src="/js/post/post.js"></script>
   <script src="/js/update_delete/update_delete.js"></script>
 {{/layout}}
