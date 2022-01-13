@@ -117,8 +117,10 @@ public class SecurityDiaryRestController {
         allOldFoods.addAll(dto.getOldLunchFoods());
         allOldFoods.addAll(dto.getOldDinnerFoods());
 
-        List<EntityId<Food, Long>> foodEntityIds = allOldFoods.stream().map(elem -> EntityId.of(Food.class, elem.getId())).collect(Collectors.toList());
-        updateDeleteDiaryService.bulkDeleteFoods(foodEntityIds);
+        if (allOldFoods.size()>0){
+            List<EntityId<Food, Long>> foodEntityIds = allOldFoods.stream().map(elem -> EntityId.of(Food.class, elem.getId())).collect(Collectors.toList());
+            updateDeleteDiaryService.bulkDeleteFoods(foodEntityIds);
+        }
 
         //음식 엔티티 새로이 생성
         dto.getNewBreakFastFoods()

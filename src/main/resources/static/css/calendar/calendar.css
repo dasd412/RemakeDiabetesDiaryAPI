@@ -50,6 +50,7 @@ thead{
 }
 
 #check{
+    color: red;
     position: relative;
     top: 50%;
     right: 10%;

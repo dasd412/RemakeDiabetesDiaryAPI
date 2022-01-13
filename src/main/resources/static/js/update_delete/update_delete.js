@@ -151,7 +151,7 @@ const UpdateDeleteManipulator = {
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(data)
         }).done(function () {
-            window.location.href = "/";
+            window.location.href = "/calendar";
         });
 
     },
@@ -163,13 +163,12 @@ const UpdateDeleteManipulator = {
             url: '/api/diary/user/diabetes-diary/' + diaryId,
             dataType: 'json',
             contentType: 'application/json; charset=utf-8'
-        }).done(function () {
-            window.location.href = "/";
-        })
+        });
+        window.location.href = "/calendar";
     },
 
     goToBack: function () {
-        window.location.href = "/";
+        window.location.href = "/calendar";
     }
 }
 

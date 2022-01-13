@@ -3,71 +3,7 @@ const listSet = new Set();//자바의 Set과 동일함.
 let locationOfMonth = 0;
 let locationOfYear = 0;
 
-
-class HashMap {
-    constructor() {
-        this.map = [];
-    }
-
-    put(key, value) {
-        this.map[key] = value;
-    }
-
-    get(key) {
-        return this.map[key];
-    }
-
-    containsKey(key) {
-        return key in this.map;
-    }
-
-    getAll() {
-        return this.map;
-    }
-
-    clear() {
-        this.map = [];
-    }
-
-    remove(key) {
-        delete this.map[key];
-    }
-
-    keys() {
-        const keys = [];
-        for (let i in this.map) {
-            keys.push(i);
-        }
-        return keys;
-    }
-
-    values() {
-        const values = [];
-        for (let i in this.map) {
-            values.push(this.map[i]);
-        }
-        return values;
-    }
-
-    size() {
-        let count = 0;
-        for (let i in this.map) {
-            count++;
-        }
-        return count;
-    }
-
-}//HashMap class
-
-const hashMap = new HashMap();//(key,value)==(event의 id값(db id값이 아닌 날짜 기준 ), event 객체)
-
 const formatter = new Formatter();
-
-function scheduleAdd(year, month, day) {
-
-    //todo 작성한 적 없을 때만 이동하도록 로직짜야 함.
-    window.location.href = "/post?year=" + year + "&month=" + month + "&day=" + day;
-}
 
 function monthDayIndex(month, day) {
     for (let i = 0; i < month.length; i++) {
@@ -97,7 +33,7 @@ function moveFastMonthNext() {
     screenWriteMonth();
 }
 
-function reInitTable(){
+function reInitTable() {
     $("#row1").children('td').html('');
     $("#row2").children('td').html('');
     $("#row3").children('td').html('');
@@ -106,11 +42,8 @@ function reInitTable(){
     $("#row6").children('td').html('');
 }
 
-let startDay = 0;
-let endDay = 0;
 
 function screenWriteMonth() {
-
     let date = new Date();
     let month = date.getMonth() + 1 + locationOfMonth;
 
@@ -144,11 +77,11 @@ function screenWriteMonth() {
     reInitTable();
 
     for (let i = 0; i < monthDay.length; i++) {
-        if (startDay===1 && monthDay[i]===1){
-            endDay=monthDay[i-1];
+        if (startDay === 1 && monthDay[i] === 1) {
+            endDay = monthDay[i - 1];
         }
-        if(startDay===0 && monthDay[i]===1){
-            startDay=1;
+        if (startDay === 0 && monthDay[i] === 1) {
+            startDay = 1;
         }
 
         let trIndex = parseInt(i / 7);
@@ -194,37 +127,38 @@ function screenWriteMonth() {
 
         td.attr("id", sb.toString());
 
+        if(monthForSchedule===months[1]){
+            td.html("<a onclick='scheduleAdd($(this).parent()," + year + "," + monthForSchedule + "," + monthDay[i] + ")'>" + formatter.formatNumber((monthDay[i]) + "</a>"));
 
-        td.html("<a onclick='scheduleAdd(" + year + "," + monthForSchedule + "," + monthDay[i] + ")'>" + formatter.formatNumber((monthDay[i]) + "</a>"));
+            let a = td.children("a");
 
-        let a = td.children("a");
+            a.on('mouseover', function () {
+                td.css('cursor', 'pointer');
+            });
 
-        a.on('mouseover', function () {
-            td.css('cursor', 'pointer');
-        });
-
-        a.mouseleave(function () {
-            td.css('cursor', 'default');
-        });
+            a.mouseleave(function () {
+                td.css('cursor', 'default');
+            });
+        }
     }//날짜 그리기
 
-    for (let i = 0; i < 5; i++) {
-        const tr = $("#tbody tr").eq(i);
-        for (let j = 1; j <= 7; j++) {
-            const td = tr.children().eq(j);
-            if (hashMap.containsKey((td.attr("id")))) {
-                const e = hashMap.get(td.attr("id"));
-                td.append(eventTagFormat(e.fastingPlasmaGlucose));
-            }
-        }
-    }
-    if (endDay===0){
-        endDay=monthDay[monthDay.length-1];
+    if (endDay === 0) {
+        endDay = monthDay[monthDay.length - 1];
     }
     $("#yearMonth").text(year + "." + formatter.formatNumber(months[1]));
 
     findDiariesBetweenTime(year, months[1], startDay, endDay);
 }//screen write month()
+
+function scheduleAdd(td, year, month, day) {
+    const diaryId = td.children('input').val();
+    //일지 id가 없으면, post 폼으로 이동
+    if (diaryId === undefined) {
+        window.location.href = "/post?year=" + year + "&month=" + month + "&day=" + day;
+    } else { //일지 id가 있으면 update - delete form 으로 이동.
+        window.location.href = "/update-delete/" + diaryId;
+    }
+}
 
 function findDiariesBetweenTime(year, month, startDay, endDay) {
     $.ajax({
@@ -232,32 +166,15 @@ function findDiariesBetweenTime(year, month, startDay, endDay) {
         url: '/api/diary/user/diabetes-diary/list?year=' + year + "&month=" + month + "&startDay=1" + "&endDay=" + endDay,
         contentType: 'application/json; charset=utf-8'
     }).done(function (e) {
-        console.log(e.response);
-        for(let i=0;i<e.response.length;i++){
-            const diaryId=e.response[i].diaryId;
-            const tdId='#'+String(e.response[i].year)+String(e.response[i].month)+String(e.response[i].day);
-            console.log(tdId);
-            $(tdId).append("<input type='hidden' value='"+diaryId+"'/><span id=\"check\" class=\"fas fa-check\"></span>");
+        for (let i = 0; i < e.response.length; i++) {
+            const diaryId = e.response[i].diaryId;
+            const tdId = '#' + String(e.response[i].year) + String(e.response[i].month) + String(e.response[i].day);
+            $(tdId).append("<input type='hidden' value='" + diaryId + "'/><span id=\"check\" class=\"fas fa-check\"></span>");
         }
     });
 }
 
-function eventTagFormat(fastingPlasmaGlucose) {
-
-    const tag = new StringBuffer();
-
-    tag.append("<p>");
-
-    tag.append("blood sugar :" + fastingPlasmaGlucose);
-
-    tag.append("</p>");
-
-    return tag.toString();
-
-}
-
 function calendarEventList() {
-
     screenWriteMonth();
 }//get calendar list
 
