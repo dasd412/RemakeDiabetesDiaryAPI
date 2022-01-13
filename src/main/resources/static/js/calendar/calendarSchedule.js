@@ -98,7 +98,6 @@ function moveFastMonthNext() {
 }
 
 function reInitTable(){
-    console.log("reinit");
     $("#row1").children('td').html('');
     $("#row2").children('td').html('');
     $("#row3").children('td').html('');
@@ -234,7 +233,12 @@ function findDiariesBetweenTime(year, month, startDay, endDay) {
         contentType: 'application/json; charset=utf-8'
     }).done(function (e) {
         console.log(e.response);
-
+        for(let i=0;i<e.response.length;i++){
+            const diaryId=e.response[i].diaryId;
+            const tdId='#'+String(e.response[i].year)+String(e.response[i].month)+String(e.response[i].day);
+            console.log(tdId);
+            $(tdId).append("<input type='hidden' value='"+diaryId+"'/><span id=\"check\" class=\"fas fa-check\"></span>");
+        }
     });
 }
 
