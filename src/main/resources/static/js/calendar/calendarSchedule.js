@@ -97,6 +97,16 @@ function moveFastMonthNext() {
     screenWriteMonth();
 }
 
+function reInitTable(){
+    console.log("reinit");
+    $("#row1").children('td').html('');
+    $("#row2").children('td').html('');
+    $("#row3").children('td').html('');
+    $("#row4").children('td').html('');
+    $("#row5").children('td').html('');
+    $("#row6").children('td').html('');
+}
+
 let startDay = 0;
 let endDay = 0;
 
@@ -131,6 +141,8 @@ function screenWriteMonth() {
 
     let startDay = 0;
     let endDay = 0;
+
+    reInitTable();
 
     for (let i = 0; i < monthDay.length; i++) {
         if (startDay===1 && monthDay[i]===1){
