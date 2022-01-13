@@ -154,21 +154,25 @@ public class SecurityDiaryRestController {
     }
 
     @GetMapping("/api/diary/user/diabetes-diary/list")
-    public void getDiariesBetweenStartAndEnd(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                             @RequestParam(value = "year") int year, @RequestParam(value = "startMonth") int startMonth,
-                                             @RequestParam(value = "startDay") int startDay, @RequestParam(value = "endMonth") int endMonth,
-                                             @RequestParam(value = "endDay") int endDay) {
+    public ApiResult<List<DiaryListBetweenTimeDTO>> getDiariesBetweenStartAndEnd(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                                                 @RequestParam(value = "year") int year, @RequestParam(value = "month") int month,
+                                                                                 @RequestParam(value = "startDay") int startDay,
+                                                                                 @RequestParam(value = "endDay") int endDay) {
         logger.info("get diaries between time");
-        LocalDateTime startDate = LocalDateTime.of(year, startMonth, startDay, 0, 0, 0);
-        LocalDateTime endDate = LocalDateTime.of(year, endMonth, endDay, 0, 0, 0);
+        LocalDateTime startDate = LocalDateTime.of(year, month, startDay, 0, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(year, month, endDay, 0, 0, 0);
         logger.info(startDate + " ~ " + endDate);
-        //fetch join 안했음. 달력에서는 id 값만 필요하기 때문.
+
+        //fetch join 안했음. 달력에서는 id 값과 작성 날짜만 필요하기 때문.
         List<DiabetesDiary> diaries =
-                findDiaryService.getDiariesBetweenTime(EntityId.of(Writer.class, principalDetails.getWriter().getId()),
-                        startDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")),
-                        endDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
-        
-        //todo ArrayList(일지 id,작성 시간)의 형태로 dto 만들어서 리턴하기
-        
+                findDiaryService.getDiariesBetweenLocalDateTime(EntityId.of(Writer.class, principalDetails.getWriter().getId()),
+                        startDate, endDate);
+
+        //(일지 id, 작성 시간)의 형태의 dto
+        List<DiaryListBetweenTimeDTO> dtoList = diaries
+                .stream().map(DiaryListBetweenTimeDTO::new)
+                .collect(Collectors.toList());
+
+        return ApiResult.OK(dtoList);
     }
 }

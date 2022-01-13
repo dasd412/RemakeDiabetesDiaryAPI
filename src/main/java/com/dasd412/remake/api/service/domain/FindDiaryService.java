@@ -69,14 +69,14 @@ public class FindDiaryService {
     }
 
     @Transactional(readOnly = true)
-    public DiabetesDiary getDiabetesDiaryOfWriterWithRelation(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diabetesDiaryEntityId){
+    public DiabetesDiary getDiabetesDiaryOfWriterWithRelation(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diabetesDiaryEntityId) {
         logger.info("getDiabetesDiaryOfWriterWithRelation");
         checkNotNull(writerEntityId, "writerId must be provided");
         checkNotNull(diabetesDiaryEntityId, "diaryId must be provided");
         return diaryRepository.findDiabetesDiaryOfWriterWithRelation(writerEntityId.getId(), diabetesDiaryEntityId.getId()).orElseThrow(() -> new NoResultException("작성자의 일지 중, id에 해당하는 일지가 없습니다."));
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) // string parameter 로 올 경우.
     public List<DiabetesDiary> getDiariesBetweenTime(EntityId<Writer, Long> writerEntityId, String startDateString, String endDateString) {
         logger.info("getDiaryBetweenTime");
 
@@ -93,6 +93,15 @@ public class FindDiaryService {
             throw new IllegalArgumentException("LocalDateTime 포맷으로 변경할 수 없는 문자열입니다.");
         }
     }
+
+    @Transactional(readOnly = true) // LocalDateTime 파라미터로 올 경우
+    public List<DiabetesDiary> getDiariesBetweenLocalDateTime(EntityId<Writer, Long> writerEntityId, LocalDateTime startDate, LocalDateTime endDate) {
+        logger.info("get Diaries Between LocalDateTime");
+        checkNotNull(writerEntityId, "writerId must be provided");
+        checkArgument(startDate.isBefore(endDate), "startDate must be before than endDate");
+        return diaryRepository.findDiaryBetweenTime(writerEntityId.getId(), startDate, endDate);
+    }
+
 
     @Transactional(readOnly = true)
     public List<DiabetesDiary> getFpgHigherOrEqual(EntityId<Writer, Long> writerEntityId, int fastingPlasmaGlucose) {

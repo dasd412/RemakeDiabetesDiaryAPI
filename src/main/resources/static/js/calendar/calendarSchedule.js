@@ -97,10 +97,8 @@ function moveFastMonthNext() {
     screenWriteMonth();
 }
 
-let startMonth = "";
-let startDay = "";
-let endMonth = "";
-let endDay = "";
+let startDay = 0;
+let endDay = 0;
 
 function screenWriteMonth() {
 
@@ -131,13 +129,17 @@ function screenWriteMonth() {
     let startIndex = monthDayIndex(monthDay, 1);
     let lastIndex = monthDayIndex(calendar.makeOneCalendarArray(year, months[1]), calendar.getMaxDateNumberOfYear(year, months[1])) + startIndex;
 
-    //현재 달력의  시작월과 시작일 ~ 끝월과 끝일을 나타낸다.
-    let startMonth = "";
-    let startDay = "";
-    let endMonth = "";
-    let endDay = "";
+    let startDay = 0;
+    let endDay = 0;
 
     for (let i = 0; i < monthDay.length; i++) {
+        if (startDay===1 && monthDay[i]===1){
+            endDay=monthDay[i-1];
+        }
+        if(startDay===0 && monthDay[i]===1){
+            startDay=1;
+        }
+
         let trIndex = parseInt(i / 7);
         let tr = $("#tbody tr").eq(trIndex);
         let td = tr.children().eq((i % 7) + 1);
@@ -193,16 +195,6 @@ function screenWriteMonth() {
         a.mouseleave(function () {
             td.css('cursor', 'default');
         });
-
-        if (i === 0) {
-            startMonth = monthForSchedule;
-            startDay = monthDay[i];
-        }
-
-        if (i === monthDay.length - 1) {
-            endMonth = monthForSchedule;
-            endDay = monthDay[i];
-        }
     }//날짜 그리기
 
     for (let i = 0; i < 5; i++) {
@@ -215,20 +207,22 @@ function screenWriteMonth() {
             }
         }
     }
-
+    if (endDay===0){
+        endDay=monthDay[monthDay.length-1];
+    }
     $("#yearMonth").text(year + "." + formatter.formatNumber(months[1]));
 
-    findDiariesBetweenTime(year, startMonth, startDay, endMonth, endDay);
+    findDiariesBetweenTime(year, months[1], startDay, endDay);
 }//screen write month()
 
-function findDiariesBetweenTime(year, startMonth, startDay, endMonth, endDay) {
-
+function findDiariesBetweenTime(year, month, startDay, endDay) {
     $.ajax({
         type: 'GET',
-        url: '/api/diary/user/diabetes-diary/list?year='+year+"&startMonth="+startMonth+"&startDay="+startDay+"&endMonth="+endMonth+"&endDay="+endDay,
+        url: '/api/diary/user/diabetes-diary/list?year=' + year + "&month=" + month + "&startDay=1" + "&endDay=" + endDay,
         contentType: 'application/json; charset=utf-8'
-    }).done(function () {
-        console.log('success');
+    }).done(function (e) {
+        console.log(e.response);
+
     });
 }
 

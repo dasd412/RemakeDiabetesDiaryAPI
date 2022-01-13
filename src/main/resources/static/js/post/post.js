@@ -146,7 +146,6 @@ const PostManipulator = {
             dinnerFoods: this.foodDataDict['dinner'].map(elem => ({foodName: elem['name'], amount: elem['amount']}))
         };
 
-        console.log(data.year);
 
         $.ajax({
             type: 'POST',
@@ -155,7 +154,7 @@ const PostManipulator = {
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(data)
         }).done(function () {
-            window.location.href = "/";
+            window.location.href = "/calendar";
         });
 
     },
