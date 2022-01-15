@@ -22,9 +22,6 @@ import java.util.Optional;
 @Service
 public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
 
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-
     private final WriterService writerService;
     private final WriterRepository writerRepository;
 
