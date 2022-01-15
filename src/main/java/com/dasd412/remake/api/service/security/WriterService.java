@@ -20,9 +20,9 @@ public class WriterService {
     private final WriterRepository writerRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public WriterService(WriterRepository writerRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public WriterService(WriterRepository writerRepository) {
         this.writerRepository = writerRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        bCryptPasswordEncoder = new BCryptPasswordEncoder();
     }
 
     //작성자 id 생성 메서드 (트랜잭션 필수)

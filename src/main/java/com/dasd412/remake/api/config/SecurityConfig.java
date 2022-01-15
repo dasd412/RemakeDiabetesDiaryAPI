@@ -3,7 +3,6 @@ package com.dasd412.remake.api.config;
 import com.dasd412.remake.api.config.security.LoginFailHandler;
 import com.dasd412.remake.api.config.security.oauth.PrincipalOAuth2UserService;
 import com.dasd412.remake.api.domain.diary.writer.Role;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,14 +14,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private PrincipalOAuth2UserService principalOAuth2UserService;
 
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder(); //<- 비밀번호 암호화를 해준다.
+    private final PrincipalOAuth2UserService principalOAuth2UserService;
+
+    public SecurityConfig(PrincipalOAuth2UserService principalOAuth2UserService) {
+        this.principalOAuth2UserService = principalOAuth2UserService;
     }
-
+    
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
