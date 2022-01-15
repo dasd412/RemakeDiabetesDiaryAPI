@@ -134,16 +134,6 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <version>2.4.1</version>
         </dependency>
-
-        <!-- manifest for main method-->
-        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-maven-plugin -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-            <version>2.6.2</version>
-        </dependency>
-
-
     </dependencies>
 
 
@@ -154,6 +144,10 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>com.mysema.maven</groupId>
                 <artifactId>apt-maven-plugin</artifactId>
