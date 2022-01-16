@@ -41,6 +41,8 @@
 + 배포
   + amazon ec2 인스턴스 생성
   + amazon rds 생성 및 연동
+  + aws 내에 jar 배포 완료
+  + google과 github outh redirect url 적용 완료( 페이스북은 https 적용 후에 가능)
 
 
 ### 테스트 커버리지 ###
