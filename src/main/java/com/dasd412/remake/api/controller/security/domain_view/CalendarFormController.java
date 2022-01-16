@@ -13,7 +13,7 @@ public class CalendarFormController {
     @GetMapping("/calendar")
     public String calendarViewResolve() {
         logger.info("calendar view resolve");
-        return "/calendar/calendar";
+        return "calendar/calendar";
     }
 }
 

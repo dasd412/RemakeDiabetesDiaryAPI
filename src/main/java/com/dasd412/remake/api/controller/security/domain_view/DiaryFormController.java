@@ -36,7 +36,7 @@ public class DiaryFormController {
         model.addAttribute("month", month);
         model.addAttribute("day", day);
 
-        return "/post/post";
+        return "post/post";
     }
 
     @GetMapping("/update-delete/{diaryId}")
@@ -49,12 +49,12 @@ public class DiaryFormController {
         logger.info(dto.toString());
 
         model.addAttribute("diary", dto);
-        return "/post/update-delete";
+        return "post/update-delete";
     }
 
     @GetMapping("/update-delete/404")
     public String errorPathResolve() {
         logger.info("error path view resolve for solving circular view path");
-        return "/error/404";
+        return "error/404";
     }
 }

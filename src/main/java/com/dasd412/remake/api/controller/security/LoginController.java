@@ -18,13 +18,13 @@ public class LoginController {
         model.addAttribute("error", error);
         model.addAttribute("exception", exception);
         logger.info("loginForm view resolve");
-        return "/login/loginForm";
+        return "login/loginForm";
     }
 
     @GetMapping("/joinForm")
     public String joinForm() {
         logger.info("joinForm view resolve");
-        return "/login/joinForm";
+        return "login/joinForm";
     }
 
 }
