@@ -6,6 +6,7 @@ import com.dasd412.remake.api.domain.diary.writer.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,11 +21,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public SecurityConfig(PrincipalOAuth2UserService principalOAuth2UserService) {
         this.principalOAuth2UserService = principalOAuth2UserService;
     }
-    
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/h2-console/**");
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
-
         http.authorizeRequests()
                 .antMatchers("/api/diary/user/**").authenticated()
                 .antMatchers("/post/**").authenticated()
@@ -40,6 +44,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/diary/food/**").hasRole(Role.Admin.name())
                 .anyRequest().permitAll()
                 .and()
+                .csrf()
+                .ignoringAntMatchers("/h2-console/**")
+                .disable()
                 .formLogin()// 로그인이 필요하면
                 .loginPage("/loginForm")// loginForm 뷰로 이동.
                 .loginProcessingUrl("/login")

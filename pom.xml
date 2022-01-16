@@ -134,6 +134,13 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <version>2.4.1</version>
         </dependency>
+
+        <!-- 세션 저장소 db 로 씀.-->
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-jdbc</artifactId>
+        </dependency>
+
     </dependencies>
 
 
