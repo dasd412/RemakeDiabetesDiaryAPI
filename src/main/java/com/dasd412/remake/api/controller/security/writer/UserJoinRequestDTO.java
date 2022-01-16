@@ -6,8 +6,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
-public class UserJoinRequestDTO {
+public class UserJoinRequestDTO implements Serializable {
 
     @NotNull
     @NotEmpty

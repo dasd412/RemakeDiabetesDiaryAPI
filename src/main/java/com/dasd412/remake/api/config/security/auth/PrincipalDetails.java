@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -12,12 +13,12 @@ import java.util.Map;
 //Authentication 객체에 넣기 위한 래퍼 객체
 //사용자 정의 UserDetails 와 OAuth 로그인용 OAuth2User 를 모두 implements 하였기 때문에
 //Authentication 객체에 두 타입 모두로 인식가능해졌다.
-public class PrincipalDetails implements UserDetails, OAuth2User {
+public class PrincipalDetails implements UserDetails, OAuth2User, Serializable {
 
     //실제 엔티티를 참조함.
     private final Writer writer;
 
-    private Map<String,Object>oauthAttributes;
+    private Map<String, Object> oauthAttributes;
 
     //사용자 정의 일반 인증 시 사용되는 생성자
     public PrincipalDetails(Writer writer) {
