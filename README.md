@@ -43,7 +43,8 @@
   + amazon rds 생성 및 연동
   + aws 내에 jar 배포 완료
   + google과 github outh redirect url 적용 완료( 페이스북은 https 적용 후에 가능)
-  + freenom 과 aws route 53으로 무료 도메인 얻음. [http://www.diabetes-diary.tk]
+  + freenom 과 aws route 53으로 무료 도메인 얻음. [http://www.diabetes-diary.tk:8084/]
+  + 도메인 네임에서 포트 번호 없애기 (예정)<- 잘 안되는 중.
 
 ### 테스트 커버리지 ###
   + (2022-01-12 전체 패키지 기준)
