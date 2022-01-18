@@ -181,30 +181,36 @@ function addFood(button) {
     let ulName;
     let foodAmount;
     let mealKey;
+    let foodNameId;
+    let foodAmountId;
 
     //버튼의 id 값에 따라 어떤 식단인지를 특정한다.
     switch (button.id) {
         case "breakFastFoodsAddBtn":
-            foodName = $("#breakFastFoodName").val();
+            foodNameId = "#breakFastFoodName";
+            foodAmountId = "#breakFastFoodAmount";
             ulName = "#breakFastFoods";
-            foodAmount = $("#breakFastFoodAmount").val();
             mealKey = "breakFast";
+
             break;
 
         case "lunchFoodsAddBtn":
-            foodName = $("#lunchFoodName").val();
+            foodNameId = "#lunchFoodName";
+            foodAmountId = "#lunchFoodAmount";
             ulName = "#lunchFoods";
-            foodAmount = $("#lunchFoodAmount").val();
             mealKey = "lunch";
             break;
 
         case "dinnerFoodsAddBtn":
-            foodName = $("#dinnerFoodName").val();
+            foodNameId = "#dinnerFoodName";
+            foodAmountId = "#dinnerFoodAmount";
             ulName = "#dinnerFoods";
-            foodAmount = $("#dinnerFoodAmount").val();
             mealKey = "dinner";
             break;
     }
+
+    foodName = $(foodNameId).val();
+    foodAmount = $(foodAmountId).val();
 
     //적절하지 않은 입력 값 검증하기
     if (!isNaN(foodName)) {
@@ -251,6 +257,9 @@ function addFood(button) {
         //캐시에 넣는다.
         PostManipulator.cacheAddFoods(liId, foodName, foodAmount, mealKey);
     }
+
+    $(foodNameId).val('');
+    $(foodAmountId).val('');
 }
 
 $(document).ready(function () {
