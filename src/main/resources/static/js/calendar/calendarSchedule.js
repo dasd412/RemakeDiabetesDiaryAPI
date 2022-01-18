@@ -128,7 +128,7 @@ function screenWriteMonth() {
         td.attr("id", sb.toString());
 
         if(monthForSchedule===months[1]){
-            td.html("<a onclick='scheduleAdd($(this).parent()," + year + "," + monthForSchedule + "," + monthDay[i] + ")'>" + formatter.formatNumber((monthDay[i]) + "</a>"));
+            td.html("<a class='monthDays' onclick='scheduleAdd($(this).parent()," + year + "," + monthForSchedule + "," + monthDay[i] + ")'>" + formatter.formatNumber((monthDay[i]) + "</a>"));
 
             let a = td.children("a");
 
