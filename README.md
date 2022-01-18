@@ -23,7 +23,6 @@
   + 기존 도메인 테스트에 스프링 시큐리티 적용 [관리자만 접근 가능하도록 변경]
   + 도메인 컨트롤러 매핑 url 에서 작성자 정보 제거하고 세션으로 판단하기
   + 아이디 찾기 , 비밀번호 찾기 구현(예정)
-  + SSL 적용 (도메인 네임 산 후, 아마존 무료 인증서 발급 사용 예정)
   + SQL Injection 등 보안 대비 (예정)
 
 
@@ -42,9 +41,10 @@
   + amazon ec2 인스턴스 생성
   + amazon rds 생성 및 연동
   + aws 내에 jar 배포 완료
-  + google과 github outh redirect url 적용 완료( 페이스북은 https 적용 후에 가능)
-  + freenom 과 aws route 53으로 무료 도메인 얻음. [http://www.diabetes-diary.tk:8084/]
-  + 도메인 네임에서 포트 번호 없애기 (예정)<- 잘 안되는 중.
+  + freenom 과 aws route 53으로 무료 도메인 얻음. 
+  + acm 에서 무료 ssl 발급 받음
+  + 사이트에 https 적용 [https://www.diabetes-diary.tk/]
+  + oauth 로그인 리디렉션 url 변경 (크롬 브라우저 등에서 피싱 사이트 의심 발생. 조치 필요.)
 
 ### 테스트 커버리지 ###
   + (2022-01-12 전체 패키지 기준)
@@ -82,3 +82,4 @@
   + Junit
   + Mustache, css
   + JQuery [배포 후 React 로 리팩토링 예정]
+  + AWS (ec2, route 53, ACM )
