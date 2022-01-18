@@ -27,18 +27,19 @@ public class LoginFailHandler extends SimpleUrlAuthenticationFailureHandler {
         logger.info("login fail handler");
 
         String errorMessage;
-        if (e instanceof BadCredentialsException || e instanceof InternalAuthenticationServiceException){
-            errorMessage="아이디 또는 비밀번호가 맞지 않습니다.";
-        }else if (e instanceof UsernameNotFoundException){
-            errorMessage="존재하지 않는 아이디 입니다.";
+        if (e instanceof BadCredentialsException || e instanceof InternalAuthenticationServiceException) {
+            errorMessage = "아이디 또는 비밀번호가 맞지 않습니다.";
+        } else if (e instanceof UsernameNotFoundException) {
+            errorMessage = "존재하지 않는 아이디 입니다.";
+        } else {
+            logger.info("exception is  : " + e);
+            errorMessage = "알 수 없는 이유로 로그인이 안되고 있습니다.";
         }
-        else{
-            errorMessage="알 수 없는 이유로 로그인이 안되고 있습니다.";
-        }
+        logger.info(errorMessage);
 
-        errorMessage= URLEncoder.encode(errorMessage,"UTF-8");
+        errorMessage = URLEncoder.encode(errorMessage, "UTF-8");
         setDefaultFailureUrl("/loginForm?error=true&exception=" + errorMessage);
-        super.onAuthenticationFailure(httpServletRequest,httpServletResponse,e);
+        super.onAuthenticationFailure(httpServletRequest, httpServletResponse, e);
     }
 
 
