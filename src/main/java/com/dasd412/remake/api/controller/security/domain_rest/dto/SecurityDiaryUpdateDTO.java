@@ -1,5 +1,6 @@
 package com.dasd412.remake.api.controller.security.domain_rest.dto;
 
+import com.dasd412.remake.api.controller.security.FoodListSize;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -34,23 +35,23 @@ public class SecurityDiaryUpdateDTO {
     private final boolean dinnerDirty;
 
     //기존 음식 엔티티들. 삭제 용이라서 id 존재
-    @Size(max = 5)
+    @Size(max = FoodListSize.FOOD_LIST_SIZE)
     private final List<SecurityFoodForUpdateDTO> oldBreakFastFoods;
 
-    @Size(max = 5)
+    @Size(max = FoodListSize.FOOD_LIST_SIZE)
     private final List<SecurityFoodForUpdateDTO> oldLunchFoods;
 
-    @Size(max = 5)
+    @Size(max = FoodListSize.FOOD_LIST_SIZE)
     private final List<SecurityFoodForUpdateDTO> oldDinnerFoods;
 
     //수정된 음식 엔티티들. 삽입 용이라서 id 없음.
-    @Size(max = 5)
+    @Size(max = FoodListSize.FOOD_LIST_SIZE)
     private final List<SecurityFoodDTO> newBreakFastFoods;
 
-    @Size(max = 5)
+    @Size(max =FoodListSize.FOOD_LIST_SIZE)
     private final List<SecurityFoodDTO> newLunchFoods;
 
-    @Size(max = 5)
+    @Size(max = FoodListSize.FOOD_LIST_SIZE)
     private final List<SecurityFoodDTO> newDinnerFoods;
 
 

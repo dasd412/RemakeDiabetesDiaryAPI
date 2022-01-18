@@ -82,7 +82,7 @@ const PostManipulator = {
         return false;
     },
     getDictLength: function (mealKey) {
-        //각 식단의 딕셔너리 길이 리턴. 길이 제한 5를 확인하기 위함.
+        //각 식단의 딕셔너리 길이 리턴. 길이 제한 8를 확인하기 위함.
         return this.foodDataDict[mealKey].length;
     },
     getNextLiId: function (mealKey) {
@@ -232,9 +232,9 @@ function addFood(button) {
         swal('', "음식 양은 1g 이상 1kg 미만이여야 합니다.", "error");
         return;
     }
-    //각 식단에서 길이가 5이하 인지 확인.
-    if (PostManipulator.getDictLength(mealKey) >= 5) {
-        swal('', mealKey + "'의 음식 개수는 최대 5개 입니다.", "error");
+    //각 식단에서 길이가 8이하 인지 확인.
+    if (PostManipulator.getDictLength(mealKey) >= 8) {
+        swal('', mealKey + "'의 음식 개수는 최대 8개 입니다.", "error");
         return;
     }
     //중복된 음식 이름의 데이터가 없는지 체크한다.

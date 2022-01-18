@@ -1,5 +1,6 @@
 package com.dasd412.remake.api.controller.security.domain_rest.dto;
 
+import com.dasd412.remake.api.controller.security.FoodListSize;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -48,13 +49,13 @@ public class SecurityDiaryPostRequestDTO {
     private final int lunchSugar;
     private final int dinnerSugar;
 
-    @Size(max = 5)
+    @Size(max = FoodListSize.FOOD_LIST_SIZE)
     private final List<SecurityFoodDTO> breakFastFoods;
 
-    @Size(max = 5)
+    @Size(max = FoodListSize.FOOD_LIST_SIZE)
     private final List<SecurityFoodDTO> lunchFoods;
 
-    @Size(max = 5)
+    @Size(max = FoodListSize.FOOD_LIST_SIZE)
     private final List<SecurityFoodDTO> dinnerFoods;
 
     public String toString() {
