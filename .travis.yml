@@ -6,6 +6,13 @@ branches:
   only:
     - master
 
+cache:
+  directories:
+    - '$HOME/.m2'
+
+before_install:
+  - chmod +x mvnw
+
 script: "./mvnw clean install"
 
 notifications:
