@@ -31,4 +31,6 @@ logs/
 
 ###security###
 application-oauth.properties
+src/main/resources/application-oauth.properties
 application-database.properties
+application-real-db.properties
