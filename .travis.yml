@@ -1,0 +1,14 @@
+langauge: java
+jdk:
+  - openjdk8
+
+branches:
+  only:
+    - master
+
+script: "./mvnw clean install"
+
+notifications:
+  email:
+    recipients:
+      - dasd412@naver.com
