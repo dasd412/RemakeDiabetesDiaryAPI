@@ -6,6 +6,7 @@ branches:
   only:
     - master
 
+# Travis CI 서버의 Home
 cache:
   directories:
     - '$HOME/.m2'
@@ -13,26 +14,31 @@ cache:
 before_install:
   - chmod +x mvnw
 
-script: "./mvnw clean install -DskipTests"
+script: "./mvnw clean package -DskipTests"
 
+# 1
 before_deploy:
+  # 2
   - zip -r RemakeDiabetesDiaryAPI *
+  # 3
   - mkdir -p deploy
+  # 4
   - mv RemakeDiabetesDiaryAPI.zip deploy/RemakeDiabetesDiaryAPI.zip
 
+# 5
 deploy:
   - provider: s3
-    access_key_id: $AWS_ACCESS_KEY
-    secret_access_key: $AWS_SECRET_KEY
-    bucket: dasd412-sprinboot-build
+    access_key_id: $AWS_ACCESS_KEY # Travis repo settings에 설정된 값
+    secret_access_key: $AWS_SECRET_KEY # Travis repo settings에 설정된 값
+    bucket: dasd412-sprinboot-build # S3 버킷
     region: ap-northeast-2
-    cleanup: true
-    acl: private
-    local_dir: deploy
+    skip_cleanup: true
+    acl: private # zip 파일 접근을 private으로
+    # 6
+    local_dir: deploy # before_deploy에서 생성한 디렉토리
     wait-until-deployed: true
 
-
-
+# CI 실행 완료시 메일로 알람
 notifications:
   email:
     recipients:
