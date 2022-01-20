@@ -13,7 +13,25 @@ cache:
 before_install:
   - chmod +x mvnw
 
-script: "./mvnw clean install"
+script: "./mvnw clean package"
+
+before_deploy:
+  - zip -r RemakeDiabetesDiaryAPI *
+  - mkdir -p deploy
+  - mv RemakeDiabetesDiaryAPI.zip deploy/RemakeDiabetesDiaryAPI.zip
+
+deploy:
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
+    bucket: dasd412-sprinboot-build
+    region: ap-northeast-2
+    skip_cleanup: true
+    acl: private
+    local_dir: deploy
+    wait-until-deployed: true
+
+
 
 notifications:
   email:
