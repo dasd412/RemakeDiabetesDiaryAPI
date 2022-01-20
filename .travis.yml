@@ -13,7 +13,7 @@ cache:
 before_install:
   - chmod +x mvnw
 
-script: "./mvnw clean package"
+script: "./mvnw clean install -DskipTests"
 
 before_deploy:
   - zip -r RemakeDiabetesDiaryAPI *
