@@ -1,4 +1,4 @@
-langauge: java
+language: java
 jdk:
   - openjdk8
 
@@ -8,7 +8,7 @@ branches:
 
 cache:
   directories:
-    - '$HOME/.m2'
+    - $HOME/.m2
 
 before_install:
   - chmod +x mvnw
@@ -26,7 +26,7 @@ deploy:
     secret_access_key: $AWS_SECRET_KEY
     bucket: dasd412-sprinboot-build
     region: ap-northeast-2
-    skip_cleanup: true
+    cleanup: true
     acl: private
     local_dir: deploy
     wait-until-deployed: true
