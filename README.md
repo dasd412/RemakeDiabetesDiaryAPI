@@ -44,8 +44,7 @@
   + 사이트에 https 적용 [https://www.diabetes-diary.tk/]
   + oauth 로그인 리디렉션 url 변경 (크롬 브라우저 등에서 피싱 사이트 의심 발생. 조치 필요.)
   + travis ci 와 code deploy 를 활용하여 배포 자동화 [master branch 푸시하면 자동 배포됨.]
-  + Nginx를 이용하여 무중단 배포 적용
-
+  
 ### 테스트 커버리지 ###
   + (2022-01-12 전체 패키지 기준)
     + 테스트 총 139개
@@ -84,4 +83,3 @@
   + JQuery [배포 후 React 로 리팩토링 예정]
   + AWS (ec2, route 53, ACM, code deploy )
   + travis ci
-  + Nginx
