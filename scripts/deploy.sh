@@ -1,13 +1,13 @@
 #!/bin/bash
 
-REPOSITORY=/home/ec2-user/app/step1
-PROJECT_NAME=RemakeDiabetesDiaryAPI
+REPOSITORY=/home/ec2-user/app/step2
+ARTIFACT_ID=ReFacDiabetesDiary
 
 echo ">build 파일 복사"
 cp $REPOSITORY/zip/*.jar $REPOSITORY/
 
 echo "> 현재 구동중인 애플리케이션 pid 확인"
-CURRENT_PID=$(pgrep -f ReFacDiabetesDiary-1.0-SNAPSHOT.jar)
+CURRENT_PID=$(pgrep -fl $ARTIFACT_ID | grep jar | awk '{print $1}')
 
 echo "> 현재 구동중인 애플리케이션 pid: $CURRENT_PID"
 
