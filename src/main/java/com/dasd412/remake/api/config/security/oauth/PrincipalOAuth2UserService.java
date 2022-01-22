@@ -1,3 +1,11 @@
+/*
+ * @(#)PrincipalOAuth2UserService.java        1.0.1 2022/1/22
+ *
+ * Copyright (c) 2022 YoungJun Yang.
+ * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
+ * All rights reserved.
+ */
+
 package com.dasd412.remake.api.config.security.oauth;
 
 import com.dasd412.remake.api.config.security.auth.PrincipalDetails;
@@ -19,10 +27,23 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+/**
+ * "/login" 요청 시 인터셉트했는데 OAuth 로그인인 경우, OAuth2User 를 Authentication 객체에 넣어주는 서비스 클래스.
+ *
+ * @author 양영준
+ * @version 1.0.1 2022년 1월 22일
+ */
 @Service
 public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
 
+
+    /**
+     * 이미 WriterService 내에 회원 가입 로직이 있기 때문에 재사용한다.
+     */
     private final WriterService writerService;
+    /**
+     * 기존의 동일한 회원이 존재하는 지 파악하기 위한 리포지토리
+     */
     private final WriterRepository writerRepository;
 
     public PrincipalOAuth2UserService(WriterService writerService, WriterRepository writerRepository) {
@@ -30,24 +51,44 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
         this.writerRepository = writerRepository;
     }
 
-    //OAuth 리퀘스트 시 로드됨.
+    /**
+     * OAuth 로그인 시 호출되는 메서드.
+     *
+     * @param oAuth2UserRequest OAuth 로그인 요청이 담겨있다.
+     * @return OAuth 로그인의 경우 OAuth2User 구현체를 리턴해야만 스프링 시큐리티가 관리할 수 있다.
+     */
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
-
+        /* OAuth 로그인의 경우 OAuth Provider 정보가 필요하다. */
         OAuth2UserInfo oAuth2UserInfo = selectProvider(oAuth2User, oAuth2UserRequest).orElseThrow(() -> new IllegalStateException("등록된 provider 가 아닙니다."));
+
         String username = oAuth2UserInfo.getProvider() + "_" + oAuth2UserInfo.getProviderId();
+
+        /* OAuth 로그인의 경우 비밀번호는 사용되지 않는다. */
         String password = "diabetesdiaryapi";
+
         Role role = Role.User;
 
-        //만약 회원가입된 적 없으면, writerService 한테 회원 가입을 요청한다. 비밀 번호 인코딩도 해줌.
+        /* 만약 회원가입된 적 없으면, writerService 한테 회원 가입을 요청한다. 비밀 번호 인코딩도 해준다. */
         Writer writer = writerRepository.findWriterByName(username)
-                .orElseGet(() -> writerService.saveWriterWithSecurity(username, oAuth2UserInfo.getEmail(), password, role, oAuth2UserInfo.getProvider(), oAuth2UserInfo.getProviderId()));
+                .orElseGet(() ->
+                        writerService.saveWriterWithSecurity(username,
+                                oAuth2UserInfo.getEmail(),
+                                password,
+                                role,
+                                oAuth2UserInfo.getProvider(),
+                                oAuth2UserInfo.getProviderId()));
 
-        //리턴 객체는 스프링 시큐리티 세션 내의 Authentication 에 담기게 된다.
+        /* 리턴 객체는 스프링 시큐리티 세션 내의 Authentication 에 담기게 된다. */
         return new PrincipalDetails(writer, oAuth2User.getAttributes());
     }
 
+    /**
+     * @param oAuth2User  OAuth 사용자 정보
+     * @param userRequest OAuth 로그인 요청 정보
+     * @return OAuth registrationId에 따라 알맞은 OAuth 로그인 유저 정보를 리턴한다.
+     */
     private Optional<OAuth2UserInfo> selectProvider(OAuth2User oAuth2User, OAuth2UserRequest userRequest) {
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         switch (registrationId) {

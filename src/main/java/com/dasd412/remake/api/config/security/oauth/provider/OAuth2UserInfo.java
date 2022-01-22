@@ -1,9 +1,32 @@
+/*
+ * @(#)OAuth2UserInfo.java        1.0.1 2022/1/22
+ *
+ * Copyright (c) 2022 YoungJun Yang.
+ * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
+ * All rights reserved.
+ */
+
 package com.dasd412.remake.api.config.security.oauth.provider;
 
+/**
+ * OAuth 요청이 오면, 사용자가 어떤 provider를 통해 로그인했는지 알기 위해 사용되는 인터페이스.
+ *
+ * @author 양영준
+ * @version 1.0.1 2022년 1월 22일
+ */
 public interface OAuth2UserInfo {
-    String getProvider();//Oauth 제공 회사 이름
-    String getProviderId();//Oauth provider 가 제공한 "유일한" 식별자 값
+    /**
+     * @return Oauth 제공 회사 이름
+     */
+    String getProvider();
+
+    /**
+     * @return OAuth provider 가 제공한 "유일한" 식별자 값
+     */
+    String getProviderId();//
+
     String getEmail();
+
     String getName();
 }
 
