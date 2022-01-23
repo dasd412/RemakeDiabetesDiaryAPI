@@ -1,20 +1,44 @@
+/*
+ * @(#)DiabetesDiaryId.java        1.0.1 2022/1/22
+ *
+ * Copyright (c) 2022 YoungJun Yang.
+ * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
+ * All rights reserved.
+ */
+
 package com.dasd412.remake.api.domain.diary.diabetesDiary;
 
 import java.io.Serializable;
 import java.util.Objects;
 
-//자식 id 클래스 (복합키)
+/**
+ * 혈당일지 복합키 식별자 클래스. 반드시 Serializable 구현해야 한다.
+ *
+ * @author 양영준
+ * @version 1.0.1 2022년 1월 22일
+ */
 public class DiabetesDiaryId implements Serializable {
 
-    private Long writer;//DiabetesDiary.writer 매핑
+    /**
+     * DiabetesDiary.writer 매핑
+     */
+    private Long writer;
 
-    private Long diaryId;//DiabetesDiary.diaryId 매핑
 
-    //식별자 클래스는 기본 생성자가 반드시 있어야 한다.
+    /**
+     * DiabetesDiary.diaryId 매핑
+     */
+    private Long diaryId;
+
+    /**
+     * 식별자 클래스는 기본 생성자가 반드시 있어야 한다.
+     */
     public DiabetesDiaryId() {
     }
 
-    //식별자 클래스는 equals 와 hashcode 를 재정의 해야한다.
+    /**
+     * 식별자 클래스는 반드시 equals 와 hashcode 를 재정의 해야한다.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(writer, diaryId);

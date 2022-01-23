@@ -1,3 +1,11 @@
+/*
+ * @(#)FoodRepositoryImpl.java        1.0.1 2022/1/22
+ *
+ * Copyright (c) 2022 YoungJun Yang.
+ * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
+ * All rights reserved.
+ */
+
 package com.dasd412.remake.api.domain.diary.food;
 
 import com.dasd412.remake.api.domain.diary.diet.QDiet;
@@ -9,6 +17,12 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Querydsl을 사용하기 위해 만든 구현체 클래스.
+ *
+ * @author 양영준
+ * @version 1.0.1 2022년 1월 22일
+ */
 public class FoodRepositoryImpl implements FoodRepositoryCustom {
     /*
     fetch : 조회 대상이 여러건일 경우. 컬렉션 반환
@@ -26,14 +40,20 @@ public class FoodRepositoryImpl implements FoodRepositoryCustom {
     goe >=
     */
 
-    private final JPAQueryFactory jpaQueryFactory;
-
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    /**
+     * Querydsl 쿼리 만들 때 사용하는 객체
+     */
+    private final JPAQueryFactory jpaQueryFactory;
 
     public FoodRepositoryImpl(JPAQueryFactory jpaQueryFactory) {
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
+    /**
+     * @return 식별자의 최댓값. 음식 생성 시 id를 지정하기 위해 사용된다. (복합키에는 @GeneratedValue 사용 불가.)
+     */
     @Override
     public Long findMaxOfId() {
         return jpaQueryFactory.from(QFood.food).select(QFood.food.foodId.max()).fetchOne();
@@ -41,7 +61,7 @@ public class FoodRepositoryImpl implements FoodRepositoryCustom {
 
     @Override
     public List<Food> findFoodsInDiet(Long writerId, Long dietId) {
-        //@Query(value = "SELECT food FROM Food as food WHERE food.diet.diary.writer.writerId = :writer_id AND food.diet.diary.diaryId = :diaryId AND food.diet.dietId = :diet_id")
+        /* @Query(value = "SELECT food FROM Food as food WHERE food.diet.diary.writer.writerId = :writer_id AND food.diet.diary.diaryId = :diaryId AND food.diet.dietId = :diet_id") */
         return jpaQueryFactory.selectFrom(QFood.food)
                 .innerJoin(QFood.food.diet, QDiet.diet)
                 .on(QDiet.diet.diary.writer.writerId.eq(writerId).and(QDiet.diet.dietId.eq(dietId)))
@@ -50,7 +70,7 @@ public class FoodRepositoryImpl implements FoodRepositoryCustom {
 
     @Override
     public Optional<Food> findOneFoodByIdInDiet(Long writerId, Long dietId, Long foodId) {
-        //@Query(value = "SELECT food FROM Food as food WHERE food.diet.diary.writer.writerId = :writer_id AND food.diet.diary.diaryId = :diary_id AND food.diet.dietId = :diet_id AND food.foodId =:food_id")
+        /* @Query(value = "SELECT food FROM Food as food WHERE food.diet.diary.writer.writerId = :writer_id AND food.diet.diary.diaryId = :diary_id AND food.diet.dietId = :diet_id AND food.foodId =:food_id") */
         return Optional.ofNullable(
                 jpaQueryFactory.selectFrom(QFood.food)
                         .innerJoin(QFood.food.diet, QDiet.diet)
@@ -60,9 +80,14 @@ public class FoodRepositoryImpl implements FoodRepositoryCustom {
         );
     }
 
+    /**
+     * @param writerId   작성자 id
+     * @param bloodSugar 식단 혈당
+     * @return 식단 혈당 입력보다 높거나 같은 식단들에 기재된 음식들
+     */
     @Override
     public List<String> findFoodNamesInDietHigherThanBloodSugar(Long writerId, int bloodSugar) {
-        //@Query(value="SELECT DISTINCT food.foodName FROM Food as food INNER JOIN food.diet diet WHERE diet.bloodSugar >= :blood_sugar AND food.diet.diary.writer.writerId = :writer_id")
+        /* @Query(value="SELECT DISTINCT food.foodName FROM Food as food INNER JOIN food.diet diet WHERE diet.bloodSugar >= :blood_sugar AND food.diet.diary.writer.writerId = :writer_id") */
         return jpaQueryFactory.selectDistinct(QFood.food.foodName)
                 .from(QFood.food)
                 .innerJoin(QFood.food.diet, QDiet.diet)
@@ -71,9 +96,13 @@ public class FoodRepositoryImpl implements FoodRepositoryCustom {
                 .fetch();
     }
 
+    /**
+     * @param writerId 작성자 id
+     * @return 작성자의 평균 혈당보다 높거나 같은 식단들에 기재된 음식들
+     */
     @Override
     public List<String> findFoodHigherThanAverageBloodSugarOfDiet(Long writerId) {
-        //@Query(value="SELECT DISTINCT food.foodName FROM Food as food INNER JOIN food.diet diet WHERE diet.bloodSugar >= (SELECT AVG(diet.bloodSugar) FROM diet) AND food.diet.diary.writer.writerId = :writer_id")
+        /* @Query(value="SELECT DISTINCT food.foodName FROM Food as food INNER JOIN food.diet diet WHERE diet.bloodSugar >= (SELECT AVG(diet.bloodSugar) FROM diet) AND food.diet.diary.writer.writerId = :writer_id") */
         return jpaQueryFactory.selectDistinct(QFood.food.foodName)
                 .from(QFood.food)
                 .innerJoin(QFood.food.diet, QDiet.diet)
@@ -85,9 +114,13 @@ public class FoodRepositoryImpl implements FoodRepositoryCustom {
                 .fetch();
     }
 
+    /**
+     * 입력 값에 해당하는 음식들 전부 "한꺼번에" 삭제하는 메서드
+     *
+     * @param foodIds 음식 id 리스트
+     */
     @Override
     public void bulkDeleteFood(List<Long> foodIds) {
-        logger.info("bulk delete food in foodIds");
         jpaQueryFactory.delete(QFood.food)
                 .where(QFood.food.foodId.in(foodIds))
                 .execute();
