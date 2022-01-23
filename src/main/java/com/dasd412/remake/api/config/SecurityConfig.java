@@ -1,5 +1,5 @@
 /*
- * @(#)SecurityConfig.java        1.0.1 2022/1/22
+ * @(#)SecurityConfig.java        1.0.2 2022/1/23
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -23,7 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  * 웹 시큐리티와 관련된 설정용 클래스.
  *
  * @author 양영준
- * @version 1.0.1 2022년 1월 22일
+ * @version 1.0.2 2022년 1월 23일
  */
 
 @Configuration
@@ -61,8 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/post/**").authenticated()
                 .antMatchers("/update-delete/**").authenticated()
                 .antMatchers("/calendar/**").authenticated()
-                .antMatchers("/chart/**").authenticated()
-                .antMatchers("/search/**").authenticated()
+                .antMatchers("/chart-menu/**").authenticated()
                 /*기존에 테스트 용도로만 쓰는 url 들 접근 막기. 기존 매핑은 관리자만 허락하게 바꿈. */
                 .antMatchers("/api/diary/owner/**").hasRole(Role.Admin.name())
                 .antMatchers("/api/diary/writer/**").hasRole(Role.Admin.name())
