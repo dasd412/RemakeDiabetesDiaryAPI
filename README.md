@@ -85,6 +85,7 @@ https://www.diabetes-diary.tk/
 + Nginx 무중단 배포 실패. (아마 elb와 충돌한 것 같다.)
 + JQuery 코드 사용 중지하고 React 또는 Vue 로 리팩토링 필요
 + 음식 수량의 경우 단위 통일이 어려움. 
++ Travis ci 로그 길이 제한 때문에 -DskipTests를 사용하고 있다. 테스트를 실행하게 할 수 있는 방법이 없을까.
 
 ### 사용 기술 [2022-01-18 기준] ###
   + SpringBoot
