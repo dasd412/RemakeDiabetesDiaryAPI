@@ -16,6 +16,7 @@ import java.util.Objects;
  *
  * @author 양영준
  * @version 1.0.1 2022년 1월 22일
+ * @serial
  */
 public class DiabetesDiaryId implements Serializable {
 

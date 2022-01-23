@@ -1,13 +1,41 @@
-//기존 데이터 수정, 삭제 시 사용되는 생성자. 기존 데이터이기 때문에 PK가 중요하다.
+/*
+ * @(#)update_delete.js        1.0.1 2022/1/22
+ *
+ * Copyright (c) 2022 YoungJun Yang.
+ * ComputerScience, ProgrammingLanguage, JavaScript, Pocheon-si, KOREA
+ * All rights reserved.
+ */
+
+/**
+ * 일지 작성 폼을 담당
+ *
+ * @author 양영준
+ * @version 1.0.1 2022년 1월 22일
+ */
+
+/**
+ * 기존 데이터 수정, 삭제 시 사용되는 생성자. 기존 데이터이기 때문에 PK가 중요하다.
+ *
+ * @param id 기본키
+ * @param name  음식 이름
+ * @param amount 음식 수량
+ * @constructor
+ */
 function OriginFoodData(id, name, amount) {
     this.id = id;
     this.name = name;
     this.amount = amount;
 }
 
+/**
+ * 일지 수정 및 삭제를 담당하는 객체
+ * @type {{isLunchModified: (function(): boolean), init: UpdateDeleteManipulator.init, isBreakFastModified: (function(): boolean), goToBack: UpdateDeleteManipulator.goToBack, isDinnerModified: (function(): boolean), update: UpdateDeleteManipulator.update, makeOriginFoodData: UpdateDeleteManipulator.makeOriginFoodData, isDiaryModified: (function(): boolean), originalCache: {dinnerSugar: (jQuery|*|string), fastingPlasmaGlucose: (jQuery|*|string), lunchId: (jQuery|*|string), lunchSugar: (jQuery|*|string), breakFastSugar: (jQuery|*|string), diaryId: (jQuery|*|string), lunchFoods: *[], dinnerFoods: *[], remark: (jQuery|*|string), breakFastId: (jQuery|*|string), dinnerId: (jQuery|*|string), breakFastFoods: *[]}, delete: UpdateDeleteManipulator.delete}}
+ */
 const UpdateDeleteManipulator = {
 
-    //document ready 했을 때 최초의 데이터들 저장해 놓은 캐시.
+    /**
+     * document ready 했을 때 최초의 데이터들 저장해 놓은 캐시.
+     */
     originalCache: {
         //일지 원본 데이터
         diaryId: $("#diaryId").val(),
@@ -30,7 +58,10 @@ const UpdateDeleteManipulator = {
         dinnerFoods: []
     },
 
-    //원본 캐시에 저장될 음식 데이터 만들기 (실제 수정 시에는 삭제 작업이 이루어진다.)
+    /**
+     * 원본 캐시에 저장될 음식 데이터 만들기 (실제 수정 시에는 삭제 작업이 이루어진다.)
+     * @param eatTime 식사 시간
+     */
     makeOriginFoodData: function (eatTime) {
         let eachLiSelector;
         let foodIdSelector;
@@ -71,6 +102,9 @@ const UpdateDeleteManipulator = {
         });
 
     },
+    /**
+     * 문서 첫 로딩시 호출된다.
+     */
     init: function () {
         const _this = this;
 
@@ -91,7 +125,9 @@ const UpdateDeleteManipulator = {
         });
     },
 
-    //변경이 감지되었는지 체크하는 함수들.
+    /**
+     *  변경이 감지되었는지 체크하는 함수들.
+     */
     isDiaryModified: function () {
         return !(this.originalCache.fastingPlasmaGlucose === $("#fastingPlasmaGlucose").val() && this.originalCache.remark === $("#remark").val());
     },
@@ -106,6 +142,10 @@ const UpdateDeleteManipulator = {
         return !(this.originalCache.dinnerSugar === $("#dinner").val());
     },
 
+    /**
+     * 이벤트 : 수정하기 버튼 클릭 시
+     * 로직 : 일지, 식단은 수정된 대로 반영. 그러나 음식은 기존 엔티티 전부 삭제 요청 및 새로 삽입 요청
+     */
     update: function () {
 
         const data = {
@@ -126,10 +166,16 @@ const UpdateDeleteManipulator = {
             dinnerSugar: $("#dinner").val(),
             dinnerDirty: this.isDinnerModified(),
 
+            /**
+             * 삭제될 기존 음식 엔티티들
+             */
             oldBreakFastFoods: this.originalCache.breakFastFoods,
             oldLunchFoods: this.originalCache.lunchFoods,
             oldDinnerFoods: this.originalCache.dinnerFoods,
 
+            /**
+             * 새로 삽입될 음식 엔티티들
+             */
             newBreakFastFoods: PostManipulator.foodDataDict['breakFast'].map(elem => ({
                 foodName: elem['name'],
                 amount: elem['amount']
@@ -156,6 +202,9 @@ const UpdateDeleteManipulator = {
 
     },
 
+    /**
+     * 이벤트 : 삭제하기 버튼 클릭 시
+     */
     delete: function () {
         const diaryId = $("#diaryId").val();
         $.ajax({
@@ -167,6 +216,9 @@ const UpdateDeleteManipulator = {
         window.location.href = "/calendar";
     },
 
+    /**
+     * 달력 화면으로 돌아가기
+     */
     goToBack: function () {
         window.location.href = "/calendar";
     }

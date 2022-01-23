@@ -1,8 +1,19 @@
+/**
+ * 달력 화면의 이벤트 처리
+ *
+ * @version 1.0.1 2022년 1월 22일
+ */
+
 const listSet = new Set();//자바의 Set과 동일함.
 
 let locationOfMonth = 0;
+
 let locationOfYear = 0;
 
+/**
+ * 문자열 변환 유틸리티
+ * @type {Formatter}
+ */
 const formatter = new Formatter();
 
 function monthDayIndex(month, day) {
@@ -13,26 +24,41 @@ function monthDayIndex(month, day) {
     }
 }
 
+/**
+ * '<' 클릭 시 이전 월로 이동
+ */
 function moveMonthPre() {
     locationOfMonth--;
     screenWriteMonth();
 }
 
+/**
+ * '>' 클릭 시 다음 월로 이동
+ */
 function moveMonthNext() {
     locationOfMonth++;
     screenWriteMonth();
 }
 
-function moveFastMonthPre() {
+/**
+ * '<<' 클릭 시 이전 년도로 이동
+ */
+function moveYearPre() {
     locationOfYear--;
     screenWriteMonth();
 }
 
-function moveFastMonthNext() {
+/**
+ * '>>' 클릭 시 다음 년도로 이동
+ */
+function moveYearNext() {
     locationOfYear++;
     screenWriteMonth();
 }
 
+/**
+ * calendar.mustache 내의 테이블 td 모두 초기화
+ */
 function reInitTable() {
     $("#row1").children('td').html('');
     $("#row2").children('td').html('');
@@ -42,7 +68,9 @@ function reInitTable() {
     $("#row6").children('td').html('');
 }
 
-
+/**
+ * 달력 그리는 함수
+ */
 function screenWriteMonth() {
     let date = new Date();
     let month = date.getMonth() + 1 + locationOfMonth;
@@ -127,8 +155,8 @@ function screenWriteMonth() {
 
         td.attr("id", sb.toString());
 
-        if(monthForSchedule===months[1]){
-            td.html("<a class='monthDays' onclick='scheduleAdd($(this).parent()," + year + "," + monthForSchedule + "," + monthDay[i] + ")'>" + formatter.formatNumber((monthDay[i]) + "</a>"));
+        if (monthForSchedule === months[1]) {
+            td.html("<a class='monthDays' onclick='moveForm($(this).parent()," + year + "," + monthForSchedule + "," + monthDay[i] + ")'>" + formatter.formatNumber((monthDay[i]) + "</a>"));
 
             let a = td.children("a");
 
@@ -140,7 +168,7 @@ function screenWriteMonth() {
                 td.css('cursor', 'default');
             });
         }
-    }//날짜 그리기
+    }
 
     if (endDay === 0) {
         endDay = monthDay[monthDay.length - 1];
@@ -148,9 +176,18 @@ function screenWriteMonth() {
     $("#yearMonth").text(year + "." + formatter.formatNumber(months[1]));
 
     findDiariesBetweenTime(year, months[1], startDay, endDay);
-}//screen write month()
+}
 
-function scheduleAdd(td, year, month, day) {
+/**
+ * 일지 id가 있을 경우엔 수정 및 삭제 폼으로,
+ * 그렇지 않으면 저장 폼으로 이동하는 함수
+ *
+ * @param td 클릭이 일어난 td
+ * @param year 연도
+ * @param month 월
+ * @param day 일
+ */
+function moveForm(td, year, month, day) {
     const diaryId = td.children('input').val();
     //일지 id가 없으면, post 폼으로 이동
     if (diaryId === undefined) {
@@ -160,6 +197,13 @@ function scheduleAdd(td, year, month, day) {
     }
 }
 
+/**
+ * 해당 기간 내에 존재하는 일지 엔티티들 조회 (연관 관계는 x)
+ * @param year 연도
+ * @param month 월
+ * @param startDay 월의 시작 날짜
+ * @param endDay 월의 끝 날짜
+ */
 function findDiariesBetweenTime(year, month, startDay, endDay) {
     $.ajax({
         type: 'GET',
@@ -182,6 +226,6 @@ $(document).ready(function () {
     calendarEventList();
     $('#pre').attr('onclick', 'moveMonthPre()');
     $('#next').attr('onclick', 'moveMonthNext()');
-    $('#fastPre').attr('onclick', 'moveFastMonthPre()');
-    $('#fastNext').attr('onclick', 'moveFastMonthNext()');
+    $('#fastPre').attr('onclick', 'moveYearPre()');
+    $('#fastNext').attr('onclick', 'moveYearNext()');
 });

@@ -1,14 +1,37 @@
+/*
+ * @(#)signup.js        1.0.1 2022/1/22
+ *
+ * Copyright (c) 2022 YoungJun Yang.
+ * ComputerScience, ProgrammingLanguage, JavaScript, Pocheon-si, KOREA
+ * All rights reserved.
+ */
+
+/**
+ * 회원 가입 폼의 유효성을 검사
+ *
+ * @author 양영준
+ * @version 1.0.1 2022년 1월 22일
+ */
+
+/**
+ *
+ * @param str 이메일 문자열
+ * @returns {boolean} 이메일 정규식에 맞는 지 판별
+ */
 function validateEmail(str) {
     const regExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
     return regExp.test(str);
 }
 
+/**
+ * 이벤트 : 회원 가입 버튼 클릭
+ * 로직 : 유효성 검증 -> 회원 가입 POST 요청
+ */
 function submitSignup() {
     const username = $("#username").val();
     const password = $("#password").val();
     const email = $("#email").val();
 
-    //front validation guard
     if (username == null || username === "") {
         swal('', "공백으로 된 이름은 만들 수 없어요.", "error");
         return;
@@ -60,6 +83,9 @@ function submitSignup() {
     });
 }
 
+/**
+ * 로그인 폼으로 돌아가기
+ */
 function goBackLogin() {
     window.location.href = "/loginForm";
 }
