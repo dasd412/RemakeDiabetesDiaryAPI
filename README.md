@@ -52,7 +52,7 @@ https://www.diabetes-diary.tk/
 
 + 문서화
   + Readme 
-  + 코드 내 주석 작업 (진행 중)
+  + 코드 내 주석 처리 [JavaDoc 기준]
   + 다이어그램 작성 및 게시 (예정)
 
 
