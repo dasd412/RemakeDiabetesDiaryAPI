@@ -1,3 +1,11 @@
+/*
+ * @(#)SaveDiaryService.java        1.0.1 2022/1/22
+ *
+ * Copyright (c) 2022 YoungJun Yang.
+ * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
+ * All rights reserved.
+ */
+
 package com.dasd412.remake.api.service.domain;
 
 import com.dasd412.remake.api.domain.diary.EntityId;
@@ -19,10 +27,16 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.NoResultException;
 import java.time.LocalDateTime;
 
-
+/**
+ * 저장 로직을 수행하는 서비스 클래스
+ *
+ * @author 양영준
+ * @version 1.0.1 2022년 1월 22일
+ */
 @Service
 public class SaveDiaryService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private final WriterRepository writerRepository;
     private final DiaryRepository diaryRepository;
     private final DietRepository dietRepository;
@@ -35,7 +49,16 @@ public class SaveDiaryService {
         this.foodRepository = foodRepository;
     }
 
-    //작성자 id 생성 메서드 (트랜잭션 필수)
+    /*
+    getIdOfXXX()의 경우 트랜잭션 처리 안하면 다른 스레드가 껴들어 올 경우 id 값이 중복될 수 있어 기본키 조건을 위배할 수도 있다. 레이스 컨디션 반드시 예방해야 함.
+     */
+
+    /**
+     * 작성자 id 생성 메서드 (트랜잭션 필수). 시큐리티 적용 후에는 WriterService가 담당한다.
+     *
+     * @return 래퍼로 감싸진 작성자 id
+     * @deprecated
+     */
     public EntityId<Writer, Long> getNextIdOfWriter() {
         Long writerId = writerRepository.findMaxOfId();
         if (writerId == null) {
@@ -44,7 +67,11 @@ public class SaveDiaryService {
         return EntityId.of(Writer.class, writerId + 1);
     }
 
-    //일지 id 생성 메서드 (트랜잭션 필수)
+    /**
+     * 일지 id 생성 메서드 (트랜잭션 필수).
+     *
+     * @return 래퍼로 감싸진 일지 id
+     */
     public EntityId<DiabetesDiary, Long> getNextIdOfDiary() {
         Long diaryId = diaryRepository.findMaxOfId();
         if (diaryId == null) {
@@ -53,7 +80,11 @@ public class SaveDiaryService {
         return EntityId.of(DiabetesDiary.class, diaryId + 1);
     }
 
-    //식단 id 생성 메서드 (트랜잭션 필수)
+    /**
+     * 식단 id 생성 메서드 (트랜잭션 필수).
+     *
+     * @return 래퍼로 감싸진 식단 id
+     */
     public EntityId<Diet, Long> getNextIdOfDiet() {
         Long dietId = dietRepository.findMaxOfId();
         if (dietId == null) {
@@ -62,7 +93,11 @@ public class SaveDiaryService {
         return EntityId.of(Diet.class, dietId + 1);
     }
 
-    //음식 id 생성 메서드 (트랜잭션 필수)
+    /**
+     * 음식 id 생성 메서드 (트랜잭션 필수).
+     *
+     * @return 래퍼로 감싸진 음식 id
+     */
     public EntityId<Food, Long> getNextIdOfFood() {
         Long foodId = foodRepository.findMaxOfId();
         if (foodId == null) {
@@ -71,7 +106,8 @@ public class SaveDiaryService {
         return EntityId.of(Food.class, foodId + 1);
     }
 
-    // getIdOfXXX()의 경우 트랜잭션 처리 안하면 다른 스레드가 껴들어 올 경우 id 값이 중복될 수 있어 기본키 조건을 위배할 수도 있다. 레이스 컨디션 반드시 예방해야 함.
+
+
     @Transactional
     public Writer saveWriter(String name, String email, Role role) {
         logger.info("saveWriter");
