@@ -1,18 +1,33 @@
-.row-grid:after {
-    content: "";
-    display: table;
-    clear: both;
-}
-.chart{
-    float: left;
+
+.grid-chart-container {
+    display: grid;
+    grid-template-columns: 1fr 0.5fr 3fr;
+    grid-template-rows:1fr 3fr;
     padding: 10px;
 }
 
-.option {
-    width: 25%;
+.grid-chart-item {
+    padding: 20px;
+    font-size: 30px;
+    text-align: center;
 }
 
-.container {
-    width: 75%;
+.chart-container {
+    grid-row-start: 1;
+    grid-row-end: 7;
+    grid-column-start: 3;
+    grid-column-end: 5;
+    position: relative;
+    width: 100%;
+    height: 100%;
 }
 
+.switch-toggle {
+    grid-column-start: 1;
+    grid-column-end: 2;
+}
+
+.mini-calendar {
+    grid-column-start: 1;
+    grid-column-end: 2;
+}

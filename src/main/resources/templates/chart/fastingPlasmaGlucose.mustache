@@ -2,15 +2,25 @@
 
   <h1 class="headline3">기간 내 공복 혈당 알아보기</h1>
 
-  <div class="row-grid">
-    <div class="chart option">
+  <div class="grid-chart-container">
 
+    <div class="grid-chart-item switch-toggle">
+      <label>
+        <input type="checkbox">
+        <span></span>
+      </label>
     </div>
-    <div class="chart container">
+
+
+    <div class="grid-chart-item mini-calendar">
+      aaa
+    </div>
+
+    <div class="grid-chart-item chart-container">
       <canvas id="myChart"></canvas>
     </div>
-  </div>
 
+  </div>
 
   <script src="/js/chart/fastingPlasmaGlucose.js"></script>
 {{/layout}}

@@ -1,0 +1,41 @@
+.switch-toggle {
+    margin: 50px auto;
+    width: auto;
+    display: table;
+}
+.switch-toggle label {
+    width: 80px;
+    height: 30px;
+    position: relative;
+    display: block;
+    margin: 20px 0px;
+}
+.switch-toggle label span {
+    position: absolute;
+    background-color: #c1c1c1;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    border-radius: 50px;
+}
+.switch-toggle label input{
+    visibility: hidden;
+}
+.switch-toggle label span:after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: #ffffff;
+    border-radius: 100%;
+    top: 5px;
+    left: 5px;
+    transition: 0.5s;
+}
+.switch-toggle label input:checked + span:after{
+    transform: translateX(50px);
+}
+.switch-toggle label input:checked + span {
+    background: linear-gradient(93deg, #a426b4, #581bc9 94%);
+}
