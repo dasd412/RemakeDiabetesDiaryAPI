@@ -10,133 +10,140 @@
 
       <div class="col-md-8 col-md-offset-2">
 
-        <h1 class="headline3">혈당 일지 수정/삭제 하기</h1>
-        <label for="writtenTime">작성 날짜</label>
-        {{#diary.writtenTime}}
-          {{diary.writtenTime}}
-        {{/diary.writtenTime}}
+        <div class="form-container">
+          <h1 class="headline3">혈당 일지 수정/삭제 하기</h1>
+          <label for="writtenTime">작성 날짜</label>
+          {{#diary.writtenTime}}
+            {{diary.writtenTime}}
+          {{/diary.writtenTime}}
 
-        <form action="" method="POST">
+          <form action="" method="POST">
+            <div class="form-group">
+              <label for="fastingPlasmaGlucose">공복 혈당</label>
+              {{#diary.fastingPlasmaGlucose}}
+                <input type="text" class="form-control" id="fastingPlasmaGlucose"
+                       value={{diary.fastingPlasmaGlucose}}>
+              {{/diary.fastingPlasmaGlucose}}
+            </div>
+
+            <br>
+            <div class="diet">
+              <div class="child left">
+                <div class="breakFastContainer">
+                  <input type="hidden" value={{diary.breakFastId}} id="breakFastPK">
+                  <label for="breakFast">아침 식사</label>
+                  {{#diary.breakFastSugar}}
+                    <input type="text" class="form-control" id="breakFast" value={{diary.breakFastSugar}}>
+                  {{/diary.breakFastSugar}}
+                </div>
+
+                <button type="button" id="breakFastFoodsAddBtn">+</button>
+                <input type='text' class='form-control' name='foodName' id="breakFastFoodName" placeholder='음식 이름'/>
+                <input type="text" class='form-control' id="breakFastFoodAmount" placeholder="음식 양 (그램 단위)"/>
+
+                <div class="breakFastFoodContainer">
+                  <label for="breakFastFoods">아침 음식</label>
+                  <ul id="breakFastFoods">
+                    {{#diary.breakFastFoods}}
+                      <li>
+                        <input type="hidden" value={{id}} class="breakFastFood">
+                        <div class="foodElement">
+                          <div class="child foodName">{{foodName}}</div>
+                          <div class="child amount">{{amount}}</div>
+                          <div class="child gram">g</div>
+                        </div>
+                        <span class="fas fa-times" id='close' onclick='closeList(this)'></span>
+                      </li>
+                    {{/diary.breakFastFoods}}
+
+                  </ul>
+                </div>
+              </div>
+              <div class="child center">
+                <div class="lunchContainer">
+                  <input type="hidden" value={{diary.lunchId}} id="lunchPK">
+                  <label for="lunch">점심 식사</label>
+                  {{#diary.lunchSugar}}
+                    <input type="text" class="form-control" id="lunch" value={{diary.lunchSugar}}>
+                  {{/diary.lunchSugar}}
+                </div>
+
+                <button type="button" id="lunchFoodsAddBtn">+</button>
+                <input type='text' class='form-control' name='foodName' id="lunchFoodName" placeholder='음식 이름'/>
+                <input type="text" class='form-control' id="lunchFoodAmount" placeholder="음식 양 (그램 단위)"/>
+
+                <div class="lunchFoodContainer">
+                  <label for="lunchFoods">점심 음식</label>
+                  <ul id="lunchFoods">
+                    {{#diary.lunchFoods}}
+                      <li>
+                        <input type="hidden" value={{id}} class="lunchFood">
+                        <div class="foodElement">
+                          <div class="child foodName">{{foodName}}</div>
+                          <div class="child amount">{{amount}}</div>
+                          <div class="child gram">g</div>
+                        </div>
+                        <span class="fas fa-times" id='close' onclick='closeList(this)'></span>
+                      </li>
+                    {{/diary.lunchFoods}}
+                  </ul>
+                </div>
+              </div>
+
+              <div class="child right">
+                <div class="dinnerContainer">
+                  <input type="hidden" value={{diary.dinnerId}} id="dinnerPK">
+                  <label for="dinner">저녁 식사</label>
+                  {{#diary.dinnerSugar}}
+                    <input type="text" class="form-control" id="dinner" value={{diary.dinnerSugar}}>
+                  {{/diary.dinnerSugar}}
+                </div>
+
+                <button type="button" id="dinnerFoodsAddBtn">+</button>
+                <input type='text' class='form-control' name='foodName' id="dinnerFoodName" placeholder='음식 이름'/>
+                <input type="text" class='form-control' id="dinnerFoodAmount" placeholder="음식 양 (그램 단위)"/>
+
+                <div class="dinnerFoodContainer">
+                  <label for="dinnerFoods">저녁 음식</label>
+                  <ul id="dinnerFoods">
+                    {{#diary.dinnerFoods}}
+                      <li>
+                        <input type="hidden" value={{id}} class="dinnerFood">
+                        <div class="foodElement">
+                          <div class="child foodName">{{foodName}}</div>
+                          <div class="child amount">{{amount}}</div>
+                          <div class="child gram">g</div>
+                        </div>
+                        <span class="fas fa-times" id='close' onclick='closeList(this)'></span>
+                      </li>
+                    {{/diary.dinnerFoods}}
+                  </ul>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="form-group" id="remarkDiv">
+              <label for="remark">비고</label>
+              {{#diary.remark}}
+                <textarea rows="3" class="form-control" id="remark">{{diary.remark}}</textarea>
+              {{/diary.remark}}
+            </div>
+
+          </form>
           <div class="form-group">
-            <label for="fastingPlasmaGlucose">공복 혈당</label>
-            {{#diary.fastingPlasmaGlucose}}
-              <input type="text" class="form-control" id="fastingPlasmaGlucose"
-                     value={{diary.fastingPlasmaGlucose}}>
-            {{/diary.fastingPlasmaGlucose}}
+            <button type="button" class="btn btn-warning" id="updateBtn">
+              수정하기
+            </button>
+            <button type="button" class="btn btn-danger" id="deleteBtn">
+              삭제하기
+            </button>
+            <button class="btn btn-secondary" id="updateCancelBtn">
+              취소하기
+            </button>
           </div>
-
-          <br>
-          <div class="diet">
-            <div class="child left">
-              <div class="breakFastContainer">
-                <input type="hidden" value={{diary.breakFastId}} id="breakFastPK">
-                <label for="breakFast">아침 식사</label>
-                {{#diary.breakFastSugar}}
-                  <input type="text" class="form-control" id="breakFast" value={{diary.breakFastSugar}}>
-                {{/diary.breakFastSugar}}
-              </div>
-
-              <button type="button" id="breakFastFoodsAddBtn">+</button>
-              <input type='text' class='form-control' name='foodName' id="breakFastFoodName" placeholder='음식 이름'/>
-              <input type="text" class='form-control' id="breakFastFoodAmount" placeholder="음식 양 (그램 단위)"/>
-
-              <div class="breakFastFoodContainer">
-                <label for="breakFastFoods">아침 음식</label>
-                <ul id="breakFastFoods">
-                  {{#diary.breakFastFoods}}
-                    <li>
-                      <input type="hidden" value={{id}} class="breakFastFood">
-                      <div class="foodElement">
-                        <div class="child foodName">{{foodName}}</div><div class="child amount">{{amount}}</div><div class="child gram">g</div>
-                      </div>
-                      <span class="fas fa-times" id='close' onclick='closeList(this)'></span>
-                    </li>
-                  {{/diary.breakFastFoods}}
-
-                </ul>
-              </div>
-            </div>
-            <div class="child center">
-              <div class="lunchContainer">
-                <input type="hidden" value={{diary.lunchId}} id="lunchPK">
-                <label for="lunch">점심 식사</label>
-                {{#diary.lunchSugar}}
-                  <input type="text" class="form-control" id="lunch" value={{diary.lunchSugar}}>
-                {{/diary.lunchSugar}}
-              </div>
-
-              <button type="button" id="lunchFoodsAddBtn">+</button>
-              <input type='text' class='form-control' name='foodName' id="lunchFoodName" placeholder='음식 이름'/>
-              <input type="text" class='form-control' id="lunchFoodAmount" placeholder="음식 양 (그램 단위)"/>
-
-              <div class="lunchFoodContainer">
-                <label for="lunchFoods">점심 음식</label>
-                <ul id="lunchFoods">
-                  {{#diary.lunchFoods}}
-                    <li>
-                      <input type="hidden" value={{id}} class="lunchFood">
-                      <div class="foodElement">
-                        <div class="child foodName">{{foodName}}</div><div class="child amount">{{amount}}</div><div class="child gram">g</div>
-                      </div>
-                      <span class="fas fa-times" id='close' onclick='closeList(this)'></span>
-                    </li>
-                  {{/diary.lunchFoods}}
-                </ul>
-              </div>
-            </div>
-
-            <div class="child right">
-              <div class="dinnerContainer">
-                <input type="hidden" value={{diary.dinnerId}} id="dinnerPK">
-                <label for="dinner">저녁 식사</label>
-                {{#diary.dinnerSugar}}
-                  <input type="text" class="form-control" id="dinner" value={{diary.dinnerSugar}}>
-                {{/diary.dinnerSugar}}
-              </div>
-
-              <button type="button" id="dinnerFoodsAddBtn">+</button>
-              <input type='text' class='form-control' name='foodName' id="dinnerFoodName" placeholder='음식 이름'/>
-              <input type="text" class='form-control' id="dinnerFoodAmount" placeholder="음식 양 (그램 단위)"/>
-
-              <div class="dinnerFoodContainer">
-                <label for="dinnerFoods">저녁 음식</label>
-                <ul id="dinnerFoods">
-                  {{#diary.dinnerFoods}}
-                    <li>
-                      <input type="hidden" value={{id}} class="dinnerFood">
-                      <div class="foodElement">
-                        <div class="child foodName">{{foodName}}</div><div class="child amount">{{amount}}</div><div class="child gram">g</div>
-                      </div>
-                      <span class="fas fa-times" id='close' onclick='closeList(this)'></span>
-                    </li>
-                  {{/diary.dinnerFoods}}
-                </ul>
-              </div>
-
-            </div>
-          </div>
-
-          <div class="form-group" id="remarkDiv">
-            <label for="remark">비고</label>
-            {{#diary.remark}}
-              <textarea rows="3" class="form-control" id="remark">{{diary.remark}}</textarea>
-            {{/diary.remark}}
-          </div>
-
-        </form>
-        <div class="form-group">
-          <button type="button" class="btn btn-warning" id="updateBtn">
-            수정하기
-          </button>
-          <button type="button" class="btn btn-danger" id="deleteBtn">
-            삭제하기
-          </button>
-          <button class="btn btn-secondary" id="updateCancelBtn">
-            취소하기
-          </button>
         </div>
       </div>
-
     </div>
   </div>
 
