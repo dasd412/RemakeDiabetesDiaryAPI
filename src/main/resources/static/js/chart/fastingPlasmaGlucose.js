@@ -6,17 +6,6 @@
  * All rights reserved.
  */
 
-/**
- * chart.js 생성용 객체
- * @type {{datasets: [{backgroundColor: string, data: [{x: number, y: number},{x: number, y: number},{x: number, y: number},{x: number, y: number}], label: string}]}}
- */
-const chartDataSet = {
-    datasets: [{
-        label: '공복 혈당',
-        data: [],
-        backgroundColor: 'rgb(255, 99, 132)'
-    }],
-};
 
 /**
  * chart.js 설정 객체
@@ -24,7 +13,13 @@ const chartDataSet = {
  */
 const config = {
     type: 'scatter',
-    data: chartDataSet,
+    data: {
+        datasets: [{
+            label: '공복 혈당',
+            data: [],
+            backgroundColor: 'rgb(255, 99, 132)'
+        }],
+    },
     options: {
         scales: {
             x: {
@@ -49,9 +44,6 @@ const FpgFinder = {
     init: function () {
 
         const _this = this;
-
-        //처음에는 전체 조회.
-        _this.findAll();
 
         $("#findFpgBtn").on('click', function () {
             _this.find();
@@ -81,7 +73,18 @@ const FpgFinder = {
             url: "/chart-menu/fasting-plasma-glucose/all",
             contentType: 'application/json; charset=utf-8'
         }).done(function (e) {
-            console.log(e.response);
+            if (e.success === false) {
+                return;
+            }
+            //{x:timeStamp,y:fpg}
+            for (let i = 0; i < e.response.length; i++) {
+                const timeStamp = e.response[i].timeByTimeStamp;
+                const fpg = e.response[i].fastingPlasmaGlucose;
+                myChart.data.datasets.forEach((dataset) => {
+                    dataset.data[i] = {x: timeStamp, y: fpg};
+                });
+            }
+            myChart.update();
         });
     },
 

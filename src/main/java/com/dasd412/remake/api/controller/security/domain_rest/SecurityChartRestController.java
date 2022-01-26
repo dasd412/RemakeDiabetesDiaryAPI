@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
  * @author 양영준
  * @version 1.0.2 2022년 1월 26일
  */
+@RestController
 public class SecurityChartRestController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -50,7 +52,7 @@ public class SecurityChartRestController {
         logger.info("find all fasting-plasma-glucose ..");
         List<DiabetesDiary> diaryList = findDiaryService.getDiabetesDiariesOfWriter(EntityId.of(Writer.class, principalDetails.getWriter().getId()));
 
-        List<FindAllFpgDTO> dtoList = diaryList.stream().map(diary -> new FindAllFpgDTO(diary.getFastingPlasmaGlucose())).collect(Collectors.toList());
+        List<FindAllFpgDTO> dtoList = diaryList.stream().map(FindAllFpgDTO::new).collect(Collectors.toList());
 
         return ApiResult.OK(dtoList);
     }
