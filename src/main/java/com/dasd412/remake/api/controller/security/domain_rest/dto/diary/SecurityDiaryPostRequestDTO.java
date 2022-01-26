@@ -1,4 +1,4 @@
-package com.dasd412.remake.api.controller.security.domain_rest.dto;
+package com.dasd412.remake.api.controller.security.domain_rest.dto.diary;
 
 import com.dasd412.remake.api.controller.security.FoodListSize;
 import lombok.Builder;

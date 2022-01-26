@@ -9,7 +9,7 @@ package com.dasd412.remake.api.controller.security.domain_rest;
 
 import com.dasd412.remake.api.config.security.auth.PrincipalDetails;
 import com.dasd412.remake.api.controller.ApiResult;
-import com.dasd412.remake.api.controller.security.domain_rest.dto.*;
+import com.dasd412.remake.api.controller.security.domain_rest.dto.diary.*;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 import com.dasd412.remake.api.domain.diary.diet.Diet;

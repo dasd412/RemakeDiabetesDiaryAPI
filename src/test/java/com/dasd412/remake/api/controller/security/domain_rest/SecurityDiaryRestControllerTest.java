@@ -1,10 +1,10 @@
 package com.dasd412.remake.api.controller.security.domain_rest;
 
 import com.dasd412.remake.api.config.security.auth.PrincipalDetails;
-import com.dasd412.remake.api.controller.security.domain_rest.dto.SecurityDiaryPostRequestDTO;
-import com.dasd412.remake.api.controller.security.domain_rest.dto.SecurityDiaryUpdateDTO;
-import com.dasd412.remake.api.controller.security.domain_rest.dto.SecurityFoodDTO;
-import com.dasd412.remake.api.controller.security.domain_rest.dto.SecurityFoodForUpdateDTO;
+import com.dasd412.remake.api.controller.security.domain_rest.dto.diary.SecurityDiaryPostRequestDTO;
+import com.dasd412.remake.api.controller.security.domain_rest.dto.diary.SecurityDiaryUpdateDTO;
+import com.dasd412.remake.api.controller.security.domain_rest.dto.diary.SecurityFoodDTO;
+import com.dasd412.remake.api.controller.security.domain_rest.dto.diary.SecurityFoodForUpdateDTO;
 import com.dasd412.remake.api.controller.security.domain_view.dto.PostForUpdateDTO;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
@@ -17,7 +17,6 @@ import com.dasd412.remake.api.domain.diary.writer.Role;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
 import com.dasd412.remake.api.service.domain.FindDiaryService;
-import com.dasd412.remake.api.service.domain.SaveDiaryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.data.Percentage;
 import org.junit.After;

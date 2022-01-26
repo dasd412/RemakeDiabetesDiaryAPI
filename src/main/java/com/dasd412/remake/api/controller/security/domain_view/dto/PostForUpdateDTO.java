@@ -1,7 +1,6 @@
 package com.dasd412.remake.api.controller.security.domain_view.dto;
 
-import com.dasd412.remake.api.controller.security.domain_rest.dto.SecurityFoodDTO;
-import com.dasd412.remake.api.controller.security.domain_rest.dto.SecurityFoodForUpdateDTO;
+import com.dasd412.remake.api.controller.security.domain_rest.dto.diary.SecurityFoodForUpdateDTO;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 import com.dasd412.remake.api.domain.diary.diet.Diet;
 import lombok.Getter;
