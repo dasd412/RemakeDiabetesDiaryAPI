@@ -80,7 +80,6 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
         /* @Query(value = "FROM DiabetesDiary diary WHERE diary.writer.writerId = :writer_id") */
         return jpaQueryFactory.selectFrom(QDiabetesDiary.diabetesDiary)
                 .innerJoin(QDiabetesDiary.diabetesDiary.writer, QWriter.writer)
-                .fetchJoin()
                 .where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId))
                 .fetch();
     }
