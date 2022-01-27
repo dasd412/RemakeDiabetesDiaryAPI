@@ -1,5 +1,5 @@
 /*
- * @(#)SecurityChartRestController.java        1.0.2 2022/1/26
+ * @(#)SecurityChartRestController.java        1.0.2 2022/1/27
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -19,9 +19,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -55,5 +58,15 @@ public class SecurityChartRestController {
         List<FindAllFpgDTO> dtoList = diaryList.stream().map(FindAllFpgDTO::new).collect(Collectors.toList());
 
         return ApiResult.OK(dtoList);
+    }
+
+    @GetMapping("/chart-menu/fasting-plasma-glucose/between")
+    public void findFpgBetweenTime(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestParam Map<String, Integer> allParams) {
+        LocalDateTime startDate = LocalDateTime.of(allParams.get("startYear"), allParams.get("startMonth"), allParams.get("startDay"), 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(allParams.get("endYear"), allParams.get("endMonth"), allParams.get("endDay"), 0, 0);
+        logger.info("find fpg between" + startDate + " and " + endDate);
+
+        List<DiabetesDiary> diaryList = findDiaryService.getDiariesBetweenLocalDateTime(EntityId.of(Writer.class, principalDetails.getWriter().getId()), startDate, endDate);
+
     }
 }

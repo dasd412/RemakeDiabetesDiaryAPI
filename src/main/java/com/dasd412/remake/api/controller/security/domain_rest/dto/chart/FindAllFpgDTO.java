@@ -5,7 +5,6 @@ import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Getter
@@ -18,15 +17,12 @@ public class FindAllFpgDTO {
 
     /**
      * x -축
-     * 1970/01/01 00:00:00 GMT 부터 millisecond로 계산한 시간 출력
      */
-    private final long timeByTimeStamp;
+    private final LocalDateTime timeByTimeStamp;
 
     public FindAllFpgDTO(DiabetesDiary diary) {
         this.fastingPlasmaGlucose = diary.getFastingPlasmaGlucose();
-        LocalDateTime localDateTime = diary.getWrittenTime();
-        Timestamp timestamp = Timestamp.valueOf(localDateTime);
-        this.timeByTimeStamp = timestamp.getTime();
+        this.timeByTimeStamp=diary.getWrittenTime();
     }
 
     public String toString() {
