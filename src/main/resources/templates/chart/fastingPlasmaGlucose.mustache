@@ -1,5 +1,4 @@
 {{#layout}}
-
   <h1 class="headline3">기간 내 공복 혈당 알아보기</h1>
 
   <div class="grid-container-for-chart">
@@ -9,7 +8,7 @@
 
         <div class="toggle-left">
           <div class="toggle-left-top">
-            <b style="font-size: 20px">전체 기간</b>
+            <b style="font-size: 13px">전체 기간</b>
           </div>
 
           <div class="toggle-left-bottom">
@@ -30,8 +29,24 @@
     </div>
 
 
-    <div class="grid-chart-item mini-calendar">
-      aaa
+    <div class="grid-chart-item mini-calendar" id="mini-calendar">
+
+      <label for="start-date">시작 날짜</label>
+        <div class="input-group date">
+          <input type="text" class="form-control" id="start-date">
+          <div class="input-group-addon">
+            <span class="fa fa-calendar"></span>
+          </div>
+        </div>
+
+      <label for="end-date">끝 날짜</label>
+        <div class="input-group date">
+          <input type="text" class="form-control" id="end-date">
+          <div class="input-group-addon">
+            <span class="fa fa-calendar"></span>
+          </div>
+        </div>
+
     </div>
 
     <div class="grid-chart-item chart-container">
@@ -40,5 +55,9 @@
 
   </div>
 
+  <script>
+    $("#start-date").datepicker();
+    $("#end-date").datepicker();
+  </script>
   <script src="/js/chart/fastingPlasmaGlucose.js"></script>
 {{/layout}}

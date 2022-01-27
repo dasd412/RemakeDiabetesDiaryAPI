@@ -98,5 +98,16 @@ const FpgFinder = {
 };
 
 $(document).ready(function () {
+    /**
+     * 체크 박스 체크하면 시작 날짜 끝 날짜 안보임.
+     */
+    $("#date-time-checkbox").change(function(){
+       if($("#date-time-checkbox").is(":checked")){
+            $("#mini-calendar").css("visibility","hidden");
+       }else{
+           $("#mini-calendar").css("visibility","visible");
+       }
+    });
+
     FpgFinder.init();
 });
