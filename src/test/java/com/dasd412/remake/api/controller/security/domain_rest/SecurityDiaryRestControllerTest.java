@@ -150,11 +150,11 @@ public class SecurityDiaryRestControllerTest {
         //given
         String url = "/api/diary/user/diabetes-diary";
 
-        List<SecurityFoodDTO> breakFast = IntStream.rangeClosed(0, 5).mapToObj(i -> new SecurityFoodDTO("breakFast" + i, i))
+        List<SecurityFoodDTO> breakFast = IntStream.rangeClosed(0, 5).mapToObj(i -> new SecurityFoodDTO("breakFast" + i, i*1000))
                 .collect(Collectors.toList());
-        List<SecurityFoodDTO> lunch = IntStream.rangeClosed(0, 6).mapToObj(i -> new SecurityFoodDTO("lunch" + i, i))
+        List<SecurityFoodDTO> lunch = IntStream.rangeClosed(0, 6).mapToObj(i -> new SecurityFoodDTO("lunch" + i, i*1000))
                 .collect(Collectors.toList());
-        List<SecurityFoodDTO> dinner = IntStream.rangeClosed(0, 7).mapToObj(i -> new SecurityFoodDTO("dinner" + i, i))
+        List<SecurityFoodDTO> dinner = IntStream.rangeClosed(0, 7).mapToObj(i -> new SecurityFoodDTO("dinner" + i, i*1000))
                 .collect(Collectors.toList());
 
         SecurityDiaryPostRequestDTO dto = SecurityDiaryPostRequestDTO.builder().fastingPlasmaGlucose(0).remark("test")

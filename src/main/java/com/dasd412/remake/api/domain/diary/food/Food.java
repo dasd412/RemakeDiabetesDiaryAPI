@@ -70,7 +70,7 @@ public class Food {
 
     public Food(EntityId<Food, Long> foodEntityId, Diet diet, String foodName, double amount) {
         checkArgument(foodName.length() > 0 && foodName.length() <= 50, "food name length should be between 1 and 50");
-        checkArgument(amount > 0 && amount <= 1000, "amount unit is gram. it should be between 1g and 1kg");
+        checkArgument(amount >= 0 && amount <= 1000, "amount unit is gram. it should be between 1g and 1kg. And, zero means null");
         this.foodId = foodEntityId.getId();
         this.diet = diet;
         this.foodName = foodName;
@@ -95,7 +95,7 @@ public class Food {
     }
 
     private void modifyAmount(double amount) {
-        checkArgument(amount > 0 && amount <= 1000, "amount unit is gram. it should be between 1g and 1kg");
+        checkArgument(amount >= 0 && amount <= 1000, "amount unit is gram. it should be between 1g and 1kg. And, zero means null");
         this.amount = amount;
     }
 
