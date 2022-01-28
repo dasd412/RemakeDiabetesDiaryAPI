@@ -5,12 +5,26 @@
     height: 70%;
 }
 
-.grid-item {
+.chart-menu {
     padding: 20px;
-    background-color: #4AA2D9;
-    color: #FFFFFF;
-    border: 2px solid #000000;
+    background-color:#b503fc;
     font-size: 30px;
     font-weight: bold;
     text-align: center;
+}
+
+.chart-menu a:link{
+    color: white;
+}
+
+.chart-menu a:visited{
+    color: white;
+}
+
+.chart-menu a:hover{
+    color:grey;
+}
+
+.chart-menu a:active{
+    color: white;
 }
