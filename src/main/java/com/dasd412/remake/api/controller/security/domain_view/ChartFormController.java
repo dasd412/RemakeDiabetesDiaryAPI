@@ -30,7 +30,7 @@ public class ChartFormController {
     @GetMapping("/chart-menu")
     public String showChartMenu() {
         logger.info("chart menu view resolve");
-        return "/chart/chartMenu";
+        return "chart/chartMenu";
     }
 
     /**
@@ -39,7 +39,7 @@ public class ChartFormController {
     @GetMapping("/chart-menu/chart/transition")
     public String showChartTransition() {
         logger.info("chart transition resolve");
-        return "/chart/transition";
+        return "chart/transition";
     }
 
     /**
@@ -48,7 +48,7 @@ public class ChartFormController {
     @GetMapping("/chart-menu/chart/fasting-plasma-glucose")
     public String showChartFastingPlasmaGlucose() {
         logger.info("chart fasting-plasma-glucose resolve");
-        return "/chart/fastingPlasmaGlucose";
+        return "chart/fastingPlasmaGlucose";
     }
 
     /**
@@ -57,7 +57,7 @@ public class ChartFormController {
     @GetMapping("/chart-menu/chart/blood-sugar/between-time")
     public String showChartBloodSugarBetweenTime() {
         logger.info("chart blood sugar between time resolve");
-        return "/chart/bloodSugarBetweenTime";
+        return "chart/bloodSugarBetweenTime";
     }
 
     /**
@@ -66,7 +66,7 @@ public class ChartFormController {
     @GetMapping("/chart-menu/chart/blood-sugar/eat-time")
     public String showChartBloodSugarEatTime() {
         logger.info("chart blood sugar eat time resolve");
-        return "/chart/bloodSugarEatTime";
+        return "chart/bloodSugarEatTime";
     }
 
     /**
@@ -75,7 +75,7 @@ public class ChartFormController {
     @GetMapping("/chart-menu/chart/average")
     public String showChartAverage() {
         logger.info("chart average resolve");
-        return "/chart/average";
+        return "chart/average";
     }
 
     /**
@@ -84,6 +84,6 @@ public class ChartFormController {
     @GetMapping("/chart-menu/chart/food")
     public String showChartFood() {
         logger.info("chart food resolve");
-        return "/chart/food";
+        return "chart/food";
     }
 }
