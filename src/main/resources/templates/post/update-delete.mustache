@@ -44,7 +44,18 @@
                 <div class="breakFastFoodContainer">
                   <label for="breakFastFoods">아침 음식</label>
                   <ul id="breakFastFoods">
-                    {{#diary.breakFastFoods}}
+
+                    {{#diary.breakFastFoodsWithoutAmount}}
+                      <li>
+                        <input type="hidden" value={{id}} class="breakFastFood">
+                        <div class="foodElement">
+                          <div class="child foodName">{{foodName}}</div>
+                        </div>
+                        <span class="fas fa-times" id='close' onclick='closeList(this)'></span>
+                      </li>
+                    {{/diary.breakFastFoodsWithoutAmount}}
+
+                    {{#diary.breakFastFoodsWithAmount}}
                       <li>
                         <input type="hidden" value={{id}} class="breakFastFood">
                         <div class="foodElement">
@@ -54,7 +65,7 @@
                         </div>
                         <span class="fas fa-times" id='close' onclick='closeList(this)'></span>
                       </li>
-                    {{/diary.breakFastFoods}}
+                    {{/diary.breakFastFoodsWithAmount}}
 
                   </ul>
                 </div>
@@ -75,7 +86,18 @@
                 <div class="lunchFoodContainer">
                   <label for="lunchFoods">점심 음식</label>
                   <ul id="lunchFoods">
-                    {{#diary.lunchFoods}}
+
+                    {{#diary.lunchFoodsWithoutAmount}}
+                      <li>
+                        <input type="hidden" value={{id}} class="lunchFood">
+                        <div class="foodElement">
+                          <div class="child foodName">{{foodName}}</div>
+                        </div>
+                        <span class="fas fa-times" id='close' onclick='closeList(this)'></span>
+                      </li>
+                    {{/diary.lunchFoodsWithoutAmount}}
+
+                    {{#diary.lunchFoodsWithAmount}}
                       <li>
                         <input type="hidden" value={{id}} class="lunchFood">
                         <div class="foodElement">
@@ -85,7 +107,8 @@
                         </div>
                         <span class="fas fa-times" id='close' onclick='closeList(this)'></span>
                       </li>
-                    {{/diary.lunchFoods}}
+                    {{/diary.lunchFoodsWithAmount}}
+
                   </ul>
                 </div>
               </div>
@@ -106,7 +129,18 @@
                 <div class="dinnerFoodContainer">
                   <label for="dinnerFoods">저녁 음식</label>
                   <ul id="dinnerFoods">
-                    {{#diary.dinnerFoods}}
+
+                    {{#diary.dinnerFoodsWithoutAmount}}
+                      <li>
+                        <input type="hidden" value={{id}} class="dinnerFood">
+                        <div class="foodElement">
+                          <div class="child foodName">{{foodName}}</div>
+                        </div>
+                        <span class="fas fa-times" id='close' onclick='closeList(this)'></span>
+                      </li>
+                    {{/diary.dinnerFoodsWithoutAmount}}
+
+                    {{#diary.dinnerFoodsWithAmount}}
                       <li>
                         <input type="hidden" value={{id}} class="dinnerFood">
                         <div class="foodElement">
@@ -116,7 +150,8 @@
                         </div>
                         <span class="fas fa-times" id='close' onclick='closeList(this)'></span>
                       </li>
-                    {{/diary.dinnerFoods}}
+                    {{/diary.dinnerFoodsWithAmount}}
+
                   </ul>
                 </div>
 

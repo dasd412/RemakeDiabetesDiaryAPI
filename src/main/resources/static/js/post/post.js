@@ -307,8 +307,8 @@ function addFood(button) {
         return;
     }
 
-    if (isNaN(foodAmount)) {
-        swal('', "음식 양은 숫자로 표현해야 해요", "error");
+    if (foodAmount !== "" && isNaN(foodAmount)) {
+        swal('', "음식 양은 공백이나 숫자로 표현해야 해요", "error");
         return;
     }
 
@@ -317,7 +317,7 @@ function addFood(button) {
         return;
     }
 
-    if (foodAmount <= 0 || foodAmount > 1000) {
+    if (isNaN(foodAmount) && (foodAmount < 0 || foodAmount > 1000)) {
         swal('', "음식 양은 1g 이상 1kg 미만이여야 합니다.", "error");
         return;
     }
@@ -332,12 +332,21 @@ function addFood(button) {
         //해당 식단에서 중복된 이름의 음식이 아니라면, auto increment 방식과 유사하게 li 태그의 다음 id 를 발급받는다.
         const liId = PostManipulator.getNextLiId(mealKey);
 
-        //ul 태그에 li 태그를 동적으로 부착한다.
-        $(ulName).append("<li>" +
-            foodName + " "
-            + foodAmount + "g" +
-            "<span class=\"fas fa-times\" id='close' onclick='closeList(this)'></span></li>"
-            + "</li>");
+        if (foodAmount === "") {
+            $(ulName).append("<li>" +
+                foodName +
+                "<span class=\"fas fa-times\" id='close' onclick='closeList(this)'></span></li>"
+                + "</li>");
+
+        } else {
+            //ul 태그에 li 태그를 동적으로 부착한다.
+            $(ulName).append("<li>" +
+                foodName + " "
+                + foodAmount + "g" +
+                "<span class=\"fas fa-times\" id='close' onclick='closeList(this)'></span></li>"
+                + "</li>");
+
+        }
 
         //마지막으로 추가한 li 태그, 즉 방금 생성한 li 태그를 가리킨다.
         const lastLi = $(ulName).children().last();
