@@ -1,5 +1,5 @@
 /*
- * @(#)fastingPlasmaGlucose.js        1.0.2 2022/1/27
+ * @(#)fastingPlasmaGlucose.js        1.0.2 2022/1/28
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, JavaScript, Pocheon-si, KOREA
@@ -24,7 +24,14 @@ const config = {
     options: {
         scales: {
             xAxis: {
-                type: 'time'
+                type: 'time',
+                time: {
+                    unit: 'day',
+                    unitStepSize: 1,
+                    displayFormats: {
+                        'day': 'MMM DD'
+                    }
+                }
             }
         }
     }
@@ -52,9 +59,14 @@ const FpgFinder = {
 
     /**
      * 이벤트 : 조회버튼 클릭 시
+     * 로직 : 차트 초기화 -> 체크 박스에 맞는 곳으로 진입
      */
     find: function () {
+
+        resetChart();
+
         const checked = $("#date-time-checkbox").is(":checked");
+
         if (checked === true) {
             this.findAll();
         } else {
@@ -71,19 +83,8 @@ const FpgFinder = {
             type: 'GET',
             url: "/chart-menu/fasting-plasma-glucose/all",
             contentType: 'application/json; charset=utf-8'
-        }).done(function (e) {
-            if (e.success === false) {
-                return;
-            }
-            //{x:timeStamp,y:fpg}
-            for (let i = 0; i < e.response.length; i++) {
-                const timeStamp = e.response[i].timeByTimeStamp;
-                const fpg = e.response[i].fastingPlasmaGlucose;
-                myChart.data.datasets.forEach((dataset) => {
-                    dataset.data[i] = {x: moment(timeStamp), y: fpg};
-                });
-            }
-            myChart.update();
+        }).done(function (apiResult) {
+            updateChart(apiResult);
         });
     },
 
@@ -107,8 +108,6 @@ const FpgFinder = {
         const startDate = new Date(startYear, startMonth - 1, startDay);
         const endDate = new Date(endYear, endMonth - 1, endDay);
 
-        console.log(startDate + " " + endDate + " ");
-
         //끝 날짜가 시작 날짜보다 앞서면 안된다.
         if (startDate > endDate) {
             swal('', "끝 날짜가 시작 날짜보다 앞서면 안되요!", "error");
@@ -131,13 +130,41 @@ const FpgFinder = {
             dataType: 'json',
             contentType: 'application/x-www-form-urlencoded; charset=UTF-8;',
             data: betweenDate
-        }).done(function (e) {
-            console.log(e);
+        }).done(function (apiResult) {
+            updateChart(apiResult);
         });
 
     }
 };
 
+/**
+ * GET mapping 리턴 이후의 로직이 중복되기 때문에 공통화시킨 함수.
+ *
+ * @param apiResult ajax 리턴 값
+ */
+function updateChart(apiResult) {
+    if (apiResult.success === false) {
+        return;
+    }
+    //{x:timeStamp,y:fpg}
+    for (let i = 0; i < apiResult.response.length; i++) {
+        const timeStamp = apiResult.response[i].timeByTimeStamp;
+        const fpg = apiResult.response[i].fastingPlasmaGlucose;
+        myChart.data.datasets.forEach((dataset) => {
+            dataset.data[i] = {x: moment(timeStamp), y: fpg};
+        });
+    }
+    myChart.update();
+}
+
+/**
+ * 차트 데이터 초기화 함수
+ */
+function resetChart() {
+    myChart.data.datasets.forEach((dataset) => {
+        dataset.data = [];
+    });
+}
 
 $(document).ready(function () {
     /**
