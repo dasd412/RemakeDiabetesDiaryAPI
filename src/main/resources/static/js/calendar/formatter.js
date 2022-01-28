@@ -27,7 +27,10 @@ class Formatter {
      * @returns {number} 숫자
      */
     formatString(str) {
-        if (str.indexOf(0) === '0') {
+        if (str===undefined){
+            return undefined;
+        }
+        else if (str.indexOf(0) === '0') {
             return parseInt(str.substring(1, 2));
         } else {
             return parseInt(str);

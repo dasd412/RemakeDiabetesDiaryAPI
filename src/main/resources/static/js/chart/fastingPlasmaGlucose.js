@@ -108,6 +108,14 @@ const FpgFinder = {
         const startDate = new Date(startYear, startMonth - 1, startDay);
         const endDate = new Date(endYear, endMonth - 1, endDay);
 
+        if (startMonth === undefined || startDay === undefined) {
+            swal('', "시작 날짜를 입력해주세요", "error");
+            return;
+        }
+        if (endMonth === undefined || endDay === undefined) {
+            swal('', "끝 날짜를 입력해주세요", "error");
+            return;
+        }
         //끝 날짜가 시작 날짜보다 앞서면 안된다.
         if (startDate > endDate) {
             swal('', "끝 날짜가 시작 날짜보다 앞서면 안되요!", "error");
