@@ -1,5 +1,5 @@
 /*
- * @(#)SecurityChartRestControllerTest.java        1.0.1 2022/1/22
+ * @(#)SecurityDiaryRestControllerTest.java        1.0.1 2022/1/22
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
