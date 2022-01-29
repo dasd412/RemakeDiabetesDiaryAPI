@@ -1,5 +1,5 @@
 /*
- * @(#)ChartFormController.java        1.0.2 2022/1/23
+ * @(#)ChartFormController.java        1.0.3 2022/1/29
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -45,10 +45,10 @@ public class ChartFormController {
     /**
      * @return 기간 내 식사 혈당 화면
      */
-    @GetMapping("/chart-menu/chart/blood-sugar/between-time")
+    @GetMapping("/chart-menu/chart/blood-sugar")
     public String showChartBloodSugarBetweenTime() {
-        logger.info("chart blood sugar between time resolve");
-        return "chart/bloodSugarBetweenTime";
+        logger.info("chart blood sugar  resolve");
+        return "chart/bloodSugar";
     }
 
     /**
