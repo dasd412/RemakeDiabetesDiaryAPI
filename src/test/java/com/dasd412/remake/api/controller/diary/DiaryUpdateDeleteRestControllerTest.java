@@ -1,5 +1,12 @@
-package com.dasd412.remake.api.controller.diary;
+/*
+ * @(#)DiarySaveRestControllerTest.java        1.0.1 2022/1/22
+ *
+ * Copyright (c) 2022 YoungJun Yang.
+ * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
+ * All rights reserved.
+ */
 
+package com.dasd412.remake.api.controller.diary;
 
 import com.dasd412.remake.api.controller.diary.diabetesdiary.DiabetesDiaryRequestDTO;
 import com.dasd412.remake.api.controller.diary.diabetesdiary.DiaryUpdateRequestDTO;
@@ -49,6 +56,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Security 적용 없이 정보 수정 및 삭제와 관련된 컨트롤러 테스트 수행.
+ *
+ * @author 양영준
+ * @version 1.0.1 2022년 1월 22일
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application-test.properties")

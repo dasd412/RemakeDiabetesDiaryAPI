@@ -1,3 +1,11 @@
+/*
+ * @(#)DietTest.java        1.0.1 2022/1/22
+ *
+ * Copyright (c) 2022 YoungJun Yang.
+ * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
+ * All rights reserved.
+ */
+
 package com.dasd412.remake.api.domain.diary.diet;
 
 import com.dasd412.remake.api.domain.diary.EntityId;
@@ -16,6 +24,12 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Jpa 사용하지 않고 Diet 메서드 테스트.
+ *
+ * @author 양영준
+ * @version 1.0.1 2022년 1월 22일
+ */
 @TestPropertySource(locations="classpath:application-test.properties")
 public class DietTest {
     //예외 캐치용 객체

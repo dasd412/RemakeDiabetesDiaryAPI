@@ -1,3 +1,11 @@
+/*
+ * @(#)CreateDiaryTest.java        1.0.1 2022/1/22
+ *
+ * Copyright (c) 2022 YoungJun Yang.
+ * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
+ * All rights reserved.
+ */
+
 package com.dasd412.remake.api.domain.diary;
 
 import com.dasd412.remake.api.service.domain.SaveDiaryService;
@@ -28,6 +36,12 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Security 적용 없이 리포지토리를 접근하여 저장 테스트.
+ *
+ * @author 양영준
+ * @version 1.0.1 2022년 1월 22일
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest()
 @TestPropertySource(locations="classpath:application-test.properties")
