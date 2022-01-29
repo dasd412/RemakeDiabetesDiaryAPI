@@ -34,15 +34,6 @@ public class ChartFormController {
     }
 
     /**
-     * @return 혈당 추이 화면
-     */
-    @GetMapping("/chart-menu/chart/transition")
-    public String showChartTransition() {
-        logger.info("chart transition resolve");
-        return "chart/transition";
-    }
-
-    /**
      * @return 기간 내 공복 혈당 화면
      */
     @GetMapping("/chart-menu/chart/fasting-plasma-glucose")
@@ -58,15 +49,6 @@ public class ChartFormController {
     public String showChartBloodSugarBetweenTime() {
         logger.info("chart blood sugar between time resolve");
         return "chart/bloodSugarBetweenTime";
-    }
-
-    /**
-     * @return 식사 기준 식사 혈당 화면
-     */
-    @GetMapping("/chart-menu/chart/blood-sugar/eat-time")
-    public String showChartBloodSugarEatTime() {
-        logger.info("chart blood sugar eat time resolve");
-        return "chart/bloodSugarEatTime";
     }
 
     /**
