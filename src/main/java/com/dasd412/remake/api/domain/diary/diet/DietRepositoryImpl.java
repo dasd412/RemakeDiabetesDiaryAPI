@@ -1,5 +1,5 @@
 /*
- * @(#)DietRepositoryImpl.java        1.0.3 2022/1/29
+ * @(#)DietRepositoryImpl.java        1.0.3 2022/1/30
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  * Querydsl을 사용하기 위해 만든 구현체 클래스.
  *
  * @author 양영준
- * @version 1.0.3 2022년 1월 29일
+ * @version 1.0.3 2022년 1월 30일
  */
 public class DietRepositoryImpl implements DietRepositoryCustom {
     /*
@@ -85,23 +85,6 @@ public class DietRepositoryImpl implements DietRepositoryCustom {
                 .on(QDiet.diet.diary.writer.writerId.eq(writerId).and(QDiet.diet.diary.diaryId.eq(diaryId)))
                 .where(QDiet.diet.dietId.eq(dietId))
                 .fetchOne());
-    }
-
-    @Override
-    public List<Diet> findAllBloodSugar(Long writerId) {
-        return jpaQueryFactory.selectFrom(QDiet.diet)
-                .innerJoin(QDiet.diet.diary, QDiabetesDiary.diabetesDiary)
-                .on(QDiet.diet.diary.writer.writerId.eq(writerId))
-                .fetch();
-    }
-
-    @Override
-    public List<Diet> findAllBloodSugarBetweenTime(Long writerId, LocalDateTime startDate, LocalDateTime endDate) {
-        return jpaQueryFactory.selectFrom(QDiet.diet)
-                .innerJoin(QDiet.diet.diary, QDiabetesDiary.diabetesDiary)
-                .on(QDiet.diet.diary.writer.writerId.eq(writerId))
-                .where(QDiet.diet.diary.writtenTime.between(startDate, endDate))
-                .fetch();
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * @(#)DietRepositoryCustom.java        1.0.3 2022/1/29
+ * @(#)DietRepositoryCustom.java        1.0.3 2022/1/30
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -16,7 +16,7 @@ import java.util.Optional;
  * 식단 리포지토리 상위 인터페이스. Querydsl을 이용하기 위해 구현하였다.
  *
  * @author 양영준
- * @version 1.0.3 2022년 1월 29일
+ * @version 1.0.3 2022년 1월 30일
  */
 public interface DietRepositoryCustom {
 
@@ -28,22 +28,6 @@ public interface DietRepositoryCustom {
     List<Diet> findDietsInDiary(Long writerId, Long diaryId);
 
     Optional<Diet> findOneDietByIdInDiary(Long writerId, Long diaryId, Long DietId);
-
-    /**
-     * 
-     * @param writerId 작성자 id
-     * @return 작성자가 갖고 있는 모든 식단 정보
-     */
-    List<Diet>findAllBloodSugar(Long writerId);
-    
-    /**
-     *
-     * @param writerId 작성자 id
-     * @param startDate 시작 날짜
-     * @param endDate 끝 날짜
-     * @return 기간 내 모든 식사 혈당
-     */
-    List<Diet>findAllBloodSugarBetweenTime(Long writerId,LocalDateTime startDate, LocalDateTime endDate);
 
     List<Diet> findHigherThanBloodSugarBetweenTime(Long writerId, int bloodSugar, LocalDateTime startDate, LocalDateTime endDate);
 
