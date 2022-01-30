@@ -1,5 +1,5 @@
 /*
- * @(#)ReadDiaryTest.java        1.0.3 2022/1/29
+ * @(#)ReadDiaryTest.java        1.0.3 2022/1/30
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -43,7 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Security 적용 없이 리포지토리를 접근하여 조회 테스트.
  *
  * @author 양영준
- * @version 1.0.3 2022년 1월 29일
+ * @version 1.0.3 2022년 1월 30일
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest()
@@ -527,57 +527,5 @@ public class ReadDiaryTest {
         assertThat(foodNames.contains("egg")).isTrue();
         assertThat(foodNames.contains("water")).isTrue();
         assertThat(foodNames.contains("juice")).isTrue();
-    }
-
-    @Transactional
-    @Test
-    public void findAllBloodSugar() {
-        //given
-        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
-        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.BreakFast, 200);
-        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 210);
-        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Dinner, 220);
-        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.BreakFast, 230);
-        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 240);
-
-        //when
-        List<Diet> dietList = dietRepository.findAllBloodSugar(me.getId());
-
-        //then
-        logger.info(dietList.toString());
-        assertThat(dietList.size()).isEqualTo(5);
-
-    }
-
-    @Transactional
-    @Test
-    public void findAllBloodSugarBetweenTime() {
-        //given
-        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        DiabetesDiary diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
-        DiabetesDiary diary2 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
-        DiabetesDiary diary3 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
-
-        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.BreakFast, 100);
-        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Lunch, 100);
-
-        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.BreakFast, 120);
-        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.Lunch, 200);
-
-        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()), EatTime.BreakFast, 150);
-        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()), EatTime.Lunch, 120);
-        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()), EatTime.Dinner, 140);
-
-        LocalDateTime startDate = LocalDateTime.of(2021, 12, 1, 0, 0);
-        LocalDateTime endDate = LocalDateTime.of(2021, 12, 11, 0, 0);
-
-        //when
-        List<Diet> dietList = dietRepository.findAllBloodSugarBetweenTime(me.getId(), startDate, endDate);
-
-        //then
-        logger.info(dietList.toString());
-        assertThat(dietList.size()).isEqualTo(4);
-
     }
 }
