@@ -4,6 +4,9 @@
 ### 웹 사이트 주소 ###
 https://www.diabetes-diary.tk/
 
+### 블로그 주소
+https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
+
 ### 진행 상황 ###
 
 + 데이터 재설계 및 JPA 적용
@@ -36,7 +39,7 @@ https://www.diabetes-diary.tk/
   + 작성용 폼 생성 및 ajax 로직 추가
   + 수정 / 삭제용 폼 생성 및 ajax 로직 추가
   + 달력과 연동
-  + 검색기능 만들고 그 결과로 차트 생성하기 (1/6)
+  + 검색기능 만들고 그 결과로 차트 생성하기 (2/4)
   + 작성용 폼 더 이쁘게 만들기 (예정)
   
 + 배포
@@ -96,6 +99,11 @@ https://www.diabetes-diary.tk/
   + Spring Security 
   + Junit
   + Mustache, css
-  + JQuery [배포 후 React 로 리팩토링 예정]
+  + JQuery [배포 후 Vue 로 리팩토링 예정]
   + AWS (ec2, route 53, ACM, code deploy )
   + travis ci
+
+### 사용 라이브러리
++ chart.js
++ datepicker.js
++ bootstrap
