@@ -12,6 +12,7 @@ import com.dasd412.remake.api.config.security.auth.PrincipalDetails;
 import com.dasd412.remake.api.controller.ApiResult;
 import com.dasd412.remake.api.controller.security.domain_rest.dto.chart.FindAllBloodSugarDTO;
 import com.dasd412.remake.api.controller.security.domain_rest.dto.chart.FindAllFpgDTO;
+import com.dasd412.remake.api.controller.security.domain_rest.dto.chart.FindBloodSugarBetweenDTO;
 import com.dasd412.remake.api.controller.security.domain_rest.dto.chart.FindFpgBetweenDTO;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
@@ -103,14 +104,29 @@ public class SecurityChartRestController {
         return ApiResult.OK(dtoList);
     }
 
+    /**
+     * @param principalDetails 사용자 인증 정보
+     * @param allParams        시작 연도, 시작 월, 시작 일, 끝 년도, 끝 월, 끝 일
+     * @return 해당 기간 내 혈당 일지 및 식단 정보
+     */
     @GetMapping("/chart-menu/blood-sugar/between")
-    public void findBloodSugarBetween(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestParam Map<String, String> allParams) {
+    public ApiResult<List<FindBloodSugarBetweenDTO>> findBloodSugarBetween(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestParam Map<String, String> allParams) {
         LocalDateTime startDate = convertStartDate(allParams);
         LocalDateTime endDate = convertEndDate(allParams);
 
-        logger.info("find fpg between" + startDate + " and " + endDate);
+        logger.info("find blood sugar between" + startDate + " and " + endDate);
+
         List<DiabetesDiary> diaries = findDiaryService.getDiariesWithRelationBetweenTime(EntityId.of(Writer.class, principalDetails.getWriter().getId()), startDate, endDate);
 
+        List<FindBloodSugarBetweenDTO> dtoList = new ArrayList<>();
+
+        for (DiabetesDiary diary : diaries) {
+            for (Diet diet : diary.getDietList()) {
+                dtoList.add(new FindBloodSugarBetweenDTO(diary, diet));
+            }
+        }
+
+        return ApiResult.OK(dtoList);
     }
 
     /**

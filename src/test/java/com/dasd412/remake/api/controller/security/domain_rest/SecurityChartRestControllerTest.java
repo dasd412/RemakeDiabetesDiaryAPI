@@ -195,4 +195,24 @@ public class SecurityChartRestControllerTest {
                 .andExpect(jsonPath("$.response").value(hasSize(6)));
     }
 
+    @Test
+    public void findBloodSugarBetween() throws Exception {
+        //given
+        String url = "/chart-menu/blood-sugar/between";
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("startYear", "2022");
+        params.add("startMonth", "01");
+        params.add("startDay", "28");
+
+        params.add("endYear", "2022");
+        params.add("endMonth", "01");
+        params.add("endDay", "30");
+
+        //when and then
+        mockMvc.perform(get(url).with(user(principalDetails)).params(params).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(3)));
+    }
 }
