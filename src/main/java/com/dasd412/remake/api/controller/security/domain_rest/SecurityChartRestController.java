@@ -1,5 +1,5 @@
 /*
- * @(#)SecurityChartRestController.java        1.0.2 2022/1/28
+ * @(#)SecurityChartRestController.java        1.0.3 2022/2/1
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -10,10 +10,12 @@ package com.dasd412.remake.api.controller.security.domain_rest;
 
 import com.dasd412.remake.api.config.security.auth.PrincipalDetails;
 import com.dasd412.remake.api.controller.ApiResult;
+import com.dasd412.remake.api.controller.security.domain_rest.dto.chart.FindAllBloodSugarDTO;
 import com.dasd412.remake.api.controller.security.domain_rest.dto.chart.FindAllFpgDTO;
 import com.dasd412.remake.api.controller.security.domain_rest.dto.chart.FindFpgBetweenDTO;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
+import com.dasd412.remake.api.domain.diary.diet.Diet;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.service.domain.FindDiaryService;
 import org.slf4j.Logger;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,7 +35,7 @@ import java.util.stream.Collectors;
  * 로그인한 사용자들이 자신의 혈당 "정보"를 조회할 수 있게 하는 RestController
  *
  * @author 양영준
- * @version 1.0.2 2022년 1월 28일
+ * @version 1.0.3 2022년 2월 1일
  */
 @RestController
 public class SecurityChartRestController {
@@ -70,16 +73,9 @@ public class SecurityChartRestController {
      */
     @GetMapping("/chart-menu/fasting-plasma-glucose/between")
     public ApiResult<List<FindFpgBetweenDTO>> findFpgBetweenTime(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestParam Map<String, String> allParams) {
-        LocalDateTime startDate = LocalDateTime.of(Integer.parseInt(allParams.get("startYear")),
-                Integer.parseInt(allParams.get("startMonth")),
-                Integer.parseInt(allParams.get("startDay")),
-                0, 0);
+        LocalDateTime startDate = convertStartDate(allParams);
+        LocalDateTime endDate = convertEndDate(allParams);
 
-        LocalDateTime endDate = LocalDateTime.of(Integer.parseInt(allParams.get("endYear")),
-                Integer.parseInt(allParams.get("endMonth")),
-                Integer.parseInt(allParams.get("endDay")),
-                0, 0);
-        
         logger.info("find fpg between" + startDate + " and " + endDate);
 
         List<DiabetesDiary> diaryList = findDiaryService.getDiariesBetweenLocalDateTime(EntityId.of(Writer.class, principalDetails.getWriter().getId()), startDate, endDate);
@@ -87,4 +83,60 @@ public class SecurityChartRestController {
 
         return ApiResult.OK(dtoList);
     }
+
+    /**
+     * @param principalDetails 사용자 인증 정보
+     * @return 전체 기간 내 혈당 일지 및 식단 정보
+     */
+    @GetMapping("/chart-menu/blood-sugar/all")
+    public ApiResult<List<FindAllBloodSugarDTO>> findAllBloodSugar(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        logger.info("find all blood sugar");
+        List<DiabetesDiary> diaries = findDiaryService.getDiabetesDiariesOfWriterWithRelation(EntityId.of(Writer.class, principalDetails.getWriter().getId()));
+
+        List<FindAllBloodSugarDTO> dtoList = new ArrayList<>();
+        for (DiabetesDiary diary : diaries) {
+            for (Diet diet : diary.getDietList()) {
+                dtoList.add(new FindAllBloodSugarDTO(diary, diet));
+            }
+        }
+
+        return ApiResult.OK(dtoList);
+    }
+
+    @GetMapping("/chart-menu/blood-sugar/between")
+    public void findBloodSugarBetween(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestParam Map<String, String> allParams) {
+        LocalDateTime startDate = convertStartDate(allParams);
+        LocalDateTime endDate = convertEndDate(allParams);
+
+        logger.info("find fpg between" + startDate + " and " + endDate);
+        List<DiabetesDiary> diaries = findDiaryService.getDiariesWithRelationBetweenTime(EntityId.of(Writer.class, principalDetails.getWriter().getId()), startDate, endDate);
+
+    }
+
+    /**
+     * 중복 제거 리팩토링용 도우미 메서드
+     *
+     * @param allParams RequestParam 해시 맵
+     * @return 시작 날짜
+     */
+    private LocalDateTime convertStartDate(Map<String, String> allParams) {
+        return LocalDateTime.of(Integer.parseInt(allParams.get("startYear")),
+                Integer.parseInt(allParams.get("startMonth")),
+                Integer.parseInt(allParams.get("startDay")),
+                0, 0);
+    }
+
+    /**
+     * 중복 제거 리팩토링용 도우미 메서드
+     *
+     * @param allParams RequestParam 해시 맵
+     * @return 끝 날짜
+     */
+    private LocalDateTime convertEndDate(Map<String, String> allParams) {
+        return LocalDateTime.of(Integer.parseInt(allParams.get("endYear")),
+                Integer.parseInt(allParams.get("endMonth")),
+                Integer.parseInt(allParams.get("endDay")),
+                0, 0);
+    }
+
 }

@@ -1,5 +1,5 @@
 /*
- * @(#)FindDiaryService.java        1.0.1 2022/1/22
+ * @(#)FindDiaryService.java        1.0.3 2022/2/1
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -37,7 +37,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * 조회 비즈니스 로직을 수행하는 서비스 클래스
  *
  * @author 양영준
- * @version 1.0.1 2022년 1월 22일
+ * @version 1.0.3 2022년 2월 1일
  */
 @Service
 public class FindDiaryService {
@@ -107,12 +107,31 @@ public class FindDiaryService {
     }
 
     /**
+     * @param writerEntityId 래퍼로 감싸진 작성자 id
+     * @return 전체 기간 동안 작성한 일지들 + 하위 엔티티 모두 (fetch join 되어 있기 때문에 하위 엔티티 참조해도 무방하다.)
+     */
+    @Transactional(readOnly = true)
+    public List<DiabetesDiary> getDiabetesDiariesOfWriterWithRelation(EntityId<Writer, Long> writerEntityId) {
+        logger.info("getDiabetesDiariesOfWriterWithRelation");
+        checkNotNull(writerEntityId, "writerId must be provided");
+        return diaryRepository.findDiabetesDiariesOfWriterWithRelation(writerEntityId.getId());
+    }
+
+    @Transactional(readOnly = true)
+    public List<DiabetesDiary> getDiariesWithRelationBetweenTime(EntityId<Writer, Long> writerEntityId, LocalDateTime startDate, LocalDateTime endDate) {
+        logger.info("getDiariesWithRelationBetweenTime");
+        checkNotNull(writerEntityId, "writerId must be provided");
+        checkArgument(startDate.isBefore(endDate), "startDate must be before than endDate");
+        return diaryRepository.findDiariesWithRelationBetweenTime(writerEntityId.getId(), startDate, endDate);
+    }
+
+    /**
      * String parameter 로 올 경우 처리하는 메서드
      *
      * @param writerEntityId  래퍼로 감싸진 작성자 id
      * @param startDateString 시작 날짜 문자열
      * @param endDateString   끝 날짜 문자열
-     * @return 해당 기간에 작성된 일지들
+     * @return 해당 기간에 작성된 일지들 (하위 엔티티는 포함하지 않는다. n+1 발생하지 않도록, 이 메서드의 리턴 값에서는 하위 엔티티를 참조 하면 안된다.)
      */
     @Transactional(readOnly = true)
     public List<DiabetesDiary> getDiariesBetweenTime(EntityId<Writer, Long> writerEntityId, String startDateString, String endDateString) {

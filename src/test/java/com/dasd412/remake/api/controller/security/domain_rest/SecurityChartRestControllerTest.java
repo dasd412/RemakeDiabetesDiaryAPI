@@ -1,5 +1,5 @@
 /*
- * @(#)SecurityChartRestControllerTest.java        1.0.3 2022/1/29
+ * @(#)SecurityChartRestControllerTest.java        1.0.3 2022/2/1
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -18,7 +18,6 @@ import com.dasd412.remake.api.domain.diary.food.FoodRepository;
 import com.dasd412.remake.api.domain.diary.writer.Role;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
 import org.junit.Before;
@@ -39,13 +38,10 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -56,7 +52,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * @author 양영준
- * @version 1.0.3 2022년 1월 29일
+ * @version 1.0.3 2022년 2월 1일
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -184,6 +180,19 @@ public class SecurityChartRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value("true"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(1)));
+    }
+
+    @Test
+    public void findAllBloodSugar() throws Exception {
+        //given
+        String url = "/chart-menu/blood-sugar/all";
+
+        //when and then
+        mockMvc.perform(get(url).with(user(principalDetails)).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value("true"))
+                .andExpect(jsonPath("$.response").value(hasSize(6)));
     }
 
 }
