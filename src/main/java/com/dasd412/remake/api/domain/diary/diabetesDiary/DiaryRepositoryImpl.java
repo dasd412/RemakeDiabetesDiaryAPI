@@ -1,5 +1,5 @@
 /*
- * @(#)DiaryRepositoryImpl.java        1.0.1 2022/1/22
+ * @(#)DiaryRepositoryImpl.java        1.0.3 2022/2/1
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  * Querydsl을 사용하기 위해 만든 구현체 클래스.
  *
  * @author 양영준
- * @version 1.0.1 2022년 1월 22일
+ * @version 1.0.3 2022년 2월 1일
  */
 public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
 
@@ -110,6 +110,48 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
                 .fetchJoin()
                 .where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId).and(QDiabetesDiary.diabetesDiary.diaryId.eq(diaryId)))
                 .fetchOne());
+    }
+
+    /**
+     * 단순히 fetch()를 하게 되면, 조인된 테이블의 개수만큼 중복된 엔티티를 얻어오게 된다.
+     * 따라서 stream().distinct().collect(Collectors.toList()) 를 이용하여 java 단에서 중복을 제거해준다.
+     *
+     * @param writerId 작성자 id
+     * @return 작성자가 작성했던 모든 혈당 일지와 관련된 모든 엔티티 "함께" 조회
+     */
+    @Override
+    public List<DiabetesDiary> findDiabetesDiariesOfWriterWithRelation(Long writerId) {
+        return jpaQueryFactory.selectFrom(QDiabetesDiary.diabetesDiary)
+                .innerJoin(QDiabetesDiary.diabetesDiary.writer, QWriter.writer)
+                .fetchJoin()
+                .leftJoin(QDiabetesDiary.diabetesDiary.dietList, QDiet.diet)
+                .fetchJoin()
+                .leftJoin(QDiet.diet.foodList, QFood.food)
+                .fetchJoin()
+                .where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId))
+                .fetch().stream().distinct().collect(Collectors.toList());
+    }
+
+    /**
+     * 단순히 fetch()를 하게 되면, 조인된 테이블의 개수만큼 중복된 엔티티를 얻어오게 된다.
+     * 따라서 stream().distinct().collect(Collectors.toList()) 를 이용하여 java 단에서 중복을 제거해준다.
+     *
+     * @param writerId  작성자 id
+     * @param startDate 시작 날짜
+     * @param endDate   끝 날짜
+     * @return 해당 기간 동안 작성자가 작성했던 모든 혈당 일지와 관련된 모든 엔티티 "함께" 조회
+     */
+    @Override
+    public List<DiabetesDiary> findDiariesWithRelationBetweenTime(Long writerId, LocalDateTime startDate, LocalDateTime endDate) {
+        return jpaQueryFactory.selectFrom(QDiabetesDiary.diabetesDiary)
+                .innerJoin(QDiabetesDiary.diabetesDiary.writer, QWriter.writer)
+                .fetchJoin()
+                .leftJoin(QDiabetesDiary.diabetesDiary.dietList, QDiet.diet)
+                .fetchJoin()
+                .leftJoin(QDiet.diet.foodList, QFood.food)
+                .fetchJoin()
+                .where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId).and(QDiabetesDiary.diabetesDiary.writtenTime.between(startDate, endDate)))
+                .fetch().stream().distinct().collect(Collectors.toList());
     }
 
     @Override

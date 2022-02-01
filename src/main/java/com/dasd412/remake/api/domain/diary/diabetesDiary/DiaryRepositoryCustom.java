@@ -1,5 +1,5 @@
 /*
- * @(#)DiaryRepositoryCustom.java        1.0.1 2022/1/22
+ * @(#)DiaryRepositoryCustom.java        1.0.3 2022/1/30
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -18,7 +18,7 @@ import java.util.Optional;
  * 혈당일지 리포지토리 상위 인터페이스. Querydsl을 이용하기 위해 구현하였다.
  *
  * @author 양영준
- * @version 1.0.1 2022년 1월 22일
+ * @version 1.0.3 2022년 1월 30일
  */
 public interface DiaryRepositoryCustom {
 
@@ -39,6 +39,20 @@ public interface DiaryRepositoryCustom {
      * @return 작성자가 작성한 혈당 일지 및 관련된 모든 엔티티
      */
     Optional<DiabetesDiary> findDiabetesDiaryOfWriterWithRelation(Long writerId, Long diaryId);
+
+    /**
+     * @param writerId 작성자 id
+     * @return 작성자가 작성했던 모든 혈당 일지와 관련된 모든 엔티티 "함께" 조회
+     */
+    List<DiabetesDiary> findDiabetesDiariesOfWriterWithRelation(Long writerId);
+
+    /**
+     * @param writerId  작성자 id
+     * @param startDate 시작 날짜
+     * @param endDate   끝 날짜
+     * @return 해당 기간 동안 작성자가 작성했던 모든 혈당 일지와 관련된 모든 엔티티 "함께" 조회
+     */
+    List<DiabetesDiary> findDiariesWithRelationBetweenTime(Long writerId, LocalDateTime startDate, LocalDateTime endDate);
 
     List<DiabetesDiary> findDiaryBetweenTime(Long writerId, LocalDateTime startDate, LocalDateTime endDate);
 

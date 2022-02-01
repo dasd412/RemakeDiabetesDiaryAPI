@@ -1,5 +1,5 @@
 /*
- * @(#)ReadDiaryTest.java        1.0.3 2022/1/30
+ * @(#)ReadDiaryTest.java        1.0.3 2022/2/1
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -43,7 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Security 적용 없이 리포지토리를 접근하여 조회 테스트.
  *
  * @author 양영준
- * @version 1.0.3 2022년 1월 30일
+ * @version 1.0.3 2022년 2월 1일
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest()
@@ -528,4 +528,78 @@ public class ReadDiaryTest {
         assertThat(foodNames.contains("water")).isTrue();
         assertThat(foodNames.contains("juice")).isTrue();
     }
+
+    @Transactional
+    @Test
+    public void findDiabetesDiariesOfWriterWithRelation() {
+        //given
+        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
+        DiabetesDiary diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
+        DiabetesDiary diary2 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
+        DiabetesDiary diary3 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
+
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.BreakFast, 100);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Lunch, 100);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Dinner, 100);
+
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.BreakFast, 120);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.Lunch, 200);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.Dinner, 170);
+
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()), EatTime.BreakFast, 150);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()), EatTime.Lunch, 120);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()), EatTime.Dinner, 140);
+
+        //when
+        List<DiabetesDiary> diariesWithRelation = diaryRepository.findDiabetesDiariesOfWriterWithRelation(me.getId());
+        //then
+        logger.info(diariesWithRelation.toString());
+        for (DiabetesDiary diary : diariesWithRelation) {
+            logger.info(diary.getDietList().toString());
+        }
+        assertThat(diariesWithRelation.size()).isEqualTo(3);
+        for (DiabetesDiary diary : diariesWithRelation) {
+            assertThat(diary.getDietList().size()).isEqualTo(3);
+        }
+
+    }
+
+    @Transactional
+    @Test
+    public void findDiariesWithRelationBetweenTime() {
+        //given
+        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
+        DiabetesDiary diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
+        DiabetesDiary diary2 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
+        DiabetesDiary diary3 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
+
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.BreakFast, 100);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Lunch, 100);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Dinner, 100);
+
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.BreakFast, 120);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.Lunch, 200);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.Dinner, 170);
+
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()), EatTime.BreakFast, 150);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()), EatTime.Lunch, 120);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()), EatTime.Dinner, 140);
+
+        LocalDateTime startDate = LocalDateTime.of(2021, 12, 1, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2021, 12, 11, 0, 0);
+
+        //when
+        List<DiabetesDiary> diaries = diaryRepository.findDiariesWithRelationBetweenTime(me.getId(), startDate, endDate);
+
+        //then
+        logger.info(diaries.toString());
+        for (DiabetesDiary diary : diaries) {
+            logger.info(diary.getDietList().toString());
+        }
+        assertThat(diaries.size()).isEqualTo(2);
+        for (DiabetesDiary diary : diaries) {
+            assertThat(diary.getDietList().size()).isEqualTo(3);
+        }
+    }
+
 }
