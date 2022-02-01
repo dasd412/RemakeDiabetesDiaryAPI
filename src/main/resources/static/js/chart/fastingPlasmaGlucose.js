@@ -1,5 +1,5 @@
 /*
- * @(#)fastingPlasmaGlucose.js        1.0.2 2022/1/28
+ * @(#)fastingPlasmaGlucose.js        1.0.3 2022/2/1
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, JavaScript, Pocheon-si, KOREA
@@ -18,7 +18,9 @@ const config = {
         datasets: [{
             label: '공복 혈당',
             data: [],
-            backgroundColor: 'rgb(255, 99, 132)'
+            backgroundColor: 'rgb(255, 99, 132)',
+            showLine: true,
+            borderColor: 'rgb(255, 99, 132)'
         }],
     },
     options: {

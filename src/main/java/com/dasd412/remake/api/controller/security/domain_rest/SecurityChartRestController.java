@@ -27,9 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -60,7 +58,9 @@ public class SecurityChartRestController {
         logger.info("find all fasting-plasma-glucose ..");
         List<DiabetesDiary> diaryList = findDiaryService.getDiabetesDiariesOfWriter(EntityId.of(Writer.class, principalDetails.getWriter().getId()));
 
-        List<FindAllFpgDTO> dtoList = diaryList.stream().map(FindAllFpgDTO::new).collect(Collectors.toList());
+        List<FindAllFpgDTO> dtoList = diaryList.stream().map(FindAllFpgDTO::new).sorted(Comparator.comparing(FindAllFpgDTO::getTimeByTimeStamp)).collect(Collectors.toList());
+
+        //시간 순 정렬
 
         return ApiResult.OK(dtoList);
     }
@@ -80,7 +80,9 @@ public class SecurityChartRestController {
         logger.info("find fpg between" + startDate + " and " + endDate);
 
         List<DiabetesDiary> diaryList = findDiaryService.getDiariesBetweenLocalDateTime(EntityId.of(Writer.class, principalDetails.getWriter().getId()), startDate, endDate);
-        List<FindFpgBetweenDTO> dtoList = diaryList.stream().map(FindFpgBetweenDTO::new).collect(Collectors.toList());
+        List<FindFpgBetweenDTO> dtoList = diaryList.stream().map(FindFpgBetweenDTO::new).sorted(Comparator.comparing(FindFpgBetweenDTO::getTimeByTimeStamp)).collect(Collectors.toList());
+
+        //시간 순 정렬
 
         return ApiResult.OK(dtoList);
     }
@@ -100,6 +102,9 @@ public class SecurityChartRestController {
                 dtoList.add(new FindAllBloodSugarDTO(diary, diet));
             }
         }
+
+        //시간 순 정렬
+        dtoList.sort(Comparator.comparing(FindAllBloodSugarDTO::getDateTime));
 
         return ApiResult.OK(dtoList);
     }
@@ -125,6 +130,9 @@ public class SecurityChartRestController {
                 dtoList.add(new FindBloodSugarBetweenDTO(diary, diet));
             }
         }
+
+        //시간 순 정렬
+        dtoList.sort(Comparator.comparing(FindBloodSugarBetweenDTO::getDateTime));
 
         return ApiResult.OK(dtoList);
     }

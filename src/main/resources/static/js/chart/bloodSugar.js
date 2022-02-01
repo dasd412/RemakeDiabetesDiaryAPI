@@ -1,5 +1,5 @@
 /*
- * @(#)bloodSugar.js        1.0.3 2022/1/29
+ * @(#)bloodSugar.js        1.0.3 2022/2/1
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, JavaScript, Pocheon-si, KOREA
@@ -8,13 +8,206 @@
 
 const bloodSugarFormatter = new Formatter();
 
+/**
+ * chart.js 설정 객체
+ * @type {{data: {datasets: [{data: *[], label: string}]}, options: {scales: {xAxis: {time: {displayFormats: {day: string}, unit: string, unitStepSize: number}, type: string}}}, type: string}}
+ */
+const config = {
+    type: 'scatter',
+    data: {
+        datasets: [
+            {
+                label: '아침 혈당',
+                data: [],
+                backgroundColor: 'rgb(72, 193, 72)',
+                showLine: true,
+                borderColor: 'rgb(72, 193, 72)'
+            },
+            {
+                label: '점심 혈당',
+                data: [],
+                backgroundColor: 'rgb(72, 72, 193)',
+                showLine: true,
+                borderColor: 'rgb(72, 72, 193)'
+            },
+            {
+                label: '저녁 혈당',
+                data: [],
+                backgroundColor: 'rgb(255, 99, 132)',
+                showLine: true,
+                borderColor: 'rgb(255, 99, 132)'
+            }],
+    },
+    options: {
+        scales: {
+            xAxis: {
+
+                type: 'time',
+                time: {
+                    unit: 'day',
+                    unitStepSize: 1,
+                    displayFormats: {
+                        'day': 'MMM DD'
+                    }
+                }
+            }
+        }
+    }
+};
+
+const myChartBloodSugar = new Chart(
+    document.getElementById('myChartBloodSugar'),
+    config
+);
+
 const bloodSugarFinder = {
 
+    /**
+     * 초기화 함수
+     */
     init: function () {
 
+        const _this = this;
+
+        $("#findBloodSugarBtn").on('click', function () {
+            _this.find();
+        });
+    },
+    /**
+     * 이벤트 : 조회버튼 클릭 시
+     * 로직 : 차트 초기화 -> 체크 박스에 맞는 곳으로 진입
+     */
+    find: function () {
+        resetChart();
+
+        const checked = $("#blood-sugar-date-time-checkbox").is(":checked");
+
+        if (checked === true) {
+            this.findAllBloodSugar();
+        } else {
+            this.findBloodSugarBetweenDate();
+        }
+    },
+
+    /**
+     * 이벤트 : 조회 버튼 클릭시 + 전체 기간 체크 시
+     * 전체 기간 식사 혈당 조회 요청
+     */
+    findAllBloodSugar: function () {
+        $.ajax({
+            type: 'GET',
+            url: "/chart-menu/blood-sugar/all",
+            contentType: 'application/json; charset=utf-8'
+        }).done(function (apiResult) {
+            updateChartForBloodSugar(apiResult);
+        });
+    },
+
+    /**
+     * 이벤트 : 조회 버튼 클릭시 + 일정 기간 체크 시
+     * 해당 기간 식사 혈당 조회 요청
+     */
+    findBloodSugarBetweenDate: function () {
+        const startDateForBloodSugar = $("#start-date-blood-sugar").val().split('/');
+        const endDateForBloodSugar = $("#end-date-blood-sugar").val().split('/');
+
+        const startYearForBloodSugar = startDateForBloodSugar[2];
+        const startMonthForBloodSugar = bloodSugarFormatter.formatString(startDateForBloodSugar[0]);
+        const startDayForBloodSugar = bloodSugarFormatter.formatString(startDateForBloodSugar[1]);
+
+        const endYearForBloodSugar = endDateForBloodSugar[2];
+        const endMonthForBloodSugar = bloodSugarFormatter.formatString(endDateForBloodSugar[0]);
+        const endDayForBloodSugar = bloodSugarFormatter.formatString(endDateForBloodSugar[1]);
+
+        //Date 객체에서 월은 0부터 시작
+        const startDateOfBloodSugar = new Date(startYearForBloodSugar, startMonthForBloodSugar - 1, startDayForBloodSugar);
+        const endDateOfBloodSugar = new Date(endYearForBloodSugar, endMonthForBloodSugar - 1, endDayForBloodSugar);
+
+        if (startMonthForBloodSugar === undefined || startDayForBloodSugar === undefined) {
+            swal('', "시작 날짜를 입력해주세요", "error");
+            return;
+        }
+        if (endMonthForBloodSugar === undefined || endDayForBloodSugar === undefined) {
+            swal('', "끝 날짜를 입력해주세요", "error");
+            return;
+        }
+        //끝 날짜가 시작 날짜보다 앞서면 안된다.
+        if (startDateOfBloodSugar > endDateOfBloodSugar) {
+            swal('', "끝 날짜가 시작 날짜보다 앞서면 안되요!", "error");
+            return;
+        }
+        const betweenDate = {
+            startYear: startYearForBloodSugar,
+            startMonth: startMonthForBloodSugar,
+            startDay: startDayForBloodSugar,
+
+            endYear: endYearForBloodSugar,
+            endMonth: endMonthForBloodSugar,
+            endDay: endDayForBloodSugar
+        };
+
+        $.ajax({
+            type: 'GET',
+            url: '/chart-menu/blood-sugar/between',
+            dataType: 'json',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8;',
+            data: betweenDate
+        }).done(function (apiResult) {
+            updateChartForBloodSugar(apiResult);
+        });
+    }
+};
+
+/**
+ * 차트 데이터 초기화 함수
+ */
+function resetChart() {
+    myChartBloodSugar.data.datasets.forEach((dataset) => {
+        dataset.data = [];
+    });
+}
+
+/**
+ * GET mapping 리턴 이후의 로직이 중복되기 때문에 공통화시킨 함수.
+ *
+ * @param apiResult ajax 리턴 값
+ */
+function updateChartForBloodSugar(apiResult) {
+    if (apiResult.success === false) {
+        return;
     }
 
-};
+    for (let i = 0; i < apiResult.response.length; i++) {
+        const dateTime = apiResult.response[i].dateTime;
+        const bloodSugar = apiResult.response[i].bloodSugar;
+        const eatTime = apiResult.response[i].eatTime;
+
+        switch (eatTime) {
+            case "BreakFast":
+                myChartBloodSugar.data.datasets.forEach((dataset) => {
+                    if (dataset.label === '아침 혈당') {
+                        dataset.data.push({x: moment(dateTime), y: bloodSugar});
+                    }
+                });
+                break;
+            case "Lunch":
+                myChartBloodSugar.data.datasets.forEach((dataset) => {
+                    if (dataset.label === '점심 혈당') {
+                        dataset.data.push({x: moment(dateTime), y: bloodSugar});
+                    }
+                });
+                break;
+            case "Dinner":
+                myChartBloodSugar.data.datasets.forEach((dataset) => {
+                    if (dataset.label === '저녁 혈당') {
+                        dataset.data.push({x: moment(dateTime), y: bloodSugar});
+                    }
+                });
+                break;
+        }
+    }
+    myChartBloodSugar.update();
+}
 
 $(document).ready(function () {
     /**
