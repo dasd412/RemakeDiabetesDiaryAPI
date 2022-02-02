@@ -1,5 +1,5 @@
 /*
- * @(#)ReadDiaryTest.java        1.0.3 2022/2/1
+ * @(#)ReadDiaryTest.java        1.0.4 2022/2/2
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -8,7 +8,10 @@
 
 package com.dasd412.remake.api.domain.diary;
 
+import com.dasd412.remake.api.domain.diary.diet.QDiet;
 import com.dasd412.remake.api.service.domain.SaveDiaryService;
+import com.querydsl.core.Tuple;
+import org.assertj.core.data.Percentage;
 import org.hibernate.Hibernate;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiaryRepository;
@@ -35,6 +38,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import javax.persistence.NoResultException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,7 +48,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Security 적용 없이 리포지토리를 접근하여 조회 테스트.
  *
  * @author 양영준
- * @version 1.0.3 2022년 2월 1일
+ * @version 1.0.4 2022년 2월 2일
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest()
@@ -600,6 +605,80 @@ public class ReadDiaryTest {
         for (DiabetesDiary diary : diaries) {
             assertThat(diary.getDietList().size()).isEqualTo(3);
         }
+    }
+
+    @Transactional
+    @Test
+    public void findAverageFpg() {
+        //given
+        int fpg1 = 100;
+        int fpg2 = 200;
+        int fpg3 = 100;
+        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
+        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), fpg1, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
+        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), fpg2, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
+        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), fpg3, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
+
+        //when
+        Double averageFpg = diaryRepository.findAverageFpg(me.getId()).orElseThrow(NoResultException::new);
+
+        //then
+        logger.info(averageFpg.toString());
+        assertThat(averageFpg).isCloseTo((fpg1 + fpg2 + fpg3) / 3.0, Percentage.withPercentage(0.5));
+    }
+
+    @Transactional
+    @Test
+    public void findAverageBloodSugarGroupByEatTime() {
+        //given
+        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
+        DiabetesDiary diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
+        DiabetesDiary diary2 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
+        DiabetesDiary diary3 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
+
+        int br1 = 100;
+        int lu1 = 100;
+        int di1 = 100;
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.BreakFast, br1);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Lunch, lu1);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Dinner, di1);
+
+        int br2 = 120;
+        int lu2 = 200;
+        int di2 = 170;
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.BreakFast, br2);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.Lunch, lu2);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.Dinner, di2);
+
+        int br3 = 150;
+        int lu3 = 120;
+        int di3 = 140;
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()), EatTime.BreakFast, br3);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()), EatTime.Lunch, lu3);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()), EatTime.Dinner, di3);
+
+        //when
+        List<Tuple> tupleList = dietRepository.findAverageBloodSugarGroupByEatTime(me.getId());
+
+        //then
+        logger.info(tupleList.toString());
+        for (Tuple tuple : tupleList) {
+            EatTime eatTime = tuple.get(QDiet.diet.eatTime);
+            Double average = tuple.get(QDiet.diet.bloodSugar.avg());
+            logger.info(eatTime + " " + average);
+            switch (Objects.requireNonNull(eatTime)) {
+                case BreakFast:
+                    assertThat(average).isCloseTo((br1 + br2 + br3) / 3.0, Percentage.withPercentage(0.5));
+                    break;
+                case Lunch:
+                    assertThat(average).isCloseTo((lu1 + lu2 + lu3) / 3.0, Percentage.withPercentage(0.5));
+                    break;
+                case Dinner:
+                    assertThat(average).isCloseTo((di1 + di2 + di3) / 3.0, Percentage.withPercentage(0.5));
+                    break;
+            }
+        }
+
     }
 
 }

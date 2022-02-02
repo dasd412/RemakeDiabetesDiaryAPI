@@ -34,12 +34,12 @@
     display: flex;
 }
 
-.toggle-left{
+.toggle-left {
     width: 50%;
     display: inline-block;
 }
 
-.toggle-right{
+.toggle-right {
     flex-grow: 1;
 }
 
@@ -49,4 +49,12 @@
 
 .toggle-left-bottom {
     margin-top: -50px;
+}
+
+#start-date, #end-date, #start-date-blood-sugar, #end-date-blood-sugar {
+    cursor: pointer;
+}
+
+#start-date:hover, #end-date:hover, #start-date-blood-sugar:hover, #end-date-blood-sugar:hover {
+    border-color: red;
 }

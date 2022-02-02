@@ -1,5 +1,5 @@
 /*
- * @(#)DietRepositoryCustom.java        1.0.3 2022/1/30
+ * @(#)DietRepositoryCustom.java        1.0.4 2022/2/2
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -7,6 +7,8 @@
  */
 
 package com.dasd412.remake.api.domain.diary.diet;
+
+import com.querydsl.core.Tuple;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,7 +18,7 @@ import java.util.Optional;
  * 식단 리포지토리 상위 인터페이스. Querydsl을 이용하기 위해 구현하였다.
  *
  * @author 양영준
- * @version 1.0.3 2022년 1월 30일
+ * @version 1.0.4 2022년 2월 2일
  */
 public interface DietRepositoryCustom {
 
@@ -37,7 +39,17 @@ public interface DietRepositoryCustom {
 
     List<Diet> findLowerThanBloodSugarInEatTime(Long writerId, int bloodSugar, EatTime eatTime);
 
+    /**
+     * @param writerId 작성자 id
+     * @return 평균 식사 혈당 (아침,점심,저녁 모두 포함)
+     */
     Optional<Double> findAverageBloodSugarOfDiet(Long writerId);
+
+    /**
+     * @param writerId 작성자 id
+     * @return (평균 혈당, 식사 시간) 형태의 튜플들
+     */
+    List<Tuple> findAverageBloodSugarGroupByEatTime(Long writerId);
 
     /**
      * 식단과 관련된 엔티티 (음식) 을 포함하여 "한꺼번에" 제거하는 메서드.

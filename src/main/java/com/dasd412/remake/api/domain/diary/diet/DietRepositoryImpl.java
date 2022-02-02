@@ -1,5 +1,5 @@
 /*
- * @(#)DietRepositoryImpl.java        1.0.3 2022/1/30
+ * @(#)DietRepositoryImpl.java        1.0.4 2022/2/2
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -12,6 +12,7 @@ package com.dasd412.remake.api.domain.diary.diet;
 import com.dasd412.remake.api.domain.diary.food.Food;
 import com.dasd412.remake.api.domain.diary.food.QFood;
 import com.dasd412.remake.api.domain.diary.writer.QWriter;
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.QDiabetesDiary;
 import org.slf4j.Logger;
@@ -22,11 +23,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.querydsl.core.group.GroupBy.avg;
+
 /**
  * Querydsl을 사용하기 위해 만든 구현체 클래스.
  *
  * @author 양영준
- * @version 1.0.3 2022년 1월 30일
+ * @version 1.0.4 2022년 2월 2일
  */
 public class DietRepositoryImpl implements DietRepositoryCustom {
     /*
@@ -127,6 +130,10 @@ public class DietRepositoryImpl implements DietRepositoryCustom {
                 .fetch();
     }
 
+    /**
+     * @param writerId 작성자 id
+     * @return 평균 식사 혈당 (아침,점심,저녁 모두 포함)
+     */
     @Override
     public Optional<Double> findAverageBloodSugarOfDiet(Long writerId) {
         /* @Query(value="SELECT AVG(diet.bloodSugar) FROM Diet as diet WHERE diet.diary.writer.writerId = :writer_id") */
@@ -135,6 +142,21 @@ public class DietRepositoryImpl implements DietRepositoryCustom {
                 .innerJoin(QDiet.diet.diary.writer, QWriter.writer)
                 .on(QDiet.diet.diary.writer.writerId.eq(writerId))
                 .fetchOne());
+    }
+
+    /**
+     * @param writerId 작성자 id
+     * @return (평균 혈당, 식사 시간) 형태의 튜플들
+     */
+    @Override
+    public List<Tuple> findAverageBloodSugarGroupByEatTime(Long writerId) {
+        return jpaQueryFactory
+                .select(QDiet.diet.bloodSugar.avg(),QDiet.diet.eatTime)
+                .from(QDiet.diet)
+                .innerJoin(QDiet.diet.diary.writer, QWriter.writer)
+                .on(QDiet.diet.diary.writer.writerId.eq(writerId))
+                .groupBy(QDiet.diet.eatTime)
+                .fetch();
     }
 
     /**

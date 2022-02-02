@@ -1,5 +1,5 @@
 /*
- * @(#)DiaryRepositoryImpl.java        1.0.3 2022/2/1
+ * @(#)DiaryRepositoryImpl.java        1.0.4 2022/2/2
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  * Querydsl을 사용하기 위해 만든 구현체 클래스.
  *
  * @author 양영준
- * @version 1.0.3 2022년 2월 1일
+ * @version 1.0.4 2022년 2월 2일
  */
 public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
 
@@ -231,6 +231,19 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
         jpaQueryFactory.delete(QDiabetesDiary.diabetesDiary)
                 .where(QDiabetesDiary.diabetesDiary.diaryId.eq(diaryId))
                 .execute();
+    }
+
+    /**
+     * @param writerId 작성자 id
+     * @return 평균 공복 혈당
+     */
+    @Override
+    public Optional<Double> findAverageFpg(Long writerId) {
+        return Optional.ofNullable(jpaQueryFactory.from(QDiabetesDiary.diabetesDiary)
+                .select(QDiabetesDiary.diabetesDiary.fastingPlasmaGlucose.avg())
+                .innerJoin(QDiabetesDiary.diabetesDiary.writer, QWriter.writer)
+                .on(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId))
+                .fetchOne());
     }
 
 }
