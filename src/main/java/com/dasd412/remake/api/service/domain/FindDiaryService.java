@@ -1,5 +1,5 @@
 /*
- * @(#)FindDiaryService.java        1.0.3 2022/2/1
+ * @(#)FindDiaryService.java        1.0.4 2022/2/2
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -37,7 +37,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * 조회 비즈니스 로직을 수행하는 서비스 클래스
  *
  * @author 양영준
- * @version 1.0.3 2022년 2월 1일
+ * @version 1.0.4 2022년 2월 2일
  */
 @Service
 public class FindDiaryService {
@@ -121,7 +121,7 @@ public class FindDiaryService {
     public List<DiabetesDiary> getDiariesWithRelationBetweenTime(EntityId<Writer, Long> writerEntityId, LocalDateTime startDate, LocalDateTime endDate) {
         logger.info("getDiariesWithRelationBetweenTime");
         checkNotNull(writerEntityId, "writerId must be provided");
-        checkArgument(startDate.isBefore(endDate), "startDate must be before than endDate");
+        checkArgument(startDate.isBefore(endDate) || startDate.isEqual(endDate), "startDate must be equal or before than endDate");
         return diaryRepository.findDiariesWithRelationBetweenTime(writerEntityId.getId(), startDate, endDate);
     }
 
@@ -143,7 +143,7 @@ public class FindDiaryService {
             LocalDateTime startDate = LocalDateTime.parse(startDateString);
             LocalDateTime endDate = LocalDateTime.parse(endDateString);
 
-            checkArgument(startDate.isBefore(endDate), "startDate must be before than endDate");
+            checkArgument(startDate.isBefore(endDate) || startDate.isEqual(endDate), "startDate must be equal or before than endDate");
 
             return diaryRepository.findDiaryBetweenTime(writerEntityId.getId(), startDate, endDate);
         } catch (DateTimeException e) {
@@ -163,7 +163,7 @@ public class FindDiaryService {
     public List<DiabetesDiary> getDiariesBetweenLocalDateTime(EntityId<Writer, Long> writerEntityId, LocalDateTime startDate, LocalDateTime endDate) {
         logger.info("get Diaries Between LocalDateTime");
         checkNotNull(writerEntityId, "writerId must be provided");
-        checkArgument(startDate.isBefore(endDate), "startDate must be before than endDate");
+        checkArgument(startDate.isBefore(endDate) || startDate.isEqual(endDate) , "startDate must be equal or before than endDate");
         return diaryRepository.findDiaryBetweenTime(writerEntityId.getId(), startDate, endDate);
     }
 
@@ -237,7 +237,7 @@ public class FindDiaryService {
             LocalDateTime startDate = LocalDateTime.parse(startDateString);
             LocalDateTime endDate = LocalDateTime.parse(endDateString);
 
-            checkArgument(startDate.isBefore(endDate), "startDate must be before endDate");
+            checkArgument(startDate.isBefore(endDate) || startDate.isEqual(endDate), "startDate must be equal or  before endDate");
             checkArgument(bloodSugar > 0, "blood sugar must be higher than zero");
 
             return dietRepository.findHigherThanBloodSugarBetweenTime(writerEntityId.getId(), bloodSugar, startDate, endDate);
@@ -261,7 +261,7 @@ public class FindDiaryService {
             LocalDateTime startDate = LocalDateTime.parse(startDateString);
             LocalDateTime endDate = LocalDateTime.parse(endDateString);
 
-            checkArgument(startDate.isBefore(endDate), "startDate must be before endDate");
+            checkArgument(startDate.isBefore(endDate)|| startDate.isEqual(endDate), "startDate must be equal or before endDate");
             checkArgument(bloodSugar > 0, "blood sugar must be higher than zero");
 
             return dietRepository.findLowerThanBloodSugarBetweenTime(writerEntityId.getId(), bloodSugar, startDate, endDate);
