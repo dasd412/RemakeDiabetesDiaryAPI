@@ -8,30 +8,43 @@
 
         <div class="toggle-left">
           <div class="toggle-left-top">
-            <select id="averageSelector">
-              <option selected>조회할 평균 혈당을 선택하세요</option>
-              <option value="averageFpg">공복 혈당</option>
-              <option value="averageBreakFast">아침 혈당</option>
-              <option value="averageLunch">점심 혈당</option>
-              <option value="averageDinner">저녁 혈당</option>
-              <option value="averageMeal">평균 식사 혈당</option>
-            </select>
+              <b style="font-size: 13px">전체 기간</b>
           </div>
 
           <div class="toggle-left-bottom">
-
+              <div class="switch-toggle">
+                  <label>
+                      <input type="checkbox" id="average-date-time-checkbox">
+                      <span></span>
+                  </label>
+              </div>
           </div>
         </div>
         <div class="toggle-right">
-
+            <div style="margin-top:35%; margin-right:75%;">
+                <button type="button" class="btn btn-primary" id="findAverageBtn">조회하기</button>
+            </div>
         </div>
       </div>
     </div>
 
     <div class="grid-chart-item mini-calendar">
-      <div style="margin-top:35%; margin-right:75%;">
-        <button type="button" class="btn btn-primary" id="findAverageBtn">조회하기</button>
-      </div>
+
+        <label for="start-date-average">시작 날짜</label>
+        <div class="input-group date">
+            <input type="text" class="form-control" id="start-date-average">
+            <div class="input-group-addon">
+                <span class="fa fa-calendar"></span>
+            </div>
+        </div>
+
+        <label for="end-date-average">끝 날짜</label>
+        <div class="input-group date">
+            <input type="text" class="form-control" id="end-date-average">
+            <div class="input-group-addon">
+                <span class="fa fa-calendar"></span>
+            </div>
+        </div>
 
     </div>
 
@@ -41,6 +54,10 @@
 
   </div>
 
+  <script>
+      $("#start-date-average").datepicker();
+      $("#end-date-average").datepicker();
+  </script>
 
   <script src="/js/chart/average.js"></script>
 {{/layout}}
