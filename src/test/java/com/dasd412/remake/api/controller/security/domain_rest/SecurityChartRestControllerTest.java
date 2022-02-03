@@ -32,6 +32,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
@@ -46,6 +47,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -215,4 +217,37 @@ public class SecurityChartRestControllerTest {
                 .andExpect(jsonPath("$.success").value("true"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response").value(hasSize(3)));
     }
+
+    @Test
+    public void findAverageFpg() throws Exception {
+        //given
+        String url = "/chart-menu/average/fasting-plasma-glucose";
+
+        //when and then
+        MvcResult rst=mockMvc.perform(get(url).with(user(principalDetails)).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value("true"))
+                .andExpect(jsonPath("$.response.averageFpg").value(105.0))
+                .andReturn();
+
+    }
+
+    @Test
+    public void findAverageBloodSugarGroupByEatTime() throws Exception {
+        //given
+        String url = "/chart-menu/average/blood-sugar";
+
+        //when and then
+        MvcResult result=mockMvc.perform(get(url).with(user(principalDetails)).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value("true"))
+                .andExpect(jsonPath("$.response.averageBreakFast").value(110.0))
+                .andExpect(jsonPath("$.response.averageLunch").value(120.0))
+                .andExpect(jsonPath("$.response.averageDinner").value(130.0))
+                .andReturn();
+
+    }
+
 }

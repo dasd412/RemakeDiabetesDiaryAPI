@@ -1,5 +1,5 @@
 /*
- * @(#)FindDiaryService.java        1.0.4 2022/2/2
+ * @(#)FindDiaryService.java        1.0.4 2022/2/3
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -18,6 +18,7 @@ import com.dasd412.remake.api.domain.diary.food.Food;
 import com.dasd412.remake.api.domain.diary.food.FoodRepository;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 
+import com.querydsl.core.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +38,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * 조회 비즈니스 로직을 수행하는 서비스 클래스
  *
  * @author 양영준
- * @version 1.0.4 2022년 2월 2일
+ * @version 1.0.4 2022년 2월 3일
  */
 @Service
 public class FindDiaryService {
@@ -163,7 +164,7 @@ public class FindDiaryService {
     public List<DiabetesDiary> getDiariesBetweenLocalDateTime(EntityId<Writer, Long> writerEntityId, LocalDateTime startDate, LocalDateTime endDate) {
         logger.info("get Diaries Between LocalDateTime");
         checkNotNull(writerEntityId, "writerId must be provided");
-        checkArgument(startDate.isBefore(endDate) || startDate.isEqual(endDate) , "startDate must be equal or before than endDate");
+        checkArgument(startDate.isBefore(endDate) || startDate.isEqual(endDate), "startDate must be equal or before than endDate");
         return diaryRepository.findDiaryBetweenTime(writerEntityId.getId(), startDate, endDate);
     }
 
@@ -192,6 +193,12 @@ public class FindDiaryService {
         checkNotNull(writerEntityId, "writerId must be provided");
         checkArgument(fastingPlasmaGlucose > 0, "fpg must be positive");
         return diaryRepository.findFpgLowerOrEqual(writerEntityId.getId(), fastingPlasmaGlucose);
+    }
+
+    public Double getAverageFpg(EntityId<Writer, Long> writerEntityId) {
+        logger.info("getAverageFpg");
+        checkNotNull(writerEntityId, "writerId must be provided");
+        return diaryRepository.findAverageFpg(writerEntityId.getId()).orElseThrow(NoResultException::new);
     }
 
     /**
@@ -261,7 +268,7 @@ public class FindDiaryService {
             LocalDateTime startDate = LocalDateTime.parse(startDateString);
             LocalDateTime endDate = LocalDateTime.parse(endDateString);
 
-            checkArgument(startDate.isBefore(endDate)|| startDate.isEqual(endDate), "startDate must be equal or before endDate");
+            checkArgument(startDate.isBefore(endDate) || startDate.isEqual(endDate), "startDate must be equal or before endDate");
             checkArgument(bloodSugar > 0, "blood sugar must be higher than zero");
 
             return dietRepository.findLowerThanBloodSugarBetweenTime(writerEntityId.getId(), bloodSugar, startDate, endDate);
@@ -309,6 +316,11 @@ public class FindDiaryService {
         return dietRepository.findAverageBloodSugarOfDiet(writerEntityId.getId()).orElseThrow(() -> new IllegalStateException("아직 혈당을 기록한 식단이 없습니다."));
     }
 
+    public List<Tuple> getAverageBloodSugarGroupByEatTime(EntityId<Writer, Long> writerEntityId) {
+        logger.info("getAverageBloodSugarGroupByEatTime");
+        checkNotNull(writerEntityId, "writerId must be provided");
+        return dietRepository.findAverageBloodSugarGroupByEatTime(writerEntityId.getId());
+    }
 
     /**
      * @param writerEntityId 래퍼로 감싸진 작성자 id

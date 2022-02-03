@@ -1,5 +1,5 @@
 /*
- * @(#)SecurityChartRestController.java        1.0.3 2022/2/1
+ * @(#)SecurityChartRestController.java        1.0.4 2022/2/3
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -10,15 +10,13 @@ package com.dasd412.remake.api.controller.security.domain_rest;
 
 import com.dasd412.remake.api.config.security.auth.PrincipalDetails;
 import com.dasd412.remake.api.controller.ApiResult;
-import com.dasd412.remake.api.controller.security.domain_rest.dto.chart.FindAllBloodSugarDTO;
-import com.dasd412.remake.api.controller.security.domain_rest.dto.chart.FindAllFpgDTO;
-import com.dasd412.remake.api.controller.security.domain_rest.dto.chart.FindBloodSugarBetweenDTO;
-import com.dasd412.remake.api.controller.security.domain_rest.dto.chart.FindFpgBetweenDTO;
+import com.dasd412.remake.api.controller.security.domain_rest.dto.chart.*;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 import com.dasd412.remake.api.domain.diary.diet.Diet;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.service.domain.FindDiaryService;
+import com.querydsl.core.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,7 +32,7 @@ import java.util.stream.Collectors;
  * 로그인한 사용자들이 자신의 혈당 "정보"를 조회할 수 있게 하는 RestController
  *
  * @author 양영준
- * @version 1.0.3 2022년 2월 1일
+ * @version 1.0.4 2022년 2월 3일
  */
 @RestController
 public class SecurityChartRestController {
@@ -135,6 +133,30 @@ public class SecurityChartRestController {
         dtoList.sort(Comparator.comparing(FindBloodSugarBetweenDTO::getDateTime));
 
         return ApiResult.OK(dtoList);
+    }
+
+    /**
+     * @param principalDetails 사용자 인증 정보
+     * @return 사용자의 평균 공복 혈당 정보
+     */
+    @GetMapping("/chart-menu/average/fasting-plasma-glucose")
+    public ApiResult<FindAverageFpgDTO> findAverageFpg(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        logger.info("find average fasting-plasma-glucose");
+        Double averageFpg = findDiaryService.getAverageFpg(EntityId.of(Writer.class, principalDetails.getWriter().getId()));
+
+        return ApiResult.OK(new FindAverageFpgDTO(averageFpg));
+    }
+
+    /**
+     * @param principalDetails 사용자 인증 정보
+     * @return 사용자의 평균 식사 혈당 정보 (식사 시간마다 따로 따로)
+     */
+    @GetMapping("/chart-menu/average/blood-sugar")
+    public ApiResult<FindAverageBloodSugarDTO> findAverageBloodSugarGroupByEatTime(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        logger.info("find average blood-sugar");
+        List<Tuple> averageBloodSugarTuples = findDiaryService.getAverageBloodSugarGroupByEatTime(EntityId.of(Writer.class, principalDetails.getWriter().getId()));
+
+        return ApiResult.OK(new FindAverageBloodSugarDTO(averageBloodSugarTuples));
     }
 
     /**
