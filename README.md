@@ -87,7 +87,7 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 ### 개선 사항 ###
 + 복합키의 장점을 못 살렸음.
 + Nginx 무중단 배포 실패. (아마 elb와 충돌한 것 같다.)
-+ JQuery 코드 사용 중지하고 React 또는 Vue 로 리팩토링 필요
++ JQuery 코드 사용 중지하고 React로 리팩토링 필요
 + 음식 수량의 경우 단위 통일이 어려움. 
 + Travis ci 로그 길이 제한 때문에 -DskipTests를 사용하고 있다. 테스트를 실행하게 할 수 있는 방법이 없을까.
 
@@ -99,7 +99,7 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
   + Spring Security 
   + Junit
   + Mustache, css
-  + JQuery [배포 후 Vue 로 리팩토링 예정]
+  + JQuery [배포 후 React 로 리팩토링 예정. ajax는 axios로 바꿀 예정.]
   + AWS (ec2, route 53, ACM, code deploy )
   + travis ci
 
