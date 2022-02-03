@@ -137,26 +137,16 @@ public class SecurityChartRestController {
 
     /**
      * @param principalDetails 사용자 인증 정보
-     * @return 사용자의 평균 공복 혈당 정보
+     * @return 사용자의 평균 공복 혈당 정보 + 사용자의 식사 시간 별 평균 혈당 정보 + 사용자의 전체 식사 평균 혈당 정보
      */
-    @GetMapping("/chart-menu/average/fasting-plasma-glucose")
-    public ApiResult<FindAverageFpgDTO> findAverageFpg(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        logger.info("find average fasting-plasma-glucose");
+    @GetMapping("/chart-menu/average/all")
+    public ApiResult<FindAverageAllDTO> findAverageAll(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        logger.info("find average all");
         Double averageFpg = findDiaryService.getAverageFpg(EntityId.of(Writer.class, principalDetails.getWriter().getId()));
-
-        return ApiResult.OK(new FindAverageFpgDTO(averageFpg));
-    }
-
-    /**
-     * @param principalDetails 사용자 인증 정보
-     * @return 사용자의 평균 식사 혈당 정보 (식사 시간마다 따로 따로)
-     */
-    @GetMapping("/chart-menu/average/blood-sugar")
-    public ApiResult<FindAverageBloodSugarDTO> findAverageBloodSugarGroupByEatTime(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        logger.info("find average blood-sugar");
         List<Tuple> averageBloodSugarTuples = findDiaryService.getAverageBloodSugarGroupByEatTime(EntityId.of(Writer.class, principalDetails.getWriter().getId()));
+        Double averageBloodSugar = findDiaryService.getAverageBloodSugarOfDiet(EntityId.of(Writer.class, principalDetails.getWriter().getId()));
 
-        return ApiResult.OK(new FindAverageBloodSugarDTO(averageBloodSugarTuples));
+        return ApiResult.OK(FindAverageAllDTO.builder().averageFpg(averageFpg).tupleList(averageBloodSugarTuples).averageBloodSugar(averageBloodSugar).build());
     }
 
     /**

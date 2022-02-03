@@ -219,9 +219,9 @@ public class SecurityChartRestControllerTest {
     }
 
     @Test
-    public void findAverageFpg() throws Exception {
+    public void findAverageAll() throws Exception {
         //given
-        String url = "/chart-menu/average/fasting-plasma-glucose";
+        String url = "/chart-menu/average/all";
 
         //when and then
         MvcResult rst=mockMvc.perform(get(url).with(user(principalDetails)).contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -229,25 +229,10 @@ public class SecurityChartRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value("true"))
                 .andExpect(jsonPath("$.response.averageFpg").value(105.0))
-                .andReturn();
-
-    }
-
-    @Test
-    public void findAverageBloodSugarGroupByEatTime() throws Exception {
-        //given
-        String url = "/chart-menu/average/blood-sugar";
-
-        //when and then
-        MvcResult result=mockMvc.perform(get(url).with(user(principalDetails)).contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value("true"))
                 .andExpect(jsonPath("$.response.averageBreakFast").value(110.0))
                 .andExpect(jsonPath("$.response.averageLunch").value(120.0))
-                .andExpect(jsonPath("$.response.averageDinner").value(130.0))
+                .andExpect(jsonPath("$.response.averageBloodSugar").value(120.0))
                 .andReturn();
 
     }
-
 }

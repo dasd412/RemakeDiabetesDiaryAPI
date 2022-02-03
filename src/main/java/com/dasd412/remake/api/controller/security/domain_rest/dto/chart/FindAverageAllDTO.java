@@ -3,6 +3,7 @@ package com.dasd412.remake.api.controller.security.domain_rest.dto.chart;
 import com.dasd412.remake.api.domain.diary.diet.EatTime;
 import com.dasd412.remake.api.domain.diary.diet.QDiet;
 import com.querydsl.core.Tuple;
+import lombok.Builder;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -11,7 +12,12 @@ import java.util.List;
 import java.util.Objects;
 
 @Getter
-public class FindAverageBloodSugarDTO {
+public class FindAverageAllDTO {
+
+    /**
+     * 평균 공복 혈당
+     */
+    private final double averageFpg;
 
     /**
      * 아침 식사 평균 혈당
@@ -27,9 +33,19 @@ public class FindAverageBloodSugarDTO {
     private double averageDinner;
 
     /**
-     * @param tupleList (식사 시간, 평균 식사 혈당)의 튜플
+     * 전체 식사 평균 혈당
      */
-    public FindAverageBloodSugarDTO(List<Tuple> tupleList) {
+    private final double averageBloodSugar;
+
+    /**
+     * @param averageFpg 평균 공복 혈당
+     * @param tupleList  (식사 시간, 평균 식사 혈당)의 튜플
+     * @param averageBloodSugar 전체 식사 평균 혈당
+     */
+    @Builder
+    public FindAverageAllDTO(Double averageFpg, List<Tuple> tupleList, Double averageBloodSugar) {
+        this.averageFpg = averageFpg;
+
         for (Tuple tuple : tupleList) {
 
             EatTime eatTime = tuple.get(QDiet.diet.eatTime);
@@ -51,13 +67,17 @@ public class FindAverageBloodSugarDTO {
                     break;
             }
         }
+
+        this.averageBloodSugar = averageBloodSugar;
     }
 
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append("averageFpg", averageFpg)
                 .append("averageBreakFast", averageBreakFast)
                 .append("averageLunch", averageLunch)
                 .append("averageDinner", averageDinner)
+                .append("averageBloodSugar", averageBloodSugar)
                 .toString();
     }
 }
