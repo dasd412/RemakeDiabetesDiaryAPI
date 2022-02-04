@@ -1,5 +1,5 @@
 /*
- * @(#)SecurityChartRestController.java        1.0.4 2022/2/3
+ * @(#)SecurityChartRestController.java        1.0.4 2022/2/4
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  * 로그인한 사용자들이 자신의 혈당 "정보"를 조회할 수 있게 하는 RestController
  *
  * @author 양영준
- * @version 1.0.4 2022년 2월 3일
+ * @version 1.0.4 2022년 2월 4일
  */
 @RestController
 public class SecurityChartRestController {
@@ -147,6 +147,20 @@ public class SecurityChartRestController {
         Double averageBloodSugar = findDiaryService.getAverageBloodSugarOfDiet(EntityId.of(Writer.class, principalDetails.getWriter().getId()));
 
         return ApiResult.OK(FindAverageAllDTO.builder().averageFpg(averageFpg).tupleList(averageBloodSugarTuples).averageBloodSugar(averageBloodSugar).build());
+    }
+
+    @GetMapping("/chart-menu/average/between")
+    public ApiResult<FindAverageBetweenDTO> findAverageBetween(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestParam Map<String, String> allParams) {
+        LocalDateTime startDate = convertStartDate(allParams);
+        LocalDateTime endDate = convertEndDate(allParams);
+
+        logger.info("find average blood sugar between" + startDate + " and " + endDate);
+
+        Double averageFpgBetween = findDiaryService.getAverageFpgBetween(EntityId.of(Writer.class, principalDetails.getWriter().getId()), startDate, endDate);
+        List<Tuple> averageBloodSugarTuplesBetween = findDiaryService.getAverageBloodSugarGroupByEatTimeBetweenTime(EntityId.of(Writer.class, principalDetails.getWriter().getId()), startDate, endDate);
+        Double averageBloodSugarBetween = findDiaryService.getAverageBloodSugarOfDietBetweenTime(EntityId.of(Writer.class, principalDetails.getWriter().getId()), startDate, endDate);
+
+        return ApiResult.OK(FindAverageBetweenDTO.builder().averageFpgBetween(averageFpgBetween).tupleListBetween(averageBloodSugarTuplesBetween).averageBloodSugarBetween(averageBloodSugarBetween).build());
     }
 
     /**

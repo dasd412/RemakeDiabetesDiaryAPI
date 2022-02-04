@@ -224,7 +224,7 @@ public class SecurityChartRestControllerTest {
         String url = "/chart-menu/average/all";
 
         //when and then
-        MvcResult rst=mockMvc.perform(get(url).with(user(principalDetails)).contentType(MediaType.APPLICATION_JSON_UTF8))
+        MvcResult result = mockMvc.perform(get(url).with(user(principalDetails)).contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value("true"))
@@ -234,5 +234,31 @@ public class SecurityChartRestControllerTest {
                 .andExpect(jsonPath("$.response.averageBloodSugar").value(120.0))
                 .andReturn();
 
+    }
+
+    @Test
+    public void findAverageBetween() throws Exception {
+        //given
+        String url = "/chart-menu/average/between";
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("startYear", "2022");
+        params.add("startMonth", "01");
+        params.add("startDay", "28");
+
+        params.add("endYear", "2022");
+        params.add("endMonth", "01");
+        params.add("endDay", "30");
+
+        //when and then
+        MvcResult result = mockMvc.perform(get(url).with(user(principalDetails)).params(params).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value("true"))
+                .andExpect(jsonPath("$.response.averageFpgBetween").value(100.0))
+                .andExpect(jsonPath("$.response.averageBreakFastBetween").value(110.0))
+                .andExpect(jsonPath("$.response.averageLunchBetween").value(120.0))
+                .andExpect(jsonPath("$.response.averageDinnerBetween").value(130.0))
+                .andExpect(jsonPath("$.response.averageBloodSugarBetween").value(120.0))
+                .andReturn();
     }
 }

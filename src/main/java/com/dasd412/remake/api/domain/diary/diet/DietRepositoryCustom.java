@@ -41,13 +41,13 @@ public interface DietRepositoryCustom {
 
     /**
      * @param writerId 작성자 id
-     * @return 평균 식사 혈당 (아침,점심,저녁 모두 포함)
+     * @return 전체 기간 동안의 평균 식사 혈당 (아침,점심,저녁 모두 포함)
      */
     Optional<Double> findAverageBloodSugarOfDiet(Long writerId);
 
     /**
      * @param writerId 작성자 id
-     * @return (평균 혈당, 식사 시간) 형태의 튜플들
+     * @return 전체 기간 동안의  (평균 혈당, 식사 시간) 형태의 튜플들
      */
     List<Tuple> findAverageBloodSugarGroupByEatTime(Long writerId);
 

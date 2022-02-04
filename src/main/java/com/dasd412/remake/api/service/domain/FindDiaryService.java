@@ -1,5 +1,5 @@
 /*
- * @(#)FindDiaryService.java        1.0.4 2022/2/3
+ * @(#)FindDiaryService.java        1.0.4 2022/2/4
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -38,7 +38,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * 조회 비즈니스 로직을 수행하는 서비스 클래스
  *
  * @author 양영준
- * @version 1.0.4 2022년 2월 3일
+ * @version 1.0.4 2022년 2월 4일
  */
 @Service
 public class FindDiaryService {
@@ -195,10 +195,29 @@ public class FindDiaryService {
         return diaryRepository.findFpgLowerOrEqual(writerEntityId.getId(), fastingPlasmaGlucose);
     }
 
+    /**
+     * @param writerEntityId 래퍼로 감싸진 작성자 id
+     * @return 전체 기간 내 평균 혈당
+     */
+    @Transactional(readOnly = true)
     public Double getAverageFpg(EntityId<Writer, Long> writerEntityId) {
         logger.info("getAverageFpg");
         checkNotNull(writerEntityId, "writerId must be provided");
         return diaryRepository.findAverageFpg(writerEntityId.getId()).orElseThrow(NoResultException::new);
+    }
+
+    /**
+     * @param writerEntityId 래퍼로 감싸진 작성자 id
+     * @param startDate      시작 날짜
+     * @param endDate        끝 날짜
+     * @return 해당 기간 내 평균 혈당
+     */
+    @Transactional(readOnly = true)
+    public Double getAverageFpgBetween(EntityId<Writer, Long> writerEntityId, LocalDateTime startDate, LocalDateTime endDate) {
+        logger.info("getAverageFpgBetween");
+        checkNotNull(writerEntityId, "writerId must be provided");
+        checkArgument(startDate.isBefore(endDate) || startDate.isEqual(endDate), "startDate must be equal or before than endDate");
+        return diaryRepository.findAverageFpgBetweenTime(writerEntityId.getId(), startDate, endDate).orElseThrow(NoResultException::new);
     }
 
     /**
@@ -307,7 +326,7 @@ public class FindDiaryService {
 
     /**
      * @param writerEntityId 래퍼로 감싸진 작성자 id
-     * @return 작성자의 평균 식사 혈당
+     * @return 전체 기간 동안의 작성자의 평균 식사 혈당
      */
     @Transactional(readOnly = true)
     public double getAverageBloodSugarOfDiet(EntityId<Writer, Long> writerEntityId) {
@@ -316,10 +335,44 @@ public class FindDiaryService {
         return dietRepository.findAverageBloodSugarOfDiet(writerEntityId.getId()).orElseThrow(() -> new IllegalStateException("아직 혈당을 기록한 식단이 없습니다."));
     }
 
+    /**
+     * @param writerEntityId 래퍼로 감싸진 작성자 id
+     * @param startDate      시작 날짜
+     * @param endDate        끝 날짜
+     * @return 해당 기간 동안의 작성자의 평균 식사 혈당
+     */
+    @Transactional(readOnly = true)
+    public double getAverageBloodSugarOfDietBetweenTime(EntityId<Writer, Long> writerEntityId, LocalDateTime startDate, LocalDateTime endDate) {
+        logger.info("getAverageBloodSugarOfDietBetweenTime");
+        checkNotNull(writerEntityId, "writerId must be provided");
+        checkArgument(startDate.isBefore(endDate) || startDate.isEqual(endDate), "startDate must be equal or before endDate");
+        return dietRepository.findAverageBloodSugarOfDietBetweenTime(writerEntityId.getId(), startDate, endDate).orElseThrow(NoResultException::new);
+    }
+
+
+    /**
+     * @param writerEntityId 래퍼로 감싸진 작성자 id
+     * @return 전체 기간 동안의 (평균 혈당, 식사 시간) 형태의 튜플들
+     */
+    @Transactional(readOnly = true)
     public List<Tuple> getAverageBloodSugarGroupByEatTime(EntityId<Writer, Long> writerEntityId) {
         logger.info("getAverageBloodSugarGroupByEatTime");
         checkNotNull(writerEntityId, "writerId must be provided");
         return dietRepository.findAverageBloodSugarGroupByEatTime(writerEntityId.getId());
+    }
+
+    /**
+     * @param writerEntityId 래퍼로 감싸진 작성자 id
+     * @param startDate      시작 날짜
+     * @param endDate        끝 날짜
+     * @return 해당 기간 동안의 (평균 혈당, 식사 시간) 형태의 튜플들
+     */
+    @Transactional(readOnly = true)
+    public List<Tuple> getAverageBloodSugarGroupByEatTimeBetweenTime(EntityId<Writer, Long> writerEntityId, LocalDateTime startDate, LocalDateTime endDate) {
+        logger.info("getAverageBloodSugarGroupByEatTimeBetweenTime");
+        checkNotNull(writerEntityId, "writerId must be provided");
+        checkArgument(startDate.isBefore(endDate) || startDate.isEqual(endDate), "startDate must be equal or before endDate");
+        return dietRepository.findAverageBloodSugarGroupByEatTimeBetweenTime(writerEntityId.getId(), startDate, endDate);
     }
 
     /**
