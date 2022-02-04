@@ -1,5 +1,5 @@
 /*
- * @(#)DietRepositoryImpl.java        1.0.4 2022/2/2
+ * @(#)DietRepositoryImpl.java        1.0.4 2022/2/4
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -29,7 +29,7 @@ import static com.querydsl.core.group.GroupBy.avg;
  * Querydsl을 사용하기 위해 만든 구현체 클래스.
  *
  * @author 양영준
- * @version 1.0.4 2022년 2월 2일
+ * @version 1.0.4 2022년 2월 4일
  */
 public class DietRepositoryImpl implements DietRepositoryCustom {
     /*
@@ -151,10 +151,43 @@ public class DietRepositoryImpl implements DietRepositoryCustom {
     @Override
     public List<Tuple> findAverageBloodSugarGroupByEatTime(Long writerId) {
         return jpaQueryFactory
-                .select(QDiet.diet.bloodSugar.avg(),QDiet.diet.eatTime)
+                .select(QDiet.diet.bloodSugar.avg(), QDiet.diet.eatTime)
                 .from(QDiet.diet)
                 .innerJoin(QDiet.diet.diary.writer, QWriter.writer)
                 .on(QDiet.diet.diary.writer.writerId.eq(writerId))
+                .groupBy(QDiet.diet.eatTime)
+                .fetch();
+    }
+
+    /**
+     * @param writerId  작성자 id
+     * @param startDate 시작 날짜
+     * @param endDate   끝 날짜
+     * @return 해당 기간 내의 평균 식사 혈당 (아침,점심,저녁 모두 포함)
+     */
+    @Override
+    public Optional<Double> findAverageBloodSugarOfDietBetweenTime(Long writerId, LocalDateTime startDate, LocalDateTime endDate) {
+        return Optional.ofNullable(jpaQueryFactory.from(QDiet.diet).select(QDiet.diet.bloodSugar.avg())
+                .innerJoin(QDiet.diet.diary.writer, QWriter.writer)
+                .on(QDiet.diet.diary.writer.writerId.eq(writerId))
+                .where(QDiet.diet.diary.writtenTime.between(startDate, endDate))
+                .fetchOne());
+    }
+
+    /**
+     * @param writerId  작성자 id
+     * @param startDate 시작 날짜
+     * @param endDate   끝 날짜
+     * @return 해당 기간 내의 (평균 혈당, 식사 시간) 형태의 튜플들
+     */
+    @Override
+    public List<Tuple> findAverageBloodSugarGroupByEatTimeBetweenTime(Long writerId, LocalDateTime startDate, LocalDateTime endDate) {
+        return jpaQueryFactory
+                .select(QDiet.diet.bloodSugar.avg(), QDiet.diet.eatTime)
+                .from(QDiet.diet)
+                .innerJoin(QDiet.diet.diary.writer, QWriter.writer)
+                .on(QDiet.diet.diary.writer.writerId.eq(writerId))
+                .where(QDiet.diet.diary.writtenTime.between(startDate, endDate))
                 .groupBy(QDiet.diet.eatTime)
                 .fetch();
     }

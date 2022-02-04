@@ -1,5 +1,5 @@
 /*
- * @(#)DiaryRepositoryCustom.java        1.0.4 2022/2/2
+ * @(#)DiaryRepositoryCustom.java        1.0.4 2022/2/4
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -18,7 +18,7 @@ import java.util.Optional;
  * 혈당일지 리포지토리 상위 인터페이스. Querydsl을 이용하기 위해 구현하였다.
  *
  * @author 양영준
- * @version 1.0.4 2022년 2월 2일
+ * @version 1.0.4 2022년 2월 4일
  */
 public interface DiaryRepositoryCustom {
 
@@ -79,8 +79,16 @@ public interface DiaryRepositoryCustom {
 
     /**
      * @param writerId 작성자 id
-     * @return 공복혈당의 평균 값
+     * @return 전체 기간 공복혈당의 평균 값
      */
     Optional<Double> findAverageFpg(Long writerId);
+
+    /**
+     * @param writerId  작성자 id
+     * @param startDate 시작 날짜
+     * @param endDate   끝 날짜
+     * @return 해당 기간 내 공복 혈당의 평균 값
+     */
+    Optional<Double> findAverageFpgBetweenTime(Long writerId, LocalDateTime startDate, LocalDateTime endDate);
 
 }

@@ -1,5 +1,5 @@
 /*
- * @(#)ReadDiaryTest.java        1.0.4 2022/2/2
+ * @(#)ReadDiaryTest.java        1.0.4 2022/2/4
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -39,7 +39,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import javax.persistence.NoResultException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,7 +47,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Security 적용 없이 리포지토리를 접근하여 조회 테스트.
  *
  * @author 양영준
- * @version 1.0.4 2022년 2월 2일
+ * @version 1.0.4 2022년 2월 4일
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest()
@@ -81,6 +80,7 @@ public class ReadDiaryTest {
 
     @After
     public void clean() {
+        logger.info("end\n");
         writerRepository.deleteAll();//cascade all 이므로 작성자 삭제하면 다 삭제됨.
     }
 
@@ -679,6 +679,111 @@ public class ReadDiaryTest {
             }
         }
 
+    }
+
+    @Transactional
+    @Test
+    public void findAverageFpgBetweenTime() {
+        //given
+        int fpg1 = 100;
+        int fpg2 = 200;
+        int fpg3 = 100;
+        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
+        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), fpg1, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
+        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), fpg2, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
+        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), fpg3, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
+
+        LocalDateTime startDate = LocalDateTime.of(2021, 12, 1, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2021, 12, 11, 0, 0);
+
+        //when
+        logger.info("select \n");
+        Double averageFpgBetween = diaryRepository.findAverageFpgBetweenTime(me.getId(), startDate, endDate).orElseThrow(NoResultException::new);
+
+        ///then
+        assertThat(averageFpgBetween).isCloseTo(150.0, Percentage.withPercentage(0.5));
+
+    }
+
+    @Transactional
+    @Test
+    public void findAverageBloodSugarOfDietBetweenTime() {
+        //given
+        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
+        DiabetesDiary diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
+        DiabetesDiary diary2 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
+        DiabetesDiary diary3 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
+
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.BreakFast, 100);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Lunch, 100);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Dinner, 100);
+
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.BreakFast, 120);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.Lunch, 200);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.Dinner, 170);
+
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()), EatTime.BreakFast, 150);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()), EatTime.Lunch, 120);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()), EatTime.Dinner, 140);
+
+        LocalDateTime startDate = LocalDateTime.of(2021, 12, 9, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2021, 12, 27, 0, 0);
+
+        //when
+        logger.info("select \n");
+        Double averageBloodSugar = dietRepository.findAverageBloodSugarOfDietBetweenTime(me.getId(), startDate, endDate).orElseThrow(NoResultException::new);
+
+        //then
+        assertThat(averageBloodSugar).isCloseTo(150.0, Percentage.withPercentage(0.5));
+    }
+
+
+    @Transactional
+    @Test
+    public void findAverageBloodSugarGroupByEatTimeBetweenTime() {
+        //given
+        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
+        DiabetesDiary diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
+        DiabetesDiary diary2 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
+        DiabetesDiary diary3 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
+
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.BreakFast, 100);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Lunch, 100);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Dinner, 100);
+
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.BreakFast, 120);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.Lunch, 200);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary2.getId()), EatTime.Dinner, 170);
+
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()), EatTime.BreakFast, 150);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()), EatTime.Lunch, 120);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary3.getId()), EatTime.Dinner, 140);
+
+        LocalDateTime startDate = LocalDateTime.of(2021, 12, 9, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2021, 12, 27, 0, 0);
+
+        //when
+        logger.info("select \n");
+        List<Tuple> tupleList = dietRepository.findAverageBloodSugarGroupByEatTimeBetweenTime(me.getId(), startDate, endDate);
+
+        //then
+        assertThat(tupleList.size()).isEqualTo(3);
+        for (Tuple tuple : tupleList) {
+            EatTime eatTime = tuple.get(QDiet.diet.eatTime);
+            Double average = tuple.get(QDiet.diet.bloodSugar.avg());
+            logger.info(eatTime + " " + average);
+            switch (Objects.requireNonNull(eatTime)) {
+                case BreakFast:
+                    assertThat(average).isCloseTo(135.0, Percentage.withPercentage(0.5));
+                    break;
+                case Lunch:
+                    assertThat(average).isCloseTo(160.0, Percentage.withPercentage(0.5));
+                    break;
+                case Dinner:
+                    assertThat(average).isCloseTo(155.0, Percentage.withPercentage(0.5));
+                    break;
+            }
+        }
     }
 
 }

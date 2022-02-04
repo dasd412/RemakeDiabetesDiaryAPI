@@ -1,5 +1,5 @@
 /*
- * @(#)DiaryRepositoryImpl.java        1.0.4 2022/2/2
+ * @(#)DiaryRepositoryImpl.java        1.0.4 2022/2/4
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -9,7 +9,6 @@
 package com.dasd412.remake.api.domain.diary.diabetesDiary;
 
 import com.dasd412.remake.api.domain.diary.diet.Diet;
-import com.dasd412.remake.api.domain.diary.diet.DietRepository;
 import com.dasd412.remake.api.domain.diary.diet.QDiet;
 import com.dasd412.remake.api.domain.diary.food.Food;
 import com.dasd412.remake.api.domain.diary.food.QFood;
@@ -28,7 +27,7 @@ import java.util.stream.Collectors;
  * Querydsl을 사용하기 위해 만든 구현체 클래스.
  *
  * @author 양영준
- * @version 1.0.4 2022년 2월 2일
+ * @version 1.0.4 2022년 2월 4일
  */
 public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
 
@@ -243,6 +242,22 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
                 .select(QDiabetesDiary.diabetesDiary.fastingPlasmaGlucose.avg())
                 .innerJoin(QDiabetesDiary.diabetesDiary.writer, QWriter.writer)
                 .on(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId))
+                .fetchOne());
+    }
+
+    /**
+     * @param writerId  작성자 id
+     * @param startDate 시작 날짜
+     * @param endDate   끝 날짜
+     * @return 해당 기간 내 공복 혈당의 평균 값
+     */
+    @Override
+    public Optional<Double> findAverageFpgBetweenTime(Long writerId, LocalDateTime startDate, LocalDateTime endDate) {
+        return Optional.ofNullable(jpaQueryFactory.from(QDiabetesDiary.diabetesDiary)
+                .select(QDiabetesDiary.diabetesDiary.fastingPlasmaGlucose.avg())
+                .innerJoin(QDiabetesDiary.diabetesDiary.writer, QWriter.writer)
+                .where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId)
+                        .and(QDiabetesDiary.diabetesDiary.writtenTime.between(startDate, endDate)))
                 .fetchOne());
     }
 
