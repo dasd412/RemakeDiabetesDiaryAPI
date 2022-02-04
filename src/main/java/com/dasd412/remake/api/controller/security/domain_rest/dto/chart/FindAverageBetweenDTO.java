@@ -17,25 +17,25 @@ public class FindAverageBetweenDTO {
     /**
      * 기간 내 평균 공복 혈당
      */
-    private final double averageFpgBetween;
+    private final double averageFpg;
 
     /**
      * 기간 내 아침 식사 평균 혈당
      */
-    private double averageBreakFastBetween;
+    private double averageBreakFast;
     /**
      * 기간 내 점심 식사 평균 혈당
      */
-    private double averageLunchBetween;
+    private double averageLunch;
     /**
      * 기간 내 저녁 식사 평균 혈당
      */
-    private double averageDinnerBetween;
+    private double averageDinner;
 
     /**
      * 기간 내 전체 식사 평균 혈당
      */
-    private final double averageBloodSugarBetween;
+    private final double averageBloodSugar;
 
     /**
      * @param averageFpgBetween        기간 내 평균 공복 혈당
@@ -44,7 +44,7 @@ public class FindAverageBetweenDTO {
      */
     @Builder
     public FindAverageBetweenDTO(Double averageFpgBetween, List<Tuple> tupleListBetween, Double averageBloodSugarBetween) {
-        this.averageFpgBetween = averageFpgBetween;
+        this.averageFpg = averageFpgBetween;
 
         for (Tuple tuple : tupleListBetween) {
 
@@ -56,28 +56,28 @@ public class FindAverageBetweenDTO {
 
             switch (eatTime) {
                 case BreakFast:
-                    this.averageBreakFastBetween = average;
+                    this.averageBreakFast = average;
                     break;
 
                 case Lunch:
-                    this.averageLunchBetween = average;
+                    this.averageLunch = average;
                     break;
                 case Dinner:
-                    this.averageDinnerBetween = average;
+                    this.averageDinner = average;
                     break;
             }
         }
 
-        this.averageBloodSugarBetween = averageBloodSugarBetween;
+        this.averageBloodSugar = averageBloodSugarBetween;
     }
 
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                .append("averageFpgBetween", averageFpgBetween)
-                .append("averageBreakFastBetween", averageBreakFastBetween)
-                .append("averageLunchBetween", averageLunchBetween)
-                .append("averageDinnerBetween", averageDinnerBetween)
-                .append("averageBloodSugarBetween", averageBloodSugarBetween)
+                .append("averageFpgBetween", averageFpg)
+                .append("averageBreakFastBetween", averageBreakFast)
+                .append("averageLunchBetween", averageLunch)
+                .append("averageDinnerBetween", averageDinner)
+                .append("averageBloodSugarBetween", averageBloodSugar)
                 .toString();
     }
 }
