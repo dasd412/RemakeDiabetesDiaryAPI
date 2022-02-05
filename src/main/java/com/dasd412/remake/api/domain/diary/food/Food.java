@@ -64,6 +64,7 @@ public class Food {
     /**
      * 음식 수량 단위. 음식 수량이랑 엮인다.
      */
+    @Enumerated(EnumType.STRING)
     private AmountUnit amountUnit;
 
     public Food() {
