@@ -1,5 +1,5 @@
 /*
- * @(#)post.js        1.0.1 2022/1/22
+ * @(#)post.js        1.0.4 2022/2/5
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, JavaScript, Pocheon-si, KOREA
@@ -10,7 +10,7 @@
  * 일지 작성 폼을 담당
  *
  * @author 양영준
- * @version 1.0.1 2022년 1월 22일
+ * @version 1.0.4 2022년 2월 5일
  */
 
 /**
@@ -18,13 +18,16 @@
  * @param liId li 태그 id
  * @param name 음식 이름
  * @param amount 음식 수량
+ * @param amountUnit 수량 단위
  * @constructor
  */
-function FoodData(liId, name, amount) {
+function FoodData(liId, name, amount, amountUnit) {
     this.liId = liId;
     this.name = name;
     this.amount = amount;
+    this.amountUnit = amountUnit;
 }
+
 
 /**
  * 일지 작성 폼을 담당하는 객체
@@ -81,14 +84,15 @@ const PostManipulator = {
      * @param liId 현재 li 태그 id
      * @param foodName 음식 이름
      * @param foodAmount 음식 수량
+     * @param foodAmountUnit 음식 수량 단위
      * @param mealKey 식사 시간. foodDataDict의 key.
      */
-    cacheAddFoods: function (liId, foodName, foodAmount, mealKey) {
+    cacheAddFoods: function (liId, foodName, foodAmount, foodAmountUnit, mealKey) {
         //중복 여부를 효율적으로 판단할 수 있도록 set 에 음식 이름을 저장. alreadyHasFoodName()이 선행 호출되어 있어야 한다.
         this.foodNameSetDict[mealKey].add(foodName);
 
         //딕셔너리[식단]에 (li 태그 id , 음식 이름, 음식 수량)의 데이터를 담아 놓는다.
-        this.foodDataDict[mealKey].push(new FoodData(liId, foodName, foodAmount));
+        this.foodDataDict[mealKey].push(new FoodData(liId, foodName, foodAmount, foodAmountUnit));
 
         //auto increment 방식으로 id를 관리할 예정. 무조건 + 만 한다.
         this.foodIdDict[mealKey] += 1
@@ -194,14 +198,16 @@ const PostManipulator = {
             return;
         }
 
-        let month = "" + $("#month").text();
-        if ($("#month").text() < 10 && month.indexOf('0') === -1 || month.length === 1) {
-            month = "0" + $("#month").text();
+        const selectedMonth = $("#month").text();
+        let month = "" + selectedMonth;
+        if (selectedMonth < 10 && month.indexOf('0') === -1 || month.length === 1) {
+            month = "0" + selectedMonth;
         }
 
-        let day = "" + $("#day").text();
-        if ($("#day").text() < 10 && day.indexOf('0') === -1 || day.length === 1) {
-            day = "0" + $("#day").text();
+        const selectedDay = $("#day").text();
+        let day = "" + selectedDay;
+        if (selectedDay < 10 && day.indexOf('0') === -1 || day.length === 1) {
+            day = "0" + selectedDay;
         }
 
         const data = {
@@ -218,12 +224,20 @@ const PostManipulator = {
             dinnerSugar: dinnerSugar,
             breakFastFoods: this.foodDataDict['breakFast'].map(elem => ({
                 foodName: elem['name'],
-                amount: elem['amount']
+                amount: elem['amount'],
+                amountUnit: elem['amountUnit']
             })),
-            lunchFoods: this.foodDataDict['lunch'].map(elem => ({foodName: elem['name'], amount: elem['amount']})),
-            dinnerFoods: this.foodDataDict['dinner'].map(elem => ({foodName: elem['name'], amount: elem['amount']}))
+            lunchFoods: this.foodDataDict['lunch'].map(elem => ({
+                foodName: elem['name'],
+                amount: elem['amount'],
+                amountUnit: elem['amountUnit']
+            })),
+            dinnerFoods: this.foodDataDict['dinner'].map(elem => ({
+                foodName: elem['name'],
+                amount: elem['amount'],
+                amountUnit: elem['amountUnit']
+            }))
         };
-
 
         $.ajax({
             type: 'POST',
@@ -272,6 +286,7 @@ function addFood(button) {
     let mealKey;
     let foodNameId;
     let foodAmountId;
+    let foodAmountUnit;
 
     //버튼의 id 값에 따라 어떤 식단인지를 특정한다.
     switch (button.id) {
@@ -299,7 +314,8 @@ function addFood(button) {
     }
 
     foodName = $(foodNameId).val();
-    foodAmount = $(foodAmountId).val();
+    foodAmount = $(foodAmountId).children('input').val();
+    foodAmountUnit = $(foodAmountId).children('select').children("option:selected");
 
     //적절하지 않은 입력 값 검증하기
     if (!isNaN(foodName)) {
@@ -317,10 +333,6 @@ function addFood(button) {
         return;
     }
 
-    if (isNaN(foodAmount) && (foodAmount < 0 || foodAmount > 1000)) {
-        swal('', "음식 양은 1g 이상 1kg 미만이여야 합니다.", "error");
-        return;
-    }
     //각 식단에서 길이가 8이하 인지 확인.
     if (PostManipulator.getDictLength(mealKey) >= 8) {
         swal('', mealKey + "'의 음식 개수는 최대 8개 입니다.", "error");
@@ -342,7 +354,7 @@ function addFood(button) {
             //ul 태그에 li 태그를 동적으로 부착한다.
             $(ulName).append("<li>" +
                 foodName + " "
-                + foodAmount + "g" +
+                + foodAmount + " " + foodAmountUnit.text() +
                 "<span class=\"fas fa-times\" id='close' onclick='closeList(this)'></span></li>"
                 + "</li>");
 
@@ -356,11 +368,12 @@ function addFood(button) {
         $(lastLi).attr('id', liId);
 
         //캐시에 넣는다.
-        PostManipulator.cacheAddFoods(liId, foodName, foodAmount, mealKey);
+        PostManipulator.cacheAddFoods(liId, foodName, foodAmount, foodAmountUnit.val(), mealKey);
     }
 
     $(foodNameId).val('');
-    $(foodAmountId).val('');
+    $(foodAmountId).children('input').val('');
+
 }
 
 $(document).ready(function () {
