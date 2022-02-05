@@ -1,5 +1,5 @@
 /*
- * @(#)SecurityDiaryRestControllerTest.java        1.0.1 2022/1/22
+ * @(#)SecurityDiaryRestControllerTest.java        1.0.5 2022/2/5
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -58,7 +58,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * @author 양영준
- * @version 1.0.1 2022년 1월 22일
+ * @version 1.0.5 2022년 2월 5일
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -162,11 +162,11 @@ public class SecurityDiaryRestControllerTest {
         //given
         String url = "/api/diary/user/diabetes-diary";
 
-        List<SecurityFoodDTO> breakFast = IntStream.rangeClosed(0, 5).mapToObj(i -> new SecurityFoodDTO("breakFast" + i, i * 1000))
+        List<SecurityFoodDTO> breakFast = IntStream.rangeClosed(0, 5).mapToObj(i -> new SecurityFoodDTO("breakFast" + i, i * -1000))
                 .collect(Collectors.toList());
-        List<SecurityFoodDTO> lunch = IntStream.rangeClosed(0, 6).mapToObj(i -> new SecurityFoodDTO("lunch" + i, i * 1000))
+        List<SecurityFoodDTO> lunch = IntStream.rangeClosed(0, 6).mapToObj(i -> new SecurityFoodDTO("lunch" + i, i * -1000))
                 .collect(Collectors.toList());
-        List<SecurityFoodDTO> dinner = IntStream.rangeClosed(0, 7).mapToObj(i -> new SecurityFoodDTO("dinner" + i, i * 1000))
+        List<SecurityFoodDTO> dinner = IntStream.rangeClosed(0, 7).mapToObj(i -> new SecurityFoodDTO("dinner" + i, i * -1000))
                 .collect(Collectors.toList());
 
         SecurityDiaryPostRequestDTO dto = SecurityDiaryPostRequestDTO.builder().fastingPlasmaGlucose(0).remark("test")

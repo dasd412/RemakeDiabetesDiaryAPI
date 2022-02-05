@@ -1,5 +1,5 @@
 /*
- * @(#)SecurityChartRestControllerTest.java        1.0.3 2022/2/1
+ * @(#)SecurityChartRestControllerTest.java        1.0.5 2022/2/5
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -54,7 +54,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * @author 양영준
- * @version 1.0.3 2022년 2월 1일
+ * @version 1.0.5 2022년 2월 5일
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -254,11 +254,11 @@ public class SecurityChartRestControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value("true"))
-                .andExpect(jsonPath("$.response.averageFpgBetween").value(100.0))
-                .andExpect(jsonPath("$.response.averageBreakFastBetween").value(110.0))
-                .andExpect(jsonPath("$.response.averageLunchBetween").value(120.0))
-                .andExpect(jsonPath("$.response.averageDinnerBetween").value(130.0))
-                .andExpect(jsonPath("$.response.averageBloodSugarBetween").value(120.0))
+                .andExpect(jsonPath("$.response.averageFpg").value(100.0))
+                .andExpect(jsonPath("$.response.averageBreakFast").value(110.0))
+                .andExpect(jsonPath("$.response.averageLunch").value(120.0))
+                .andExpect(jsonPath("$.response.averageDinner").value(130.0))
+                .andExpect(jsonPath("$.response.averageBloodSugar").value(120.0))
                 .andReturn();
     }
 }
