@@ -1,5 +1,5 @@
 /*
- * @(#)post.js        1.0.4 2022/2/5
+ * @(#)post.js        1.0.5 2022/2/5
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, JavaScript, Pocheon-si, KOREA
@@ -10,7 +10,7 @@
  * 일지 작성 폼을 담당
  *
  * @author 양영준
- * @version 1.0.4 2022년 2월 5일
+ * @version 1.0.5 2022년 2월 5일
  */
 
 /**

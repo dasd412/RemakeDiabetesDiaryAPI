@@ -1,5 +1,5 @@
 /*
- * @(#)Food.java        1.0.1 2022/1/22
+ * @(#)Food.java        1.0.5 2022/2/5
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -23,7 +23,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * 음식 엔티티. 식단의 하위 엔티티
  *
  * @author 양영준
- * @version 1.0.1 2022년 1월 22일
+ * @version 1.0.5 2022년 2월 5일
  */
 @Entity
 @Table(name = "Food", uniqueConstraints = @UniqueConstraint(columnNames = {"food_id"}))
@@ -61,20 +61,54 @@ public class Food {
      */
     private double amount;
 
+    /**
+     * 음식 수량 단위. 음식 수량이랑 엮인다.
+     */
+    private AmountUnit amountUnit;
+
     public Food() {
     }
 
+    /**
+     * 수량 작성하지 않고 음식 엔티티 저장.
+     *
+     * @param foodEntityId 래퍼로 감싸진 작성자 id
+     * @param diet         연관 관계를 맺는 식단
+     * @param foodName     음식 이름
+     */
     public Food(EntityId<Food, Long> foodEntityId, Diet diet, String foodName) {
-        this(foodEntityId, diet, foodName, 0.1);
+        this(foodEntityId, diet, foodName, 0);
     }
 
+    /**
+     * 음식 수량 단위가 추가되지 않았을 때 쓰였던 기존 생성자.
+     *
+     * @param foodEntityId 래퍼로 감싸진 작성자 id
+     * @param diet         연관 관계를 맺는 식단
+     * @param foodName     음식 이름
+     * @param amount       음식 수량
+     */
     public Food(EntityId<Food, Long> foodEntityId, Diet diet, String foodName, double amount) {
+        this(foodEntityId, diet, foodName, amount, AmountUnit.g);
+    }
+
+    /**
+     * 음식 수량 단위가 추가되고 나서 쓰이는 생성자.
+     *
+     * @param foodEntityId 래퍼로 감싸진 작성자 id
+     * @param diet         연관 관계를 맺는 식단
+     * @param foodName     음식 이름
+     * @param amount       음식 수량
+     * @param amountUnit   음식 수량 단위
+     */
+    public Food(EntityId<Food, Long> foodEntityId, Diet diet, String foodName, double amount, AmountUnit amountUnit) {
         checkArgument(foodName.length() > 0 && foodName.length() <= 50, "food name length should be between 1 and 50");
-        checkArgument(amount >= 0 && amount <= 1000, "amount unit is gram. it should be between 1g and 1kg. And, zero means null");
+        checkArgument(amount >= 0, "amount must be positive.");
         this.foodId = foodEntityId.getId();
         this.diet = diet;
         this.foodName = foodName;
         this.amount = amount;
+        this.amountUnit = amountUnit;
     }
 
     public Long getId() {
@@ -89,14 +123,22 @@ public class Food {
         return amount;
     }
 
+    public AmountUnit getAmountUnit() {
+        return amountUnit;
+    }
+
     private void modifyFoodName(String foodName) {
         checkArgument(foodName.length() > 0 && foodName.length() <= 50, "food name length should be between 1 and 50");
         this.foodName = foodName;
     }
 
     private void modifyAmount(double amount) {
-        checkArgument(amount >= 0 && amount <= 1000, "amount unit is gram. it should be between 1g and 1kg. And, zero means null");
+        checkArgument(amount >= 0, "amount must be positive.");
         this.amount = amount;
+    }
+
+    private void modifyAmountUnit(AmountUnit amountUnit) {
+        this.amountUnit = amountUnit;
     }
 
     public Diet getDiet() {
@@ -127,6 +169,7 @@ public class Food {
                 .append("diet", diet)
                 .append("foodName", foodName)
                 .append("amount", amount)
+                .append("amountUnit", amountUnit)
                 .toString();
     }
 
@@ -151,9 +194,10 @@ public class Food {
         modifyFoodName(foodName);
     }
 
-    public void update(String foodName, double amount) {
+    public void update(String foodName, double amount, AmountUnit amountUnit) {
         modifyFoodName(foodName);
         modifyAmount(amount);
+        modifyAmountUnit(amountUnit);
     }
 
 }
