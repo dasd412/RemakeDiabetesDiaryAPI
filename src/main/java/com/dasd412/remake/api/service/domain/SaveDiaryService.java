@@ -1,5 +1,5 @@
 /*
- * @(#)SaveDiaryService.java        1.0.1 2022/1/22
+ * @(#)SaveDiaryService.java        1.0.5 2022/2/5
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -14,6 +14,7 @@ import com.dasd412.remake.api.domain.diary.diabetesDiary.DiaryRepository;
 import com.dasd412.remake.api.domain.diary.diet.Diet;
 import com.dasd412.remake.api.domain.diary.diet.DietRepository;
 import com.dasd412.remake.api.domain.diary.diet.EatTime;
+import com.dasd412.remake.api.domain.diary.food.AmountUnit;
 import com.dasd412.remake.api.domain.diary.food.Food;
 import com.dasd412.remake.api.domain.diary.food.FoodRepository;
 import com.dasd412.remake.api.domain.diary.writer.Role;
@@ -31,7 +32,7 @@ import java.time.LocalDateTime;
  * 저장 로직을 수행하는 서비스 클래스
  *
  * @author 양영준
- * @version 1.0.1 2022년 1월 22일
+ * @version 1.0.5 2022년 2월 5일
  */
 @Service
 public class SaveDiaryService {
@@ -107,7 +108,6 @@ public class SaveDiaryService {
     }
 
 
-
     @Transactional
     public Writer saveWriter(String name, String email, Role role) {
         logger.info("saveWriter");
@@ -149,13 +149,12 @@ public class SaveDiaryService {
     }
 
     @Transactional
-    public Food saveFoodAndAmountOfWriterById(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diaryEntityId, EntityId<Diet, Long> dietEntityId, String foodName, double amount) {
+    public void saveFoodAndAmountOfWriterById(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diaryEntityId, EntityId<Diet, Long> dietEntityId, String foodName, double amount, AmountUnit amountUnit) {
         logger.info("saveFoodOfWriterById");
         Writer writer = writerRepository.findById(writerEntityId.getId()).orElseThrow(() -> new NoResultException("작성자가 없습니다."));
         Diet diet = dietRepository.findOneDietByIdInDiary(writerEntityId.getId(), diaryEntityId.getId(), dietEntityId.getId()).orElseThrow(() -> new NoResultException("식단이 없습니다."));
-        Food food = new Food(getNextIdOfFood(), diet, foodName, amount);
+        Food food = new Food(getNextIdOfFood(), diet, foodName, amount, amountUnit);
         diet.addFood(food);
         writerRepository.save(writer);
-        return food;
     }
 }

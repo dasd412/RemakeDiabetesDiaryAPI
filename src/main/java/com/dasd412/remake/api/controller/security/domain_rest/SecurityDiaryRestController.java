@@ -1,5 +1,5 @@
 /*
- * @(#)SecurityDiaryRestController.java        1.0.1 2022/1/22
+ * @(#)SecurityDiaryRestController.java        1.0.5 2022/2/5
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  * 로그인한 사용자들이 일지를 "사용" (작성, 수정, 삭제 등...)할 때의 일을 처리하는 RestController
  *
  * @author 양영준
- * @version 1.0.1 2022년 1월 22일
+ * @version 1.0.5 2022년 2월 5일
  */
 @RestController
 public class SecurityDiaryRestController {
@@ -85,7 +85,7 @@ public class SecurityDiaryRestController {
                         (EntityId.of(Writer.class, writerId),
                                 EntityId.of(DiabetesDiary.class, diaryId),
                                 EntityId.of(Diet.class, breakFast.getDietId()),
-                                elem.getFoodName(), elem.getAmount()
+                                elem.getFoodName(), elem.getAmount(), elem.getAmountUnit()
                         ));
         /* 점심 음식 저장 */
         dto.getLunchFoods()
@@ -93,7 +93,7 @@ public class SecurityDiaryRestController {
                         (EntityId.of(Writer.class, writerId),
                                 EntityId.of(DiabetesDiary.class, diaryId),
                                 EntityId.of(Diet.class, lunch.getDietId()),
-                                elem.getFoodName(), elem.getAmount()
+                                elem.getFoodName(), elem.getAmount(), elem.getAmountUnit()
                         ));
         /* 식단 음식 저장 */
         dto.getDinnerFoods()
@@ -101,7 +101,7 @@ public class SecurityDiaryRestController {
                         (EntityId.of(Writer.class, writerId),
                                 EntityId.of(DiabetesDiary.class, diaryId),
                                 EntityId.of(Diet.class, dinner.getDietId()),
-                                elem.getFoodName(), elem.getAmount()
+                                elem.getFoodName(), elem.getAmount(), elem.getAmountUnit()
                         ));
         return ApiResult.OK(new SecurityDiaryPostResponseDTO(diaryId));
     }
@@ -159,7 +159,7 @@ public class SecurityDiaryRestController {
                         (writerLongEntityId,
                                 diabetesDiaryLongEntityId,
                                 breakFastEntityId,
-                                elem.getFoodName(), elem.getAmount()
+                                elem.getFoodName(), elem.getAmount(), elem.getAmountUnit()
                         ));
 
         dto.getNewLunchFoods()
@@ -167,7 +167,7 @@ public class SecurityDiaryRestController {
                         (writerLongEntityId,
                                 diabetesDiaryLongEntityId,
                                 lunchEntityId,
-                                elem.getFoodName(), elem.getAmount()
+                                elem.getFoodName(), elem.getAmount(), elem.getAmountUnit()
                         ));
 
         dto.getNewDinnerFoods()
@@ -175,7 +175,7 @@ public class SecurityDiaryRestController {
                         (writerLongEntityId,
                                 diabetesDiaryLongEntityId,
                                 dinnerEntityId,
-                                elem.getFoodName(), elem.getAmount()
+                                elem.getFoodName(), elem.getAmount(), elem.getAmountUnit()
                         ));
         return ApiResult.OK(new SecurityDiaryUpdateResponseDTO(dinnerEntityId.getId()));
     }
