@@ -2,3 +2,11 @@
     border: 2px solid #000000;
     padding: 35px;
 }
+
+.select-group input.form-control {
+    width: 60%
+}
+
+.select-group select.input-group-addon {
+    width: 40%;
+}
