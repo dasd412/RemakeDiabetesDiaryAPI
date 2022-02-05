@@ -21,6 +21,7 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
   + 삭제 연산 최적화 수행 [벌크 연산 처리]
   + MySql 연동 완료
   + 삽입 연산 최적화 수행
+  + 음식 엔티티에 수량 단위 추가 [요구사항 반영]
   
 
 + 스프링 시큐리티
@@ -88,7 +89,6 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 + 복합키의 장점을 못 살렸음.
 + Nginx 무중단 배포 실패. (아마 elb와 충돌한 것 같다.)
 + JQuery 코드 사용 중지하고 React로 리팩토링 필요
-+ 음식 수량의 경우 단위 통일이 어려움. 
 + Travis ci 로그 길이 제한 때문에 -DskipTests를 사용하고 있다. 테스트를 실행하게 할 수 있는 방법이 없을까.
 
 ### 사용 기술 [2022-01-18 기준] ###

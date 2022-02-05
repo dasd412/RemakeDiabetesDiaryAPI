@@ -328,15 +328,15 @@ public class SecurityDiaryRestControllerTest {
         PostForUpdateDTO viewDTO = new PostForUpdateDTO(targetDiary);
 
         List<SecurityFoodForUpdateDTO> oldBreakFast = viewDTO.getBreakFastFoods()
-                .stream().map(elem -> new SecurityFoodForUpdateDTO(elem.getId(), breakFast.get(0).getFoodName(), breakFast.get(0).getAmount()))
+                .stream().map(elem -> new SecurityFoodForUpdateDTO(elem.getId(), breakFast.get(0).getFoodName(), breakFast.get(0).getAmount(),AmountUnit.g))
                 .collect(Collectors.toList());
 
         List<SecurityFoodForUpdateDTO> oldLunch = viewDTO.getLunchFoods()
-                .stream().map(elem -> new SecurityFoodForUpdateDTO(elem.getId(), lunch.get(0).getFoodName(), lunch.get(0).getAmount()))
+                .stream().map(elem -> new SecurityFoodForUpdateDTO(elem.getId(), lunch.get(0).getFoodName(), lunch.get(0).getAmount(),AmountUnit.g))
                 .collect(Collectors.toList());
 
         List<SecurityFoodForUpdateDTO> oldDinner = viewDTO.getDinnerFoods()
-                .stream().map(elem -> new SecurityFoodForUpdateDTO(elem.getId(), dinner.get(0).getFoodName(), dinner.get(0).getAmount()))
+                .stream().map(elem -> new SecurityFoodForUpdateDTO(elem.getId(), dinner.get(0).getFoodName(), dinner.get(0).getAmount(),AmountUnit.g))
                 .collect(Collectors.toList());
 
         List<SecurityFoodDTO> newBreakFast = viewDTO.getBreakFastFoods()

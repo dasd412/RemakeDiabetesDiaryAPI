@@ -89,7 +89,7 @@ public class PostForUpdateDTO {
 
                     this.breakFastFoods = diet.getFoodList()
                             .stream()
-                            .map(food -> new SecurityFoodForUpdateDTO(food.getId(), food.getFoodName(), food.getAmount()))
+                            .map(food -> new SecurityFoodForUpdateDTO(food.getId(), food.getFoodName(), food.getAmount(), food.getAmountUnit()))
                             .collect(Collectors.toList());
                     break;
 
@@ -99,7 +99,7 @@ public class PostForUpdateDTO {
 
                     this.lunchFoods = diet.getFoodList()
                             .stream()
-                            .map(food -> new SecurityFoodForUpdateDTO(food.getId(), food.getFoodName(), food.getAmount()))
+                            .map(food -> new SecurityFoodForUpdateDTO(food.getId(), food.getFoodName(), food.getAmount(), food.getAmountUnit()))
                             .collect(Collectors.toList());
 
                     break;
@@ -110,7 +110,7 @@ public class PostForUpdateDTO {
 
                     this.dinnerFoods = diet.getFoodList()
                             .stream()
-                            .map(food -> new SecurityFoodForUpdateDTO(food.getId(), food.getFoodName(), food.getAmount()))
+                            .map(food -> new SecurityFoodForUpdateDTO(food.getId(), food.getFoodName(), food.getAmount(), food.getAmountUnit()))
                             .collect(Collectors.toList());
                     break;
             }
