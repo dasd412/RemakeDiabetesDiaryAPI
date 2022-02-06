@@ -26,6 +26,7 @@ function FoodData(liId, name, amount, amountUnit) {
     this.name = name;
     this.amount = amount;
     this.amountUnit = amountUnit;
+
 }
 
 
@@ -238,6 +239,7 @@ const PostManipulator = {
                 amountUnit: elem['amountUnit']
             }))
         };
+
 
         $.ajax({
             type: 'POST',

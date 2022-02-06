@@ -1,5 +1,5 @@
 /*
- * @(#)update_delete.js        1.0.1 2022/1/22
+ * @(#)update_delete.js        1.0.5 2022/2/6
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, JavaScript, Pocheon-si, KOREA
@@ -10,7 +10,7 @@
  * 일지 작성 폼을 담당
  *
  * @author 양영준
- * @version 1.0.1 2022년 1월 22일
+ * @version 1.0.5 2022년 2월 6일
  */
 
 /**
@@ -19,12 +19,20 @@
  * @param id 기본키
  * @param name  음식 이름
  * @param amount 음식 수량
+ * @param amountUnit 음식 수량 단위
  * @constructor
  */
-function OriginFoodData(id, name, amount) {
+function OriginFoodData(id, name, amount, amountUnit) {
     this.id = id;
     this.name = name;
     this.amount = amount;
+    if (this.amountUnit === "" || this.amountUnit === null || this.amountUnit === undefined) {
+        this.amountUnit = "NONE";
+    } else if (this.amountUnit === "개") {
+        this.amountUnit = "count";
+    } else {
+        this.amountUnit = amountUnit;
+    }
 }
 
 /**
@@ -94,9 +102,10 @@ const UpdateDeleteManipulator = {
             $(this).children(".foodElement").each(function () {
                 const foodName = $(this).children(".child.foodName").text();
                 const amount = $(this).children(".child.amount").text();
+                const amountUnit = $(this).children(".child.gram").text();
 
-                targetFoods.push(new OriginFoodData(foodId, foodName, amount));
-                PostManipulator.cacheAddFoods(liId, foodName, amount, eatTime);
+                targetFoods.push(new OriginFoodData(foodId, foodName, amount, amountUnit));
+                PostManipulator.cacheAddFoods(liId, foodName, amount, amountUnit, eatTime);
                 liId++;
             });
         });
@@ -178,17 +187,21 @@ const UpdateDeleteManipulator = {
              */
             newBreakFastFoods: PostManipulator.foodDataDict['breakFast'].map(elem => ({
                 foodName: elem['name'],
-                amount: elem['amount']
+                amount: elem['amount'],
+                amountUnit: this.convertAmountUnit(elem)
             })),
             newLunchFoods: PostManipulator.foodDataDict['lunch'].map(elem => ({
                 foodName: elem['name'],
-                amount: elem['amount']
+                amount: elem['amount'],
+                amountUnit: this.convertAmountUnit(elem)
             })),
             newDinnerFoods: PostManipulator.foodDataDict['dinner'].map(elem => ({
                 foodName: elem['name'],
-                amount: elem['amount']
+                amount: elem['amount'],
+                amountUnit: this.convertAmountUnit(elem)
             }))
-        }
+        };
+
 
         $.ajax({
             type: 'PUT',
@@ -201,7 +214,17 @@ const UpdateDeleteManipulator = {
         });
 
     },
-
+    convertAmountUnit:function (elem){
+        if(elem['amountUnit']===""){
+            return "NONE";
+        }
+        else if(elem['amountUnit']==='개'){
+            return 'count';
+        }
+        else{
+            return elem['amountUnit'];
+        }
+    },
     /**
      * 이벤트 : 삭제하기 버튼 클릭 시
      */
