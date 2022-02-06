@@ -1,5 +1,5 @@
 /*
- * @(#)Food.java        1.0.5 2022/2/5
+ * @(#)Food.java        1.0.5 2022/2/6
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -23,7 +23,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * 음식 엔티티. 식단의 하위 엔티티
  *
  * @author 양영준
- * @version 1.0.5 2022년 2월 5일
+ * @version 1.0.5 2022년 2월 6일
  */
 @Entity
 @Table(name = "Food", uniqueConstraints = @UniqueConstraint(columnNames = {"food_id"}))
@@ -65,7 +65,8 @@ public class Food {
      * 음식 수량 단위. 음식 수량이랑 엮인다.
      */
     @Enumerated(EnumType.STRING)
-    private AmountUnit amountUnit;
+    @Column(columnDefinition = "varchar(32) default 'NONE'")
+    private AmountUnit amountUnit = AmountUnit.NONE;
 
     public Food() {
     }
@@ -90,7 +91,7 @@ public class Food {
      * @param amount       음식 수량
      */
     public Food(EntityId<Food, Long> foodEntityId, Diet diet, String foodName, double amount) {
-        this(foodEntityId, diet, foodName, amount, AmountUnit.g);
+        this(foodEntityId, diet, foodName, amount, AmountUnit.NONE);
     }
 
     /**
