@@ -1,5 +1,5 @@
 /*
- * @(#)post.js        1.0.5 2022/2/5
+ * @(#)post.js        1.0.5 2022/2/6
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, JavaScript, Pocheon-si, KOREA
@@ -10,7 +10,7 @@
  * 일지 작성 폼을 담당
  *
  * @author 양영준
- * @version 1.0.5 2022년 2월 5일
+ * @version 1.0.5 2022년 2월 6일
  */
 
 /**
@@ -351,10 +351,16 @@ function addFood(button) {
                 + "</li>");
 
         } else {
+            let textForUnit;
+            if (foodAmountUnit.val() === 'NONE') {
+                textForUnit = '';
+            } else {
+                textForUnit = foodAmountUnit.text();
+            }
             //ul 태그에 li 태그를 동적으로 부착한다.
             $(ulName).append("<li>" +
                 foodName + " "
-                + foodAmount + " " + foodAmountUnit.text() +
+                + foodAmount + " " + textForUnit +
                 "<span class=\"fas fa-times\" id='close' onclick='closeList(this)'></span></li>"
                 + "</li>");
 

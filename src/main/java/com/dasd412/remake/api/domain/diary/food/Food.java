@@ -110,7 +110,11 @@ public class Food {
         this.diet = diet;
         this.foodName = foodName;
         this.amount = amount;
-        this.amountUnit = amountUnit;
+        if (amountUnit == null) {
+            this.amountUnit = AmountUnit.NONE;
+        } else {
+            this.amountUnit = amountUnit;
+        }
     }
 
     public Long getId() {
