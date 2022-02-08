@@ -240,8 +240,6 @@ const PostManipulator = {
             }))
         };
 
-        console.log(data);
-
         $.ajax({
             type: 'POST',
             url: '/api/diary/user/diabetes-diary',

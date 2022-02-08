@@ -12,10 +12,11 @@
 
                 <div class="form-container">
                     <h1 class="headline3">혈당 일지 수정/삭제 하기</h1>
-                    <label for="writtenTime">작성 날짜</label>
-                    {{#diary.writtenTime}}
-                        {{diary.writtenTime}}
-                    {{/diary.writtenTime}}
+                    <div id="writtenTimeOfUpdateForm" class="form-group">
+                        <label for="writtenTimeUpdate" style="display: inline-block">작성 날짜</label>
+                        <input type="text" class="form-control" id="writtenTimeUpdate" value="{{diary.writtenTime}}"
+                               readonly>
+                    </div>
 
                     <form action="" method="POST">
                         <div class="form-group">
