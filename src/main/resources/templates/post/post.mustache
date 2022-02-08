@@ -1,20 +1,23 @@
 {{#layout}}
     <link href="/css/post/post.css" rel='stylesheet' type="text/css"/>
 
+    <input type="hidden" value="{{year}}" id="year">
+    <input type="hidden" value="{{month}}" id="month">
+    <input type="hidden" value="{{day}}" id="day">
+
     <div class="container">
         <div class="row">
 
             <div class="col-md-8 col-md-offset-2">
                 <div class="form-container">
                     <h1 class="headline3">혈당 일지 작성하기</h1>
-                    <label for="writtenTime">작성 날짜</label>
-                    <div id="writtenTime">
-                        <div id="year">{{year}}</div>
-                        .
-                        <div id="month">{{month}}</div>
-                        .
-                        <div id="day">{{day}}</div>
+
+
+                    <div id="writtenTime" class="form-group">
+                        <label for="writtenTime" style="display: inline-block">작성 날짜</label>
+                        <input type="text" class="form-control" value="{{year}}.{{month}}.{{day}}" readonly>
                     </div>
+
                     <form action="" method="POST">
 
                         <div class="form-group">
@@ -123,7 +126,7 @@
                     </form>
 
                     <div class="form-group">
-                        <button type="button" class="btn btn-primary" id="createBtn">
+                        <button type="button" class="btn btn-info" id="createBtn">
                             작성하기
                         </button>
                         <button class="btn btn-secondary" id="cancelBtn">

@@ -199,13 +199,13 @@ const PostManipulator = {
             return;
         }
 
-        const selectedMonth = $("#month").text();
+        const selectedMonth = $("#month").val();
         let month = "" + selectedMonth;
         if (selectedMonth < 10 && month.indexOf('0') === -1 || month.length === 1) {
             month = "0" + selectedMonth;
         }
 
-        const selectedDay = $("#day").text();
+        const selectedDay = $("#day").val();
         let day = "" + selectedDay;
         if (selectedDay < 10 && day.indexOf('0') === -1 || day.length === 1) {
             day = "0" + selectedDay;
@@ -214,7 +214,7 @@ const PostManipulator = {
         const data = {
             fastingPlasmaGlucose: fastingPlasmaGlucose,
             remark: $("#remark").val(),
-            year: $("#year").text(),
+            year: $("#year").val(),
             month: month,
             day: day,
             hour: "00",
@@ -240,6 +240,7 @@ const PostManipulator = {
             }))
         };
 
+        console.log(data);
 
         $.ajax({
             type: 'POST',
