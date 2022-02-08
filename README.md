@@ -1,6 +1,6 @@
 # __Diabetes Diary API Remake__
 
-## 포트폴리오 리메이크
+## 버전 : 1.0.6
 
 ### 웹 사이트 주소 ###
 
@@ -55,8 +55,8 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
     + 수정 / 삭제용 폼 생성 및 ajax 로직 추가
     + 달력과 연동
     + 검색기능 만들고 그 결과로 차트 생성하기
+    + 작성용 폼 더 이쁘게 만들기 
     + 음식 검색 게시판 만들기(진행 중)
-    + 작성용 폼 더 이쁘게 만들기 (예정)
 
 + 배포
     + amazon ec2 인스턴스 생성
@@ -73,6 +73,7 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
     + Readme
     + 코드 내 주석 처리 [JavaDoc 기준]
     + 다이어그램 작성 및 게시 (예정)
+    + dto에 swagger 입히기 (예정)
 
 ### 테스트 커버리지 ###
 
