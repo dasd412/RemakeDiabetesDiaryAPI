@@ -1,5 +1,5 @@
 /*
- * @(#)ChartFormController.java        1.0.3 2022/1/29
+ * @(#)ChartFormController.java        1.0.6 2022/2/8
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  * 차트와 관련된 화면을 담당하는 컨트롤러
  *
  * @author 양영준
- * @version 1.0.2 2022년 1월 23일
+ * @version 1.0.6 2022년 2월 8일
  */
 @Controller
 public class ChartFormController {
@@ -63,9 +63,9 @@ public class ChartFormController {
     /**
      * @return 음식 화면
      */
-    @GetMapping("/chart-menu/chart/food")
-    public String showChartFood() {
+    @GetMapping("/chart-menu/chart/food-board")
+    public String showChartFoodBoard() {
         logger.info("chart food resolve");
-        return "chart/food";
+        return "chart/foodBoard";
     }
 }
