@@ -1,0 +1,8 @@
+#searchModal {
+    position: relative;
+    z-index: 1;
+    display: none;
+    top: 1%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

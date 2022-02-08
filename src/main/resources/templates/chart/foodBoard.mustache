@@ -50,16 +50,6 @@
         </nav><!--end page display-->
 
         <div>
-            <!--                <select id="searchType">-->
-            <!--                    <option value="none">검색 조건을 정해주세요.</option>-->
-            <!--                    <option value="lower">낮게</option>-->
-            <!--                    <option value="greater">높게</option>-->
-            <!--                    <option value="equal">같게</option>-->
-            <!--                    <option value="le">낮거나 같게</option>-->
-            <!--                    <option value="ge">높거나 같게</option>-->
-            <!--                </select>-->
-            <!--                <input type="text"  class="form-control" id="searchFood">-->
-
             <button class="btn btn-primary" id="searchBtn">검색하기</button>
         </div>
 
@@ -74,4 +64,67 @@
     <!-- end panel -->
 
     <!--end fragment -->
+    <!-- Modal -->
+    <div id="searchModal">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">검색 조건 결정하기</h4>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="form-group" id="modalSelect">
+                        <label for="searchType">검색 조건</label>
+                        <select id="searchType" class="form-control" name="searchType">
+                            <option value="lower">낮게</option>
+                            <option value="greater">높게</option>
+                            <option value="equal">같게</option>
+                            <option value="le">낮거나 같게</option>
+                            <option value="ge">높거나 같게</option>
+                        </select>
+                    </div> <!-- 검색 조건 -->
+
+                    <div class="form-group" id="modalText">
+                        <label for="inputBloodSugar">혈당 수치</label>
+                        <input type="text" class="form-control" id="inputBloodSugar" name="inputBloodSugar">
+                    </div> <!-- 혈당 수치 -->
+
+                    <div class="form-group" id="modalCalendar">
+                        <label for="modalStartDate">시작 날짜</label>
+                        <div class="input-group date">
+                            <input type="text" class="form-control" id="modalStartDate">
+                            <div class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </div>
+                        </div>
+
+                        <label for="modalEndDate">끝 날짜</label>
+                        <div class="input-group date">
+                            <input type="text" class="form-control" id="modalEndDate">
+                            <div class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </div>
+                        </div>
+                    </div> <!-- 모달 달력 -->
+
+                </div> <!-- 모달 본문 -->
+
+                <div class="modal-footer">
+                    <button id='modalDecideBtn' class="btn btn-info">결정</button>
+                    <button id='modalCloseBtn' class="btn btn-danger" data-dismiss="modal">닫기</button>
+                </div> <!-- 모달 버튼 -->
+            </div>
+
+        </div>
+    </div>
+    <!--  end Modal -->
+
+    <script>
+        $("#modalStartDate").datepicker();
+        $("#modalEndDate").datepicker();
+    </script>
+    <script src="/js/chart/foodBoard.js"></script>
 {{/layout}}
