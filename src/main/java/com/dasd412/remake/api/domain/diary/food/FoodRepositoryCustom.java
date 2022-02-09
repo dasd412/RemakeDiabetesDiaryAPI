@@ -1,5 +1,5 @@
 /*
- * @(#)FoodRepositoryCustom.java        1.0.1 2022/1/22
+ * @(#)FoodRepositoryCustom.java        1.0.7 2022/2/9
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -8,6 +8,13 @@
 
 package com.dasd412.remake.api.domain.diary.food;
 
+import com.dasd412.remake.api.controller.security.domain_rest.dto.chart.FoodBoardDTO;
+import com.dasd412.remake.api.domain.diary.InequalitySign;
+import com.querydsl.core.types.Predicate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +22,7 @@ import java.util.Optional;
  * 음식 리포지토리 상위 인터페이스. Querydsl을 이용하기 위해 구현하였다.
  *
  * @author 양영준
- * @version 1.0.1 2022년 1월 22일
+ * @version 1.0.7 2022년 2월 9일
  */
 public interface FoodRepositoryCustom {
 
@@ -47,4 +54,27 @@ public interface FoodRepositoryCustom {
      * @param foodIds 음식 id 리스트
      */
     void bulkDeleteFood(List<Long> foodIds);
+
+    /**
+     * decideEqualitySign()과 연계해서 쓰면 된다.
+     *
+     * @param writerId  작성자 id
+     * @param sign 부등호 enum
+     * @param bloodSugar 식사 혈당 수치
+     * @param startDate 시작 날짜
+     * @param endDate   끝 날짜
+     * @param pageable  페이징 객체
+     * @return 해당 기간 동안 작성자가 작성한 음식에 관한 정보들
+     */
+    Page<FoodBoardDTO> findFoodsWithPaginationBetweenTime(Long writerId, InequalitySign sign, int bloodSugar, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
+
+    /**
+     * where 문을 작성할 때, 특히 파라미터의 종류 등에 따라 조건 분기를 하고 싶을 때 Predicate 객체를 사용한다.
+     * 작성자 id는 on 절에서 사용되므로 파라미터에서 생략.
+     *
+     * @param sign       부등호 enum
+     * @param bloodSugar 식사 혈당 수치
+     * @return where 절에 들어가는 조건문
+     */
+    Predicate decideEqualitySign(InequalitySign sign, int bloodSugar);
 }
