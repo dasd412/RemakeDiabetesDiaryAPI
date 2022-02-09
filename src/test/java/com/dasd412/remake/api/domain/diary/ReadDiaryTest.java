@@ -1,5 +1,5 @@
 /*
- * @(#)ReadDiaryTest.java        1.0.4 2022/2/4
+ * @(#)ReadDiaryTest.java        1.0.7 2022/2/9
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -8,7 +8,10 @@
 
 package com.dasd412.remake.api.domain.diary;
 
+import com.dasd412.remake.api.controller.security.domain_rest.dto.chart.FoodBoardDTO;
 import com.dasd412.remake.api.domain.diary.diet.QDiet;
+import com.dasd412.remake.api.domain.diary.food.AmountUnit;
+import com.dasd412.remake.api.domain.diary.food.FoodPageVO;
 import com.dasd412.remake.api.service.domain.SaveDiaryService;
 import com.querydsl.core.Tuple;
 import org.assertj.core.data.Percentage;
@@ -32,6 +35,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +45,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.IntStream;
 import javax.persistence.NoResultException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,7 +54,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Security 적용 없이 리포지토리를 접근하여 조회 테스트.
  *
  * @author 양영준
- * @version 1.0.4 2022년 2월 4일
+ * @version 1.0.7 2022년 2월 9일
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest()
@@ -784,6 +791,48 @@ public class ReadDiaryTest {
                     break;
             }
         }
+    }
+
+    @Transactional
+    @Test
+    public void findFoodsWithPaginationBetweenTimeWithPredicate() {
+        //given
+        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
+        DiabetesDiary diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
+        Diet diet1 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.BreakFast, 100);
+        Diet diet2 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Lunch, 120);
+        Diet diet3 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EatTime.Dinner, 140);
+
+        IntStream.range(0, 30).forEach(i -> {
+            switch (i % 3) {
+                case 0:
+                    saveDiaryService.saveFoodAndAmountOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EntityId.of(Diet.class, diet1.getDietId()), "diet1 food" + i, 100 + i, AmountUnit.g);
+                    break;
+                case 1:
+                    saveDiaryService.saveFoodAndAmountOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EntityId.of(Diet.class, diet2.getDietId()), "diet2 food" + i, 100 + i, AmountUnit.count);
+                    break;
+
+                case 2:
+                    saveDiaryService.saveFoodAndAmountOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()), EntityId.of(Diet.class, diet3.getDietId()), "diet3 food" + i, 100 + i, AmountUnit.mL);
+                    break;
+            }
+
+        });
+
+        LocalDateTime startDate = LocalDateTime.of(2021, 11, 1, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2021, 12, 11, 0, 0);
+
+        FoodPageVO foodPageVO = new FoodPageVO();
+        Pageable pageable = foodPageVO.makePageable(Sort.Direction.ASC, "food_id");
+
+        //when
+        logger.info("select\n");
+        Page<FoodBoardDTO> result = foodRepository.findFoodsWithPaginationBetweenTime(me.getId(), InequalitySign.GREAT_OR_EQUAL, 120, startDate, endDate, pageable);
+
+        //then
+        logger.info(result.getContent().toString());
+        assertThat(result.getContent().size()).isEqualTo(10);
+
     }
 
 }
