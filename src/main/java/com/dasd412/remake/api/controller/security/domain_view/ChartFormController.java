@@ -92,16 +92,12 @@ public class ChartFormController {
      */
     @GetMapping("/chart-menu/chart/food-board/list")
     public String showChartFoodBoard(@AuthenticationPrincipal PrincipalDetails principalDetails, FoodPageVO vo, Model model) {
-        Pageable page = vo.makePageable(Sort.Direction.DESC, "food_id");
+        Pageable page = vo.makePageable();
         logger.info("page vo : " + page.toString());
         List<Predicate> predicates = new ArrayList<>();
 
         Page<FoodBoardDTO> dtoPage = findDiaryService.getFoodByPagination(EntityId.of(Writer.class, principalDetails.getWriter().getId()), predicates, page);
-        List<FoodBoardDTO> dtoList =
-                dtoPage.getContent().
-                        stream().sorted(Comparator.comparing(FoodBoardDTO::getBloodSugar).reversed()
-                                .thenComparing(Comparator.comparing(FoodBoardDTO::getWrittenTime).reversed()))
-                        .collect(Collectors.toList());
+        List<FoodBoardDTO> dtoList = dtoPage.getContent();
 
         logger.info("dto : " + dtoList);
         model.addAttribute("foodPage", dtoList);

@@ -825,7 +825,7 @@ public class ReadDiaryTest {
         LocalDateTime endDate = LocalDateTime.of(2021, 12, 11, 0, 0);
 
         FoodPageVO foodPageVO = new FoodPageVO();
-        Pageable pageable = foodPageVO.makePageable(Sort.Direction.ASC, "food_id");
+        Pageable pageable = foodPageVO.makePageable();
 
         List<Predicate> betweenAndSugar = new ArrayList<>();
         betweenAndSugar.add(foodRepository.decideEqualitySign(InequalitySign.GREAT_OR_EQUAL, 120));

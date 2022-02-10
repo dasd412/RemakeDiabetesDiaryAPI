@@ -64,4 +64,12 @@ public class FoodPageVO {
         return PageRequest.of(this.page - 1, this.size, direction, properties);
     }
 
+    /**
+     * 이 메서드를 사용하면, 리포지토리 코드 내에서 orderBy()를 지정해줘야 한다.
+     * @return 정렬 방향 및 기준 없이 디폴트로 된 페이징 설정 객체
+     */
+    public Pageable makePageable(){
+        return PageRequest.of(this.page-1,this.size);
+    }
+
 }

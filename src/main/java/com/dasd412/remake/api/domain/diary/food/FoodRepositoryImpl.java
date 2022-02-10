@@ -161,6 +161,7 @@ public class FoodRepositoryImpl implements FoodRepositoryCustom {
                 .innerJoin(QFood.food.diet.diary, QDiabetesDiary.diabetesDiary)
                 .on(QDiet.diet.diary.writer.writerId.eq(writerId))
                 .where(ExpressionUtils.allOf(predicates)) /* where 절에 쓰이는 조건문은 "가변적" */
+                .orderBy(QDiet.diet.bloodSugar.desc(), QDiabetesDiary.diabetesDiary.writtenTime.desc(), QFood.food.foodName.asc())
                 .offset(pageable.getOffset()) /* offset = page * size */
                 .limit(pageable.getPageSize())
                 .fetch();
