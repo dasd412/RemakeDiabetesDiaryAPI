@@ -1,5 +1,5 @@
 /*
- * @(#)ReadDiaryTest.java        1.0.7 2022/2/9
+ * @(#)ReadDiaryTest.java        1.0.7 2022/2/10
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -14,6 +14,7 @@ import com.dasd412.remake.api.domain.diary.food.AmountUnit;
 import com.dasd412.remake.api.domain.diary.food.FoodPageVO;
 import com.dasd412.remake.api.service.domain.SaveDiaryService;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Predicate;
 import org.assertj.core.data.Percentage;
 import org.hibernate.Hibernate;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
@@ -43,6 +44,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
@@ -54,7 +56,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Security 적용 없이 리포지토리를 접근하여 조회 테스트.
  *
  * @author 양영준
- * @version 1.0.7 2022년 2월 9일
+ * @version 1.0.7 2022년 2월 10일
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest()
@@ -825,13 +827,18 @@ public class ReadDiaryTest {
         FoodPageVO foodPageVO = new FoodPageVO();
         Pageable pageable = foodPageVO.makePageable(Sort.Direction.ASC, "food_id");
 
+        List<Predicate> betweenAndSugar = new ArrayList<>();
+        betweenAndSugar.add(foodRepository.decideEqualitySign(InequalitySign.GREAT_OR_EQUAL, 120));
+        betweenAndSugar.add(foodRepository.decideBetween(startDate, endDate));
+
         //when
         logger.info("select\n");
-        Page<FoodBoardDTO> result = foodRepository.findFoodsWithPaginationBetweenTime(me.getId(), InequalitySign.GREAT_OR_EQUAL, 120, startDate, endDate, pageable);
+        Page<FoodBoardDTO> result1 = foodRepository.findFoodsWithPaginationBetweenTime(me.getId(), betweenAndSugar, pageable);
 
         //then
-        logger.info(result.getContent().toString());
-        assertThat(result.getContent().size()).isEqualTo(10);
+        logger.info(result1.getContent().toString());
+        assertThat(result1.getContent().size()).isEqualTo(10);
+
 
     }
 

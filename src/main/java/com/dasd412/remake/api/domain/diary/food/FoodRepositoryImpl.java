@@ -1,5 +1,5 @@
 /*
- * @(#)FoodRepositoryImpl.java        1.0.7 2022/2/9
+ * @(#)FoodRepositoryImpl.java        1.0.7 2022/2/10
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -15,6 +15,7 @@ import com.dasd412.remake.api.domain.diary.diet.QDiet;
 import com.dasd412.remake.api.domain.diary.writer.QWriter;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -34,7 +35,7 @@ import java.util.stream.Collectors;
  * Querydsl을 사용하기 위해 만든 구현체 클래스.
  *
  * @author 양영준
- * @version 1.0.7 2022년 2월 9일
+ * @version 1.0.7 2022년 2월 10일
  */
 public class FoodRepositoryImpl implements FoodRepositoryCustom {
     /*
@@ -140,22 +141,20 @@ public class FoodRepositoryImpl implements FoodRepositoryCustom {
     }
 
     /**
-     * decideEqualitySign()과 연계해서 쓰면 된다. 리턴 값이 추후에 연관관계 조회할 일이 없기 때문에 fetch join 안함.
+     * decideEqualitySign(),decideBetween() 과 연계해서 쓰면 된다.
+     * 리턴 값이 추후에 연관관계 조회할 일이 없기 때문에 fetch join 안함.
      * <p>
      * (유의점)
      * 단순히 Page를 반환하는 쿼리를 작성할 경우에는 count 쿼리가 추가적으로 실행된다고 한다.
      * 이는 쓸데없는 쿼리를 한 번 더 날리는 비효율을 초래하기 때문에 최적화를 할 필요가 있다.
      *
      * @param writerId   작성자 id
-     * @param sign       부등호 enum
-     * @param bloodSugar 식사 혈당 수치
-     * @param startDate  시작 날짜
-     * @param endDate    끝 날짜
+     * @param predicates where 절에 쓰이는 조건문 객체들
      * @param pageable   페이징 객체
      * @return 해당 기간 동안 작성자가 작성한 음식에 관한 정보들
      */
     @Override
-    public Page<FoodBoardDTO> findFoodsWithPaginationBetweenTime(Long writerId, InequalitySign sign, int bloodSugar, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
+    public Page<FoodBoardDTO> findFoodsWithPaginationBetweenTime(Long writerId, List<Predicate> predicates, Pageable pageable) {
 
         /*
         List의 경우 추가 count 없이 결과만 반환한다.
@@ -165,12 +164,10 @@ public class FoodRepositoryImpl implements FoodRepositoryCustom {
                 .innerJoin(QFood.food.diet, QDiet.diet)
                 .innerJoin(QFood.food.diet.diary, QDiabetesDiary.diabetesDiary)
                 .on(QDiet.diet.diary.writer.writerId.eq(writerId))
-                .where(QDiabetesDiary.diabetesDiary.writtenTime.between(startDate, endDate)
-                        .and(decideEqualitySign(sign, bloodSugar)))
+                .where(ExpressionUtils.allOf(predicates)) /* where 절에 쓰이는 조건문은 "가변적" */
                 .offset(pageable.getOffset()) /* offset = page * size */
                 .limit(pageable.getPageSize())
                 .fetch();
-
 
         List<FoodBoardDTO> dtoList = foodList.stream().map(tuple -> new FoodBoardDTO(tuple.get(QFood.food.foodName), tuple.get(QDiet.diet.bloodSugar), tuple.get(QDiabetesDiary.diabetesDiary.writtenTime)))
                 .collect(Collectors.toList());
@@ -185,8 +182,7 @@ public class FoodRepositoryImpl implements FoodRepositoryCustom {
                 .innerJoin(QFood.food.diet, QDiet.diet)
                 .innerJoin(QFood.food.diet.diary, QDiabetesDiary.diabetesDiary)
                 .on(QDiet.diet.diary.writer.writerId.eq(writerId))
-                .where(QDiabetesDiary.diabetesDiary.writtenTime.between(startDate, endDate)
-                        .and(decideEqualitySign(sign, bloodSugar)));
+                .where();
 
         return PageableExecutionUtils.getPage(dtoList, pageable, countFood::fetchCount);
     }
@@ -225,6 +221,20 @@ public class FoodRepositoryImpl implements FoodRepositoryCustom {
                 break;
         }
 
+        return booleanBuilder;
+    }
+
+    /**
+     * where 문을 작성할 때, 특히 파라미터의 종류 등에 따라 조건 분기를 하고 싶을 때 Predicate 객체를 사용한다.
+     *
+     * @param startDate 시작 날짜
+     * @param endDate   도착 날짜
+     * @return where 절에 들어가는 조건문 (해당 기간 사이에 있는가)
+     */
+    @Override
+    public Predicate decideBetween(LocalDateTime startDate, LocalDateTime endDate) {
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        booleanBuilder.and(QDiabetesDiary.diabetesDiary.writtenTime.between(startDate, endDate));
         return booleanBuilder;
     }
 }
