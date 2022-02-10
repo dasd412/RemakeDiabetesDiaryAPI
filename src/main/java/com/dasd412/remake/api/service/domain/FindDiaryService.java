@@ -1,5 +1,5 @@
 /*
- * @(#)FindDiaryService.java        1.0.4 2022/2/4
+ * @(#)FindDiaryService.java        1.0.7 2022/2/10
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -8,6 +8,7 @@
 
 package com.dasd412.remake.api.service.domain;
 
+import com.dasd412.remake.api.controller.security.domain_rest.dto.chart.FoodBoardDTO;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiaryRepository;
@@ -19,9 +20,12 @@ import com.dasd412.remake.api.domain.diary.food.FoodRepository;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +42,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * 조회 비즈니스 로직을 수행하는 서비스 클래스
  *
  * @author 양영준
- * @version 1.0.4 2022년 2월 4일
+ * @version 1.0.7 2022년 2월 10일
  */
 @Service
 public class FindDiaryService {
@@ -426,5 +430,19 @@ public class FindDiaryService {
         checkNotNull(writerEntityId, "writerId must be provided");
         return foodRepository.findFoodHigherThanAverageBloodSugarOfDiet(writerEntityId.getId());
     }
+
+    /**
+     * @param writerEntityId 래퍼로 감싸진 작성자 id
+     * @param predicates     where 절의 조건문들
+     * @param pageable       페이징 객체
+     * @return 조건을 만족하는 페이지에 해당하는 dto (음식 이름, 식사 혈당, 작성 시간)
+     */
+    @Transactional(readOnly = true)
+    public Page<FoodBoardDTO> getFoodByPagination(EntityId<Writer, Long> writerEntityId, List<Predicate> predicates, Pageable pageable) {
+        logger.info("getFoodByPagination");
+        checkNotNull(writerEntityId, "writerId must be provided");
+        return foodRepository.findFoodsWithPagination(writerEntityId.getId(), predicates, pageable);
+    }
+
 
 }

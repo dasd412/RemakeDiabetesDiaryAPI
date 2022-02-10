@@ -47,7 +47,14 @@ const modalManipulator = {
     },
 
     findFood: function () {
-
+        // $.ajax({
+        //     type: 'GET',
+        //     url: '/chart-menu/food-board/list',
+        //     dataType: 'json',
+        //     contentType: 'application/x-www-form-urlencoded; charset=UTF-8;',
+        // }).done(function () {
+        //
+        // });
     }
 };
 

@@ -14,15 +14,27 @@
                 <tr>
                     <th>음식 이름</th>
                     <th>혈당</th>
+                    <th>작성 시간</th>
                 </tr>
                 </thead>
 
-                <tbody>
-                <tr class="odd gradeX">
-                    <td></td>
-                    <td></td>
-                </tr>
 
+                <tbody>
+                {{#foodPage}}
+                    <tr class="odd gradeX">
+
+                        <td>
+                            {{foodName}}
+                        </td>
+                        <td>
+                            {{bloodSugar}}
+                        </td>
+                        <td>
+                            {{writtenTime}}
+                        </td>
+
+                    </tr>
+                {{/foodPage}}
                 </tbody>
 
             </table>
@@ -62,8 +74,8 @@
 
     </div>
     <!-- end panel -->
-
     <!--end fragment -->
+
     <!-- Modal -->
     <div id="searchModal">
         <div class="modal-dialog">
@@ -109,7 +121,6 @@
                             </div>
                         </div>
                     </div> <!-- 모달 달력 -->
-
                 </div> <!-- 모달 본문 -->
 
                 <div class="modal-footer">

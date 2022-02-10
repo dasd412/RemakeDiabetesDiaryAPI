@@ -63,7 +63,7 @@ public interface FoodRepositoryCustom {
      * @param pageable  페이징 객체
      * @return 해당 기간 동안 작성자가 작성한 음식에 관한 정보들
      */
-    Page<FoodBoardDTO> findFoodsWithPaginationBetweenTime(Long writerId,List<Predicate> predicates, Pageable pageable);
+    Page<FoodBoardDTO> findFoodsWithPagination(Long writerId,List<Predicate> predicates, Pageable pageable);
 
     /**
      * where 문을 작성할 때, 특히 파라미터의 종류 등에 따라 조건 분기를 하고 싶을 때 Predicate 객체를 사용한다.

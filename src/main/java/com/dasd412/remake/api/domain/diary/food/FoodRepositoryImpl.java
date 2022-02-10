@@ -12,7 +12,6 @@ import com.dasd412.remake.api.controller.security.domain_rest.dto.chart.FoodBoar
 import com.dasd412.remake.api.domain.diary.InequalitySign;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.QDiabetesDiary;
 import com.dasd412.remake.api.domain.diary.diet.QDiet;
-import com.dasd412.remake.api.domain.diary.writer.QWriter;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
@@ -20,13 +19,12 @@ import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.support.PageableExecutionUtils;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -53,8 +51,6 @@ public class FoodRepositoryImpl implements FoodRepositoryCustom {
     gt >
     goe >=
     */
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * Querydsl 쿼리 만들 때 사용하는 객체
@@ -154,7 +150,7 @@ public class FoodRepositoryImpl implements FoodRepositoryCustom {
      * @return 해당 기간 동안 작성자가 작성한 음식에 관한 정보들
      */
     @Override
-    public Page<FoodBoardDTO> findFoodsWithPaginationBetweenTime(Long writerId, List<Predicate> predicates, Pageable pageable) {
+    public Page<FoodBoardDTO> findFoodsWithPagination(Long writerId, List<Predicate> predicates, Pageable pageable) {
 
         /*
         List의 경우 추가 count 없이 결과만 반환한다.
@@ -169,7 +165,9 @@ public class FoodRepositoryImpl implements FoodRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        List<FoodBoardDTO> dtoList = foodList.stream().map(tuple -> new FoodBoardDTO(tuple.get(QFood.food.foodName), tuple.get(QDiet.diet.bloodSugar), tuple.get(QDiabetesDiary.diabetesDiary.writtenTime)))
+        List<FoodBoardDTO> dtoList = foodList
+                .stream()
+                .map(tuple -> new FoodBoardDTO(tuple.get(QFood.food.foodName), tuple.get(QDiet.diet.bloodSugar), tuple.get(QDiabetesDiary.diabetesDiary.writtenTime)))
                 .collect(Collectors.toList());
 
         /*
@@ -182,7 +180,7 @@ public class FoodRepositoryImpl implements FoodRepositoryCustom {
                 .innerJoin(QFood.food.diet, QDiet.diet)
                 .innerJoin(QFood.food.diet.diary, QDiabetesDiary.diabetesDiary)
                 .on(QDiet.diet.diary.writer.writerId.eq(writerId))
-                .where();
+                .where(ExpressionUtils.allOf(predicates));
 
         return PageableExecutionUtils.getPage(dtoList, pageable, countFood::fetchCount);
     }

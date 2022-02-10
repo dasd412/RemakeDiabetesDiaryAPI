@@ -833,13 +833,11 @@ public class ReadDiaryTest {
 
         //when
         logger.info("select\n");
-        Page<FoodBoardDTO> result1 = foodRepository.findFoodsWithPaginationBetweenTime(me.getId(), betweenAndSugar, pageable);
+        Page<FoodBoardDTO> result1 = foodRepository.findFoodsWithPagination(me.getId(), betweenAndSugar, pageable);
 
         //then
         logger.info(result1.getContent().toString());
         assertThat(result1.getContent().size()).isEqualTo(10);
-
-
     }
 
 }

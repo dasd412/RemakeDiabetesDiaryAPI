@@ -1,5 +1,5 @@
 /*
- * @(#)SecurityChartRestController.java        1.0.4 2022/2/4
+ * @(#)SecurityChartRestController.java        1.0.7 2022/2/10
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -14,12 +14,18 @@ import com.dasd412.remake.api.controller.security.domain_rest.dto.chart.*;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 import com.dasd412.remake.api.domain.diary.diet.Diet;
+import com.dasd412.remake.api.domain.diary.food.FoodPageVO;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.service.domain.FindDiaryService;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +38,7 @@ import java.util.stream.Collectors;
  * 로그인한 사용자들이 자신의 혈당 "정보"를 조회할 수 있게 하는 RestController
  *
  * @author 양영준
- * @version 1.0.4 2022년 2월 4일
+ * @version 1.0.7 2022년 2월 10일
  */
 @RestController
 public class SecurityChartRestController {
@@ -149,6 +155,11 @@ public class SecurityChartRestController {
         return ApiResult.OK(FindAverageAllDTO.builder().averageFpg(averageFpg).tupleList(averageBloodSugarTuples).averageBloodSugar(averageBloodSugar).build());
     }
 
+    /**
+     * @param principalDetails 사용자 인증 정보
+     * @param allParams        시작 연도, 시작 월, 시작 일, 끝 년도, 끝 월, 끝 일
+     * @return 해당 기간 내 혈당 일지 및 식단 정보 (평균)
+     */
     @GetMapping("/chart-menu/average/between")
     public ApiResult<FindAverageBetweenDTO> findAverageBetween(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestParam Map<String, String> allParams) {
         LocalDateTime startDate = convertStartDate(allParams);
@@ -188,5 +199,4 @@ public class SecurityChartRestController {
                 Integer.parseInt(allParams.get("endDay")),
                 0, 0);
     }
-
 }
