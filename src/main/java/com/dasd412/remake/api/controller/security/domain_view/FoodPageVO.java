@@ -1,5 +1,5 @@
 /*
- * @(#)FoodPageVO.java        1.0.7 2022/2/9
+ * @(#)FoodPageVO.java        1.0.7 2022/2/11
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -8,16 +8,24 @@
 
 package com.dasd412.remake.api.controller.security.domain_view;
 
+import com.dasd412.remake.api.domain.diary.InequalitySign;
 import lombok.Getter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * 음식 게시판의 조회 페이징을 위해 사용되는 VO
  *
  * @author 양영준
- * @version 1.0.7 2022년 2월 9일
+ * @version 1.0.7 2022년 2월 11일
  */
 @Getter
 public class FoodPageVO {
@@ -35,6 +43,35 @@ public class FoodPageVO {
      * 음식 이름의 수
      */
     private int size;
+
+    /**
+     * 식사 혈당 수치 [검색 조건]
+     */
+    private int bloodSugar;
+
+    /**
+     * 부등호 [검색 조건]
+     */
+    private InequalitySign sign;
+
+    /**
+     * 시작 날짜 [검색 조건]
+     */
+    private String startYear;
+
+    private String startMonth;
+
+    private String startDay;
+
+
+    /**
+     * 끝 날짜 [검색 조건]
+     */
+    private String endYear;
+
+    private String endMonth;
+
+    private String endDay;
 
     public FoodPageVO() {
         this.page = 1;
@@ -56,9 +93,10 @@ public class FoodPageVO {
 
     /**
      * Pageble 객체의 offset = page * size이기 때문에 pageable 객체를 만들 때는 page-1 해준다.
+     *
      * @param direction  정렬 방향
      * @param properties 정렬 기준
-     * @return  Pageable 객체.
+     * @return Pageable 객체.
      */
     public Pageable makePageable(Sort.Direction direction, String... properties) {
         return PageRequest.of(this.page - 1, this.size, direction, properties);
@@ -66,10 +104,87 @@ public class FoodPageVO {
 
     /**
      * 이 메서드를 사용하면, 리포지토리 코드 내에서 orderBy()를 지정해줘야 한다.
+     *
      * @return 정렬 방향 및 기준 없이 디폴트로 된 페이징 설정 객체
      */
-    public Pageable makePageable(){
-        return PageRequest.of(this.page-1,this.size);
+    public Pageable makePageable() {
+        return PageRequest.of(this.page - 1, this.size);
     }
 
+    public void setBloodSugar(int bloodSugar) {
+        checkArgument(bloodSugar >= 0, "blood sugar must be zero or positive");
+        this.bloodSugar = bloodSugar;
+    }
+
+    public void setSign(String signString) {
+        switch (signString) {
+            case "lesser":
+                this.sign = InequalitySign.LESSER;
+                break;
+            case "greater":
+                this.sign = InequalitySign.GREATER;
+                break;
+            case "equal":
+                this.sign = InequalitySign.EQUAL;
+                break;
+            case "le":
+                this.sign = InequalitySign.LESSER_OR_EQUAL;
+                break;
+            case "ge":
+                this.sign = InequalitySign.GREAT_OR_EQUAL;
+                break;
+        }
+    }
+
+    public void setStartYear(String startYear) {
+        this.startYear = startYear;
+    }
+
+    public void setStartMonth(String startMonth) {
+        this.startMonth = startMonth;
+    }
+
+    public void setStartDay(String startDay) {
+        this.startDay = startDay;
+    }
+
+    public void setEndYear(String endYear) {
+        this.endYear = endYear;
+    }
+
+    public void setEndMonth(String endMonth) {
+        this.endMonth = endMonth;
+    }
+
+    public void setEndDay(String endDay) {
+        this.endDay = endDay;
+    }
+
+    public LocalDateTime convertStartDate() {
+        try{
+            return LocalDateTime.of(Integer.parseInt(startYear), Integer.parseInt(startMonth), Integer.parseInt(startDay), 0, 0);
+        }catch (NumberFormatException | DateTimeParseException exception){
+            return null;
+        }
+    }
+
+    public LocalDateTime convertEndDate() {
+        try{
+            return LocalDateTime.of(Integer.parseInt(endYear), Integer.parseInt(endMonth), Integer.parseInt(endDay), 0, 0);
+        }catch (NumberFormatException | DateTimeParseException exception){
+            return null;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append("page", page)
+                .append("size", size)
+                .append("blood_sugar", bloodSugar)
+                .append("sign", sign)
+                .append("startDate", convertStartDate())
+                .append("endDate", convertEndDate())
+                .toString();
+    }
 }

@@ -105,17 +105,17 @@
                     <div class="form-group" id="modalSelect">
                         <label for="searchType">검색 조건</label>
                         <select id="searchType" class="form-control" name="searchType">
-                            <option value="lower">낮게</option>
-                            <option value="greater">높게</option>
+                            <option value="greater" selected>높게</option>
+                            <option value="lesser">낮게</option>
                             <option value="equal">같게</option>
-                            <option value="le">낮거나 같게</option>
                             <option value="ge">높거나 같게</option>
+                            <option value="le">낮거나 같게</option>
                         </select>
                     </div> <!-- 검색 조건 -->
 
                     <div class="form-group" id="modalText">
                         <label for="inputBloodSugar">혈당 수치</label>
-                        <input type="text" class="form-control" id="inputBloodSugar" name="inputBloodSugar">
+                        <input type="text" class="form-control" id="inputBloodSugar" name="inputBloodSugar" placeholder="0">
                     </div> <!-- 혈당 수치 -->
 
                     <div class="form-group" id="modalCalendar">

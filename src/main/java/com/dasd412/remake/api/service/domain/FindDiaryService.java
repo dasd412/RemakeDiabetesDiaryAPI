@@ -9,6 +9,7 @@
 package com.dasd412.remake.api.service.domain;
 
 import com.dasd412.remake.api.controller.security.domain_rest.dto.chart.FoodBoardDTO;
+import com.dasd412.remake.api.controller.security.domain_view.FoodPageVO;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiaryRepository;
@@ -32,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.NoResultException;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -433,16 +435,35 @@ public class FindDiaryService {
 
     /**
      * @param writerEntityId 래퍼로 감싸진 작성자 id
-     * @param predicates     where 절의 조건문들
-     * @param pageable       페이징 객체
+     * @param foodPageVO     페이징 조건이 기재된 객체
      * @return 조건을 만족하는 페이지에 해당하는 dto (음식 이름, 식사 혈당, 작성 시간)
      */
     @Transactional(readOnly = true)
-    public Page<FoodBoardDTO> getFoodByPagination(EntityId<Writer, Long> writerEntityId, List<Predicate> predicates, Pageable pageable) {
+    public Page<FoodBoardDTO> getFoodByPagination(EntityId<Writer, Long> writerEntityId, FoodPageVO foodPageVO) {
         logger.info("getFoodByPagination");
         checkNotNull(writerEntityId, "writerId must be provided");
-        return foodRepository.findFoodsWithPagination(writerEntityId.getId(), predicates, pageable);
+
+        Pageable page = foodPageVO.makePageable();
+        logger.info("page vo : " + page.toString());
+
+        /* where 절 이후에 쓰이는 조건문 */
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (foodPageVO.getSign() != null) {
+            predicates.add(foodRepository.decideEqualitySign(foodPageVO.getSign(), foodPageVO.getBloodSugar()));
+        }
+
+
+        if (isBeforeOrEqualDate(foodPageVO.convertStartDate(), foodPageVO.convertEndDate())) {        /* 날짜 규격에 적합한 파라미터라면, where 절에 추가해준다. */
+            predicates.add(foodRepository.decideBetween(foodPageVO.convertStartDate(), foodPageVO.convertEndDate()));
+        }
+
+        return foodRepository.findFoodsWithPagination(writerEntityId.getId(), predicates, page);
     }
 
+
+    private boolean isBeforeOrEqualDate(LocalDateTime startDate, LocalDateTime endDate) {
+        return (startDate != null && endDate != null && (startDate.isEqual(endDate) || startDate.isBefore(endDate)));
+    }
 
 }

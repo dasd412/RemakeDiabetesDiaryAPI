@@ -13,18 +13,14 @@ import com.dasd412.remake.api.controller.security.domain_rest.dto.chart.FoodBoar
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.service.domain.FindDiaryService;
-import com.querydsl.core.types.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 /**
  * 차트와 관련된 화면을 담당하는 컨트롤러
@@ -87,15 +83,14 @@ public class ChartFormController {
      * @return 음식 게시판 화면
      */
     @GetMapping("/chart-menu/chart/food-board/list")
-    public String showChartFoodBoard(@AuthenticationPrincipal PrincipalDetails principalDetails, FoodPageVO vo, Model model) {
-        Pageable page = vo.makePageable();
-        logger.info("page vo : " + page.toString());
-        List<Predicate> predicates = new ArrayList<>();
+    public String showChartFoodBoard(@AuthenticationPrincipal PrincipalDetails principalDetails, @ModelAttribute("FoodPageVO") FoodPageVO vo, Model model) {
+        logger.info("show chart food board");
 
-        Page<FoodBoardDTO> dtoPage = findDiaryService.getFoodByPagination(EntityId.of(Writer.class, principalDetails.getWriter().getId()), predicates, page);
+        Page<FoodBoardDTO> dtoPage = findDiaryService.getFoodByPagination(EntityId.of(Writer.class, principalDetails.getWriter().getId()), vo);
 
         logger.info("dto : " + dtoPage);
         model.addAttribute("dtoPage", new FoodPageMaker<>(dtoPage));
+
         return "chart/foodBoard";
     }
 }
