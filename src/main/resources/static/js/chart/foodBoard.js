@@ -65,14 +65,22 @@ const viewManipulator = {
 
         _this.viewATagValue();
 
+        const previousPageATag = $("#previousPageLi").children('a');
+        const nextPageATag = $("#nextPageLi").children('a');
+
+
     },
 
     viewATagValue: function () {
-        const pageNumberHrefs = $(".pageNumberHref");
-        for (let pageNumberHref of pageNumberHrefs) {
-            const pageNumber = Number(pageNumberHref.id);
+
+        const pageNumberLis = $("[id='pageNumberLi']");
+
+        for (let pageNumberLi of pageNumberLis) {
+            let pageNumberHref = pageNumberLi.querySelector('a');
+            let pageNumber = Number(pageNumberHref.id);
             pageNumberHref.innerHTML = pageNumber + 1;
         }
+
     }
 };
 

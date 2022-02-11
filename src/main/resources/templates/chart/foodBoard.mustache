@@ -42,25 +42,32 @@
         </div>
         <!--paging-->
 
-        <nav>
+        <nav aria-label="PageOfFoods">
             <div>
                 <ul class="pagination">
-                    <li class="page-item">
-                        <a href="#">
-                            <i class="fas fa-chevron-left" style="color: red"></i>
-                        </a>
-                    </li>
+
+                    {{#dtoPage.previousPage}}
+                        <li class="page-item" id="previousPageLi">
+
+                            <a href="#" class="page-link" id="{{dtoPage.previousPage}}">
+                                <i class="fas fa-chevron-left" style="color: red"></i>
+                            </a>
+
+                        </li>
+                    {{/dtoPage.previousPage}}
 
                     {{#dtoPage.pageableList}}
-                        <li class="page-item"><a href="#" class="pageNumberHref" id="{{pageNumber}}"></a>
+                        <li class="page-item" id="pageNumberLi"><a href="#" class="page-link" id="{{pageNumber}}">00</a>
                         </li>
                     {{/dtoPage.pageableList}}
 
-                    <li class="page-item">
-                        <a href="">
-                            <i class="fas fa-chevron-right" style="color: red"></i>
-                        </a>
-                    </li>
+                    {{#dtoPage.nextPage}}
+                        <li class="page-item" id="nextPageLi">
+                            <a href="#" class="page-link" id="{{dtoPage.nextPage}}">
+                                <i class="fas fa-chevron-right" style="color: red"></i>
+                            </a>
+                        </li>
+                    {{/dtoPage.nextPage}}
 
                 </ul>
 
