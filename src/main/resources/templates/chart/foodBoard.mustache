@@ -3,7 +3,7 @@
     <h1 class="headline3">먹은 음식들 알아보기</h1>
 
     <div class="panel-body pull-right">
-        <h3><a class="label label-default">기간 : </a></h3>
+        <h3><a class="label label-default"> </a></h3>
     </div>
 
     <div class="panel-body">
@@ -20,7 +20,7 @@
 
 
                 <tbody>
-                {{#foodPage}}
+                {{#dtoPage.foodPage.content}}
                     <tr class="odd gradeX">
 
                         <td>
@@ -34,7 +34,7 @@
                         </td>
 
                     </tr>
-                {{/foodPage}}
+                {{/dtoPage.foodPage.content}}
                 </tbody>
 
             </table>
@@ -46,13 +46,20 @@
             <div>
                 <ul class="pagination">
                     <li class="page-item">
-                        <i class="fas fa-chevron-left" style="color: red"></i>
+                        <a href="#">
+                            <i class="fas fa-chevron-left" style="color: red"></i>
+                        </a>
                     </li>
 
-                    <li class="page-item">insert aTag please</li>
+                    {{#dtoPage.pageableList}}
+                        <li class="page-item"><a href="#" class="pageNumberHref" id="{{pageNumber}}"></a>
+                        </li>
+                    {{/dtoPage.pageableList}}
 
                     <li class="page-item">
-                        <i class="fas fa-chevron-right" style="color: red"></i>
+                        <a href="">
+                            <i class="fas fa-chevron-right" style="color: red"></i>
+                        </a>
                     </li>
 
                 </ul>

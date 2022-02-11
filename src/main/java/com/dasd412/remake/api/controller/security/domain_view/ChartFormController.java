@@ -1,5 +1,5 @@
 /*
- * @(#)ChartFormController.java        1.0.7 2022/2/10
+ * @(#)ChartFormController.java        1.0.7 2022/2/11
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -11,7 +11,6 @@ package com.dasd412.remake.api.controller.security.domain_view;
 import com.dasd412.remake.api.config.security.auth.PrincipalDetails;
 import com.dasd412.remake.api.controller.security.domain_rest.dto.chart.FoodBoardDTO;
 import com.dasd412.remake.api.domain.diary.EntityId;
-import com.dasd412.remake.api.domain.diary.food.FoodPageVO;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.service.domain.FindDiaryService;
 import com.querydsl.core.types.Predicate;
@@ -19,22 +18,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 차트와 관련된 화면을 담당하는 컨트롤러
  *
  * @author 양영준
- * @version 1.0.7 2022년 2월 10일
+ * @version 1.0.7 2022년 2월 11일
  */
 @Controller
 public class ChartFormController {
@@ -97,10 +93,9 @@ public class ChartFormController {
         List<Predicate> predicates = new ArrayList<>();
 
         Page<FoodBoardDTO> dtoPage = findDiaryService.getFoodByPagination(EntityId.of(Writer.class, principalDetails.getWriter().getId()), predicates, page);
-        List<FoodBoardDTO> dtoList = dtoPage.getContent();
 
-        logger.info("dto : " + dtoList);
-        model.addAttribute("foodPage", dtoList);
+        logger.info("dto : " + dtoPage);
+        model.addAttribute("dtoPage", new FoodPageMaker<>(dtoPage));
         return "chart/foodBoard";
     }
 }

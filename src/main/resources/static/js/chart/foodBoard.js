@@ -1,5 +1,5 @@
 /*
- * @(#)foodBoard.js        1.0.6 2022/2/8
+ * @(#)foodBoard.js        1.0.7 2022/2/11
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, JavaScript, Pocheon-si, KOREA
@@ -58,6 +58,25 @@ const modalManipulator = {
     }
 };
 
+const viewManipulator = {
+
+    init: function () {
+        const _this = this;
+
+        _this.viewATagValue();
+
+    },
+
+    viewATagValue: function () {
+        const pageNumberHrefs = $(".pageNumberHref");
+        for (let pageNumberHref of pageNumberHrefs) {
+            const pageNumber = Number(pageNumberHref.id);
+            pageNumberHref.innerHTML = pageNumber + 1;
+        }
+    }
+};
+
 $(document).ready(function () {
+    viewManipulator.init();
     modalManipulator.init();
 });

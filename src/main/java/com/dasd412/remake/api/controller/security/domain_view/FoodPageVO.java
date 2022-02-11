@@ -6,7 +6,7 @@
  * All rights reserved.
  */
 
-package com.dasd412.remake.api.domain.diary.food;
+package com.dasd412.remake.api.controller.security.domain_view;
 
 import lombok.Getter;
 import org.springframework.data.domain.PageRequest;
