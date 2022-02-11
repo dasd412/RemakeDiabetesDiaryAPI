@@ -66,8 +66,10 @@ const viewManipulator = {
         _this.viewATagValue();
 
         const previousPageATag = $("#previousPageLi").children('a');
-        const nextPageATag = $("#nextPageLi").children('a');
+        previousPageATag.attr("href", Number(previousPageATag.attr("id")) + 1);
 
+        const nextPageATag = $("#nextPageLi").children('a');
+        nextPageATag.attr("href", Number(nextPageATag.attr("id")) + 1);
 
     },
 
@@ -77,8 +79,9 @@ const viewManipulator = {
 
         for (let pageNumberLi of pageNumberLis) {
             let pageNumberHref = pageNumberLi.querySelector('a');
-            let pageNumber = Number(pageNumberHref.id);
-            pageNumberHref.innerHTML = pageNumber + 1;
+            const pageId = Number(pageNumberHref.id) + 1;
+            pageNumberHref.href = (pageId).toString();
+            pageNumberHref.innerHTML = (pageId).toString();
         }
 
     }

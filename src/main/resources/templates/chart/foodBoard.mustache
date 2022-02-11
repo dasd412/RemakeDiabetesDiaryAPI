@@ -49,7 +49,7 @@
                     {{#dtoPage.previousPage}}
                         <li class="page-item" id="previousPageLi">
 
-                            <a href="#" class="page-link" id="{{dtoPage.previousPage}}">
+                            <a href="#" class="page-link" id="{{pageNumber}}">
                                 <i class="fas fa-chevron-left" style="color: red"></i>
                             </a>
 
@@ -57,13 +57,13 @@
                     {{/dtoPage.previousPage}}
 
                     {{#dtoPage.pageableList}}
-                        <li class="page-item" id="pageNumberLi"><a href="#" class="page-link" id="{{pageNumber}}">00</a>
+                        <li class="page-item" id="pageNumberLi"><a href="#" class="page-link" id="{{pageNumber}}"></a>
                         </li>
                     {{/dtoPage.pageableList}}
 
                     {{#dtoPage.nextPage}}
                         <li class="page-item" id="nextPageLi">
-                            <a href="#" class="page-link" id="{{dtoPage.nextPage}}">
+                            <a href="#" class="page-link" id="{{pageNumber}}">
                                 <i class="fas fa-chevron-right" style="color: red"></i>
                             </a>
                         </li>
