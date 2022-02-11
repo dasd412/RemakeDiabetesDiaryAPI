@@ -1,6 +1,6 @@
 # __Diabetes Diary API Remake__
 
-## 버전 : 1.0.6
+## 버전 : 1.0.7
 
 ### 웹 사이트 주소 ###
 
@@ -56,7 +56,7 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
     + 달력과 연동
     + 검색기능 만들고 그 결과로 차트 생성하기
     + 작성용 폼 더 이쁘게 만들기 
-    + 음식 검색 게시판 만들기(진행 중)
+    + 음식 검색 게시판 만들기
 
 + 배포
     + amazon ec2 인스턴스 생성
@@ -132,6 +132,6 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 
 + /resources/static/vendor/* [colorLib 저작권 ]
 + /resources/static/sidebar-07/* [colorLib 저작권 ]
-+ /resources/static/js/calendar/ (calendar.js ,formatter.js, stringBuffer.js) [구글링 코드. 어디서 참고했는지는 기억 못합니다... 죄송.]
-
++ /resources/static/js/calendar/ (calendar.js ,formatter.js, stringBuffer.js) [구글링 코드]
++ src/main/java/com/dasd412/remake/api/controller/security/domain_view/FoodPageMaker [스타트 스프링 부트]
 
