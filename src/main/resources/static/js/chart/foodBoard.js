@@ -36,14 +36,7 @@ const modalManipulator = {
         } else {
             $("#searchModal").attr("style", "display:none;");
             this.isModalOn = false;
-            this.resetModal();
         }
-    },
-
-    resetModal: function () {
-        $("#inputBloodSugar").val('');
-        $("#modalStartDate").val('');
-        $("#modalEndDate").val('');
     },
 
     findFood: function () {
@@ -63,27 +56,50 @@ const viewManipulator = {
     init: function () {
         const _this = this;
 
-        _this.viewATagValue();
+        _this.resolveATagValue();
 
-        const previousPageATag = $("#previousPageLi").children('a');
-        previousPageATag.attr("href", Number(previousPageATag.attr("id")) + 1);
+        _this.resolvePreviousAndNext();
 
-        const nextPageATag = $("#nextPageLi").children('a');
-        nextPageATag.attr("href", Number(nextPageATag.attr("id")) + 1);
+        _this.resolveFormAfterClickATag();
 
     },
 
-    viewATagValue: function () {
+    resolveATagValue: function () {
 
         const pageNumberLis = $("[id='pageNumberLi']");
 
         for (let pageNumberLi of pageNumberLis) {
             let pageNumberHref = pageNumberLi.querySelector('a');
             const pageId = Number(pageNumberHref.id) + 1;
+
             pageNumberHref.href = (pageId).toString();
             pageNumberHref.innerHTML = (pageId).toString();
+
+            //만약 a 태그의 id와 히든 폼 페이지 값이 같다면, class를 active로 변경하여 다르게 표시한다.
+            if (pageId === Number($("#foodPageForm").find("[name='page']").val())) {
+
+                pageNumberLi.className="page-item active";
+            }
+
         }
 
+    },
+    resolvePreviousAndNext: function () {
+        const previousPageATag = $("#previousPageLi").children('a');
+        previousPageATag.attr("href", Number(previousPageATag.attr("id")) + 1);
+
+        const nextPageATag = $("#nextPageLi").children('a');
+        nextPageATag.attr("href", Number(nextPageATag.attr("id")) + 1);
+    },
+
+    resolveFormAfterClickATag: function () {
+        const foodPageForm = $("#foodPageForm");
+
+        $(".pagination a").click(function (e) {
+            e.preventDefault();
+            foodPageForm.find("[name='page']").val($(this).attr("href"));
+            foodPageForm.submit();
+        });
     }
 };
 

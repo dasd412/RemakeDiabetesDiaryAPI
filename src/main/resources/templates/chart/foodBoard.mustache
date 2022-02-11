@@ -76,15 +76,15 @@
         </nav><!--end page display-->
 
         <div>
-            <button class="btn btn-primary" id="searchBtn">검색하기</button>
+            <button class="btn btn-primary" id="searchBtn" style="margin-top: 10px">검색하기</button>
         </div>
 
-        <form id="f1" method="get">
-            <input type="hidden" name="page">
-            <input type="hidden" name="size">
-            <input type="hidden" name="type">
-            <input type="hidden" name="keyword">
-        </form>
+        {{#dtoPage}}
+            <form id="foodPageForm" method="get">
+                <input type="hidden" name="page" value="{{currentPageNumber}}">
+                <input type="hidden" name="size" value="{{currentPage.pageSize}}">
+            </form>
+        {{/dtoPage}}
 
     </div>
     <!-- end panel -->
