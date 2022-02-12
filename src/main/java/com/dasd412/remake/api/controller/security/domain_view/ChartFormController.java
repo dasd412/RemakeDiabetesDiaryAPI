@@ -83,8 +83,8 @@ public class ChartFormController {
      * @return 음식 게시판 화면
      */
     @GetMapping("/chart-menu/chart/food-board/list")
-    public String showChartFoodBoard(@AuthenticationPrincipal PrincipalDetails principalDetails, @ModelAttribute("FoodPageVO") FoodPageVO vo, Model model) {
-        logger.info("show chart food board");
+    public String showChartFoodBoard(@AuthenticationPrincipal PrincipalDetails principalDetails, @ModelAttribute("foodPageVO") FoodPageVO vo, Model model) {
+        logger.info("show chart food board : " + vo.toString());
 
         Page<FoodBoardDTO> dtoPage = findDiaryService.getFoodByPagination(EntityId.of(Writer.class, principalDetails.getWriter().getId()), vo);
 

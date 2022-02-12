@@ -1,5 +1,5 @@
 /*
- * @(#)FindDiaryService.java        1.0.7 2022/2/10
+ * @(#)FindDiaryService.java        1.0.7 2022/2/12
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -11,6 +11,7 @@ package com.dasd412.remake.api.service.domain;
 import com.dasd412.remake.api.controller.security.domain_rest.dto.chart.FoodBoardDTO;
 import com.dasd412.remake.api.controller.security.domain_view.FoodPageVO;
 import com.dasd412.remake.api.domain.diary.EntityId;
+import com.dasd412.remake.api.domain.diary.InequalitySign;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiaryRepository;
 import com.dasd412.remake.api.domain.diary.diet.Diet;
@@ -44,7 +45,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * 조회 비즈니스 로직을 수행하는 서비스 클래스
  *
  * @author 양영준
- * @version 1.0.7 2022년 2월 10일
+ * @version 1.0.7 2022년 2월 12일
  */
 @Service
 public class FindDiaryService {
@@ -449,7 +450,7 @@ public class FindDiaryService {
         /* where 절 이후에 쓰이는 조건문 */
         List<Predicate> predicates = new ArrayList<>();
 
-        if (foodPageVO.getSign() != null) {
+        if (foodPageVO.getSign() != null && foodPageVO.getSign() != InequalitySign.NONE) {
             predicates.add(foodRepository.decideEqualitySign(foodPageVO.getSign(), foodPageVO.getBloodSugar()));
         }
 

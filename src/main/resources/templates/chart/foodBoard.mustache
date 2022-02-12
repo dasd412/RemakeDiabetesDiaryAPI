@@ -77,12 +77,24 @@
 
         <div>
             <button class="btn btn-primary" id="searchBtn" style="margin-top: 10px">검색하기</button>
+            <button class="btn btn-warning" id="conditionClearBtn" style="margin-top: 10px">검색 조건 초기화</button>
         </div>
 
         {{#dtoPage}}
             <form id="foodPageForm" method="get">
                 <input type="hidden" name="page" value="{{currentPageNumber}}">
                 <input type="hidden" name="size" value="{{currentPage.pageSize}}">
+
+                <input type="hidden" name="sign" value="none">
+                <input type="hidden" name="bloodSugar" value="0">
+
+                <input type="hidden" name="startYear">
+                <input type="hidden" name="startMonth">
+                <input type="hidden" name="startDay">
+
+                <input type="hidden" name="endYear">
+                <input type="hidden" name="endMonth">
+                <input type="hidden" name="endDay">
             </form>
         {{/dtoPage}}
 
@@ -105,7 +117,8 @@
                     <div class="form-group" id="modalSelect">
                         <label for="searchType">검색 조건</label>
                         <select id="searchType" class="form-control" name="searchType">
-                            <option value="greater" selected>높게</option>
+                            <option value="none" selected>없음</option>
+                            <option value="greater">높게</option>
                             <option value="lesser">낮게</option>
                             <option value="equal">같게</option>
                             <option value="ge">높거나 같게</option>
@@ -115,7 +128,8 @@
 
                     <div class="form-group" id="modalText">
                         <label for="inputBloodSugar">혈당 수치</label>
-                        <input type="text" class="form-control" id="inputBloodSugar" name="inputBloodSugar" placeholder="0">
+                        <input type="text" class="form-control" id="inputBloodSugar" name="inputBloodSugar"
+                               placeholder="0">
                     </div> <!-- 혈당 수치 -->
 
                     <div class="form-group" id="modalCalendar">

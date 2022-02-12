@@ -1,5 +1,5 @@
 /*
- * @(#)FoodPageVO.java        1.0.7 2022/2/11
+ * @(#)FoodPageVO.java        1.0.7 2022/2/12
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -25,7 +25,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * 음식 게시판의 조회 페이징을 위해 사용되는 VO
  *
  * @author 양영준
- * @version 1.0.7 2022년 2월 11일
+ * @version 1.0.7 2022년 2월 12일
  */
 @Getter
 public class FoodPageVO {
@@ -133,6 +133,9 @@ public class FoodPageVO {
             case "ge":
                 this.sign = InequalitySign.GREAT_OR_EQUAL;
                 break;
+            default:
+                this.sign = InequalitySign.NONE;
+                break;
         }
     }
 
@@ -161,17 +164,17 @@ public class FoodPageVO {
     }
 
     public LocalDateTime convertStartDate() {
-        try{
+        try {
             return LocalDateTime.of(Integer.parseInt(startYear), Integer.parseInt(startMonth), Integer.parseInt(startDay), 0, 0);
-        }catch (NumberFormatException | DateTimeParseException exception){
+        } catch (NumberFormatException | DateTimeParseException exception) {
             return null;
         }
     }
 
     public LocalDateTime convertEndDate() {
-        try{
+        try {
             return LocalDateTime.of(Integer.parseInt(endYear), Integer.parseInt(endMonth), Integer.parseInt(endDay), 0, 0);
-        }catch (NumberFormatException | DateTimeParseException exception){
+        } catch (NumberFormatException | DateTimeParseException exception) {
             return null;
         }
     }
