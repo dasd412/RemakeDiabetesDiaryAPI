@@ -77,26 +77,28 @@
 
         <div>
             <button class="btn btn-primary" id="searchBtn" style="margin-top: 10px">검색하기</button>
-            <button class="btn btn-warning" id="conditionClearBtn" style="margin-top: 10px">검색 조건 초기화</button>
         </div>
 
-        {{#dtoPage}}
-            <form id="foodPageForm" method="get">
+        <form id="foodPageForm" method="get">
+            {{#dtoPage}}
                 <input type="hidden" name="page" value="{{currentPageNumber}}">
                 <input type="hidden" name="size" value="{{currentPage.pageSize}}">
+            {{/dtoPage}}
+            {{#foodPageVO}}
+                <input type="hidden" name="sign" value="{{sign}}">
 
-                <input type="hidden" name="sign" value="none">
-                <input type="hidden" name="bloodSugar" value="0">
+                <input type="hidden" name="bloodSugar" value="{{bloodSugar}}">
 
-                <input type="hidden" name="startYear">
-                <input type="hidden" name="startMonth">
-                <input type="hidden" name="startDay">
+                <input type="hidden" name="startYear" value="{{startYear}}">
+                <input type="hidden" name="startMonth" value="{{startMonth}}">
+                <input type="hidden" name="startDay" value="{{startDay}}">
 
-                <input type="hidden" name="endYear">
-                <input type="hidden" name="endMonth">
-                <input type="hidden" name="endDay">
-            </form>
-        {{/dtoPage}}
+                <input type="hidden" name="endYear" value="{{endYear}}">
+                <input type="hidden" name="endMonth" value="{{endMonth}}">
+                <input type="hidden" name="endDay" value="{{endDay}}">
+            {{/foodPageVO}}
+        </form>
+
 
     </div>
     <!-- end panel -->

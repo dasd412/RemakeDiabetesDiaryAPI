@@ -51,10 +51,10 @@
     margin-top: -50px;
 }
 
-#start-date, #end-date, #start-date-blood-sugar, #end-date-blood-sugar {
+#start-date, #end-date, #start-date-blood-sugar, #end-date-blood-sugar, #modalStartDate, #modalEndDate {
     cursor: pointer;
 }
 
-#start-date:hover, #end-date:hover, #start-date-blood-sugar:hover, #end-date-blood-sugar:hover {
+#start-date:hover, #end-date:hover, #start-date-blood-sugar:hover, #end-date-blood-sugar:hover, #modalStartDate:hover, #modalEndDate:hover {
     border-color: red;
 }

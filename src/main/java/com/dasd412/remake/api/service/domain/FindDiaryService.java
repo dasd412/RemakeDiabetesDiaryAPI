@@ -450,8 +450,8 @@ public class FindDiaryService {
         /* where 절 이후에 쓰이는 조건문 */
         List<Predicate> predicates = new ArrayList<>();
 
-        if (foodPageVO.getSign() != null && foodPageVO.getSign() != InequalitySign.NONE) {
-            predicates.add(foodRepository.decideEqualitySign(foodPageVO.getSign(), foodPageVO.getBloodSugar()));
+        if (foodPageVO.getSign() != null && foodPageVO.getEnumOfSign() != InequalitySign.NONE) {
+            predicates.add(foodRepository.decideEqualitySign(foodPageVO.getEnumOfSign(), foodPageVO.getBloodSugar()));
         }
 
 

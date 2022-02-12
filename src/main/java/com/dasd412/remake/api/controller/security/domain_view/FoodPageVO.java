@@ -52,7 +52,7 @@ public class FoodPageVO {
     /**
      * 부등호 [검색 조건]
      */
-    private InequalitySign sign;
+    private String sign;
 
     /**
      * 시작 날짜 [검색 조건]
@@ -76,6 +76,17 @@ public class FoodPageVO {
     public FoodPageVO() {
         this.page = 1;
         this.size = DEFAULT_SIZE;
+
+        this.sign = "";
+        this.bloodSugar = 0;
+
+        this.startYear = "";
+        this.startMonth = "";
+        this.startDay = "";
+
+        this.endYear = "";
+        this.endMonth = "";
+        this.endDay = "";
     }
 
     public void setPage(int page) {
@@ -116,26 +127,29 @@ public class FoodPageVO {
         this.bloodSugar = bloodSugar;
     }
 
-    public void setSign(String signString) {
-        switch (signString) {
+    public void setSign(String sign) {
+        this.sign = sign;
+    }
+
+    public InequalitySign getEnumOfSign() {
+        switch (this.sign) {
             case "lesser":
-                this.sign = InequalitySign.LESSER;
-                break;
+                return InequalitySign.LESSER;
+
             case "greater":
-                this.sign = InequalitySign.GREATER;
-                break;
+                return InequalitySign.GREATER;
+
             case "equal":
-                this.sign = InequalitySign.EQUAL;
-                break;
+                return InequalitySign.EQUAL;
+
             case "le":
-                this.sign = InequalitySign.LESSER_OR_EQUAL;
-                break;
+                return InequalitySign.LESSER_OR_EQUAL;
+
             case "ge":
-                this.sign = InequalitySign.GREAT_OR_EQUAL;
-                break;
+                return InequalitySign.GREAT_OR_EQUAL;
+
             default:
-                this.sign = InequalitySign.NONE;
-                break;
+                return InequalitySign.NONE;
         }
     }
 
