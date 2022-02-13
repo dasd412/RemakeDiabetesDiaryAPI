@@ -10,23 +10,37 @@ https://www.diabetes-diary.tk/
 
 https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 
-### 주요 기능 (작성 예정)
+### 주요 기능
 
-### API end point (작성 예정)
+1. 회원 가입
+2. 로그인 (form login과 OAuth login 방식 모두 제공)
+3. 일지 작성 및 수정 / 삭제 기능
+4. 달력으로 일지 표시
+5. 공복 혈당 / 식사 혈당/ 평균 혈당 관련 차트
+6. 음식 검색 게시판
+7. 아이디 ,비밀 번호 찾기 (예정)
+8. 시큐어 코딩 (예정)
+9. 튜토리얼 기능(예정)
+
+### API end point 
+https://github.com/dasd412/RemakeDiabetesDiaryAPI/wiki/API-Endpoint
 
 ### 디렉토리 구조 [대부분의 DTO 제외]
 
 + Backend
-    + https://github.com/dasd412/RemakeDiabetesDiaryAPI/wiki/%EB%B0%B1-%EC%97%94%EB%93%9C-%EB%94%94%EB%A0%89%ED%86%A0%EB%A6%AC
+    + https://github.com/dasd412/RemakeDiabetesDiaryAPI/wiki/backend-directory
 + Frontend
-    + https://github.com/dasd412/RemakeDiabetesDiaryAPI/wiki/%ED%94%84%EB%A1%A0%ED%8A%B8-%EC%97%94%EB%93%9C-%EB%94%94%EB%A0%89%ED%86%A0%EB%A6%AC
+    + https://github.com/dasd412/RemakeDiabetesDiaryAPI/wiki/frontend-directory
 
-### 다이어그램 (작성 예정)
+### 다이어그램
 
 + ERD
   ![erd.png](images/erd.png)
-+ 서비스 흐름도
-+ 배포 다이어그램
++ 배포
+    + 브라우저 접근 흐름도
+      ![browserFlow.png](images/browserFlow.png)
+    + 배포 다이어그램
+      ![deploy.png](images/deploy.png)
 
 ### 진행 상황 ###
 
@@ -51,7 +65,7 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
     + 기존 도메인 테스트에 스프링 시큐리티 적용 [관리자만 접근 가능하도록 변경]
     + 도메인 컨트롤러 매핑 url 에서 작성자 정보 제거하고 세션으로 판단하기
     + 아이디 찾기 , 비밀번호 찾기 구현(예정, 기존 이메일 서비스 활용할 듯.)
-    +  시큐어 코딩(예정)
+    + 시큐어 코딩(예정)
 
 
 + 뷰
