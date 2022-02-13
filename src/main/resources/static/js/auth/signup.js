@@ -1,5 +1,5 @@
 /*
- * @(#)signup.js        1.0.1 2022/1/22
+ * @(#)signup.js        1.0.7 2022/2/13
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, JavaScript, Pocheon-si, KOREA
@@ -10,7 +10,7 @@
  * 회원 가입 폼의 유효성을 검사
  *
  * @author 양영준
- * @version 1.0.1 2022년 1월 22일
+ * @version 1.0.7 2022년 2월 13일
  */
 
 /**
@@ -87,7 +87,7 @@ function submitSignup() {
  * 로그인 폼으로 돌아가기
  */
 function goBackLogin() {
-    window.location.href = "/loginForm";
+    window.location.href = "/login-form";
 }
 
 $(document).ready(function () {
