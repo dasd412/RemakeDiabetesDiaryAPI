@@ -16,6 +16,7 @@ import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 import com.dasd412.remake.api.domain.diary.diet.Diet;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.service.domain.FindDiaryService;
+import com.dasd412.remake.api.util.DateStringConverter;
 import com.querydsl.core.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,8 +73,8 @@ public class SecurityChartRestController {
      */
     @GetMapping("/chart-menu/fasting-plasma-glucose/between")
     public ApiResult<List<FindFpgBetweenDTO>> findFpgBetweenTime(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestParam Map<String, String> allParams) {
-        LocalDateTime startDate = convertStartDate(allParams);
-        LocalDateTime endDate = convertEndDate(allParams);
+        LocalDateTime startDate = DateStringConverter.convertMapParamsToStartDate(allParams);
+        LocalDateTime endDate = DateStringConverter.convertMapParamsToEndDate(allParams);
 
         logger.info("find fpg between" + startDate + " and " + endDate);
 
@@ -114,8 +115,8 @@ public class SecurityChartRestController {
      */
     @GetMapping("/chart-menu/blood-sugar/between")
     public ApiResult<List<FindBloodSugarBetweenDTO>> findBloodSugarBetween(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestParam Map<String, String> allParams) {
-        LocalDateTime startDate = convertStartDate(allParams);
-        LocalDateTime endDate = convertEndDate(allParams);
+        LocalDateTime startDate = DateStringConverter.convertMapParamsToStartDate(allParams);
+        LocalDateTime endDate = DateStringConverter.convertMapParamsToEndDate(allParams);
 
         logger.info("find blood sugar between" + startDate + " and " + endDate);
 
@@ -156,8 +157,8 @@ public class SecurityChartRestController {
      */
     @GetMapping("/chart-menu/average/between")
     public ApiResult<FindAverageBetweenDTO> findAverageBetween(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestParam Map<String, String> allParams) {
-        LocalDateTime startDate = convertStartDate(allParams);
-        LocalDateTime endDate = convertEndDate(allParams);
+        LocalDateTime startDate = DateStringConverter.convertMapParamsToStartDate(allParams);
+        LocalDateTime endDate = DateStringConverter.convertMapParamsToEndDate(allParams);
 
         logger.info("find average blood sugar between" + startDate + " and " + endDate);
 
@@ -166,31 +167,5 @@ public class SecurityChartRestController {
         Double averageBloodSugarBetween = findDiaryService.getAverageBloodSugarOfDietBetweenTime(EntityId.of(Writer.class, principalDetails.getWriter().getId()), startDate, endDate);
 
         return ApiResult.OK(FindAverageBetweenDTO.builder().averageFpgBetween(averageFpgBetween).tupleListBetween(averageBloodSugarTuplesBetween).averageBloodSugarBetween(averageBloodSugarBetween).build());
-    }
-
-    /**
-     * 중복 제거 리팩토링용 도우미 메서드
-     *
-     * @param allParams RequestParam 해시 맵
-     * @return 시작 날짜
-     */
-    private LocalDateTime convertStartDate(Map<String, String> allParams) {
-        return LocalDateTime.of(Integer.parseInt(allParams.get("startYear")),
-                Integer.parseInt(allParams.get("startMonth")),
-                Integer.parseInt(allParams.get("startDay")),
-                0, 0);
-    }
-
-    /**
-     * 중복 제거 리팩토링용 도우미 메서드
-     *
-     * @param allParams RequestParam 해시 맵
-     * @return 끝 날짜
-     */
-    private LocalDateTime convertEndDate(Map<String, String> allParams) {
-        return LocalDateTime.of(Integer.parseInt(allParams.get("endYear")),
-                Integer.parseInt(allParams.get("endMonth")),
-                Integer.parseInt(allParams.get("endDay")),
-                0, 0);
     }
 }
