@@ -19,6 +19,7 @@ import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.service.domain.FindDiaryService;
 import com.dasd412.remake.api.service.domain.SaveDiaryService;
 import com.dasd412.remake.api.service.domain.UpdateDeleteDiaryService;
+import com.dasd412.remake.api.util.DateStringJoiner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -66,8 +67,12 @@ public class SecurityDiaryRestController {
         Long writerId = principalDetails.getWriter().getId();
 
         /*JSON 직렬화가 LocalDateTime 에는 적용이 안되서 작성한 코드. */
-        String date = dto.getYear() + "-" + dto.getMonth() + "-" + dto.getDay() + " " + dto.getHour() + ":" + dto.getMinute() + ":" + dto.getSecond();
-        LocalDateTime writtenTime = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        DateStringJoiner dateStringJoiner = DateStringJoiner.builder()
+                .year(dto.getYear()).month(dto.getMonth()).day(dto.getDay())
+                .hour(dto.getHour()).minute(dto.getMinute()).second(dto.getSecond())
+                .build();
+
+        LocalDateTime writtenTime = dateStringJoiner.convertLocalDateTime();
 
         /* 혈당 일지 저장 */
         DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, writerId), dto.getFastingPlasmaGlucose(), dto.getRemark(), writtenTime);
