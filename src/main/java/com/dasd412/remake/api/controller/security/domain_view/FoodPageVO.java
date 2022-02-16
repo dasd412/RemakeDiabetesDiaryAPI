@@ -1,5 +1,5 @@
 /*
- * @(#)FoodPageVO.java        1.0.7 2022/2/12
+ * @(#)FoodPageVO.java        1.0.8 2022/2/16
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -17,15 +17,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
 
+import static com.dasd412.remake.api.util.DateStringConverter.convertLocalDateTime;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * 음식 게시판의 조회 페이징을 위해 사용되는 VO
  *
  * @author 양영준
- * @version 1.0.7 2022년 2월 12일
+ * @version 1.0.8 2022년 2월 16일
  */
 @Getter
 public class FoodPageVO {
@@ -178,19 +178,11 @@ public class FoodPageVO {
     }
 
     public LocalDateTime convertStartDate() {
-        try {
-            return LocalDateTime.of(Integer.parseInt(startYear), Integer.parseInt(startMonth), Integer.parseInt(startDay), 0, 0);
-        } catch (NumberFormatException | DateTimeParseException exception) {
-            return null;
-        }
+        return convertLocalDateTime(this.startYear, this.startMonth, this.startDay);
     }
 
     public LocalDateTime convertEndDate() {
-        try {
-            return LocalDateTime.of(Integer.parseInt(endYear), Integer.parseInt(endMonth), Integer.parseInt(endDay), 0, 0);
-        } catch (NumberFormatException | DateTimeParseException exception) {
-            return null;
-        }
+        return convertLocalDateTime(this.endYear, this.endMonth, this.endDay);
     }
 
     @Override

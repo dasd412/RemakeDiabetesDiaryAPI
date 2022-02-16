@@ -8,6 +8,7 @@
 package com.dasd412.remake.api.util;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.Map;
 
 /**
@@ -47,4 +48,26 @@ public class DateStringConverter {
                 0, 0);
     }
 
+    /**
+     * @param startDate 시작 날짜
+     * @param endDate   끝 날짜
+     * @return 시작 날짜가 끝 날짜와 같거나 더 앞선지 여부
+     */
+    public static boolean isStartDateEqualOrBeforeEndDate(LocalDateTime startDate, LocalDateTime endDate) {
+        return (startDate != null && endDate != null && (startDate.isEqual(endDate) || startDate.isBefore(endDate)));
+    }
+
+    /**
+     * @param year 연도
+     * @param month 월
+     * @param day 일
+     * @return 변환의 오류가 없다면 LocalDateTime 객체 리턴. 만약 오류가 있다면 null 리턴.
+     */
+    public static LocalDateTime convertLocalDateTime(String year, String month, String day) {
+        try {
+            return LocalDateTime.of(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day), 0, 0);
+        } catch (NumberFormatException | DateTimeParseException exception) {
+            return null;
+        }
+    }
 }
