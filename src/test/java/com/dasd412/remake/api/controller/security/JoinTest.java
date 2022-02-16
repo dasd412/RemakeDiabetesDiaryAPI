@@ -1,5 +1,5 @@
 /*
- * @(#)JoinTest.java        1.0.1 2022/1/22
+ * @(#)JoinTest.java        1.0.8 2022/2/16
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -21,7 +21,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -41,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * 회원 가입과 관련된 테스트 수행
  *
  * @author 양영준
- * @version 1.0.1 2022년 1월 22일
+ * @version 1.0.8 2022년 2월 16일
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -59,8 +58,7 @@ public class JoinTest {
 
     private MockMvc mockMvc;
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
+    String url;
 
     @Before
     public void setup() throws Exception {
@@ -69,7 +67,7 @@ public class JoinTest {
                 .build();
         //given
         UserJoinRequestDTO dto = new UserJoinRequestDTO("before", "before", "before@naver.com");
-        String url = "http://localhost:" + port + "/signup/user";
+        url = "http://localhost:" + port + "/signup/user";
 
         //when and then
         mockMvc.perform(post(url)
@@ -87,7 +85,6 @@ public class JoinTest {
     public void signUp() throws Exception {
         //given
         UserJoinRequestDTO dto = new UserJoinRequestDTO("test", "test", "test@naver.com");
-        String url = "http://localhost:" + port + "/signup/user";
 
         //when and then
         mockMvc.perform(post(url)
@@ -106,7 +103,6 @@ public class JoinTest {
     public void duplicateName() throws Exception {
         //given
         UserJoinRequestDTO dto = new UserJoinRequestDTO("before", "before", "duplicateName@naver.com");
-        String url = "http://localhost:" + port + "/signup/user";
         //when and then
         mockMvc.perform(post(url)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -121,7 +117,6 @@ public class JoinTest {
     public void duplicateEmail() throws Exception {
         //given
         UserJoinRequestDTO dto = new UserJoinRequestDTO("testEmail", "before", "before@naver.com");
-        String url = "http://localhost:" + port + "/signup/user";
         //when and then
         mockMvc.perform(post(url)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -136,7 +131,6 @@ public class JoinTest {
     public void emptyName() throws Exception {
         //given
         UserJoinRequestDTO dto = new UserJoinRequestDTO("", "empty", "before@naver.com");
-        String url = "http://localhost:" + port + "/signup/user";
         //when and then
         mockMvc.perform(post(url)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -149,7 +143,6 @@ public class JoinTest {
     public void emptyPassword() throws Exception {
         //given
         UserJoinRequestDTO dto = new UserJoinRequestDTO("name", "", "before@naver.com");
-        String url = "http://localhost:" + port + "/signup/user";
         //when and then
         mockMvc.perform(post(url)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -162,7 +155,6 @@ public class JoinTest {
     public void emptyEmail() throws Exception {
         //given
         UserJoinRequestDTO dto = new UserJoinRequestDTO("name", "pp", "");
-        String url = "http://localhost:" + port + "/signup/user";
         //when and then
         mockMvc.perform(post(url)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -175,7 +167,6 @@ public class JoinTest {
     public void invalidEmail() throws Exception {
         //given
         UserJoinRequestDTO dto = new UserJoinRequestDTO("name", "pp", "teasesatas");
-        String url = "http://localhost:" + port + "/signup/user";
         //when and then
         mockMvc.perform(post(url)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
