@@ -9,10 +9,8 @@
 package com.dasd412.remake.api.config.security.oauth;
 
 import com.dasd412.remake.api.config.security.auth.PrincipalDetails;
-import com.dasd412.remake.api.config.security.oauth.provider.FaceBookUserInfo;
-import com.dasd412.remake.api.config.security.oauth.provider.GitHubUserInfo;
-import com.dasd412.remake.api.config.security.oauth.provider.GoogleUserInfo;
 import com.dasd412.remake.api.config.security.oauth.provider.OAuth2UserInfo;
+import com.dasd412.remake.api.config.security.oauth.provider.OAuth2UserInfoFactory;
 import com.dasd412.remake.api.domain.diary.writer.Role;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
@@ -34,7 +32,6 @@ import java.util.Optional;
 @Service
 public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
 
-
     /**
      * 이미 WriterService 내에 회원 가입 로직이 있기 때문에 재사용한다.
      */
@@ -44,9 +41,15 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
      */
     private final WriterRepository writerRepository;
 
-    public PrincipalOAuth2UserService(WriterService writerService, WriterRepository writerRepository) {
+    /**
+     * 어떤 OAuth2 user 정보인지 알려주는 팩토리
+     */
+    private final OAuth2UserInfoFactory oAuth2UserInfoFactory;
+
+    public PrincipalOAuth2UserService(WriterService writerService, WriterRepository writerRepository, OAuth2UserInfoFactory oAuth2UserInfoFactory) {
         this.writerService = writerService;
         this.writerRepository = writerRepository;
+        this.oAuth2UserInfoFactory = oAuth2UserInfoFactory;
     }
 
     /**
@@ -89,15 +92,6 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
      */
     private Optional<OAuth2UserInfo> selectProvider(OAuth2User oAuth2User, OAuth2UserRequest userRequest) {
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
-        switch (registrationId) {
-            case "google":
-                return Optional.of(new GoogleUserInfo(oAuth2User.getAttributes()));
-            case "facebook":
-                return Optional.of(new FaceBookUserInfo(oAuth2User.getAttributes()));
-            case "github":
-                return Optional.of(new GitHubUserInfo(oAuth2User.getAttributes()));
-            default:
-                return Optional.empty();
-        }
+        return oAuth2UserInfoFactory.selectOAuth2UserInfo(oAuth2User, registrationId);
     }
 }
