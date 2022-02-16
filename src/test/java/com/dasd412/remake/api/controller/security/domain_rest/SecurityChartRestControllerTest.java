@@ -1,5 +1,5 @@
 /*
- * @(#)SecurityChartRestControllerTest.java        1.0.5 2022/2/5
+ * @(#)SecurityChartRestControllerTest.java        1.0.8 2022/2/16
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -12,9 +12,6 @@ import com.dasd412.remake.api.config.security.auth.PrincipalDetails;
 import com.dasd412.remake.api.controller.security.domain_rest.dto.diary.SecurityDiaryPostRequestDTO;
 import com.dasd412.remake.api.controller.security.domain_rest.dto.diary.SecurityFoodDTO;
 import com.dasd412.remake.api.domain.diary.EntityId;
-import com.dasd412.remake.api.domain.diary.diabetesDiary.DiaryRepository;
-import com.dasd412.remake.api.domain.diary.diet.DietRepository;
-import com.dasd412.remake.api.domain.diary.food.FoodRepository;
 import com.dasd412.remake.api.domain.diary.writer.Role;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
@@ -27,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -47,37 +43,24 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * @author 양영준
- * @version 1.0.5 2022년 2월 5일
+ * @version 1.0.8 2022년 2월 16일
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application-test.properties")
 public class SecurityChartRestControllerTest {
 
-    @LocalServerPort
-    private int port;
-
     @Autowired
     private WebApplicationContext context;
 
     @Autowired
     private WriterRepository writerRepository;
-
-    @Autowired
-    private DiaryRepository diaryRepository;
-
-    @Autowired
-    private DietRepository dietRepository;
-
-    @Autowired
-    private FoodRepository foodRepository;
 
     private final TestUserDetailsService testUserDetailsService = new TestUserDetailsService();
 
@@ -224,7 +207,7 @@ public class SecurityChartRestControllerTest {
         String url = "/chart-menu/average/all";
 
         //when and then
-        MvcResult result = mockMvc.perform(get(url).with(user(principalDetails)).contentType(MediaType.APPLICATION_JSON_UTF8))
+        mockMvc.perform(get(url).with(user(principalDetails)).contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value("true"))
@@ -250,7 +233,7 @@ public class SecurityChartRestControllerTest {
         params.add("endDay", "30");
 
         //when and then
-        MvcResult result = mockMvc.perform(get(url).with(user(principalDetails)).params(params).contentType(MediaType.APPLICATION_JSON_UTF8))
+        mockMvc.perform(get(url).with(user(principalDetails)).params(params).contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value("true"))
