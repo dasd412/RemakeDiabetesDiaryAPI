@@ -1,5 +1,5 @@
 /*
- * @(#)DiarySaveRestControllerTest.java        1.0.1 2022/1/22
+ * @(#)DiarySaveRestControllerTest.java        1.0.8 2022/2/16
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
@@ -46,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Security 적용 없이 정보 저장과 관련된 컨트롤러 테스트 수행.
  *
  * @author 양영준
- * @version 1.0.1 2022년 1월 22일
+ * @version 1.0.8 2022년 2월 16일
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -63,8 +62,6 @@ public class DiarySaveRestControllerTest {
     private WriterRepository writerRepository;
 
     private MockMvc mockMvc;
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Before
     public void setup() {
