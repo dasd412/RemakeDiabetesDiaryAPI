@@ -1,5 +1,5 @@
 /*
- * @(#)PrincipalOAuth2UserService.java        1.0.1 2022/1/22
+ * @(#)PrincipalOAuth2UserService.java        1.0.8 2022/2/16
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -17,8 +17,6 @@ import com.dasd412.remake.api.domain.diary.writer.Role;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
 import com.dasd412.remake.api.service.security.WriterService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -31,7 +29,7 @@ import java.util.Optional;
  * "/login" 요청 시 인터셉트했는데 OAuth 로그인인 경우, OAuth2User 를 Authentication 객체에 넣어주는 서비스 클래스.
  *
  * @author 양영준
- * @version 1.0.1 2022년 1월 22일
+ * @version 1.0.8 2022년 2월 16일
  */
 @Service
 public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {

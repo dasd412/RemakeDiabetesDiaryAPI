@@ -1,5 +1,5 @@
 /*
- * @(#)PrincipalDetails.java        1.0.1 2022/1/22
+ * @(#)PrincipalDetails.java        1.0.8 2022/2/16
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -13,7 +13,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -23,7 +22,7 @@ import java.util.Map;
  * 사용자 정의 UserDetails 와 OAuth 로그인용 OAuth2User 를 모두 implements 하였기 때문에, Authentication 객체에 두 타입 모두로 인식가능해졌다.
  *
  * @author 양영준
- * @version 1.0.1 2022년 1월 22일
+ * @version 1.0.8 2022년 2월 16일
  */
 public class PrincipalDetails implements UserDetails, OAuth2User {
 
