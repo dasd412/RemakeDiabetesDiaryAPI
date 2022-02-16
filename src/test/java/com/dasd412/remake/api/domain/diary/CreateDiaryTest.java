@@ -1,5 +1,5 @@
 /*
- * @(#)CreateDiaryTest.java        1.0.1 2022/1/22
+ * @(#)CreateDiaryTest.java        1.0.8 2022/2/16
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -17,6 +17,7 @@ import com.dasd412.remake.api.domain.diary.writer.Role;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -26,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,19 +40,13 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Security 적용 없이 리포지토리를 접근하여 저장 테스트.
  *
  * @author 양영준
- * @version 1.0.1 2022년 1월 22일
+ * @version 1.0.8 2022년 2월 16일
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest()
-@TestPropertySource(locations="classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.properties")
 public class CreateDiaryTest {
 
-    /*
-    2021 - 12 -19 기준
-    클래스 커버리지 100% (18/18)
-    메소드 커버리지 56% (73/130)
-    라인 커버리지 49% (163/332)
-     */
     @Autowired
     SaveDiaryService saveDiaryService;
 
@@ -65,6 +59,14 @@ public class CreateDiaryTest {
     @Rule
     public final ExpectedException thrown = ExpectedException.none();
 
+    Writer me;
+
+    @Before
+    public void setUp() {
+        //given
+        me = saveDiaryService.saveWriter("ME", "ME@NAVER.COM", Role.User);
+    }
+
     @After
     public void clean() {
         writerRepository.deleteAll();//cascade all 이므로 작성자 삭제하면 다 삭제됨.
@@ -76,10 +78,6 @@ public class CreateDiaryTest {
     @Transactional
     @Test
     public void saveWriterOne() {
-
-        //given
-        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
-
         //when
         Writer found = writerRepository.findAll().get(0);
 
@@ -93,12 +91,8 @@ public class CreateDiaryTest {
     @Transactional
     @Test
     public void saveWritersMany() {
-
         //given
-        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-
         Writer other = saveDiaryService.saveWriter("other", "OTHER@NAVER.COM", Role.User);
-
         Writer another = saveDiaryService.saveWriter("another", "Another@NAVER.COM", Role.User);
 
         //when
@@ -131,7 +125,6 @@ public class CreateDiaryTest {
     @Test
     public void saveDiaryOneOfWriterOneById() {
         //given
-        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
         saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
 
         //when
@@ -153,7 +146,6 @@ public class CreateDiaryTest {
     @Test
     public void saveDiariesOfWriterById() {
         //given
-        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
         saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 10, "test1", LocalDateTime.now());
         saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test2", LocalDateTime.now());
         saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 30, "test3", LocalDateTime.now());
@@ -190,7 +182,6 @@ public class CreateDiaryTest {
     @Test
     public void saveDiariesOfWritersById() {
         //given
-        Writer me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
         saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 10, "test1", LocalDateTime.now());
         saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test2", LocalDateTime.now());
 
@@ -238,7 +229,6 @@ public class CreateDiaryTest {
     public void saveWriterWithDiaryWithDietOneById() {
 
         //given
-        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
         DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
         Diet diet = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 100);
 
@@ -275,7 +265,6 @@ public class CreateDiaryTest {
     public void saveWriterWithDiaryWithDietMany() {
 
         //given
-        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
         DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
         Diet diet1 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.BreakFast, 100);
         Diet diet2 = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 200);
@@ -322,7 +311,6 @@ public class CreateDiaryTest {
     @Test
     public void saveWriterWithDiaryWithDietWithFoodOne() {
         //given
-        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
         DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
         Diet diet = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 100);
         Food food = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "pizza");
@@ -360,7 +348,6 @@ public class CreateDiaryTest {
     @Test
     public void saveWriterWithDiaryWithDietWithFoodMany() {
         //given
-        Writer me = saveDiaryService.saveWriter("ME", "TEST@NAVER.COM", Role.User);
         DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 20, "test", LocalDateTime.now());
         Diet diet = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 250);
         Food food1 = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "pizza");
@@ -409,7 +396,7 @@ public class CreateDiaryTest {
     public void saveWriterNoName() {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("name should be between 1 and 50");
-        Writer me = saveDiaryService.saveWriter("", "TEST@NAVER.COM", Role.User);
+        saveDiaryService.saveWriter("", "TEST@NAVER.COM", Role.User);
     }
 
 
@@ -418,8 +405,7 @@ public class CreateDiaryTest {
     public void saveDiaryNegativeBloodSugar() {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("fastingPlasmaGlucose must be between 0 and 1000");
-        Writer me = saveDiaryService.saveWriter("me", "TEST@NAVER.COM", Role.User);
-        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), -1, "", LocalDateTime.now());
+        saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), -1, "", LocalDateTime.now());
     }
 
 
@@ -428,9 +414,8 @@ public class CreateDiaryTest {
     public void saveDietNegativeBloodSugar() {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("bloodSugar must be between 0 and 1000");
-        Writer me = saveDiaryService.saveWriter("me", "TEST@NAVER.COM", Role.User);
         DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 100, "", LocalDateTime.now());
-        Diet diet = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, -200);
+        saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, -200);
     }
 
     @Transactional
@@ -438,9 +423,8 @@ public class CreateDiaryTest {
     public void saveFoodNoName() {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("food name length should be between 1 and 50");
-        Writer me = saveDiaryService.saveWriter("me", "TEST@NAVER.COM", Role.User);
         DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 100, "", LocalDateTime.now());
         Diet diet = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 150);
-        Food food = saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "");
+        saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "");
     }
 }
