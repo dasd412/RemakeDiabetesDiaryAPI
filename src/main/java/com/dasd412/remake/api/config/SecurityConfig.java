@@ -1,5 +1,5 @@
 /*
- * @(#)SecurityConfig.java        1.0.2 2022/1/23
+ * @(#)SecurityConfig.java        1.0.8 2022/2/16
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -8,6 +8,7 @@
 
 package com.dasd412.remake.api.config;
 
+import com.dasd412.remake.api.config.security.AuthenticationExceptionJudge;
 import com.dasd412.remake.api.config.security.LoginFailHandler;
 import com.dasd412.remake.api.config.security.oauth.PrincipalOAuth2UserService;
 import com.dasd412.remake.api.domain.diary.writer.Role;
@@ -17,13 +18,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  * 웹 시큐리티와 관련된 설정용 클래스.
  *
  * @author 양영준
- * @version 1.0.2 2022년 1월 23일
+ * @version 1.0.8 2022년 2월 16일
  */
 
 @Configuration
@@ -31,12 +31,18 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
-     * OAuth 2.0과 관련된 작업을 하는 서비스 클래스
+     * OAuth 2.0과 관련된 작업을 하는 서비스 객체
      */
     private final PrincipalOAuth2UserService principalOAuth2UserService;
 
-    public SecurityConfig(PrincipalOAuth2UserService principalOAuth2UserService) {
+    /**
+     * 로그인 실패시 예외를 판단하여, 적절한 예외 메시지를 던져주는 객체
+     */
+    private final AuthenticationExceptionJudge judge;
+
+    public SecurityConfig(PrincipalOAuth2UserService principalOAuth2UserService, AuthenticationExceptionJudge judge) {
         this.principalOAuth2UserService = principalOAuth2UserService;
+        this.judge = judge;
     }
 
     /**
@@ -93,6 +99,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Bean
     public LoginFailHandler loginFailHandler() {
-        return new LoginFailHandler();
+        return new LoginFailHandler(judge);
     }
 }
