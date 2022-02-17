@@ -24,10 +24,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.support.PageableExecutionUtils;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * Querydsl을 사용하기 위해 만든 구현체 클래스.
@@ -92,35 +93,16 @@ public class FoodRepositoryImpl implements FoodRepositoryCustom {
 
     /**
      * @param writerId   작성자 id
-     * @param bloodSugar 식단 혈당
-     * @return 식단 혈당 입력보다 높거나 같은 식단들에 기재된 음식들
+     * @param predicates where 조건문 (높냐 낮냐, 날짜 사이인가 등..)
+     * @return 조건에 맞는 음식 이름들
      */
     @Override
-    public List<String> findFoodNamesInDietHigherThanBloodSugar(Long writerId, int bloodSugar) {
-        /* @Query(value="SELECT DISTINCT food.foodName FROM Food as food INNER JOIN food.diet diet WHERE diet.bloodSugar >= :blood_sugar AND food.diet.diary.writer.writerId = :writer_id") */
+    public List<String> findFoodNamesInDiet(Long writerId, List<Predicate> predicates) {
         return jpaQueryFactory.selectDistinct(QFood.food.foodName)
                 .from(QFood.food)
                 .innerJoin(QFood.food.diet, QDiet.diet)
                 .on(QDiet.diet.diary.writer.writerId.eq(writerId))
-                .where(QDiet.diet.bloodSugar.goe(bloodSugar))
-                .fetch();
-    }
-
-    /**
-     * @param writerId 작성자 id
-     * @return 작성자의 평균 혈당보다 높거나 같은 식단들에 기재된 음식들
-     */
-    @Override
-    public List<String> findFoodHigherThanAverageBloodSugarOfDiet(Long writerId) {
-        /* @Query(value="SELECT DISTINCT food.foodName FROM Food as food INNER JOIN food.diet diet WHERE diet.bloodSugar >= (SELECT AVG(diet.bloodSugar) FROM diet) AND food.diet.diary.writer.writerId = :writer_id") */
-        return jpaQueryFactory.selectDistinct(QFood.food.foodName)
-                .from(QFood.food)
-                .innerJoin(QFood.food.diet, QDiet.diet)
-                .on(QDiet.diet.diary.writer.writerId.eq(writerId))
-                .where(QDiet.diet.bloodSugar.goe(
-                        JPAExpressions.select(QDiet.diet.bloodSugar.avg())
-                                .from(QDiet.diet)
-                ))
+                .where(ExpressionUtils.allOf(predicates))
                 .fetch();
     }
 
@@ -234,6 +216,40 @@ public class FoodRepositoryImpl implements FoodRepositoryCustom {
     public Predicate decideBetween(LocalDateTime startDate, LocalDateTime endDate) {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         booleanBuilder.and(QDiabetesDiary.diabetesDiary.writtenTime.between(startDate, endDate));
+        return booleanBuilder;
+    }
+
+    /**
+     * inner join diet on 절 이후에 쓰인다.
+     *
+     * @param sign 부등호 (Equal이면 안된다. double에 대해선 ==을 쓸 수 없기 때문)
+     * @return 식단의 평균 혈당 값. 단, join 된 것에 한해서다.
+     */
+    @Override
+    public Predicate decideAverageOfDiet(InequalitySign sign) {
+        checkArgument(sign != InequalitySign.EQUAL && sign!=InequalitySign.NONE, "평균을 구할 땐 '=='과 'none' 은 사용할 수 없다.");
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        switch (sign) {
+            case GREATER:
+                booleanBuilder.and(QDiet.diet.bloodSugar.gt(JPAExpressions.select(QDiet.diet.bloodSugar.avg())
+                        .from(QDiet.diet)));
+                break;
+
+            case LESSER:
+                booleanBuilder.and(QDiet.diet.bloodSugar.lt(JPAExpressions.select(QDiet.diet.bloodSugar.avg())
+                        .from(QDiet.diet)));
+                break;
+
+            case GREAT_OR_EQUAL:
+                booleanBuilder.and(QDiet.diet.bloodSugar.goe(JPAExpressions.select(QDiet.diet.bloodSugar.avg())
+                        .from(QDiet.diet)));
+                break;
+
+            case LESSER_OR_EQUAL:
+                booleanBuilder.and(QDiet.diet.bloodSugar.loe(JPAExpressions.select(QDiet.diet.bloodSugar.avg())
+                        .from(QDiet.diet)));
+                break;
+        }
         return booleanBuilder;
     }
 }

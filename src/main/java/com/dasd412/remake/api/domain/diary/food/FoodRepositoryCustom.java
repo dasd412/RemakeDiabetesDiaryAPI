@@ -1,5 +1,5 @@
 /*
- * @(#)FoodRepositoryCustom.java        1.0.7 2022/2/10
+ * @(#)FoodRepositoryCustom.java        1.0.9 2022/2/17
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -22,7 +22,7 @@ import java.util.Optional;
  * 음식 리포지토리 상위 인터페이스. Querydsl을 이용하기 위해 구현하였다.
  *
  * @author 양영준
- * @version 1.0.7 2022년 2월 10일
+ * @version 1.0.9 2022년 2월 17일
  */
 public interface FoodRepositoryCustom {
 
@@ -37,16 +37,10 @@ public interface FoodRepositoryCustom {
 
     /**
      * @param writerId   작성자 id
-     * @param bloodSugar 식단 혈당
-     * @return 식단 혈당 입력보다 높거나 같은 식단들에 기재된 음식들
+     * @param predicates where 조건문 (높냐 낮냐, 날짜 사이인가 등..)
+     * @return 조건에 맞는 음식 이름들
      */
-    List<String> findFoodNamesInDietHigherThanBloodSugar(Long writerId, int bloodSugar);
-
-    /**
-     * @param writerId 작성자 id
-     * @return 작성자의 평균 혈당보다 높거나 같은 식단들에 기재된 음식들
-     */
-    List<String> findFoodHigherThanAverageBloodSugarOfDiet(Long writerId);
+    List<String> findFoodNamesInDiet(Long writerId, List<Predicate> predicates);
 
     /**
      * 입력 값에 해당하는 음식들 전부 "한꺼번에" 삭제하는 메서드
@@ -58,12 +52,12 @@ public interface FoodRepositoryCustom {
     /**
      * decideEqualitySign(),decideBetween() 과 연계해서 쓰면 된다.
      *
-     * @param writerId  작성자 id
+     * @param writerId   작성자 id
      * @param predicates where 절의 조건문들.
-     * @param pageable  페이징 객체
+     * @param pageable   페이징 객체
      * @return 해당 기간 동안 작성자가 작성한 음식에 관한 정보들
      */
-    Page<FoodBoardDTO> findFoodsWithPagination(Long writerId,List<Predicate> predicates, Pageable pageable);
+    Page<FoodBoardDTO> findFoodsWithPagination(Long writerId, List<Predicate> predicates, Pageable pageable);
 
     /**
      * where 문을 작성할 때, 특히 파라미터의 종류 등에 따라 조건 분기를 하고 싶을 때 Predicate 객체를 사용한다.
@@ -77,9 +71,17 @@ public interface FoodRepositoryCustom {
 
     /**
      * where 문을 작성할 때, 특히 파라미터의 종류 등에 따라 조건 분기를 하고 싶을 때 Predicate 객체를 사용한다.
+     *
      * @param startDate 시작 날짜
-     * @param endDate 도착 날짜
+     * @param endDate   도착 날짜
      * @return where 절에 들어가는 조건문 (해당 기간 사이에 있는가)
      */
-    Predicate decideBetween(LocalDateTime startDate,LocalDateTime endDate);
+    Predicate decideBetween(LocalDateTime startDate, LocalDateTime endDate);
+
+    /**
+     * inner join diet on 절 이후에 쓰인다.
+     * @param sign 부등호 (Equal이면 안된다. double에 대해선 ==을 쓸 수 없기 때문)
+     * @return 식단의 평균 혈당 값. 단, join 된 것에 한해서다.
+     */
+    Predicate decideAverageOfDiet(InequalitySign sign);
 }

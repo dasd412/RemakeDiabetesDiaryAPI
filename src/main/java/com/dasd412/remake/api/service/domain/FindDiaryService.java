@@ -1,5 +1,5 @@
 /*
- * @(#)FindDiaryService.java        1.0.8 2022/2/16
+ * @(#)FindDiaryService.java        1.0.9 2022/2/17
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -46,7 +46,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * 조회 비즈니스 로직을 수행하는 서비스 클래스
  *
  * @author 양영준
- * @version 1.0.8 2022년 2월 16일
+ * @version 1.0.9 2022년 2월 17일
  */
 @Service
 public class FindDiaryService {
@@ -421,7 +421,9 @@ public class FindDiaryService {
         logger.info("getFoodNamesInDietHigherThanBloodSugar");
         checkNotNull(writerEntityId, "writerId must be provided");
         checkArgument(bloodSugar > 0, "bloodSugar must be higher than zero");
-        return foodRepository.findFoodNamesInDietHigherThanBloodSugar(writerEntityId.getId(), bloodSugar);
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(foodRepository.decideEqualitySign(InequalitySign.GREAT_OR_EQUAL, bloodSugar));
+        return foodRepository.findFoodNamesInDiet(writerEntityId.getId(), predicates);
     }
 
     /**
@@ -432,7 +434,9 @@ public class FindDiaryService {
     public List<String> getFoodHigherThanAverageBloodSugarOfDiet(EntityId<Writer, Long> writerEntityId) {
         logger.info("getFoodHigherThanAverageBloodSugarOfDiet");
         checkNotNull(writerEntityId, "writerId must be provided");
-        return foodRepository.findFoodHigherThanAverageBloodSugarOfDiet(writerEntityId.getId());
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(foodRepository.decideAverageOfDiet(InequalitySign.GREAT_OR_EQUAL));
+        return foodRepository.findFoodNamesInDiet(writerEntityId.getId(), predicates);
     }
 
     /**
