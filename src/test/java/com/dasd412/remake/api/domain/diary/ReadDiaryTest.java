@@ -1,5 +1,5 @@
 /*
- * @(#)ReadDiaryTest.java        1.0.8 2022/2/16
+ * @(#)ReadDiaryTest.java        1.0.9 2022/2/17
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -16,7 +16,6 @@ import com.dasd412.remake.api.service.domain.SaveDiaryService;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Predicate;
 import org.assertj.core.data.Percentage;
-import org.hibernate.Hibernate;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiaryRepository;
 import com.dasd412.remake.api.domain.diary.diet.Diet;
@@ -47,6 +46,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.persistence.NoResultException;
 
@@ -56,7 +56,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Security 적용 없이 리포지토리를 접근하여 조회 테스트.
  *
  * @author 양영준
- * @version 1.0.8 2022년 2월 16일
+ * @version 1.0.9 2022년 2월 17일
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest()
@@ -147,20 +147,8 @@ public class ReadDiaryTest {
     @After
     public void clean() {
         logger.info("end\n");
-        writerRepository.deleteAll();//cascade all 이므로 작성자 삭제하면 다 삭제됨.
-    }
-
-    /**
-     * n+1 문제 없이 select 하는 지 테스트하는 코드.
-     */
-    @Test
-    public void findDiaryOfWriterIsInitialized() {
-        //when
-        DiabetesDiary foundDiary = diaryRepository.findDiabetesDiaryOfWriterWithRelation(me.getId(), diary1.getId()).orElseThrow(() -> new NoResultException("존재하지 않는 일지입니다."));
-
-        //then
-        assertThat(Hibernate.isInitialized(foundDiary.getDietList())).isTrue();
-        assertThat(Hibernate.isInitialized(foundDiary.getDietList().get(0).getFoodList())).isTrue();
+        List<Long> writerIds = writerRepository.findAll().stream().map(Writer::getId).collect(Collectors.toList());
+        writerIds.forEach(id -> writerRepository.bulkDeleteWriter(id));
     }
 
     @Transactional

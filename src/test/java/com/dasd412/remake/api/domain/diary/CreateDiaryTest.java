@@ -1,5 +1,5 @@
 /*
- * @(#)CreateDiaryTest.java        1.0.8 2022/2/16
+ * @(#)CreateDiaryTest.java        1.0.9 2022/2/17
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -33,6 +33,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,7 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Security 적용 없이 리포지토리를 접근하여 저장 테스트.
  *
  * @author 양영준
- * @version 1.0.8 2022년 2월 16일
+ * @version 1.0.9 2022년 2월 17일
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest()
@@ -69,7 +71,8 @@ public class CreateDiaryTest {
 
     @After
     public void clean() {
-        writerRepository.deleteAll();//cascade all 이므로 작성자 삭제하면 다 삭제됨.
+        List<Long> writerIds = writerRepository.findAll().stream().map(Writer::getId).collect(Collectors.toList());
+        writerIds.forEach(id -> writerRepository.bulkDeleteWriter(id));
     }
 
     /*
