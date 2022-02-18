@@ -85,26 +85,6 @@ public class DietRepositoryImpl implements DietRepositoryCustom {
     }
 
     @Override
-    public List<Diet> findHigherThanBloodSugarInEatTime(Long writerId, int bloodSugar, EatTime eatTime) {
-        /* @Query(value = "SELECT diet FROM Diet as diet WHERE diary.writer.writerId = :writer_id AND diet.bloodSugar >= :blood_sugar AND diet.eatTime =:eat_time") */
-        return jpaQueryFactory.selectFrom(QDiet.diet)
-                .innerJoin(QDiet.diet.diary.writer, QWriter.writer)
-                .on(QDiet.diet.diary.writer.writerId.eq(writerId))
-                .where(QDiet.diet.bloodSugar.goe(bloodSugar).and(QDiet.diet.eatTime.eq(eatTime)))
-                .fetch();
-    }
-
-    @Override
-    public List<Diet> findLowerThanBloodSugarInEatTime(Long writerId, int bloodSugar, EatTime eatTime) {
-        /* @Query(value = "SELECT diet FROM Diet diet WHERE diary.writer.writerId = :writer_id AND diet.bloodSugar <= :blood_sugar AND diet.eatTime =:eat_time") */
-        return jpaQueryFactory.selectFrom(QDiet.diet)
-                .innerJoin(QDiet.diet.diary.writer, QWriter.writer)
-                .on(QDiet.diet.diary.writer.writerId.eq(writerId))
-                .where(QDiet.diet.bloodSugar.loe(bloodSugar).and(QDiet.diet.eatTime.eq(eatTime)))
-                .fetch();
-    }
-
-    @Override
     public List<Diet> findDietsWithWhereClause(Long writerId, List<Predicate> predicates) {
         return jpaQueryFactory.selectFrom(QDiet.diet)
                 .innerJoin(QDiet.diet.diary.writer, QWriter.writer)

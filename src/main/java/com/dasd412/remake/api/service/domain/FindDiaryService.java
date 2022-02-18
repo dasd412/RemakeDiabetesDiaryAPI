@@ -321,7 +321,11 @@ public class FindDiaryService {
         logger.info("getHigherThanBloodSugarInEatTime");
         checkNotNull(writerEntityId, "writerId must be provided");
         checkArgument(bloodSugar > 0, "blood sugar must be higher than zero");
-        return dietRepository.findHigherThanBloodSugarInEatTime(writerEntityId.getId(), bloodSugar, eatTime);
+
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(decideEqualitySign(InequalitySign.GREAT_OR_EQUAL, bloodSugar));
+        predicates.add(decideEatTime(eatTime));
+        return dietRepository.findDietsWithWhereClause(writerEntityId.getId(), predicates);
     }
 
     /**
@@ -335,7 +339,11 @@ public class FindDiaryService {
         logger.info("getLowerThanBloodSugarInEatTime");
         checkNotNull(writerEntityId, "writerId must be provided");
         checkArgument(bloodSugar > 0, "blood sugar must be higher than zero");
-        return dietRepository.findLowerThanBloodSugarInEatTime(writerEntityId.getId(), bloodSugar, eatTime);
+
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(decideEqualitySign(InequalitySign.LESSER_OR_EQUAL, bloodSugar));
+        predicates.add(decideEatTime(eatTime));
+        return dietRepository.findDietsWithWhereClause(writerEntityId.getId(), predicates);
     }
 
     /**

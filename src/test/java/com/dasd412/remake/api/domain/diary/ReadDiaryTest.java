@@ -342,8 +342,12 @@ public class ReadDiaryTest {
     @Transactional
     @Test
     public void findHigherThanBloodSugarInEatTime() {
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(decideEqualitySign(InequalitySign.GREAT_OR_EQUAL, 120));
+        predicates.add(decideEatTime(EatTime.Lunch));
+
         //when
-        List<Diet> dietList = dietRepository.findHigherThanBloodSugarInEatTime(me.getId(), 120, EatTime.Lunch);
+        List<Diet> dietList = dietRepository.findDietsWithWhereClause(me.getId(), predicates);
 
         //then
         logger.info(dietList.toString());

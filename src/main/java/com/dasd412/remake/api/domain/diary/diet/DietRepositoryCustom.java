@@ -32,10 +32,6 @@ public interface DietRepositoryCustom {
 
     Optional<Diet> findOneDietByIdInDiary(Long writerId, Long diaryId, Long DietId);
 
-    List<Diet> findHigherThanBloodSugarInEatTime(Long writerId, int bloodSugar, EatTime eatTime);
-
-    List<Diet> findLowerThanBloodSugarInEatTime(Long writerId, int bloodSugar, EatTime eatTime);
-
     /**
      * @param writerId   작성자 id
      * @param predicates where 절 조건문
