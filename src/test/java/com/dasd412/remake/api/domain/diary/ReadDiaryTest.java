@@ -305,8 +305,12 @@ public class ReadDiaryTest {
     @Transactional
     @Test
     public void findHigherThanBloodSugarBetweenTime() {
+        //given
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(decideEqualitySign(InequalitySign.GREAT_OR_EQUAL, 150));
+        predicates.add(decideBetweenInDiet(LocalDateTime.of(2021, 12, 5, 0, 0, 0), LocalDateTime.of(2021, 12, 27, 0, 0, 0)));
         //when
-        List<Diet> dietList = dietRepository.findHigherThanBloodSugarBetweenTime(me.getId(), 150, LocalDateTime.of(2021, 12, 5, 0, 0, 0), LocalDateTime.of(2021, 12, 27, 0, 0, 0));
+        List<Diet> dietList = dietRepository.findDietsWithWhereClause(me.getId(), predicates);
 
         //then
         logger.info(dietList.toString());

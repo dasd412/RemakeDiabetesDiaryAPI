@@ -1,5 +1,5 @@
 /*
- * @(#)DietRepositoryCustom.java        1.0.4 2022/2/4
+ * @(#)DietRepositoryCustom.java        1.0.9 2022/2/18
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -9,6 +9,7 @@
 package com.dasd412.remake.api.domain.diary.diet;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Predicate;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.Optional;
  * 식단 리포지토리 상위 인터페이스. Querydsl을 이용하기 위해 구현하였다.
  *
  * @author 양영준
- * @version 1.0.4 2022년 2월 4일
+ * @version 1.0.9 2022년 2월 18일
  */
 public interface DietRepositoryCustom {
 
@@ -31,13 +32,18 @@ public interface DietRepositoryCustom {
 
     Optional<Diet> findOneDietByIdInDiary(Long writerId, Long diaryId, Long DietId);
 
-    List<Diet> findHigherThanBloodSugarBetweenTime(Long writerId, int bloodSugar, LocalDateTime startDate, LocalDateTime endDate);
-
     List<Diet> findLowerThanBloodSugarBetweenTime(Long writerId, int bloodSugar, LocalDateTime startDate, LocalDateTime endDate);
 
     List<Diet> findHigherThanBloodSugarInEatTime(Long writerId, int bloodSugar, EatTime eatTime);
 
     List<Diet> findLowerThanBloodSugarInEatTime(Long writerId, int bloodSugar, EatTime eatTime);
+
+    /**
+     * @param writerId   작성자 id
+     * @param predicates where 절 조건문
+     * @return where 절 조건에 해당하는 식단 내용 찾기
+     */
+    List<Diet> findDietsWithWhereClause(Long writerId, List<Predicate> predicates);
 
     /**
      * @param writerId 작성자 id

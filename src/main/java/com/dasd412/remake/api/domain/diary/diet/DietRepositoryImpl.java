@@ -12,6 +12,8 @@ package com.dasd412.remake.api.domain.diary.diet;
 import com.dasd412.remake.api.domain.diary.BulkDeleteHelper;
 import com.dasd412.remake.api.domain.diary.writer.QWriter;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.QDiabetesDiary;
 
@@ -83,16 +85,6 @@ public class DietRepositoryImpl implements DietRepositoryCustom {
     }
 
     @Override
-    public List<Diet> findHigherThanBloodSugarBetweenTime(Long writerId, int bloodSugar, LocalDateTime startDate, LocalDateTime endDate) {
-        /* @Query(value = "SELECT diet FROM Diet diet WHERE diary.writer.writerId = :writer_id AND diet.bloodSugar >= :blood_sugar AND diet.diary.writtenTime BETWEEN :startDate AND :endDate") */
-        return jpaQueryFactory.selectFrom(QDiet.diet)
-                .innerJoin(QDiet.diet.diary, QDiabetesDiary.diabetesDiary)
-                .on(QDiet.diet.diary.writer.writerId.eq(writerId))
-                .where(QDiet.diet.bloodSugar.goe(bloodSugar).and(QDiet.diet.diary.writtenTime.between(startDate, endDate)))
-                .fetch();
-    }
-
-    @Override
     public List<Diet> findLowerThanBloodSugarBetweenTime(Long writerId, int bloodSugar, LocalDateTime startDate, LocalDateTime endDate) {
         /* @Query(value = "SELECT diet FROM Diet as diet WHERE diary.writer.writerId = :writer_id AND diet.bloodSugar <= :blood_sugar AND diet.diary.writtenTime BETWEEN :startDate AND :endDate") */
         return jpaQueryFactory.selectFrom(QDiet.diet)
@@ -119,6 +111,15 @@ public class DietRepositoryImpl implements DietRepositoryCustom {
                 .innerJoin(QDiet.diet.diary.writer, QWriter.writer)
                 .on(QDiet.diet.diary.writer.writerId.eq(writerId))
                 .where(QDiet.diet.bloodSugar.loe(bloodSugar).and(QDiet.diet.eatTime.eq(eatTime)))
+                .fetch();
+    }
+
+    @Override
+    public List<Diet> findDietsWithWhereClause(Long writerId, List<Predicate> predicates) {
+        return jpaQueryFactory.selectFrom(QDiet.diet)
+                .innerJoin(QDiet.diet.diary.writer, QWriter.writer)
+                .on(QDiet.diet.diary.writer.writerId.eq(writerId))
+                .where(ExpressionUtils.allOf(predicates))
                 .fetch();
     }
 
