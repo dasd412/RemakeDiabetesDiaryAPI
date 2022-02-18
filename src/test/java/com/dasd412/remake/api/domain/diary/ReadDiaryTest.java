@@ -1,5 +1,5 @@
 /*
- * @(#)ReadDiaryTest.java        1.0.9 2022/2/17
+ * @(#)ReadDiaryTest.java        1.0.9 2022/2/19
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -38,7 +38,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.TestPropertySource;
@@ -53,13 +52,14 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.persistence.NoResultException;
 
+import static com.dasd412.remake.api.domain.diary.PredicateMaker.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Security 적용 없이 리포지토리를 접근하여 조회 테스트.
  *
  * @author 양영준
- * @version 1.0.9 2022년 2월 17일
+ * @version 1.0.9 2022년 2월 19일
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest()
@@ -378,7 +378,7 @@ public class ReadDiaryTest {
     public void findFoodNamesInDietHigherThanBloodSugar() {
         //given
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(foodRepository.decideEqualitySign(InequalitySign.GREAT_OR_EQUAL, 150));
+        predicates.add(decideEqualitySign(InequalitySign.GREAT_OR_EQUAL, 150));
 
         //when
         List<String> foodNames = foodRepository.findFoodNamesInDiet(me.getId(), predicates);
@@ -408,7 +408,7 @@ public class ReadDiaryTest {
     public void findFoodHigherThanAverageBloodSugarOfDiet() {
         //given
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(foodRepository.decideAverageOfDiet(InequalitySign.GREAT_OR_EQUAL));
+        predicates.add(decideAverageOfDiet(InequalitySign.GREAT_OR_EQUAL));
 
         //when
         List<String> foodNames = foodRepository.findFoodNamesInDiet(me.getId(), predicates);
@@ -424,11 +424,11 @@ public class ReadDiaryTest {
     @Transactional
     @Test
     public void InvalidSignAverageBloodSugarOfDiet() {
-        thrown.expect(InvalidDataAccessApiUsageException.class);
+        thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("평균을 구할 땐 '=='과 'none' 은 사용할 수 없다.");
         //given
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(foodRepository.decideAverageOfDiet(InequalitySign.EQUAL));
+        predicates.add(decideAverageOfDiet(InequalitySign.EQUAL));
 
         //when
         foodRepository.findFoodNamesInDiet(me.getId(), predicates);
@@ -607,8 +607,8 @@ public class ReadDiaryTest {
         Pageable pageable = foodPageVO.makePageable();
 
         List<Predicate> betweenAndSugar = new ArrayList<>();
-        betweenAndSugar.add(foodRepository.decideEqualitySign(InequalitySign.GREAT_OR_EQUAL, 120));
-        betweenAndSugar.add(foodRepository.decideBetween(startDate, endDate));
+        betweenAndSugar.add(decideEqualitySign(InequalitySign.GREAT_OR_EQUAL, 120));
+        betweenAndSugar.add(decideBetween(startDate, endDate));
 
         //when
         logger.info("select\n");

@@ -1,5 +1,5 @@
 /*
- * @(#)FindDiaryService.java        1.0.9 2022/2/17
+ * @(#)FindDiaryService.java        1.0.9 2022/2/19
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+import static com.dasd412.remake.api.domain.diary.PredicateMaker.*;
 import static com.dasd412.remake.api.util.DateStringConverter.isStartDateEqualOrBeforeEndDate;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -46,7 +47,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * 조회 비즈니스 로직을 수행하는 서비스 클래스
  *
  * @author 양영준
- * @version 1.0.9 2022년 2월 17일
+ * @version 1.0.9 2022년 2월 19일
  */
 @Service
 public class FindDiaryService {
@@ -422,7 +423,7 @@ public class FindDiaryService {
         checkNotNull(writerEntityId, "writerId must be provided");
         checkArgument(bloodSugar > 0, "bloodSugar must be higher than zero");
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(foodRepository.decideEqualitySign(InequalitySign.GREAT_OR_EQUAL, bloodSugar));
+        predicates.add(decideEqualitySign(InequalitySign.GREAT_OR_EQUAL, bloodSugar));
         return foodRepository.findFoodNamesInDiet(writerEntityId.getId(), predicates);
     }
 
@@ -435,7 +436,7 @@ public class FindDiaryService {
         logger.info("getFoodHigherThanAverageBloodSugarOfDiet");
         checkNotNull(writerEntityId, "writerId must be provided");
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(foodRepository.decideAverageOfDiet(InequalitySign.GREAT_OR_EQUAL));
+        predicates.add(decideAverageOfDiet(InequalitySign.GREAT_OR_EQUAL));
         return foodRepository.findFoodNamesInDiet(writerEntityId.getId(), predicates);
     }
 
@@ -456,12 +457,12 @@ public class FindDiaryService {
         List<Predicate> predicates = new ArrayList<>();
 
         if (foodPageVO.getSign() != null && foodPageVO.getEnumOfSign() != InequalitySign.NONE) {
-            predicates.add(foodRepository.decideEqualitySign(foodPageVO.getEnumOfSign(), foodPageVO.getBloodSugar()));
+            predicates.add(decideEqualitySign(foodPageVO.getEnumOfSign(), foodPageVO.getBloodSugar()));
         }
 
 
         if (isStartDateEqualOrBeforeEndDate(foodPageVO.convertStartDate(), foodPageVO.convertEndDate())) {        /* 날짜 규격에 적합한 파라미터라면, where 절에 추가해준다. */
-            predicates.add(foodRepository.decideBetween(foodPageVO.convertStartDate(), foodPageVO.convertEndDate()));
+            predicates.add(decideBetween(foodPageVO.convertStartDate(), foodPageVO.convertEndDate()));
         }
 
         return foodRepository.findFoodsWithPagination(writerEntityId.getId(), predicates, page);
