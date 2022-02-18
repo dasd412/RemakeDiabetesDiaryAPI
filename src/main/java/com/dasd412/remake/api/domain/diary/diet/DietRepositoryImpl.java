@@ -85,16 +85,6 @@ public class DietRepositoryImpl implements DietRepositoryCustom {
     }
 
     @Override
-    public List<Diet> findLowerThanBloodSugarBetweenTime(Long writerId, int bloodSugar, LocalDateTime startDate, LocalDateTime endDate) {
-        /* @Query(value = "SELECT diet FROM Diet as diet WHERE diary.writer.writerId = :writer_id AND diet.bloodSugar <= :blood_sugar AND diet.diary.writtenTime BETWEEN :startDate AND :endDate") */
-        return jpaQueryFactory.selectFrom(QDiet.diet)
-                .innerJoin(QDiet.diet.diary, QDiabetesDiary.diabetesDiary)
-                .on(QDiet.diet.diary.writer.writerId.eq(writerId))
-                .where(QDiet.diet.bloodSugar.loe(bloodSugar).and(QDiet.diet.diary.writtenTime.between(startDate, endDate)))
-                .fetch();
-    }
-
-    @Override
     public List<Diet> findHigherThanBloodSugarInEatTime(Long writerId, int bloodSugar, EatTime eatTime) {
         /* @Query(value = "SELECT diet FROM Diet as diet WHERE diary.writer.writerId = :writer_id AND diet.bloodSugar >= :blood_sugar AND diet.eatTime =:eat_time") */
         return jpaQueryFactory.selectFrom(QDiet.diet)

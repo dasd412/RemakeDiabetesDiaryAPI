@@ -32,8 +32,6 @@ public interface DietRepositoryCustom {
 
     Optional<Diet> findOneDietByIdInDiary(Long writerId, Long diaryId, Long DietId);
 
-    List<Diet> findLowerThanBloodSugarBetweenTime(Long writerId, int bloodSugar, LocalDateTime startDate, LocalDateTime endDate);
-
     List<Diet> findHigherThanBloodSugarInEatTime(Long writerId, int bloodSugar, EatTime eatTime);
 
     List<Diet> findLowerThanBloodSugarInEatTime(Long writerId, int bloodSugar, EatTime eatTime);

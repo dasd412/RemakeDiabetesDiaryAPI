@@ -301,8 +301,10 @@ public class FindDiaryService {
 
             checkArgument(isStartDateEqualOrBeforeEndDate(startDate, endDate), "startDate must be equal or before endDate");
             checkArgument(bloodSugar > 0, "blood sugar must be higher than zero");
-
-            return dietRepository.findLowerThanBloodSugarBetweenTime(writerEntityId.getId(), bloodSugar, startDate, endDate);
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(decideEqualitySign(InequalitySign.LESSER_OR_EQUAL, bloodSugar));
+            predicates.add(decideBetweenInDiet(startDate, endDate));
+            return dietRepository.findDietsWithWhereClause(writerEntityId.getId(), predicates);
         } catch (DateTimeException e) {
             throw new IllegalArgumentException("LocalDateTime 포맷으로 변경할 수 없는 문자열입니다.");
         }
