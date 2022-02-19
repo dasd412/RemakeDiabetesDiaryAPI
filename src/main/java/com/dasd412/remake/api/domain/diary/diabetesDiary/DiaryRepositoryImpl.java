@@ -166,34 +166,6 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
     }
 
     /**
-     * @param writerId             작성자 id
-     * @param fastingPlasmaGlucose 공복 혈당
-     * @return 입력 공복 혈당보다 높거나 같게 기재된 혈당 일지들
-     */
-    @Override
-    public List<DiabetesDiary> findFpgHigherOrEqual(Long writerId, int fastingPlasmaGlucose) {
-        /* @Query(value = "SELECT diary FROM DiabetesDiary diary WHERE diary.writer.writerId = :writer_id AND diary.fastingPlasmaGlucose >= :bloodSugar") */
-        return jpaQueryFactory.selectFrom(QDiabetesDiary.diabetesDiary)
-                .where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId)
-                        .and(QDiabetesDiary.diabetesDiary.fastingPlasmaGlucose.goe(fastingPlasmaGlucose)))
-                .fetch();
-    }
-
-    /**
-     * @param writerId             작성자 id
-     * @param fastingPlasmaGlucose 공복 혈당
-     * @return 입력 공복 혈당보다 낮거나 같게 기재된 혈당 일지들
-     */
-    @Override
-    public List<DiabetesDiary> findFpgLowerOrEqual(Long writerId, int fastingPlasmaGlucose) {
-        /* @Query(value = "SELECT diary FROM DiabetesDiary diary  WHERE diary.writer.writerId = :writer_id AND diary.fastingPlasmaGlucose <= :bloodSugar") */
-        return jpaQueryFactory.selectFrom(QDiabetesDiary.diabetesDiary)
-                .where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId)
-                        .and(QDiabetesDiary.diabetesDiary.fastingPlasmaGlucose.loe(fastingPlasmaGlucose)))
-                .fetch();
-    }
-
-    /**
      * 일지와 관련된 엔티티 (식단, 음식) 을 포함하여 "한꺼번에" 제거하는 메서드.
      *
      * @param diaryId 일지 Id

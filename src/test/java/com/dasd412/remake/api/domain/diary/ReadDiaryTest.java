@@ -254,8 +254,12 @@ public class ReadDiaryTest {
     @Transactional
     @Test
     public void findFpgHigherOrEqual() {
+        //given
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(decideEqualitySignOfFastingPlasmaGlucose(InequalitySign.GREAT_OR_EQUAL, 120));
+
         //when
-        List<DiabetesDiary> diaries = diaryRepository.findFpgHigherOrEqual(me.getId(), 120);
+        List<DiabetesDiary> diaries = diaryRepository.findDiariesWithWhereClause(me.getId(), predicates);
 
         //then
         logger.info(diaries.toString());
@@ -265,8 +269,12 @@ public class ReadDiaryTest {
     @Transactional
     @Test
     public void findFpgLowerOrEqual() {
+        //given
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(decideEqualitySignOfFastingPlasmaGlucose(InequalitySign.LESSER_OR_EQUAL, 110));
+
         //when
-        List<DiabetesDiary> diaries = diaryRepository.findFpgLowerOrEqual(me.getId(), 110);
+        List<DiabetesDiary> diaries = diaryRepository.findDiariesWithWhereClause(me.getId(), predicates);
 
         //then
         logger.info(diaries.toString());

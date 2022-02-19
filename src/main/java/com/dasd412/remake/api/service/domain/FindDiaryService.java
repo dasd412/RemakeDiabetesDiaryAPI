@@ -194,7 +194,10 @@ public class FindDiaryService {
         logger.info("getFpgHigherOrEqual");
         checkNotNull(writerEntityId, "writerId must be provided");
         checkArgument(fastingPlasmaGlucose > 0, "fpg must be positive");
-        return diaryRepository.findFpgHigherOrEqual(writerEntityId.getId(), fastingPlasmaGlucose);
+
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(decideEqualitySignOfFastingPlasmaGlucose(InequalitySign.GREAT_OR_EQUAL, fastingPlasmaGlucose));
+        return diaryRepository.findDiariesWithWhereClause(writerEntityId.getId(), predicates);
     }
 
     /**
@@ -207,7 +210,10 @@ public class FindDiaryService {
         logger.info("getFpgLowerOrEqual");
         checkNotNull(writerEntityId, "writerId must be provided");
         checkArgument(fastingPlasmaGlucose > 0, "fpg must be positive");
-        return diaryRepository.findFpgLowerOrEqual(writerEntityId.getId(), fastingPlasmaGlucose);
+
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(decideEqualitySignOfFastingPlasmaGlucose(InequalitySign.LESSER_OR_EQUAL, fastingPlasmaGlucose));
+        return diaryRepository.findDiariesWithWhereClause(writerEntityId.getId(), predicates);
     }
 
     /**

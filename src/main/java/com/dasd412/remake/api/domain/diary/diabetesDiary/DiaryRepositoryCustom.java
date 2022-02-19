@@ -63,20 +63,6 @@ public interface DiaryRepositoryCustom {
     List<DiabetesDiary> findDiariesWithWhereClause(Long writerID, List<Predicate> predicates);
 
     /**
-     * @param writerId             작성자 id
-     * @param fastingPlasmaGlucose 공복 혈당
-     * @return 입력 공복 혈당보다 높거나 같게 기재된 혈당 일지들
-     */
-    List<DiabetesDiary> findFpgHigherOrEqual(Long writerId, int fastingPlasmaGlucose);
-
-    /**
-     * @param writerId             작성자 id
-     * @param fastingPlasmaGlucose 공복 혈당
-     * @return 입력 공복 혈당보다 낮거나 같게 기재된 혈당 일지들
-     */
-    List<DiabetesDiary> findFpgLowerOrEqual(Long writerId, int fastingPlasmaGlucose);
-
-    /**
      * 일지와 관련된 엔티티 (식단, 음식) 을 포함하여 "한꺼번에" 제거하는 메서드.
      *
      * @param diaryId 일지 Id
