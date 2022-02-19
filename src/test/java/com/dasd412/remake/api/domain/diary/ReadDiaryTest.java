@@ -307,8 +307,8 @@ public class ReadDiaryTest {
     public void findHigherThanBloodSugarBetweenTime() {
         //given
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(decideEqualitySign(InequalitySign.GREAT_OR_EQUAL, 150));
-        predicates.add(decideBetweenInDiet(LocalDateTime.of(2021, 12, 5, 0, 0, 0), LocalDateTime.of(2021, 12, 27, 0, 0, 0)));
+        predicates.add(decideEqualitySignOfBloodSugar(InequalitySign.GREAT_OR_EQUAL, 150));
+        predicates.add(decideBetweenTimeInDiet(LocalDateTime.of(2021, 12, 5, 0, 0, 0), LocalDateTime.of(2021, 12, 27, 0, 0, 0)));
         //when
         List<Diet> dietList = dietRepository.findDietsWithWhereClause(me.getId(), predicates);
 
@@ -325,8 +325,8 @@ public class ReadDiaryTest {
     public void findLowerThanBloodSugarBetweenTime() {
         //given
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(decideEqualitySign(InequalitySign.LESSER_OR_EQUAL, 150));
-        predicates.add(decideBetweenInDiet(LocalDateTime.of(2021, 12, 5, 0, 0, 0), LocalDateTime.of(2021, 12, 27, 0, 0, 0)));
+        predicates.add(decideEqualitySignOfBloodSugar(InequalitySign.LESSER_OR_EQUAL, 150));
+        predicates.add(decideBetweenTimeInDiet(LocalDateTime.of(2021, 12, 5, 0, 0, 0), LocalDateTime.of(2021, 12, 27, 0, 0, 0)));
         //when
         List<Diet> dietList = dietRepository.findDietsWithWhereClause(me.getId(), predicates);
 
@@ -343,7 +343,7 @@ public class ReadDiaryTest {
     @Test
     public void findHigherThanBloodSugarInEatTime() {
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(decideEqualitySign(InequalitySign.GREAT_OR_EQUAL, 120));
+        predicates.add(decideEqualitySignOfBloodSugar(InequalitySign.GREAT_OR_EQUAL, 120));
         predicates.add(decideEatTime(EatTime.Lunch));
 
         //when
@@ -390,7 +390,7 @@ public class ReadDiaryTest {
     public void findFoodNamesInDietHigherThanBloodSugar() {
         //given
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(decideEqualitySign(InequalitySign.GREAT_OR_EQUAL, 150));
+        predicates.add(decideEqualitySignOfBloodSugar(InequalitySign.GREAT_OR_EQUAL, 150));
 
         //when
         List<String> foodNames = foodRepository.findFoodNamesInDiet(me.getId(), predicates);
@@ -548,7 +548,7 @@ public class ReadDiaryTest {
         LocalDateTime startDate = LocalDateTime.of(2021, 12, 9, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2021, 12, 27, 0, 0);
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(decideBetweenInDiet(startDate, endDate));
+        predicates.add(decideBetweenTimeInDiet(startDate, endDate));
 
         //when
         Double averageBloodSugar = dietRepository.findAverageBloodSugarOfDiet(me.getId(), predicates).orElseThrow(NoResultException::new);
@@ -566,7 +566,7 @@ public class ReadDiaryTest {
         LocalDateTime endDate = LocalDateTime.of(2021, 12, 27, 0, 0);
 
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(decideBetweenInDiet(startDate, endDate));
+        predicates.add(decideBetweenTimeInDiet(startDate, endDate));
 
         //when
         List<Tuple> tupleList = dietRepository.findAverageBloodSugarGroupByEatTime(me.getId(), predicates);
@@ -624,8 +624,8 @@ public class ReadDiaryTest {
         Pageable pageable = foodPageVO.makePageable();
 
         List<Predicate> betweenAndSugar = new ArrayList<>();
-        betweenAndSugar.add(decideEqualitySign(InequalitySign.GREAT_OR_EQUAL, 120));
-        betweenAndSugar.add(decideBetween(startDate, endDate));
+        betweenAndSugar.add(decideEqualitySignOfBloodSugar(InequalitySign.GREAT_OR_EQUAL, 120));
+        betweenAndSugar.add(decideBetweenTimeInDiary(startDate, endDate));
 
         //when
         logger.info("select\n");

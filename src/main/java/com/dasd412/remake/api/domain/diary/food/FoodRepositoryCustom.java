@@ -48,7 +48,7 @@ public interface FoodRepositoryCustom {
     void bulkDeleteFood(List<Long> foodIds);
 
     /**
-     * decideEqualitySign(),decideBetween() 과 연계해서 쓰면 된다.
+     * decideEqualitySignOfBloodSugar(),decideBetweenTimeInDiary() 과 연계해서 쓰면 된다.
      *
      * @param writerId   작성자 id
      * @param predicates where 절의 조건문들.

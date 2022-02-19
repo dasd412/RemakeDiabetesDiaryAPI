@@ -276,8 +276,8 @@ public class FindDiaryService {
             checkArgument(bloodSugar > 0, "blood sugar must be higher than zero");
 
             List<Predicate> predicates = new ArrayList<>();
-            predicates.add(decideEqualitySign(InequalitySign.GREAT_OR_EQUAL, bloodSugar));
-            predicates.add(decideBetweenInDiet(startDate, endDate));
+            predicates.add(decideEqualitySignOfBloodSugar(InequalitySign.GREAT_OR_EQUAL, bloodSugar));
+            predicates.add(decideBetweenTimeInDiet(startDate, endDate));
             return dietRepository.findDietsWithWhereClause(writerEntityId.getId(), predicates);
         } catch (DateTimeException e) {
             throw new IllegalArgumentException("LocalDateTime 포맷으로 변경할 수 없는 문자열입니다.");
@@ -302,8 +302,8 @@ public class FindDiaryService {
             checkArgument(isStartDateEqualOrBeforeEndDate(startDate, endDate), "startDate must be equal or before endDate");
             checkArgument(bloodSugar > 0, "blood sugar must be higher than zero");
             List<Predicate> predicates = new ArrayList<>();
-            predicates.add(decideEqualitySign(InequalitySign.LESSER_OR_EQUAL, bloodSugar));
-            predicates.add(decideBetweenInDiet(startDate, endDate));
+            predicates.add(decideEqualitySignOfBloodSugar(InequalitySign.LESSER_OR_EQUAL, bloodSugar));
+            predicates.add(decideBetweenTimeInDiet(startDate, endDate));
             return dietRepository.findDietsWithWhereClause(writerEntityId.getId(), predicates);
         } catch (DateTimeException e) {
             throw new IllegalArgumentException("LocalDateTime 포맷으로 변경할 수 없는 문자열입니다.");
@@ -323,7 +323,7 @@ public class FindDiaryService {
         checkArgument(bloodSugar > 0, "blood sugar must be higher than zero");
 
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(decideEqualitySign(InequalitySign.GREAT_OR_EQUAL, bloodSugar));
+        predicates.add(decideEqualitySignOfBloodSugar(InequalitySign.GREAT_OR_EQUAL, bloodSugar));
         predicates.add(decideEatTime(eatTime));
         return dietRepository.findDietsWithWhereClause(writerEntityId.getId(), predicates);
     }
@@ -341,7 +341,7 @@ public class FindDiaryService {
         checkArgument(bloodSugar > 0, "blood sugar must be higher than zero");
 
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(decideEqualitySign(InequalitySign.LESSER_OR_EQUAL, bloodSugar));
+        predicates.add(decideEqualitySignOfBloodSugar(InequalitySign.LESSER_OR_EQUAL, bloodSugar));
         predicates.add(decideEatTime(eatTime));
         return dietRepository.findDietsWithWhereClause(writerEntityId.getId(), predicates);
     }
@@ -370,7 +370,7 @@ public class FindDiaryService {
         checkArgument(isStartDateEqualOrBeforeEndDate(startDate, endDate), "startDate must be equal or before endDate");
 
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(decideBetweenInDiet(startDate, endDate));
+        predicates.add(decideBetweenTimeInDiet(startDate, endDate));
         return dietRepository.findAverageBloodSugarOfDiet(writerEntityId.getId(), predicates).orElseThrow(NoResultException::new);
     }
 
@@ -399,7 +399,7 @@ public class FindDiaryService {
         checkArgument(isStartDateEqualOrBeforeEndDate(startDate, endDate), "startDate must be equal or before endDate");
 
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(decideBetweenInDiet(startDate, endDate));
+        predicates.add(decideBetweenTimeInDiet(startDate, endDate));
         return dietRepository.findAverageBloodSugarGroupByEatTime(writerEntityId.getId(), predicates);
     }
 
@@ -442,7 +442,7 @@ public class FindDiaryService {
         checkNotNull(writerEntityId, "writerId must be provided");
         checkArgument(bloodSugar > 0, "bloodSugar must be higher than zero");
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(decideEqualitySign(InequalitySign.GREAT_OR_EQUAL, bloodSugar));
+        predicates.add(decideEqualitySignOfBloodSugar(InequalitySign.GREAT_OR_EQUAL, bloodSugar));
         return foodRepository.findFoodNamesInDiet(writerEntityId.getId(), predicates);
     }
 
@@ -476,12 +476,12 @@ public class FindDiaryService {
         List<Predicate> predicates = new ArrayList<>();
 
         if (foodPageVO.getSign() != null && foodPageVO.getEnumOfSign() != InequalitySign.NONE) {
-            predicates.add(decideEqualitySign(foodPageVO.getEnumOfSign(), foodPageVO.getBloodSugar()));
+            predicates.add(decideEqualitySignOfBloodSugar(foodPageVO.getEnumOfSign(), foodPageVO.getBloodSugar()));
         }
 
 
         if (isStartDateEqualOrBeforeEndDate(foodPageVO.convertStartDate(), foodPageVO.convertEndDate())) {        /* 날짜 규격에 적합한 파라미터라면, where 절에 추가해준다. */
-            predicates.add(decideBetween(foodPageVO.convertStartDate(), foodPageVO.convertEndDate()));
+            predicates.add(decideBetweenTimeInDiary(foodPageVO.convertStartDate(), foodPageVO.convertEndDate()));
         }
 
         return foodRepository.findFoodsWithPagination(writerEntityId.getId(), predicates, page);

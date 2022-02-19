@@ -114,7 +114,7 @@ public class FoodRepositoryImpl implements FoodRepositoryCustom {
     }
 
     /**
-     * decideEqualitySign(),decideBetween() 과 연계해서 쓰면 된다.
+     * decideEqualitySignOfBloodSugar(),decideBetweenTimeInDiary() 과 연계해서 쓰면 된다.
      * 리턴 값이 추후에 연관관계 조회할 일이 없기 때문에 fetch join 안함.
      * <p>
      * (유의점)

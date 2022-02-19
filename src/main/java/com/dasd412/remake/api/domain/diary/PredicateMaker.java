@@ -39,7 +39,7 @@ public class PredicateMaker {
      * @param bloodSugar 식사 혈당 수치 (만약 식사 혈당에 공백으로 기입되어 있었다면, default 0.
      * @return where 절에 들어가는 조건문 (해당 기간 동안에 식사 혈당과 음식 이름이 함께 작성되었던 일지 중, 부등호 관계와 일치하는 식사 혈당에 기재된 음식들을 리턴할 때 사용한다.)
      */
-    public static Predicate decideEqualitySign(InequalitySign sign, int bloodSugar) {
+    public static Predicate decideEqualitySignOfBloodSugar(InequalitySign sign, int bloodSugar) {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
         switch (sign) {
@@ -75,7 +75,7 @@ public class PredicateMaker {
      * @param endDate   도착 날짜
      * @return where 절에 들어가는 조건문 (해당 기간 사이에 있는가)
      */
-    public static Predicate decideBetween(LocalDateTime startDate, LocalDateTime endDate) {
+    public static Predicate decideBetweenTimeInDiary(LocalDateTime startDate, LocalDateTime endDate) {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         booleanBuilder.and(QDiabetesDiary.diabetesDiary.writtenTime.between(startDate, endDate));
         return booleanBuilder;
@@ -88,7 +88,7 @@ public class PredicateMaker {
      * @param endDate 끝 날짜
      * @return where 절에 들어가는 조건문 (해당 기간 사이에 있는가)
      */
-    public static Predicate decideBetweenInDiet(LocalDateTime startDate, LocalDateTime endDate) {
+    public static Predicate decideBetweenTimeInDiet(LocalDateTime startDate, LocalDateTime endDate) {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         booleanBuilder.and(QDiet.diet.diary.writtenTime.between(startDate, endDate));
         return booleanBuilder;
