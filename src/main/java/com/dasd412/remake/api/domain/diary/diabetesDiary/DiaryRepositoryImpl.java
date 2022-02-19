@@ -17,7 +17,6 @@ import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -156,31 +155,17 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
     }
 
     /**
-     * @param writerId 작성자 id
+     * @param writerId   작성자 id
+     * @param predicates where 조건
      * @return 평균 공복 혈당
      */
     @Override
-    public Optional<Double> findAverageFpg(Long writerId) {
+    public Optional<Double> findAverageFpg(Long writerId, List<Predicate> predicates) {
         return Optional.ofNullable(jpaQueryFactory.from(QDiabetesDiary.diabetesDiary)
                 .select(QDiabetesDiary.diabetesDiary.fastingPlasmaGlucose.avg())
                 .innerJoin(QDiabetesDiary.diabetesDiary.writer, QWriter.writer)
                 .on(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId))
-                .fetchOne());
-    }
-
-    /**
-     * @param writerId  작성자 id
-     * @param startDate 시작 날짜
-     * @param endDate   끝 날짜
-     * @return 해당 기간 내 공복 혈당의 평균 값
-     */
-    @Override
-    public Optional<Double> findAverageFpgBetweenTime(Long writerId, LocalDateTime startDate, LocalDateTime endDate) {
-        return Optional.ofNullable(jpaQueryFactory.from(QDiabetesDiary.diabetesDiary)
-                .select(QDiabetesDiary.diabetesDiary.fastingPlasmaGlucose.avg())
-                .innerJoin(QDiabetesDiary.diabetesDiary.writer, QWriter.writer)
-                .where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId)
-                        .and(QDiabetesDiary.diabetesDiary.writtenTime.between(startDate, endDate)))
+                .where(ExpressionUtils.allOf(predicates))
                 .fetchOne());
     }
 

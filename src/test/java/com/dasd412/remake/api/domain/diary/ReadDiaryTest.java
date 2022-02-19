@@ -511,7 +511,7 @@ public class ReadDiaryTest {
         int fpg3 = 140;
 
         //when
-        Double averageFpg = diaryRepository.findAverageFpg(me.getId()).orElseThrow(NoResultException::new);
+        Double averageFpg = diaryRepository.findAverageFpg(me.getId(), new ArrayList<>()).orElseThrow(NoResultException::new);
 
         //then
         logger.info(averageFpg.toString());
@@ -551,9 +551,11 @@ public class ReadDiaryTest {
         //given
         LocalDateTime startDate = LocalDateTime.of(2021, 12, 1, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2021, 12, 11, 0, 0);
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(decideBetweenTimeInDiary(startDate, endDate));
 
         //when
-        Double averageFpgBetween = diaryRepository.findAverageFpgBetweenTime(me.getId(), startDate, endDate).orElseThrow(NoResultException::new);
+        Double averageFpgBetween = diaryRepository.findAverageFpg(me.getId(), predicates).orElseThrow(NoResultException::new);
 
         ///then
         assertThat(averageFpgBetween).isCloseTo(110.0, Percentage.withPercentage(0.5));

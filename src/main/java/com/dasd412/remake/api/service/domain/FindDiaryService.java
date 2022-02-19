@@ -227,7 +227,7 @@ public class FindDiaryService {
     public Double getAverageFpg(EntityId<Writer, Long> writerEntityId) {
         logger.info("getAverageFpg");
         checkNotNull(writerEntityId, "writerId must be provided");
-        return diaryRepository.findAverageFpg(writerEntityId.getId()).orElseThrow(NoResultException::new);
+        return diaryRepository.findAverageFpg(writerEntityId.getId(), new ArrayList<>()).orElseThrow(NoResultException::new);
     }
 
     /**
@@ -241,7 +241,9 @@ public class FindDiaryService {
         logger.info("getAverageFpgBetween");
         checkNotNull(writerEntityId, "writerId must be provided");
         checkArgument(isStartDateEqualOrBeforeEndDate(startDate, endDate), "startDate must be equal or before than endDate");
-        return diaryRepository.findAverageFpgBetweenTime(writerEntityId.getId(), startDate, endDate).orElseThrow(NoResultException::new);
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(decideBetweenTimeInDiary(startDate, endDate));
+        return diaryRepository.findAverageFpg(writerEntityId.getId(), predicates).orElseThrow(NoResultException::new);
     }
 
     /**

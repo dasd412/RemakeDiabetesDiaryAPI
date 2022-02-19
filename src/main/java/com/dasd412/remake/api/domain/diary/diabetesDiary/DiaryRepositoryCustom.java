@@ -11,7 +11,6 @@ package com.dasd412.remake.api.domain.diary.diabetesDiary;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.querydsl.core.types.Predicate;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,11 +41,11 @@ public interface DiaryRepositoryCustom {
     Optional<DiabetesDiary> findDiabetesDiaryOfWriterWithRelation(Long writerId, Long diaryId);
 
     /**
-     * @param writerId 작성자 id
+     * @param writerId   작성자 id
      * @param predicates where 절 조건문
      * @return 작성자가 작성했던 모든 혈당 일지와 관련된 모든 엔티티 "함께" 조회
      */
-    List<DiabetesDiary> findDiabetesDiariesOfWriterWithRelation(Long writerId,List<Predicate>predicates);
+    List<DiabetesDiary> findDiabetesDiariesOfWriterWithRelation(Long writerId, List<Predicate> predicates);
 
 
     /**
@@ -64,17 +63,10 @@ public interface DiaryRepositoryCustom {
     void bulkDeleteDiary(Long diaryId);
 
     /**
-     * @param writerId 작성자 id
+     * @param writerId   작성자 id
+     * @param predicates where 조건
      * @return 전체 기간 공복혈당의 평균 값
      */
-    Optional<Double> findAverageFpg(Long writerId);
-
-    /**
-     * @param writerId  작성자 id
-     * @param startDate 시작 날짜
-     * @param endDate   끝 날짜
-     * @return 해당 기간 내 공복 혈당의 평균 값
-     */
-    Optional<Double> findAverageFpgBetweenTime(Long writerId, LocalDateTime startDate, LocalDateTime endDate);
+    Optional<Double> findAverageFpg(Long writerId, List<Predicate> predicates);
 
 }
