@@ -124,7 +124,7 @@ public class FindDiaryService {
     public List<DiabetesDiary> getDiabetesDiariesOfWriterWithRelation(EntityId<Writer, Long> writerEntityId) {
         logger.info("getDiabetesDiariesOfWriterWithRelation");
         checkNotNull(writerEntityId, "writerId must be provided");
-        return diaryRepository.findDiabetesDiariesOfWriterWithRelation(writerEntityId.getId());
+        return diaryRepository.findDiabetesDiariesOfWriterWithRelation(writerEntityId.getId(), new ArrayList<>());
     }
 
     @Transactional(readOnly = true)
@@ -132,7 +132,10 @@ public class FindDiaryService {
         logger.info("getDiariesWithRelationBetweenTime");
         checkNotNull(writerEntityId, "writerId must be provided");
         checkArgument(isStartDateEqualOrBeforeEndDate(startDate, endDate), "startDate must be equal or before than endDate");
-        return diaryRepository.findDiariesWithRelationBetweenTime(writerEntityId.getId(), startDate, endDate);
+
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(decideBetweenTimeInDiary(startDate, endDate));
+        return diaryRepository.findDiabetesDiariesOfWriterWithRelation(writerEntityId.getId(), predicates);
     }
 
     /**

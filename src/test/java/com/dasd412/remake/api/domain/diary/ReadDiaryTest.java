@@ -465,7 +465,7 @@ public class ReadDiaryTest {
     @Test
     public void findDiabetesDiariesOfWriterWithRelation() {
         //when
-        List<DiabetesDiary> diariesWithRelation = diaryRepository.findDiabetesDiariesOfWriterWithRelation(me.getId());
+        List<DiabetesDiary> diariesWithRelation = diaryRepository.findDiabetesDiariesOfWriterWithRelation(me.getId(), new ArrayList<>());
         //then
         logger.info(diariesWithRelation.toString());
         for (DiabetesDiary diary : diariesWithRelation) {
@@ -481,11 +481,15 @@ public class ReadDiaryTest {
     @Transactional
     @Test
     public void findDiariesWithRelationBetweenTime() {
+        //given
         LocalDateTime startDate = LocalDateTime.of(2021, 12, 1, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2021, 12, 11, 0, 0);
 
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(decideBetweenTimeInDiary(startDate, endDate));
+
         //when
-        List<DiabetesDiary> diaries = diaryRepository.findDiariesWithRelationBetweenTime(me.getId(), startDate, endDate);
+        List<DiabetesDiary> diaries = diaryRepository.findDiabetesDiariesOfWriterWithRelation(me.getId(), predicates);
 
         //then
         logger.info(diaries.toString());

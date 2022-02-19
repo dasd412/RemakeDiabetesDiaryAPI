@@ -43,17 +43,11 @@ public interface DiaryRepositoryCustom {
 
     /**
      * @param writerId 작성자 id
+     * @param predicates where 절 조건문
      * @return 작성자가 작성했던 모든 혈당 일지와 관련된 모든 엔티티 "함께" 조회
      */
-    List<DiabetesDiary> findDiabetesDiariesOfWriterWithRelation(Long writerId);
+    List<DiabetesDiary> findDiabetesDiariesOfWriterWithRelation(Long writerId,List<Predicate>predicates);
 
-    /**
-     * @param writerId  작성자 id
-     * @param startDate 시작 날짜
-     * @param endDate   끝 날짜
-     * @return 해당 기간 동안 작성자가 작성했던 모든 혈당 일지와 관련된 모든 엔티티 "함께" 조회
-     */
-    List<DiabetesDiary> findDiariesWithRelationBetweenTime(Long writerId, LocalDateTime startDate, LocalDateTime endDate);
 
     /**
      * @param writerID   작성자 id
