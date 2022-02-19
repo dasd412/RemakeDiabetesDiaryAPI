@@ -1,5 +1,5 @@
 /*
- * @(#)DiaryRepositoryCustom.java        1.0.4 2022/2/4
+ * @(#)DiaryRepositoryCustom.java        1.0.9 2022/2/19
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -9,6 +9,7 @@
 package com.dasd412.remake.api.domain.diary.diabetesDiary;
 
 import com.dasd412.remake.api.domain.diary.writer.Writer;
+import com.querydsl.core.types.Predicate;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.Optional;
  * 혈당일지 리포지토리 상위 인터페이스. Querydsl을 이용하기 위해 구현하였다.
  *
  * @author 양영준
- * @version 1.0.4 2022년 2월 4일
+ * @version 1.0.9 2022년 2월 19일
  */
 public interface DiaryRepositoryCustom {
 
@@ -54,7 +55,12 @@ public interface DiaryRepositoryCustom {
      */
     List<DiabetesDiary> findDiariesWithRelationBetweenTime(Long writerId, LocalDateTime startDate, LocalDateTime endDate);
 
-    List<DiabetesDiary> findDiaryBetweenTime(Long writerId, LocalDateTime startDate, LocalDateTime endDate);
+    /**
+     * @param writerID   작성자 id
+     * @param predicates where 조건문
+     * @return where 조건문에 맞는 일지들
+     */
+    List<DiabetesDiary> findDiariesWithWhereClause(Long writerID, List<Predicate> predicates);
 
     /**
      * @param writerId             작성자 id

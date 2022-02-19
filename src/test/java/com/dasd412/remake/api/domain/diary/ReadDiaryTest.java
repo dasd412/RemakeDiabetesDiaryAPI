@@ -233,8 +233,15 @@ public class ReadDiaryTest {
     @Transactional
     @Test
     public void findDiariesBetweenTime() {
+        //given
+        LocalDateTime startDate = LocalDateTime.of(2021, 12, 15, 0, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2021, 12, 31, 0, 0, 0);
+
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(decideBetweenTimeInDiary(startDate, endDate));
+
         //when
-        List<DiabetesDiary> diaries = diaryRepository.findDiaryBetweenTime(me.getId(), LocalDateTime.of(2021, 12, 15, 0, 0, 0), LocalDateTime.of(2021, 12, 31, 0, 0, 0));
+        List<DiabetesDiary> diaries = diaryRepository.findDiariesWithWhereClause(me.getId(), predicates);
 
         //then
         assertThat(diaries.get(0)).isEqualTo(diary3);

@@ -1,5 +1,5 @@
 /*
- * @(#)DiaryRepositoryImpl.java        1.0.9 2022/2/17
+ * @(#)DiaryRepositoryImpl.java        1.0.9 2022/2/19
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -12,6 +12,8 @@ import com.dasd412.remake.api.domain.diary.BulkDeleteHelper;
 import com.dasd412.remake.api.domain.diary.diet.QDiet;
 import com.dasd412.remake.api.domain.diary.food.QFood;
 import com.dasd412.remake.api.domain.diary.writer.QWriter;
+import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 
@@ -24,7 +26,7 @@ import java.util.stream.Collectors;
  * Querydsl을 사용하기 위해 만든 구현체 클래스.
  *
  * @author 양영준
- * @version 1.0.9 2022년 2월 17일
+ * @version 1.0.9 2022년 2월 19일
  */
 public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
 
@@ -149,11 +151,17 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
                 .fetch().stream().distinct().collect(Collectors.toList());
     }
 
+    /**
+     * @param writerID   작성자 id
+     * @param predicates where 조건문
+     * @return where 조건문에 맞는 일지들
+     */
     @Override
-    public List<DiabetesDiary> findDiaryBetweenTime(Long writerId, LocalDateTime startDate, LocalDateTime endDate) {
-        /* @Query(value = "SELECT diary FROM DiabetesDiary diary  WHERE diary.writer.writerId = :writer_id AND diary.writtenTime BETWEEN :startDate AND :endDate") */
+    public List<DiabetesDiary> findDiariesWithWhereClause(Long writerID, List<Predicate> predicates) {
         return jpaQueryFactory.selectFrom(QDiabetesDiary.diabetesDiary)
-                .where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId).and(QDiabetesDiary.diabetesDiary.writtenTime.between(startDate, endDate)))
+                .innerJoin(QDiabetesDiary.diabetesDiary.writer, QWriter.writer)
+                .on(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerID))
+                .where(ExpressionUtils.allOf(predicates))
                 .fetch();
     }
 
@@ -166,7 +174,8 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
     public List<DiabetesDiary> findFpgHigherOrEqual(Long writerId, int fastingPlasmaGlucose) {
         /* @Query(value = "SELECT diary FROM DiabetesDiary diary WHERE diary.writer.writerId = :writer_id AND diary.fastingPlasmaGlucose >= :bloodSugar") */
         return jpaQueryFactory.selectFrom(QDiabetesDiary.diabetesDiary)
-                .where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId).and(QDiabetesDiary.diabetesDiary.fastingPlasmaGlucose.goe(fastingPlasmaGlucose)))
+                .where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId)
+                        .and(QDiabetesDiary.diabetesDiary.fastingPlasmaGlucose.goe(fastingPlasmaGlucose)))
                 .fetch();
     }
 
@@ -179,7 +188,8 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
     public List<DiabetesDiary> findFpgLowerOrEqual(Long writerId, int fastingPlasmaGlucose) {
         /* @Query(value = "SELECT diary FROM DiabetesDiary diary  WHERE diary.writer.writerId = :writer_id AND diary.fastingPlasmaGlucose <= :bloodSugar") */
         return jpaQueryFactory.selectFrom(QDiabetesDiary.diabetesDiary)
-                .where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId).and(QDiabetesDiary.diabetesDiary.fastingPlasmaGlucose.loe(fastingPlasmaGlucose)))
+                .where(QDiabetesDiary.diabetesDiary.writer.writerId.eq(writerId)
+                        .and(QDiabetesDiary.diabetesDiary.fastingPlasmaGlucose.loe(fastingPlasmaGlucose)))
                 .fetch();
     }
 

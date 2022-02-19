@@ -31,13 +31,43 @@ public class PredicateMaker {
     }
 
     /**
-     * FoodRepository 출처
+     * @param sign                 부등호 enum
+     * @param fastingPlasmaGlucose 공복 혈당 수치 (만약 공복 혈당에 공백으로 기입되어 있었다면, default 0.)
+     * @return 부등호 관계와 일치하는 공복 혈당 where 절
+     */
+    public static Predicate decideEqualitySignOfFastingPlasmaGlucose(InequalitySign sign, int fastingPlasmaGlucose) {
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        switch (sign) {
+            case GREATER:
+                booleanBuilder.and(QDiabetesDiary.diabetesDiary.fastingPlasmaGlucose.gt(fastingPlasmaGlucose));
+                break;
+
+            case LESSER:
+                booleanBuilder.and(QDiabetesDiary.diabetesDiary.fastingPlasmaGlucose.lt(fastingPlasmaGlucose));
+                break;
+
+            case EQUAL:
+                booleanBuilder.and(QDiabetesDiary.diabetesDiary.fastingPlasmaGlucose.eq(fastingPlasmaGlucose));
+                break;
+
+            case GREAT_OR_EQUAL:
+                booleanBuilder.and(QDiabetesDiary.diabetesDiary.fastingPlasmaGlucose.goe(fastingPlasmaGlucose));
+                break;
+
+            case LESSER_OR_EQUAL:
+                booleanBuilder.and(QDiabetesDiary.diabetesDiary.fastingPlasmaGlucose.loe(fastingPlasmaGlucose));
+                break;
+        }
+        return booleanBuilder;
+    }
+
+    /**
      * where 문을 작성할 때, 특히 파라미터의 종류 등에 따라 조건 분기를 하고 싶을 때 Predicate 객체를 사용한다.
      * 작성자 id는 on 절에서 사용되므로 파라미터에서 생략.
      *
      * @param sign       부등호 enum
-     * @param bloodSugar 식사 혈당 수치 (만약 식사 혈당에 공백으로 기입되어 있었다면, default 0.
-     * @return where 절에 들어가는 조건문 (해당 기간 동안에 식사 혈당과 음식 이름이 함께 작성되었던 일지 중, 부등호 관계와 일치하는 식사 혈당에 기재된 음식들을 리턴할 때 사용한다.)
+     * @param bloodSugar 식사 혈당 수치 (만약 식사 혈당에 공백으로 기입되어 있었다면, default 0.)
+     * @return 부등호 관계와 일치하는 식사 혈당 where 절
      */
     public static Predicate decideEqualitySignOfBloodSugar(InequalitySign sign, int bloodSugar) {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
@@ -84,8 +114,9 @@ public class PredicateMaker {
     /**
      * DietRepository 출처
      * 식단 -> 일지 참조일 때 사용된다.
+     *
      * @param startDate 시작 날짜
-     * @param endDate 끝 날짜
+     * @param endDate   끝 날짜
      * @return where 절에 들어가는 조건문 (해당 기간 사이에 있는가)
      */
     public static Predicate decideBetweenTimeInDiet(LocalDateTime startDate, LocalDateTime endDate) {
@@ -130,6 +161,7 @@ public class PredicateMaker {
 
     /**
      * DietRepository 출처
+     *
      * @param eatTime 식사 시간
      * @return 식사 시간 where 조건문
      */

@@ -155,7 +155,10 @@ public class FindDiaryService {
 
             checkArgument(isStartDateEqualOrBeforeEndDate(startDate, endDate), "startDate must be equal or before than endDate");
 
-            return diaryRepository.findDiaryBetweenTime(writerEntityId.getId(), startDate, endDate);
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(decideBetweenTimeInDiary(startDate, endDate));
+
+            return diaryRepository.findDiariesWithWhereClause(writerEntityId.getId(), predicates);
         } catch (DateTimeException e) {
             throw new IllegalArgumentException("LocalDateTime 포맷으로 변경할 수 없는 문자열입니다.");
         }
@@ -174,7 +177,10 @@ public class FindDiaryService {
         logger.info("get Diaries Between LocalDateTime");
         checkNotNull(writerEntityId, "writerId must be provided");
         checkArgument(isStartDateEqualOrBeforeEndDate(startDate, endDate), "startDate must be equal or before than endDate");
-        return diaryRepository.findDiaryBetweenTime(writerEntityId.getId(), startDate, endDate);
+
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(decideBetweenTimeInDiary(startDate, endDate));
+        return diaryRepository.findDiariesWithWhereClause(writerEntityId.getId(), predicates);
     }
 
 
