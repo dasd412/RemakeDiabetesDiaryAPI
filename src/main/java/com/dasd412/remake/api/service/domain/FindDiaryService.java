@@ -383,7 +383,7 @@ public class FindDiaryService {
     public List<Tuple> getAverageBloodSugarGroupByEatTime(EntityId<Writer, Long> writerEntityId) {
         logger.info("getAverageBloodSugarGroupByEatTime");
         checkNotNull(writerEntityId, "writerId must be provided");
-        return dietRepository.findAverageBloodSugarGroupByEatTime(writerEntityId.getId());
+        return dietRepository.findAverageBloodSugarGroupByEatTime(writerEntityId.getId(), new ArrayList<>());
     }
 
     /**
@@ -397,7 +397,10 @@ public class FindDiaryService {
         logger.info("getAverageBloodSugarGroupByEatTimeBetweenTime");
         checkNotNull(writerEntityId, "writerId must be provided");
         checkArgument(isStartDateEqualOrBeforeEndDate(startDate, endDate), "startDate must be equal or before endDate");
-        return dietRepository.findAverageBloodSugarGroupByEatTimeBetweenTime(writerEntityId.getId(), startDate, endDate);
+
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(decideBetweenInDiet(startDate, endDate));
+        return dietRepository.findAverageBloodSugarGroupByEatTime(writerEntityId.getId(), predicates);
     }
 
     /**

@@ -17,7 +17,6 @@ import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.QDiabetesDiary;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -107,34 +106,18 @@ public class DietRepositoryImpl implements DietRepositoryCustom {
     }
 
     /**
-     * @param writerId 작성자 id
-     * @return (평균 혈당, 식사 시간) 형태의 튜플들
+     * @param writerId   작성자 id
+     * @param predicates where절 조건문
+     * @return 조건에 해당하는 식사 시간 별(평균 혈당, 식사 시간) 형태의 튜플들
      */
     @Override
-    public List<Tuple> findAverageBloodSugarGroupByEatTime(Long writerId) {
+    public List<Tuple> findAverageBloodSugarGroupByEatTime(Long writerId, List<Predicate> predicates) {
         return jpaQueryFactory
                 .select(QDiet.diet.bloodSugar.avg(), QDiet.diet.eatTime)
                 .from(QDiet.diet)
                 .innerJoin(QDiet.diet.diary.writer, QWriter.writer)
                 .on(QDiet.diet.diary.writer.writerId.eq(writerId))
-                .groupBy(QDiet.diet.eatTime)
-                .fetch();
-    }
-
-    /**
-     * @param writerId  작성자 id
-     * @param startDate 시작 날짜
-     * @param endDate   끝 날짜
-     * @return 해당 기간 내의 (평균 혈당, 식사 시간) 형태의 튜플들
-     */
-    @Override
-    public List<Tuple> findAverageBloodSugarGroupByEatTimeBetweenTime(Long writerId, LocalDateTime startDate, LocalDateTime endDate) {
-        return jpaQueryFactory
-                .select(QDiet.diet.bloodSugar.avg(), QDiet.diet.eatTime)
-                .from(QDiet.diet)
-                .innerJoin(QDiet.diet.diary.writer, QWriter.writer)
-                .on(QDiet.diet.diary.writer.writerId.eq(writerId))
-                .where(QDiet.diet.diary.writtenTime.between(startDate, endDate))
+                .where(ExpressionUtils.allOf(predicates))
                 .groupBy(QDiet.diet.eatTime)
                 .fetch();
     }

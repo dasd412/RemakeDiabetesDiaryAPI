@@ -48,18 +48,11 @@ public interface DietRepositoryCustom {
 
 
     /**
-     * @param writerId 작성자 id
-     * @return 전체 기간 동안의  (평균 혈당, 식사 시간) 형태의 튜플들
+     * @param writerId   작성자 id
+     * @param predicates where절 조건문
+     * @return 조건에 해당하는 식사 시간 별(평균 혈당, 식사 시간) 형태의 튜플들
      */
-    List<Tuple> findAverageBloodSugarGroupByEatTime(Long writerId);
-
-    /**
-     * @param writerId  작성자 id
-     * @param startDate 시작 날짜
-     * @param endDate   끝 날짜
-     * @return 해당 기간 내의 (평균 혈당, 식사 시간) 형태의 튜플들
-     */
-    List<Tuple> findAverageBloodSugarGroupByEatTimeBetweenTime(Long writerId, LocalDateTime startDate, LocalDateTime endDate);
+    List<Tuple> findAverageBloodSugarGroupByEatTime(Long writerId, List<Predicate> predicates);
 
     /**
      * 식단과 관련된 엔티티 (음식) 을 포함하여 "한꺼번에" 제거하는 메서드.

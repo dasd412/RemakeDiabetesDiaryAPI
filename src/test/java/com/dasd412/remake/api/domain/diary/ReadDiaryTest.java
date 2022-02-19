@@ -503,7 +503,7 @@ public class ReadDiaryTest {
     @Test
     public void findAverageBloodSugarGroupByEatTime() {
         //when
-        List<Tuple> tupleList = dietRepository.findAverageBloodSugarGroupByEatTime(me.getId());
+        List<Tuple> tupleList = dietRepository.findAverageBloodSugarGroupByEatTime(me.getId(), new ArrayList<>());
 
         //then
         logger.info(tupleList.toString());
@@ -565,8 +565,11 @@ public class ReadDiaryTest {
         LocalDateTime startDate = LocalDateTime.of(2021, 12, 9, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2021, 12, 27, 0, 0);
 
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(decideBetweenInDiet(startDate, endDate));
+
         //when
-        List<Tuple> tupleList = dietRepository.findAverageBloodSugarGroupByEatTimeBetweenTime(me.getId(), startDate, endDate);
+        List<Tuple> tupleList = dietRepository.findAverageBloodSugarGroupByEatTime(me.getId(), predicates);
 
         //then
         assertThat(tupleList.size()).isEqualTo(3);
