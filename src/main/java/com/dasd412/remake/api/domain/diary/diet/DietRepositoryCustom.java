@@ -1,5 +1,5 @@
 /*
- * @(#)DietRepositoryCustom.java        1.0.9 2022/2/18
+ * @(#)DietRepositoryCustom.java        1.0.9 2022/2/19
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -19,7 +19,7 @@ import java.util.Optional;
  * 식단 리포지토리 상위 인터페이스. Querydsl을 이용하기 위해 구현하였다.
  *
  * @author 양영준
- * @version 1.0.9 2022년 2월 18일
+ * @version 1.0.9 2022년 2월 19일
  */
 public interface DietRepositoryCustom {
 
@@ -40,24 +40,18 @@ public interface DietRepositoryCustom {
     List<Diet> findDietsWithWhereClause(Long writerId, List<Predicate> predicates);
 
     /**
-     * @param writerId 작성자 id
-     * @return 전체 기간 동안의 평균 식사 혈당 (아침,점심,저녁 모두 포함)
+     * @param writerId   작성자 id
+     * @param predicates where 절 조건문
+     * @return 조건에 일치하는 평균 식사 혈당
      */
-    Optional<Double> findAverageBloodSugarOfDiet(Long writerId);
+    Optional<Double> findAverageBloodSugarOfDiet(Long writerId, List<Predicate> predicates);
+
 
     /**
      * @param writerId 작성자 id
      * @return 전체 기간 동안의  (평균 혈당, 식사 시간) 형태의 튜플들
      */
     List<Tuple> findAverageBloodSugarGroupByEatTime(Long writerId);
-
-    /**
-     * @param writerId  작성자 id
-     * @param startDate 시작 날짜
-     * @param endDate   끝 날짜
-     * @return 해당 기간 내의 평균 식사 혈당 (아침,점심,저녁 모두 포함)
-     */
-    Optional<Double> findAverageBloodSugarOfDietBetweenTime(Long writerId, LocalDateTime startDate, LocalDateTime endDate);
 
     /**
      * @param writerId  작성자 id

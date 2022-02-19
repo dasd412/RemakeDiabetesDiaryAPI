@@ -354,7 +354,7 @@ public class FindDiaryService {
     public double getAverageBloodSugarOfDiet(EntityId<Writer, Long> writerEntityId) {
         logger.info("getAverageBloodSugarOfDiet");
         checkNotNull(writerEntityId, "writerId must be provided");
-        return dietRepository.findAverageBloodSugarOfDiet(writerEntityId.getId()).orElseThrow(() -> new IllegalStateException("아직 혈당을 기록한 식단이 없습니다."));
+        return dietRepository.findAverageBloodSugarOfDiet(writerEntityId.getId(), new ArrayList<>()).orElseThrow(() -> new IllegalStateException("아직 혈당을 기록한 식단이 없습니다."));
     }
 
     /**
@@ -368,7 +368,10 @@ public class FindDiaryService {
         logger.info("getAverageBloodSugarOfDietBetweenTime");
         checkNotNull(writerEntityId, "writerId must be provided");
         checkArgument(isStartDateEqualOrBeforeEndDate(startDate, endDate), "startDate must be equal or before endDate");
-        return dietRepository.findAverageBloodSugarOfDietBetweenTime(writerEntityId.getId(), startDate, endDate).orElseThrow(NoResultException::new);
+
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(decideBetweenInDiet(startDate, endDate));
+        return dietRepository.findAverageBloodSugarOfDiet(writerEntityId.getId(), predicates).orElseThrow(NoResultException::new);
     }
 
 

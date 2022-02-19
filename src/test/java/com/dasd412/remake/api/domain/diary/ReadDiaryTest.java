@@ -408,7 +408,7 @@ public class ReadDiaryTest {
     @Test
     public void findAverageBloodSugarDiet() {
         //when
-        double averageBloodSugar = dietRepository.findAverageBloodSugarOfDiet(me.getId()).orElseThrow(() -> new NullPointerException("아예 혈당이 없다."));
+        double averageBloodSugar = dietRepository.findAverageBloodSugarOfDiet(me.getId(), new ArrayList<>()).orElseThrow(() -> new NullPointerException("아예 혈당이 없다."));
 
         //then
         logger.info(String.valueOf(averageBloodSugar));
@@ -547,9 +547,11 @@ public class ReadDiaryTest {
         //given
         LocalDateTime startDate = LocalDateTime.of(2021, 12, 9, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2021, 12, 27, 0, 0);
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(decideBetweenInDiet(startDate, endDate));
 
         //when
-        Double averageBloodSugar = dietRepository.findAverageBloodSugarOfDietBetweenTime(me.getId(), startDate, endDate).orElseThrow(NoResultException::new);
+        Double averageBloodSugar = dietRepository.findAverageBloodSugarOfDiet(me.getId(), predicates).orElseThrow(NoResultException::new);
 
         //then
         assertThat(averageBloodSugar).isCloseTo(150.0, Percentage.withPercentage(0.5));
