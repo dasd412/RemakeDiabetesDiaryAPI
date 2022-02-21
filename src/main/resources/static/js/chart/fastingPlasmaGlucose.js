@@ -1,12 +1,16 @@
 /*
- * @(#)fastingPlasmaGlucose.js        1.0.3 2022/2/1
+ * @(#)fastingPlasmaGlucose.js        1.1.0 2022/2/21
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, JavaScript, Pocheon-si, KOREA
  * All rights reserved.
  */
 
-const fpgFormatter = new Formatter();
+/**
+ * 공복 혈당 조회 요청 로직을 담고 있는 js
+ * @author 양영준
+ * @version 1.1.0 2022년 2월 21일
+ */
 
 /**
  * chart.js 설정 객체
@@ -98,48 +102,19 @@ const FpgFinder = {
         const startDateVal = $("#start-date").val().split('/');
         const endDateVal = $("#end-date").val().split('/');
 
-        const startYear = startDateVal[2];
-        const startMonth = fpgFormatter.formatString(startDateVal[0]);
-        const startDay = fpgFormatter.formatString(startDateVal[1]);
+        const convertedDate = DateConverter.convertStringToLocalDateTime(startDateVal, endDateVal);
 
-        const endYear = endDateVal[2];
-        const endMonth = fpgFormatter.formatString(endDateVal[0]);
-        const endDay = fpgFormatter.formatString(endDateVal[1]);
-
-        //Date 객체에서 월은 0부터 시작
-        const startDate = new Date(startYear, startMonth - 1, startDay);
-        const endDate = new Date(endYear, endMonth - 1, endDay);
-
-        if (startMonth === undefined || startDay === undefined) {
-            swal('', "시작 날짜를 입력해주세요", "error");
+        if (convertedDate.isConverted === false) {
+            swal('', convertedDate.errorMessage, "error");
             return;
         }
-        if (endMonth === undefined || endDay === undefined) {
-            swal('', "끝 날짜를 입력해주세요", "error");
-            return;
-        }
-        //끝 날짜가 시작 날짜보다 앞서면 안된다.
-        if (startDate > endDate) {
-            swal('', "끝 날짜가 시작 날짜보다 앞서면 안되요!", "error");
-            return;
-        }
-
-        const betweenDate = {
-            startYear: startYear,
-            startMonth: startMonth,
-            startDay: startDay,
-
-            endYear: endYear,
-            endMonth: endMonth,
-            endDay: endDay
-        };
 
         $.ajax({
             type: 'GET',
             url: '/chart-menu/fasting-plasma-glucose/between',
             dataType: 'json',
             contentType: 'application/x-www-form-urlencoded; charset=UTF-8;',
-            data: betweenDate
+            data: convertedDate.betweenDate
         }).done(function (apiResult) {
             updateChart(apiResult);
         });
