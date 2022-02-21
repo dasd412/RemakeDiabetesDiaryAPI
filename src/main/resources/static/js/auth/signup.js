@@ -1,5 +1,5 @@
 /*
- * @(#)signup.js        1.0.7 2022/2/13
+ * @(#)signup.js        1.1.0 2022/2/21
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, JavaScript, Pocheon-si, KOREA
@@ -7,21 +7,12 @@
  */
 
 /**
- * 회원 가입 폼의 유효성을 검사
+ * 회원 가입 폼 js
  *
  * @author 양영준
- * @version 1.0.7 2022년 2월 13일
+ * @version 1.1.0 2022년 2월 21일
  */
 
-/**
- *
- * @param str 이메일 문자열
- * @returns {boolean} 이메일 정규식에 맞는 지 판별
- */
-function validateEmail(str) {
-    const regExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
-    return regExp.test(str);
-}
 
 /**
  * 이벤트 : 회원 가입 버튼 클릭
@@ -40,15 +31,23 @@ function submitSignup() {
         swal('', "공백으로 된 패스워드는 만들 수 없어요.", "error");
         return;
     }
-    if (password.length <= 6) {
-        swal('', "비밀번호는 7자 이상이여야 해요.", "error");
-        return;
-    }
     if (email == null || email === "") {
         swal('', "공백으로 된 이메일은 만들 수 없어요.", "error");
         return;
     }
-    if (validateEmail(email) === false) {
+
+    const joinIdValidate = InfoValidator.validateId(username);
+    if (joinIdValidate.boolean === false) {
+        swal('', "아이디의 길이는" + joinIdValidate.minLength + "이상" + joinIdValidate.maxLENGTH + "이여야 합니다.", "error");
+        return;
+    }
+    const joinPasswordValidate = InfoValidator.validatePassword(password);
+    if (joinPasswordValidate.boolean === false) {
+        swal('', "비밀번호는" + joinPasswordValidate.minLength + "자 이상" + joinPasswordValidate.maxLength + "글자 이하여야 합니다.", "error");
+        return;
+    }
+
+    if (InfoValidator.validateEmail(email) === false) {
         swal('', "올바른 형식의 이메일이 아니에요.", "error");
         return;
     }
