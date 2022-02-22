@@ -1,11 +1,16 @@
 /*
- * @(#)bloodSugar.js        1.0.4 2022/2/4
+ * @(#)average.js        1.1.0 2022/2/21
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, JavaScript, Pocheon-si, KOREA
  * All rights reserved.
  */
 
+/**
+ * 평균 혈당 조회 요청 로직을 담고 있는 js
+ * @author 양영준
+ * @version 1.1.0 2022년 2월 21일
+ */
 const averageFormatter = new Formatter();
 
 const config = {
@@ -100,47 +105,19 @@ const averageFinder = {
         const startDateAverage = $("#start-date-average").val().split('/');
         const endDateAverage = $("#end-date-average").val().split('/');
 
-        const startYearForAverage = startDateAverage[2];
-        const startMonthForAverage = averageFormatter.formatString(startDateAverage[0]);
-        const startDayForAverage = averageFormatter.formatString(startDateAverage[1]);
+        const convertedDate = DateConverter.convertStringToLocalDateTime(startDateAverage, endDateAverage);
 
-        const endYearForAverage = endDateAverage[2];
-        const endMonthForAverage = averageFormatter.formatString(endDateAverage[0]);
-        const endDayForAverage = averageFormatter.formatString(endDateAverage[1]);
-
-        //Date 객체에서 월은 0부터 시작
-        const startDateOfAverage = new Date(startYearForAverage, startMonthForAverage - 1, startDayForAverage);
-        const endDateOfAverage = new Date(endYearForAverage, endMonthForAverage - 1, endDayForAverage);
-
-        if (startMonthForAverage === undefined || startDayForAverage === undefined) {
-            swal('', "시작 날짜를 입력해주세요", "error");
+        if (convertedDate.isConverted === false) {
+            swal('', convertedDate.errorMessage, "error");
             return;
         }
-        if (endMonthForAverage === undefined || endDayForAverage === undefined) {
-            swal('', "끝 날짜를 입력해주세요", "error");
-            return;
-        }
-        //끝 날짜가 시작 날짜보다 앞서면 안된다.
-        if (startDateOfAverage > endDateOfAverage) {
-            swal('', "끝 날짜가 시작 날짜보다 앞서면 안되요!", "error");
-            return;
-        }
-        const betweenDate = {
-            startYear: startYearForAverage,
-            startMonth: startMonthForAverage,
-            startDay: startDayForAverage,
-
-            endYear: endYearForAverage,
-            endMonth: endMonthForAverage,
-            endDay: endDayForAverage
-        };
 
         $.ajax({
             type: 'GET',
             url: '/chart-menu/average/between',
             dataType: 'json',
             contentType: 'application/x-www-form-urlencoded; charset=UTF-8;',
-            data: betweenDate
+            data: convertedDate.betweenDate
         }).done(function (apiResult) {
             updateChart(apiResult);
         }).fail(function () {

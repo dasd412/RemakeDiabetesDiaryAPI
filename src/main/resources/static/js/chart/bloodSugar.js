@@ -1,11 +1,16 @@
 /*
- * @(#)bloodSugar.js        1.0.3 2022/2/1
+ * @(#)bloodSugar.js        1.1.0 2022/2/21
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, JavaScript, Pocheon-si, KOREA
  * All rights reserved.
  */
 
+/**
+ * 식사 혈당 조회 요청 로직을 담고 있는 js
+ * @author 양영준
+ * @version 1.1.0 2022년 2월 21일
+ */
 const bloodSugarFormatter = new Formatter();
 
 /**
@@ -111,47 +116,19 @@ const bloodSugarFinder = {
         const startDateForBloodSugar = $("#start-date-blood-sugar").val().split('/');
         const endDateForBloodSugar = $("#end-date-blood-sugar").val().split('/');
 
-        const startYearForBloodSugar = startDateForBloodSugar[2];
-        const startMonthForBloodSugar = bloodSugarFormatter.formatString(startDateForBloodSugar[0]);
-        const startDayForBloodSugar = bloodSugarFormatter.formatString(startDateForBloodSugar[1]);
+        const convertedDate = DateConverter.convertStringToLocalDateTime(startDateForBloodSugar, endDateForBloodSugar);
 
-        const endYearForBloodSugar = endDateForBloodSugar[2];
-        const endMonthForBloodSugar = bloodSugarFormatter.formatString(endDateForBloodSugar[0]);
-        const endDayForBloodSugar = bloodSugarFormatter.formatString(endDateForBloodSugar[1]);
-
-        //Date 객체에서 월은 0부터 시작
-        const startDateOfBloodSugar = new Date(startYearForBloodSugar, startMonthForBloodSugar - 1, startDayForBloodSugar);
-        const endDateOfBloodSugar = new Date(endYearForBloodSugar, endMonthForBloodSugar - 1, endDayForBloodSugar);
-
-        if (startMonthForBloodSugar === undefined || startDayForBloodSugar === undefined) {
-            swal('', "시작 날짜를 입력해주세요", "error");
+        if (convertedDate.isConverted === false) {
+            swal('', convertedDate.errorMessage, "error");
             return;
         }
-        if (endMonthForBloodSugar === undefined || endDayForBloodSugar === undefined) {
-            swal('', "끝 날짜를 입력해주세요", "error");
-            return;
-        }
-        //끝 날짜가 시작 날짜보다 앞서면 안된다.
-        if (startDateOfBloodSugar > endDateOfBloodSugar) {
-            swal('', "끝 날짜가 시작 날짜보다 앞서면 안되요!", "error");
-            return;
-        }
-        const betweenDate = {
-            startYear: startYearForBloodSugar,
-            startMonth: startMonthForBloodSugar,
-            startDay: startDayForBloodSugar,
-
-            endYear: endYearForBloodSugar,
-            endMonth: endMonthForBloodSugar,
-            endDay: endDayForBloodSugar
-        };
 
         $.ajax({
             type: 'GET',
             url: '/chart-menu/blood-sugar/between',
             dataType: 'json',
             contentType: 'application/x-www-form-urlencoded; charset=UTF-8;',
-            data: betweenDate
+            data: convertedDate.betweenDate
         }).done(function (apiResult) {
             updateChartForBloodSugar(apiResult);
         });
