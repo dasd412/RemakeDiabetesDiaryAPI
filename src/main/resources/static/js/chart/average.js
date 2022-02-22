@@ -1,5 +1,5 @@
 /*
- * @(#)average.js        1.1.0 2022/2/21
+ * @(#)average.js        1.1.0 2022/2/22
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, JavaScript, Pocheon-si, KOREA
@@ -9,9 +9,8 @@
 /**
  * 평균 혈당 조회 요청 로직을 담고 있는 js
  * @author 양영준
- * @version 1.1.0 2022년 2월 21일
+ * @version 1.1.0 2022년 2월 22일
  */
-const averageFormatter = new Formatter();
 
 const config = {
     type: 'bar',
