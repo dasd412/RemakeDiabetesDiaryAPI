@@ -1,11 +1,16 @@
 /*
- * @(#)foodBoard.js        1.0.7 2022/2/11
+ * @(#)foodBoard.js        1.1.0 2022/2/22
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, JavaScript, Pocheon-si, KOREA
  * All rights reserved.
  */
 
+/**
+ * 음식 게시판 조회 요청 로직을 담고 있는 js
+ * @author 양영준
+ * @version 1.1.0 2022년 2월 22일
+ */
 const foodBoardFormatter = new Formatter();
 
 const modalManipulator = {
@@ -45,59 +50,30 @@ const modalManipulator = {
         if (bloodSugar === "") {
             bloodSugar = "0";
         }
-        let startDate = $("#modalStartDate").val();
-        let endDate = $("#modalEndDate").val();
 
         const foodPageForm = $("#foodPageForm");
         foodPageForm.find("[name='page']").val("1");
         foodPageForm.find("[name='sign']").val(signType);
         foodPageForm.find("[name='bloodSugar']").val(bloodSugar);
 
-        let startYear = "";
-        let startMonth = "";
-        let startDay = "";
+        let startDate = $("#modalStartDate").val();
+        let endDate = $("#modalEndDate").val();
 
-        let endYear = "";
-        let endMonth = "";
-        let endDay = "";
+        const convertedDateForFoodBoard = DateConverter.convertStringToLocalDateTimeForFoodBoard(startDate, endDate);
 
-        let convertedStartDate = false;
-        if (startDate != null && startDate !== "") {
-            startDate = startDate.split("/");
-            startYear = startDate[2];
-            startMonth = foodBoardFormatter.formatString(startDate[0]);
-            startDay = foodBoardFormatter.formatString(startDate[1]);
-            convertedStartDate = true;
+        if (convertedDateForFoodBoard.converted === true) {// 잘 변환이 되었다면, submit()
+
+            foodPageForm.find("[name='startYear']").val(convertedDateForFoodBoard.startYear);
+            foodPageForm.find("[name='startMonth']").val(convertedDateForFoodBoard.startMonth);
+            foodPageForm.find("[name='startDay']").val(convertedDateForFoodBoard.startDay);
+
+            foodPageForm.find("[name='endYear']").val(convertedDateForFoodBoard.endYear);
+            foodPageForm.find("[name='endMonth']").val(convertedDateForFoodBoard.endMonth);
+            foodPageForm.find("[name='endDay']").val(convertedDateForFoodBoard.endDay);
+            foodPageForm.submit();
+        } else { // 변환이 이상하다면, alert()
+            swal('', convertedDateForFoodBoard.errorMessage, "error");
         }
-
-        let convertedEndDate = false;
-        if (endDate != null && endDate !== "") {
-            endDate = endDate.split("/");
-            endYear = endDate[2];
-            endMonth = foodBoardFormatter.formatString(endDate[0]);
-            endDay = foodBoardFormatter.formatString(endDate[1]);
-            convertedEndDate = true;
-        }
-
-        if (convertedStartDate === true && convertedEndDate === true) {
-            //Date 객체에서 월은 0부터 시작
-            const startDateOfBloodSugar = new Date(startYear, startMonth - 1, startDay);
-            const endDateOfBloodSugar = new Date(endYear, endMonth - 1, endDay);
-            if (startDateOfBloodSugar > endDateOfBloodSugar) {
-                swal('', "끝 날짜가 시작 날짜보다 앞서면 안되요!", "error");
-                return;
-            }
-
-            foodPageForm.find("[name='startYear']").val(startYear);
-            foodPageForm.find("[name='startMonth']").val(startMonth);
-            foodPageForm.find("[name='startDay']").val(startDay);
-
-            foodPageForm.find("[name='endYear']").val(endYear);
-            foodPageForm.find("[name='endMonth']").val(endMonth);
-            foodPageForm.find("[name='endDay']").val(endDay);
-        }
-
-        foodPageForm.submit();
     }
 };
 

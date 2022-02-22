@@ -1,5 +1,5 @@
 /*
- * @(#)dateConverter.js        1.1.0 2022/2/21
+ * @(#)dateConverter.js        1.1.0 2022/2/22
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, JavaScript, Pocheon-si, KOREA
@@ -9,7 +9,7 @@
 /**
  * string <-> localDateTime 변환 담당 js
  * @author 양영준
- * @version 1.1.0 2022년 2월 21일
+ * @version 1.1.0 2022년 2월 22일
  */
 
 const DateConverter = {
@@ -31,13 +31,13 @@ const DateConverter = {
     },
 
     /**
-     * 
+     *
      * @param startDateSplit 시작 날짜 문자열에 해당하는 $("# ").val().split('/') 형식의 파라미터
      * @param endDateSplit 끝 날짜 문자열에 해당하는 $("# ").val().split('/') 형식의 파라미터
      * @returns {{betweenDate: {startMonth: number, startDay: number, endDay: number, startYear: *, endMonth: number, endYear: *}, errorMessage: string, isConverted: boolean}}
      */
     convertStringToLocalDateTime: function (startDateSplit, endDateSplit) {
-        
+
         const convertedDate = {
             /**
              * 변환이 정상적으로 되었는 가 여부
@@ -85,5 +85,56 @@ const DateConverter = {
 
         convertedDate.isConverted = true;
         return convertedDate;
+    },
+
+    /**
+     *
+     * @param startDate $("#modalStartDate").val() 형식의 날짜 문자열 파라미터
+     * @param endDate $("#modalEndDate").val() 형식의 날짜 문자열 파라미터
+     */
+    convertStringToLocalDateTimeForFoodBoard(startDate, endDate) {
+        const convertedDateForFoodBoard = {
+            converted: false,
+            errorMessage: "",
+
+            convertedStartDate: false,
+            startYear: "",
+            startMonth: "",
+            startDay: "",
+
+            convertedEndDate: false,
+            endYear: "",
+            endMonth: "",
+            endDay: ""
+        };
+
+        if (startDate != null && startDate !== "") {
+            startDate = startDate.split("/");
+            convertedDateForFoodBoard.startYear = startDate[2];
+            convertedDateForFoodBoard.startMonth = this.formatString(startDate[0]);
+            convertedDateForFoodBoard.startDay = this.formatString(startDate[1]);
+            convertedDateForFoodBoard.convertedStartDate = true;
+        }
+
+        if (endDate != null && endDate !== "") {
+            endDate = endDate.split("/");
+            convertedDateForFoodBoard.endYear = endDate[2];
+            convertedDateForFoodBoard.endMonth = foodBoardFormatter.formatString(endDate[0]);
+            convertedDateForFoodBoard.endDay = foodBoardFormatter.formatString(endDate[1]);
+            convertedDateForFoodBoard.convertedEndDate = true;
+        }
+
+        if (convertedDateForFoodBoard.convertedStartDate === true && convertedDateForFoodBoard.convertedEndDate === true) {
+            //Date 객체에서 월은 0부터 시작
+            const startDateOfBloodSugar = new Date(convertedDateForFoodBoard.startYear, convertedDateForFoodBoard.startMonth - 1, convertedDateForFoodBoard.startDay);
+            const endDateOfBloodSugar = new Date(convertedDateForFoodBoard.endYear, convertedDateForFoodBoard.endMonth - 1, convertedDateForFoodBoard.endDay);
+            if (startDateOfBloodSugar > endDateOfBloodSugar) {
+                convertedDateForFoodBoard.errorMessage = "끝 날짜가 시작 날짜보다 앞서면 안되요!!!";
+                return convertedDateForFoodBoard;
+            }
+        }
+
+        convertedDateForFoodBoard.converted = true;
+        return convertedDateForFoodBoard;
     }
 };
