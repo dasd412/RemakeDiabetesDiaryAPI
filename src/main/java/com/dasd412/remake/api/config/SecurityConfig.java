@@ -80,13 +80,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .ignoringAntMatchers("/h2-console/**")
                 .disable()
                 .formLogin()/* 로그인이 필요하면 */
-                .loginPage("/loginForm")/* loginForm 뷰로 이동. */
+                .loginPage("/login-form")/* loginForm 뷰로 이동. */
                 .loginProcessingUrl("/login")
                 .defaultSuccessUrl("/")/* 로그인 성공하면 이동하는 디폴트 url 설정. */
                 .failureHandler(loginFailHandler())/*로그인 실패 시 처리하는 핸들러 등록. */
                 .and()
                 .oauth2Login()/*Oauth 로그인 역시 "/loginForm" 으로 이동하게 함.*/
-                .loginPage("/loginForm")
+                .loginPage("/login-form")
                 .userInfoEndpoint()
                 .userService(principalOAuth2UserService);/*Oauth 로그인 이후의 후처리 담당하는 객체. OAuth2UserService 구현체여야 한다.*/
 
