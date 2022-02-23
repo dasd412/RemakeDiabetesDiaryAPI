@@ -35,16 +35,27 @@ jobs:
     
     # 전송할 파일을 담을 디렉토리 생성
     - name: Make directory for delivery
-      run: mkdir /home/ec2-user/app/github-actions-deploy
+      run: mkdir -p github-actions-deploy
+      
+    # 현재 디렉토리 확인
+    - name: confirm current directory
+      run: pwd
     
     # jar file 복사하기
     - name: copy jar file
-      run: cp target/*.jar /home/ec2-user/app/github-actions-deploy
+      run: cp target/*.jar github-actions-deploy
     
+      # 현재 디렉토리 확인
+    - name: confirm current directory
+      run: pwd
+      
     # 압축파일 형태 만들기
     - name : make zip file
-      run : zip -r RemakeDiabetesDiaryAPI.zip /home/ec2-user/app/github-actions-deploy
-  
+      run : zip -r RemakeDiabetesDiaryAPI.zip github-actions-deploy
+      
+    # 현재 디렉토리 확인
+    - name: confirm current directory
+      run: pwd
     
     # deploy
     - name: deploy
@@ -56,7 +67,10 @@ jobs:
         
     # upload to s3
     - name : upload to s3
-      run : aws s3 cp --region ap-northeast-2 --acl private /home/ec2-user/app/github-actions-deploy/RemakeDiabetesDiaryAPI.zip s3://RemakeDiabetesDiaryAPI-deploy/
-        
+      run : aws s3 cp --region ap-northeast-2 --acl private github-actions-deploy/RemakeDiabetesDiaryAPI.zip s3://RemakeDiabetesDiaryAPI-deploy/
+    
+    # 현재 디렉토리 확인
+    - name: confirm current directory
+      run: pwd        
       
 
