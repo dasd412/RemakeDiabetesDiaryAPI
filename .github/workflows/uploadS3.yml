@@ -66,5 +66,9 @@ jobs:
     # deploy zip to code-deploy
     - name: CodeDeploy
       run: aws deploy create-deployment --application-name dasd412-diabetes-diary-api --deployment-group-name dasd412-diabetes-diary-api-group --s3-location bucket=dasd412-github-actions-deploy,key=RemakeDiabetesDiaryAPI.zip,bundleType=zip
-      
+   
+    # deploy.sh 복사
+    - name : copy deploy.sh
+      run : cp ./scripts/*.sh github-actions-deploy
+    
 
