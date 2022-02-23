@@ -41,6 +41,10 @@ jobs:
     # jar file 복사하기
     - name: copy jar file
       run: cp target/*.jar github-actions-deploy
+      
+    # appspec.yml 파일 copy
+    - name : copy appspec.yml file
+      run : cp appspec.yml github-actions-deploy
     
       
     # 압축파일 형태 만들기
@@ -59,6 +63,8 @@ jobs:
     - name : upload to s3
       run : aws s3 cp --region ap-northeast-2 --acl private ./RemakeDiabetesDiaryAPI.zip s3://dasd412-github-actions-deploy
     
-
+    # deploy zip to code-deploy
+    - name: CodeDeploy
+      run: aws deploy create-deployment --application-name dasd412-diabetes-diary-api --deployment-group-name dasd412-diabetes-diary-api-group --s3-location bucket=dasd412-github-actions-deploy,key=RemakeDiabetesDiaryAPI.zip,bundleType=zip
       
 
