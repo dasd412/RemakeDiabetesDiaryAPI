@@ -57,7 +57,7 @@ jobs:
         
     # upload to s3
     - name : upload to s3
-      run : aws s3 cp --region ap-northeast-2 --acl private ./RemakeDiabetesDiaryAPI.zip s3://RemakeDiabetesDiaryAPI-deploy/
+      run : aws s3 cp --region ap-northeast-2 --acl private ./RemakeDiabetesDiaryAPI.zip s3://dasd412-github-actions-deploy
     
 
       
