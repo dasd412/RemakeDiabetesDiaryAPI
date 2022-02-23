@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REPOSITORY=/home/ec2-user/app/step2
+REPOSITORY=/home/ec2-user/app/deploy
 ARTIFACT_ID=ReFacDiabetesDiary
 
 echo ">build 파일 복사"
