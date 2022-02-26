@@ -128,3 +128,16 @@ h6 {
     -webkit-transition: all 0.3s ease-in-out;
     transition: all 0.3s ease-in-out
 }
+
+#profile-btn {
+    margin-top: 40px;
+    padding-bottom: 30px;
+}
+
+#changeProfileImage {
+    float: left;
+}
+
+#withdrawalBtn {
+    float: right;
+}
