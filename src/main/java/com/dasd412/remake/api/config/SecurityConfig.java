@@ -1,5 +1,5 @@
 /*
- * @(#)SecurityConfig.java        1.0.8 2022/2/16
+ * @(#)SecurityConfig.java        1.1.1 2022/2/26
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -23,7 +23,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
  * 웹 시큐리티와 관련된 설정용 클래스.
  *
  * @author 양영준
- * @version 1.0.8 2022년 2월 16일
+ * @version 1.1.1 2022년 2월 26일
  */
 
 @Configuration
@@ -68,6 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/update-delete/**").authenticated()
                 .antMatchers("/calendar/**").authenticated()
                 .antMatchers("/chart-menu/**").authenticated()
+                .antMatchers("/profile/**").authenticated()
                 /*기존에 테스트 용도로만 쓰는 url 들 접근 막기. 기존 매핑은 관리자만 허락하게 바꿈. */
                 .antMatchers("/api/diary/owner/**").hasRole(Role.Admin.name())
                 .antMatchers("/api/diary/writer/**").hasRole(Role.Admin.name())
