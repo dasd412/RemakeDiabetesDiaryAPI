@@ -1,5 +1,5 @@
 /*
- * @(#)FoodRepositoryImpl.java        1.0.9 2022/2/19
+ * @(#)FoodRepositoryImpl.java        1.1.1 2022/2/26
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  * Querydsl을 사용하기 위해 만든 구현체 클래스.
  *
  * @author 양영준
- * @version 1.0.9 2022년 2월 19일
+ * @version 1.1.1 2022년 2월 26일
  */
 public class FoodRepositoryImpl implements FoodRepositoryCustom {
     /*
@@ -132,7 +132,7 @@ public class FoodRepositoryImpl implements FoodRepositoryCustom {
         /*
         List의 경우 추가 count 없이 결과만 반환한다.
         */
-        List<Tuple> foodList = jpaQueryFactory.select(QFood.food.foodName, QDiet.diet.bloodSugar, QDiabetesDiary.diabetesDiary.writtenTime)
+        List<Tuple> foodList = jpaQueryFactory.select(QFood.food.foodName, QDiet.diet.bloodSugar, QDiabetesDiary.diabetesDiary.writtenTime, QDiabetesDiary.diabetesDiary.diaryId)
                 .from(QFood.food)
                 .innerJoin(QFood.food.diet, QDiet.diet)
                 .innerJoin(QFood.food.diet.diary, QDiabetesDiary.diabetesDiary)
@@ -145,7 +145,7 @@ public class FoodRepositoryImpl implements FoodRepositoryCustom {
 
         List<FoodBoardDTO> dtoList = foodList
                 .stream()
-                .map(tuple -> new FoodBoardDTO(tuple.get(QFood.food.foodName), tuple.get(QDiet.diet.bloodSugar), tuple.get(QDiabetesDiary.diabetesDiary.writtenTime)))
+                .map(tuple -> new FoodBoardDTO(tuple.get(QFood.food.foodName), tuple.get(QDiet.diet.bloodSugar), tuple.get(QDiabetesDiary.diabetesDiary.writtenTime), tuple.get(QDiabetesDiary.diabetesDiary.diaryId)))
                 .collect(Collectors.toList());
 
         /*

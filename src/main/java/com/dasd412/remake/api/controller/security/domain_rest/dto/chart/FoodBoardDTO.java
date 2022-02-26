@@ -12,11 +12,13 @@ public class FoodBoardDTO {
     private final String foodName;
     private final int bloodSugar;
     private final LocalDateTime writtenTime;
+    private final Long diaryId;
 
-    public FoodBoardDTO(String foodName, int bloodSugar, LocalDateTime writtenTime) {
+    public FoodBoardDTO(String foodName, int bloodSugar, LocalDateTime writtenTime, Long diaryId) {
         this.foodName = foodName;
         this.bloodSugar = bloodSugar;
         this.writtenTime = writtenTime;
+        this.diaryId = diaryId;
     }
 
     public String toString() {
@@ -24,6 +26,7 @@ public class FoodBoardDTO {
                 .append("foodName", foodName)
                 .append("bloodSugar", bloodSugar)
                 .append("writtenTime", writtenTime)
+                .append("diaryId", diaryId)
                 .toString();
     }
 }

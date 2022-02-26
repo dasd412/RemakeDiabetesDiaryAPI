@@ -14,10 +14,9 @@
                 <tr>
                     <th>음식 이름</th>
                     <th>혈당</th>
-                    <th>작성 시간</th>
+                    <th>작성 시간(혈당 일지 링크)</th>
                 </tr>
                 </thead>
-
 
                 <tbody>
                 {{#dtoPage.foodPage.content}}
@@ -30,9 +29,8 @@
                             {{bloodSugar}}
                         </td>
                         <td>
-                            {{writtenTime}}
+                            <a href="/update-delete/{{diaryId}}">{{writtenTime}}</a>
                         </td>
-
                     </tr>
                 {{/dtoPage.foodPage.content}}
                 </tbody>
