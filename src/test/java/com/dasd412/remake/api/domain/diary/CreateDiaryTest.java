@@ -1,5 +1,5 @@
 /*
- * @(#)CreateDiaryTest.java        1.0.9 2022/2/17
+ * @(#)CreateDiaryTest.java        1.1.1 2022/2/27
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -8,6 +8,9 @@
 
 package com.dasd412.remake.api.domain.diary;
 
+import com.dasd412.remake.api.domain.diary.profile.DiabetesPhase;
+import com.dasd412.remake.api.domain.diary.profile.Profile;
+import com.dasd412.remake.api.domain.diary.profile.ProfileRepository;
 import com.dasd412.remake.api.service.domain.SaveDiaryService;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 import com.dasd412.remake.api.domain.diary.diet.Diet;
@@ -42,7 +45,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Security 적용 없이 리포지토리를 접근하여 저장 테스트.
  *
  * @author 양영준
- * @version 1.0.9 2022년 2월 17일
+ * @version 1.1.1 2022년 2월 27일
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest()
@@ -54,6 +57,9 @@ public class CreateDiaryTest {
 
     @Autowired
     WriterRepository writerRepository;
+
+    @Autowired
+    ProfileRepository profileRepository;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -392,6 +398,29 @@ public class CreateDiaryTest {
     }
 
     /*
+     * 프로필 테스트
+     */
+    @Transactional
+    @Test
+    public void makeProfile(){
+        //given
+        Profile profile=new Profile(DiabetesPhase.NORMAL);
+        profileRepository.save(profile);
+
+        //when
+        me.setProfile(profile);
+        writerRepository.save(me);
+
+        //then
+        List<Writer>writers=writerRepository.findAll();
+        assertThat(writers.get(0).getName()).isEqualTo(me.getName());
+        assertThat(writers.get(0).getEmail()).isEqualTo(me.getEmail());
+        assertThat(writers.get(0).getProfile().getDiabetesPhase()).isEqualTo(me.getProfile().getDiabetesPhase());
+
+    }
+
+
+    /*
     예외 캐치 테스트
      */
     @Transactional
@@ -430,4 +459,5 @@ public class CreateDiaryTest {
         Diet diet = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EatTime.Lunch, 150);
         saveDiaryService.saveFoodOfWriterById(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary.getId()), EntityId.of(Diet.class, diet.getDietId()), "");
     }
+
 }
