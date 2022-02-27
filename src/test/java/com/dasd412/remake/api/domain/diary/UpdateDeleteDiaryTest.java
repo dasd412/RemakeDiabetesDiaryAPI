@@ -1,5 +1,5 @@
 /*
- * @(#)UpdateDeleteDiaryTest.java        1.0.9 2022/2/17
+ * @(#)UpdateDeleteDiaryTest.java        1.1.1 2022/2/27
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -8,6 +8,9 @@
 
 package com.dasd412.remake.api.domain.diary;
 
+import com.dasd412.remake.api.domain.diary.profile.DiabetesPhase;
+import com.dasd412.remake.api.domain.diary.profile.Profile;
+import com.dasd412.remake.api.domain.diary.profile.ProfileRepository;
 import com.dasd412.remake.api.service.domain.SaveDiaryService;
 import com.dasd412.remake.api.service.domain.UpdateDeleteDiaryService;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
@@ -46,7 +49,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Security 적용 없이 리포지토리를 접근하여 수정 및 삭제 테스트.
  *
  * @author 양영준
- * @version 1.0.9 2022년 2월 17일
+ * @version 1.1.1 2022년 2월 27일
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest()
@@ -71,6 +74,9 @@ public class UpdateDeleteDiaryTest {
     @Autowired
     FoodRepository foodRepository;
 
+    @Autowired
+    ProfileRepository profileRepository;
+
     //예외 캐치용 객체
     @Rule
     public final ExpectedException thrown = ExpectedException.none();
@@ -81,6 +87,7 @@ public class UpdateDeleteDiaryTest {
      * 이 테스트에서 공통적으로 쓰이는 데이터들
      */
     Writer me;
+    Profile profile;
 
     DiabetesDiary diary1;
     DiabetesDiary diary2;
@@ -110,6 +117,11 @@ public class UpdateDeleteDiaryTest {
     public void setUp() {
         //given
         me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
+        profile=new Profile(DiabetesPhase.NORMAL);
+        profileRepository.save(profile);
+        me.setProfile(profile);
+        writerRepository.save(me);
+
         diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 100, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
         diary2 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 120, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));
         diary3 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 140, "test1", LocalDateTime.of(2021, 12, 25, 0, 0, 0));
@@ -317,6 +329,22 @@ public class UpdateDeleteDiaryTest {
 
     @Transactional
     @Test
+    public void deleteWriterCascadeProfile(){
+        //given
+        writerRepository.bulkDeleteWriter(me.getId());
+
+        //when
+        List<Writer> writers = writerRepository.findAll();
+        List<Profile>profiles=profileRepository.findAll();
+
+        //then
+        assertThat(writers.size()).isEqualTo(0);
+        assertThat(profiles.size()).isEqualTo(0);
+
+    }
+
+    @Transactional
+    @Test
     public void deleteDiaryCascadeDiet() {
         //given
         updateDeleteDiaryService.deleteDiary(EntityId.of(Writer.class, me.getId()), EntityId.of(DiabetesDiary.class, diary1.getId()));
@@ -354,6 +382,18 @@ public class UpdateDeleteDiaryTest {
 
         logger.info(food.toString());
         assertThat(food.getFoodName()).isEqualTo("chicken");
+    }
+
+    @Transactional
+    @Test
+    public void updateProfile(){
+        //given
+
+        //when
+
+
+        //then
+
     }
 
     @Transactional

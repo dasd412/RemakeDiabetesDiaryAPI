@@ -134,7 +134,9 @@ h6 {
     padding-bottom: 30px;
 }
 
-
+#updateProfileBtn{
+    float:left;
+}
 #withdrawalBtn {
     float: right;
 }
