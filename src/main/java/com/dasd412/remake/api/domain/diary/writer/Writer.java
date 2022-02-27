@@ -1,5 +1,5 @@
 /*
- * @(#)Writer.java        1.0.1 2022/1/22
+ * @(#)Writer.java        1.1.1 2022/2/27
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -14,6 +14,7 @@ import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 import javax.persistence.*;
 import java.util.*;
 
+import com.dasd412.remake.api.domain.diary.profile.Profile;
 import lombok.Builder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -24,7 +25,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * 작성자 엔티티. 로그인 정보와 관련이 있다.
  *
  * @author 양영준
- * @version 1.0.1 2022년 1월 22일
+ * @version 1.1.1 2022년 2월 27일
  */
 @Entity
 @Table(name = "Writer", uniqueConstraints = @UniqueConstraint(columnNames = {"writer_id", "name"}))
@@ -76,6 +77,14 @@ public class Writer {
      */
     @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private final Set<DiabetesDiary> diaries = new HashSet<>();
+
+    /**
+     * Writer -> Profile 로의 단방향 참조 관계
+     * 그리고 Writer에 외래키가 존재하므로 @JoinColumn 부착.
+     */
+    @OneToOne
+    @JoinColumn(name = "profile_id")
+    private Profile profile;
 
     public Writer() {
     }
@@ -175,6 +184,14 @@ public class Writer {
         return providerId;
     }
 
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
+
+    public Profile getProfile() {
+        return profile;
+    }
+
     public void addDiary(DiabetesDiary diary) {
         this.diaries.add(diary);
         /* 무한 루프 방지 */
@@ -200,6 +217,7 @@ public class Writer {
                 .append("name", name)
                 .append("email", email)
                 .append("role", role)
+                .append("provider", provider)
                 .toString();
     }
 
