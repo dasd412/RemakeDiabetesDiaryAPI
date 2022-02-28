@@ -1,5 +1,5 @@
 /*
- * @(#)WriterRepositoryImpl.java        1.0.9 2022/2/17
+ * @(#)WriterRepositoryImpl.java        1.1.1 2022/2/28
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -9,6 +9,7 @@
 package com.dasd412.remake.api.domain.diary.writer;
 
 import com.dasd412.remake.api.domain.diary.BulkDeleteHelper;
+import com.dasd412.remake.api.domain.diary.profile.Profile;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import java.util.Optional;
@@ -17,7 +18,7 @@ import java.util.Optional;
  * Querydsl을 사용하기 위해 만든 구현체 클래스.
  *
  * @author 양영준
- * @version 1.0.9 2022년 2월 17일
+ * @version 1.1.1 2022년 2월 28일
  */
 public class WriterRepositoryImpl implements WriterRepositoryCustom {
 
@@ -102,4 +103,20 @@ public class WriterRepositoryImpl implements WriterRepositoryCustom {
         return fetchFirst != null;
     }
 
+    /**
+     * 이 메서드의 sql을 분석해보면, 알아서 inner join 해준다.
+     * select profile1_.profile_id as profile_1_3_, profile1_.diabetes_phase as diabetes2_3_ from writer writer0_ inner join profile profile1_ on writer0_.profile_id=profile1_.profile_id where writer0_.writer_id=?
+     *
+     * @param writerId 작성자 id
+     * @return 작성자와의 1대1 관계인 프로필 정보
+     */
+    @Override
+    public Optional<Profile> findProfile(Long writerId) {
+        return Optional.ofNullable(
+                jpaQueryFactory.select(QWriter.writer.profile)
+                        .from(QWriter.writer)
+                        .where(QWriter.writer.writerId.eq(writerId))
+                        .fetchOne()
+        );
+    }
 }

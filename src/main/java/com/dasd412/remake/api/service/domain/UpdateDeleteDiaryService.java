@@ -1,5 +1,5 @@
 /*
- * @(#)UpdateDeleteDiaryService.java        1.0.1 2022/1/22
+ * @(#)UpdateDeleteDiaryService.java        1.1.1 2022/2/28
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -8,6 +8,7 @@
 
 package com.dasd412.remake.api.service.domain;
 
+import com.dasd412.remake.api.controller.security.domain_rest.dto.profile.ProfileDTO;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiaryRepository;
@@ -16,6 +17,9 @@ import com.dasd412.remake.api.domain.diary.diet.DietRepository;
 import com.dasd412.remake.api.domain.diary.diet.EatTime;
 import com.dasd412.remake.api.domain.diary.food.Food;
 import com.dasd412.remake.api.domain.diary.food.FoodRepository;
+import com.dasd412.remake.api.domain.diary.profile.DiabetesPhase;
+import com.dasd412.remake.api.domain.diary.profile.Profile;
+import com.dasd412.remake.api.domain.diary.profile.ProfileRepository;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
 import org.slf4j.Logger;
@@ -35,7 +39,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * 수정 및 삭제 비즈니스 로직을 수행하는 서비스 클래스
  *
  * @author 양영준
- * @version 1.0.1 2022년 1월 22일
+ * @version 1.1.1 2022년 2월 28일
  */
 @Service
 public class UpdateDeleteDiaryService {
@@ -179,6 +183,24 @@ public class UpdateDeleteDiaryService {
         targetFood.update(foodName);
 
         return targetFood;
+    }
+
+    /**
+     * 프로필 수정 메서드 
+     * @param writerEntityId 래퍼로 감싸진 작성자 id
+     * @param phase 당뇨 단계
+     * @return 수정된 프로필
+     */
+    @Transactional
+    public Profile updateProfile(EntityId<Writer, Long> writerEntityId, DiabetesPhase phase){
+        logger.info("update profile");
+        checkNotNull(writerEntityId, "writerId must be provided");
+
+        Profile targetProfile=writerRepository.findProfile(writerEntityId.getId()).orElseThrow(()->new NoResultException("프로필이 존재하지 않습니다."));
+
+        targetProfile.modifyDiabetesPhase(phase);
+
+        return targetProfile;
     }
 
     /**

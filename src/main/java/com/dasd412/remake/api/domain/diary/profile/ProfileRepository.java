@@ -18,6 +18,6 @@ import org.springframework.stereotype.Repository;
  * @version 1.1.1 2022년 2월 27일
  */
 @Repository
-public interface ProfileRepository extends JpaRepository<Profile,Long>,ProfileRepositoryCustom {
+public interface ProfileRepository extends JpaRepository<Profile,Long> {
     
 }

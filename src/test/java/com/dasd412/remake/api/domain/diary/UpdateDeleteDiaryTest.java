@@ -1,5 +1,5 @@
 /*
- * @(#)UpdateDeleteDiaryTest.java        1.1.1 2022/2/27
+ * @(#)UpdateDeleteDiaryTest.java        1.1.1 2022/2/28
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -49,7 +49,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Security 적용 없이 리포지토리를 접근하여 수정 및 삭제 테스트.
  *
  * @author 양영준
- * @version 1.1.1 2022년 2월 27일
+ * @version 1.1.1 2022년 2월 28일
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest()
@@ -117,7 +117,7 @@ public class UpdateDeleteDiaryTest {
     public void setUp() {
         //given
         me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        profile=new Profile(DiabetesPhase.NORMAL);
+        profile = new Profile(DiabetesPhase.NORMAL);
         profileRepository.save(profile);
         me.setProfile(profile);
         writerRepository.save(me);
@@ -329,13 +329,13 @@ public class UpdateDeleteDiaryTest {
 
     @Transactional
     @Test
-    public void deleteWriterCascadeProfile(){
+    public void deleteWriterCascadeProfile() {
         //given
         writerRepository.bulkDeleteWriter(me.getId());
 
         //when
         List<Writer> writers = writerRepository.findAll();
-        List<Profile>profiles=profileRepository.findAll();
+        List<Profile> profiles = profileRepository.findAll();
 
         //then
         assertThat(writers.size()).isEqualTo(0);
@@ -386,14 +386,19 @@ public class UpdateDeleteDiaryTest {
 
     @Transactional
     @Test
-    public void updateProfile(){
+    public void updateProfile() {
         //given
+        updateDeleteDiaryService.updateProfile(EntityId.of(Writer.class, me.getId()), DiabetesPhase.PRE_DIABETES);
 
         //when
-
+        Writer found = writerRepository.findById(me.getId()).orElseThrow(NoResultException::new);
+        Profile targetProfile = writerRepository.findProfile(me.getId()).orElseThrow(NoResultException::new);
 
         //then
-
+        logger.info(found.toString());
+        assertThat(found.getProfile().getDiabetesPhase()).isEqualTo(DiabetesPhase.PRE_DIABETES);
+        logger.info(targetProfile.toString());
+        assertThat(targetProfile.getDiabetesPhase()).isEqualTo(DiabetesPhase.PRE_DIABETES);
     }
 
     @Transactional

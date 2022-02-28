@@ -1,5 +1,5 @@
 /*
- * @(#)Profile.java        1.1.1 2022/2/27
+ * @(#)Profile.java        1.1.1 2022/2/28
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -8,6 +8,7 @@
 
 package com.dasd412.remake.api.domain.diary.profile;
 
+import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -18,9 +19,10 @@ import java.util.Objects;
  * 프로필 엔티티. 작성자의 정보(당뇨 단계)등을 기입하는데 쓰인다.
  *
  * @author 양영준
- * @version 1.1.1 2022년 2월 27일
+ * @version 1.1.1 2022년 2월 28일
  */
 @Entity
+@Getter
 public class Profile {
 
     /**
@@ -43,10 +45,6 @@ public class Profile {
 
     public Profile(DiabetesPhase diabetesPhase) {
         this.diabetesPhase = diabetesPhase;
-    }
-
-    public DiabetesPhase getDiabetesPhase() {
-        return diabetesPhase;
     }
 
     public void modifyDiabetesPhase(DiabetesPhase diabetesPhase) {
@@ -77,5 +75,4 @@ public class Profile {
         Profile target = (Profile) obj;
         return Objects.equals(this.profileId, target.profileId);
     }
-
 }
