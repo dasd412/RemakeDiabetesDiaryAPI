@@ -8,7 +8,6 @@
 
 package com.dasd412.remake.api.service.domain;
 
-import com.dasd412.remake.api.controller.security.domain_rest.dto.profile.ProfileDTO;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiaryRepository;
@@ -19,7 +18,6 @@ import com.dasd412.remake.api.domain.diary.food.Food;
 import com.dasd412.remake.api.domain.diary.food.FoodRepository;
 import com.dasd412.remake.api.domain.diary.profile.DiabetesPhase;
 import com.dasd412.remake.api.domain.diary.profile.Profile;
-import com.dasd412.remake.api.domain.diary.profile.ProfileRepository;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
 import org.slf4j.Logger;
