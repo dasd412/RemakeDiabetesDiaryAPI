@@ -190,7 +190,7 @@ public class ProfileControllerTest {
 
         //when and then
         mockMvc.perform(delete(url).with(user(principalDetails)))
-                .andExpect(status().is3xxRedirection())
+                .andExpect(status().isOk())
                 .andDo(print());
     }
 }

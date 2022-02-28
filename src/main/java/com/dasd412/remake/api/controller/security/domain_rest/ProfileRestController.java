@@ -11,6 +11,7 @@ import com.dasd412.remake.api.config.security.auth.PrincipalDetails;
 import com.dasd412.remake.api.controller.ApiResult;
 import com.dasd412.remake.api.controller.security.domain_rest.dto.profile.ProfileUpdateRequestDTO;
 import com.dasd412.remake.api.controller.security.domain_rest.dto.profile.ProfileUpdateResponseDTO;
+import com.dasd412.remake.api.controller.security.domain_rest.dto.profile.WithdrawalResponseDTO;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.profile.Profile;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
@@ -64,16 +65,16 @@ public class ProfileRestController {
      * 사용자 회원 탈퇴
      *
      * @param principalDetails 작성자 인증 정보
-     * @return 대문으로 리다이렉트
+     * @return 탈퇴 응답 dto
      */
     @DeleteMapping("/profile/withdrawal")
-    public RedirectView withDrawWriter(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ApiResult<WithdrawalResponseDTO> withDrawWriter(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         logger.info("withdraw writer ...!");
         writerService.withdrawWriter(EntityId.of(Writer.class, principalDetails.getWriter().getId()));
 
         /* SecurityContextHolder 내의 컨텍스트들을 초기화해줘야 로그아웃 처리된다. */
         SecurityContextHolder.clearContext();
 
-        return new RedirectView("/");
+        return ApiResult.OK(new WithdrawalResponseDTO(principalDetails.getWriter().getId()));
     }
 }

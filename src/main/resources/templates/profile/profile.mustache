@@ -28,7 +28,7 @@
                                     <div class="row">
                                         <div class="col-sm-10">
                                             <p class="m-b-10 f-w-600">당뇨 단계</p>
-                                            {{profile.diabetesPhase}}
+                                            <h6 class="text-muted f-w-400">{{profile.diabetesPhase}}</h6>
                                         </div>
                                     </div>
                                     <div class="form-group" id="profile-btn">
@@ -56,13 +56,12 @@
                 <div class="modal-header">
                     <h4 class="modal-title">당뇨 단계 수정하기</h4>
                 </div>
-
                 <div class="modal-body">
                     <div class="form-group" id="phaseSelect">
                         <select id="phaseSelector" class="form-control" aria-label="Diabetes phase">
-                            <option value="normal">정상(공복혈당 100미만)</option>
-                            <option value="pre">전 단계(공복혈당 100이상 125이하)</option>
-                            <option value="diabetes">당뇨병 (공복혈당 126이상)</option>
+                            <option value="NORMAL">정상(공복혈당 100미만)</option>
+                            <option value="PRE_DIABETES">전 단계(공복혈당 100이상 125이하)</option>
+                            <option value="DIABETES">당뇨병 (공복혈당 126이상)</option>
                         </select>
                     </div>
                 </div> <!-- 모달 본문 -->
@@ -74,6 +73,27 @@
             </div>
         </div>
     </div>
+
+    <div id="withdrawalModal">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">회원 탈퇴 여부</h4>
+                </div>
+                <div class="modal-body">
+                    <p>정말로 회원 탈퇴하시겠습니까?</p>
+                </div> <!-- 모달 본문 -->
+
+                <div class="modal-footer">
+                    <button id='withdrawalModalDecideBtn' class="btn btn-danger">결정</button>
+                    <button id='withdrawalModalCloseBtn' class="btn btn-primary" data-dismiss="modal">취소</button>
+                </div> <!-- 모달 버튼 -->
+            </div>
+        </div>
+    </div>
+
 
 
     <script src="/js/profile/profile.js"></script>

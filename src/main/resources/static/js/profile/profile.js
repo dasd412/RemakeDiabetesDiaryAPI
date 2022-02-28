@@ -22,14 +22,9 @@ const ProfileManipulator = {
             _this.changeVisibilityOfModal();
         });
 
-        $("#withdrawalBtn").on('click', function () {
-
-        });
-
         $("#profileModalDecideBtn").on('click', function () {
-
+            _this.updateProfile();
         });
-
         $("#profileModalCloseBtn").on('click', function () {
             _this.changeVisibilityOfModal();
         });
@@ -42,9 +37,65 @@ const ProfileManipulator = {
             $("#profileModal").attr("style", "display:none;");
             this.isModalOn = false;
         }
+    },
+    updateProfile: function () {
+
+        const data = {
+            diabetesPhase: $("#phaseSelector option:selected").val()
+        };
+
+        $.ajax({
+            type: 'PUT',
+            url: '/profile/info',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(data)
+        }).done(function () {
+            location.reload();
+        });
+    }
+
+};
+
+const WithDrawlManipulator = {
+
+    isModalOn: false,
+
+    init: function () {
+        const _this = this;
+
+        $("#withdrawalBtn").on('click', function () {
+            _this.changeVisibilityOfModal();
+        });
+        $("#withdrawalModalDecideBtn").on('click', function () {
+            _this.withdraw();
+        });
+        $("#withdrawalModalCloseBtn").on('click', function () {
+            _this.changeVisibilityOfModal();
+        });
+    },
+    changeVisibilityOfModal: function () {
+        if (this.isModalOn === false) {
+            $("#withdrawalModal").attr("style", "display:block;");
+            this.isModalOn = true;
+        } else {
+            $("#withdrawalModal").attr("style", "display:none;");
+            this.isModalOn = false;
+        }
+    },
+    withdraw: function () {
+        $.ajax({
+            type: 'DELETE',
+            url: "/profile/withdrawal",
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8'
+        }).done(function (){
+            window.location.href = "/";
+        });
     }
 };
 
 $(document).ready(function () {
     ProfileManipulator.init();
+    WithDrawlManipulator.init();
 });
