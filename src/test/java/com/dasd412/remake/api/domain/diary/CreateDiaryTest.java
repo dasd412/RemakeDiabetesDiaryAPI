@@ -402,20 +402,21 @@ public class CreateDiaryTest {
      */
     @Transactional
     @Test
-    public void makeProfile(){
+    public void makeProfile() {
         //given
-        Profile profile=new Profile(DiabetesPhase.NORMAL);
-        profileRepository.save(profile);
+        Profile profile = saveDiaryService.makeProfile(EntityId.of(Writer.class, me.getId()), DiabetesPhase.PRE_DIABETES);
 
         //when
-        me.setProfile(profile);
-        writerRepository.save(me);
+        List<Writer> writers = writerRepository.findAll();
+        List<Profile> profiles = profileRepository.findAll();
 
         //then
-        List<Writer>writers=writerRepository.findAll();
         assertThat(writers.get(0).getName()).isEqualTo(me.getName());
         assertThat(writers.get(0).getEmail()).isEqualTo(me.getEmail());
-        assertThat(writers.get(0).getProfile().getDiabetesPhase()).isEqualTo(me.getProfile().getDiabetesPhase());
+        assertThat(writers.get(0).getProfile().getDiabetesPhase()).isEqualTo(profile.getDiabetesPhase());
+
+        assertThat(profiles.get(0).getProfileId()).isEqualTo(profile.getProfileId());
+        assertThat(profiles.get(0).getDiabetesPhase()).isEqualTo(profile.getDiabetesPhase());
 
     }
 

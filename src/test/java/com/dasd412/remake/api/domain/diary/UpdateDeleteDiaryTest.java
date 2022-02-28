@@ -117,10 +117,7 @@ public class UpdateDeleteDiaryTest {
     public void setUp() {
         //given
         me = saveDiaryService.saveWriter("me", "ME@NAVER.COM", Role.User);
-        profile = new Profile(DiabetesPhase.NORMAL);
-        profileRepository.save(profile);
-        me.setProfile(profile);
-        writerRepository.save(me);
+        profile=saveDiaryService.makeProfile(EntityId.of(Writer.class, me.getId()),DiabetesPhase.NORMAL);
 
         diary1 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 100, "test1", LocalDateTime.of(2021, 12, 1, 0, 0, 0));
         diary2 = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, me.getId()), 120, "test1", LocalDateTime.of(2021, 12, 10, 0, 0, 0));

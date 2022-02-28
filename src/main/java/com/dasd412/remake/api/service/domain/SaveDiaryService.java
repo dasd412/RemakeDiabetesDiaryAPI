@@ -1,5 +1,5 @@
 /*
- * @(#)SaveDiaryService.java        1.0.5 2022/2/5
+ * @(#)SaveDiaryService.java        1.1.1 2022/2/28
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -17,6 +17,9 @@ import com.dasd412.remake.api.domain.diary.diet.EatTime;
 import com.dasd412.remake.api.domain.diary.food.AmountUnit;
 import com.dasd412.remake.api.domain.diary.food.Food;
 import com.dasd412.remake.api.domain.diary.food.FoodRepository;
+import com.dasd412.remake.api.domain.diary.profile.DiabetesPhase;
+import com.dasd412.remake.api.domain.diary.profile.Profile;
+import com.dasd412.remake.api.domain.diary.profile.ProfileRepository;
 import com.dasd412.remake.api.domain.diary.writer.Role;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
@@ -28,11 +31,13 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.NoResultException;
 import java.time.LocalDateTime;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * 저장 로직을 수행하는 서비스 클래스
  *
  * @author 양영준
- * @version 1.0.5 2022년 2월 5일
+ * @version 1.1.1 2022년 2월 28일
  */
 @Service
 public class SaveDiaryService {
@@ -42,12 +47,14 @@ public class SaveDiaryService {
     private final DiaryRepository diaryRepository;
     private final DietRepository dietRepository;
     private final FoodRepository foodRepository;
+    private final ProfileRepository profileRepository;
 
-    public SaveDiaryService(WriterRepository writerRepository, DiaryRepository diaryRepository, DietRepository dietRepository, FoodRepository foodRepository) {
+    public SaveDiaryService(WriterRepository writerRepository, DiaryRepository diaryRepository, DietRepository dietRepository, FoodRepository foodRepository, ProfileRepository profileRepository) {
         this.writerRepository = writerRepository;
         this.diaryRepository = diaryRepository;
         this.dietRepository = dietRepository;
         this.foodRepository = foodRepository;
+        this.profileRepository = profileRepository;
     }
 
     /*
@@ -119,6 +126,8 @@ public class SaveDiaryService {
     @Transactional
     public DiabetesDiary saveDiaryOfWriterById(EntityId<Writer, Long> writerEntityId, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
         logger.info("saveDiaryOfWriterById");
+        checkNotNull(writerEntityId, "writerId must be provided");
+
         Writer writer = writerRepository.findById(writerEntityId.getId()).orElseThrow(() -> new NoResultException("작성자가 없습니다."));
         DiabetesDiary diary = new DiabetesDiary(getNextIdOfDiary(), writer, fastingPlasmaGlucose, remark, writtenTime);
         writer.addDiary(diary);
@@ -129,6 +138,9 @@ public class SaveDiaryService {
     @Transactional
     public Diet saveDietOfWriterById(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diaryEntityId, EatTime eatTime, int bloodSugar) {
         logger.info("saveDietOfWriterById");
+        checkNotNull(writerEntityId, "writerId must be provided");
+        checkNotNull(diaryEntityId, "diaryEntityId must be provided");
+
         Writer writer = writerRepository.findById(writerEntityId.getId()).orElseThrow(() -> new NoResultException("작성자가 없습니다."));
         DiabetesDiary diary = diaryRepository.findOneDiabetesDiaryByIdInWriter(writerEntityId.getId(), diaryEntityId.getId()).orElseThrow(() -> new NoResultException("일지가 없습니다."));
         Diet diet = new Diet(getNextIdOfDiet(), diary, eatTime, bloodSugar);
@@ -140,6 +152,10 @@ public class SaveDiaryService {
     @Transactional
     public Food saveFoodOfWriterById(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diaryEntityId, EntityId<Diet, Long> dietEntityId, String foodName) {
         logger.info("saveFoodOfWriterById");
+        checkNotNull(writerEntityId, "writerId must be provided");
+        checkNotNull(diaryEntityId, "diaryEntityId must be provided");
+        checkNotNull(dietEntityId, "dietEntityId must be provided");
+
         Writer writer = writerRepository.findById(writerEntityId.getId()).orElseThrow(() -> new NoResultException("작성자가 없습니다."));
         Diet diet = dietRepository.findOneDietByIdInDiary(writerEntityId.getId(), diaryEntityId.getId(), dietEntityId.getId()).orElseThrow(() -> new NoResultException("식단이 없습니다."));
         Food food = new Food(getNextIdOfFood(), diet, foodName);
@@ -150,11 +166,31 @@ public class SaveDiaryService {
 
     @Transactional
     public void saveFoodAndAmountOfWriterById(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diaryEntityId, EntityId<Diet, Long> dietEntityId, String foodName, double amount, AmountUnit amountUnit) {
-        logger.info("saveFoodOfWriterById");
+        logger.info("saveFoodAndAmountOfWriterById");
+        checkNotNull(writerEntityId, "writerId must be provided");
+        checkNotNull(diaryEntityId, "diaryId must be provided");
+        checkNotNull(dietEntityId, "dietId must be provided");
+
         Writer writer = writerRepository.findById(writerEntityId.getId()).orElseThrow(() -> new NoResultException("작성자가 없습니다."));
         Diet diet = dietRepository.findOneDietByIdInDiary(writerEntityId.getId(), diaryEntityId.getId(), dietEntityId.getId()).orElseThrow(() -> new NoResultException("식단이 없습니다."));
         Food food = new Food(getNextIdOfFood(), diet, foodName, amount, amountUnit);
         diet.addFood(food);
         writerRepository.save(writer);
+    }
+
+    @Transactional
+    public Profile makeProfile(EntityId<Writer, Long> writerEntityId, DiabetesPhase phase) {
+        logger.info("make profile");
+        checkNotNull(writerEntityId, "writerId must be provided");
+
+        Writer writer = writerRepository.findById(writerEntityId.getId()).orElseThrow(() -> new NoResultException("작성자가 없습니다."));
+
+        Profile profile = new Profile(phase);
+        profileRepository.save(profile);
+
+        writer.setProfile(profile);
+        writerRepository.save(writer);
+
+        return profile;
     }
 }
