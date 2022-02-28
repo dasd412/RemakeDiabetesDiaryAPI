@@ -6,11 +6,13 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Getter
-public class ProfileUpdateDTO {
+public class ProfileUpdateRequestDTO {
 
-    private final DiabetesPhase diabetesPhase;
+    private DiabetesPhase diabetesPhase;
 
-    public ProfileUpdateDTO(DiabetesPhase diabetesPhase) {
+    public ProfileUpdateRequestDTO(){}
+
+    public ProfileUpdateRequestDTO(DiabetesPhase diabetesPhase) {
         this.diabetesPhase = diabetesPhase;
     }
 

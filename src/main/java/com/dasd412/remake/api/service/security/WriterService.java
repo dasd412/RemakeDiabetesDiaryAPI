@@ -1,5 +1,5 @@
 /*
- * @(#)WriterService.java        1.0.1 2022/1/22
+ * @(#)WriterService.java        1.1.1 2022/2/28
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -21,11 +21,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * 사용자 회원 가입 로직을 수행하는 서비스 클래스
  *
  * @author 양영준
- * @version 1.0.1 2022년 1월 22일
+ * @version 1.1.1 2022년 2월 28일
  */
 @Service
 public class WriterService {
@@ -101,5 +103,17 @@ public class WriterService {
         writerRepository.save(writer);
 
         return writer;
+    }
+
+    /**
+     * 작성자 회원 탈퇴
+     *
+     * @param writerId 래퍼로 감싸진 작성자 id
+     */
+    @Transactional
+    public void withdrawWriter(EntityId<Writer, Long> writerId) {
+        logger.info("withdraw writer !!");
+        checkNotNull(writerId, "writerId must be provided");
+        writerRepository.bulkDeleteWriter(writerId.getId());
     }
 }

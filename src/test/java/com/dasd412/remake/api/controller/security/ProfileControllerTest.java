@@ -12,6 +12,7 @@ import com.dasd412.remake.api.config.security.auth.PrincipalDetails;
 import com.dasd412.remake.api.controller.security.domain_rest.TestUserDetailsService;
 import com.dasd412.remake.api.controller.security.domain_rest.dto.diary.SecurityDiaryPostRequestDTO;
 import com.dasd412.remake.api.controller.security.domain_rest.dto.diary.SecurityFoodDTO;
+import com.dasd412.remake.api.controller.security.domain_rest.dto.profile.ProfileUpdateRequestDTO;
 import com.dasd412.remake.api.controller.security.domain_view.dto.ProfileResponseDTO;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.profile.DiabetesPhase;
@@ -30,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -46,6 +48,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -159,6 +162,21 @@ public class ProfileControllerTest {
 
     @Test
     public void updateProfile() throws Exception {
+        //given
+        mockMvc.perform(get("/profile/view").with(user(principalDetails)).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
+
+        String url = "/profile/info";
+        ProfileUpdateRequestDTO dto = new ProfileUpdateRequestDTO(DiabetesPhase.DIABETES);
+
+        //when and then
+        mockMvc.perform(put(url).with(user(principalDetails))
+                        .content(new ObjectMapper().writeValueAsString(dto))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.success").value("true"))
+                .andExpect(jsonPath("$.response.diabetesPhase").value(DiabetesPhase.DIABETES.name()));
 
     }
 
@@ -167,6 +185,12 @@ public class ProfileControllerTest {
      */
     @Test
     public void withDraw() throws Exception {
+        //given
+        String url = "/profile/withdrawal";
 
+        //when and then
+        mockMvc.perform(delete(url).with(user(principalDetails)))
+                .andExpect(status().is3xxRedirection())
+                .andDo(print());
     }
 }
