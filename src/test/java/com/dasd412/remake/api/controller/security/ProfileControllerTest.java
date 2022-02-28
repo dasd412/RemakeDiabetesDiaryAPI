@@ -126,7 +126,7 @@ public class ProfileControllerTest {
     @Test
     public void makeProfile() throws Exception {
         //given
-        String url = "/profile";
+        String url = "/profile/view";
 
         //when and then
         mockMvc.perform(get(url).with(user(principalDetails)).contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -144,7 +144,7 @@ public class ProfileControllerTest {
     @Test
     public void findProfile() throws Exception {
         //given
-        String url = "/profile";
+        String url = "/profile/view";
         //처음에 프로필이 없을 경우엔 make profile (기본 당뇨 단계는 NORMAL)
         mockMvc.perform(get(url).with(user(principalDetails)).contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());

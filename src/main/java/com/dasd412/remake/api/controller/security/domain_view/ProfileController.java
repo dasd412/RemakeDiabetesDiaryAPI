@@ -45,7 +45,7 @@ public class ProfileController {
     }
 
 
-    @GetMapping("/profile")
+    @GetMapping("/profile/view")
     public String profileViewResolve(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
         logger.info("profile view resolve");
         Profile profile;
