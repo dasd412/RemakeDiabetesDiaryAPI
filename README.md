@@ -51,6 +51,9 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
   + `GET "/post" `
   + `GET "/update-delete/{diaryId}" `
   + `GET "/update-delete/404" ` [circular view path 해결용]
+
++ ProfileController
+  + `GET "/profile/view`
   
 #### REST Controller
 
@@ -71,6 +74,9 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
   + `GET "/chart-menu/average/all" `
   + `GET "/chart-menu/average/between" `
 
++ ProfileRestController
+  + `PUT "/profile/info"`
+  + `DELETE /profile/withdrawal"`[회원 탈퇴]
 ***
 
 ### 디렉토리 구조
@@ -108,6 +114,7 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
   + 음식 엔티티에 수량 단위 추가 [요구사항 반영]
   + 중복 QueryDSL 코드 BooleanBuilder로 리팩토링. [BooleanBuider를 활용한 동적 쿼리 생성]
   + 프로필 엔티티 추가 및 작성자 엔티티와 1대1 관계 구성
+  
 
 + 스프링 시큐리티
   + 일반 회원가입과 로그인 구현
@@ -130,6 +137,7 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
   + 작성용 폼 더 이쁘게 만들기
   + 음식 검색 게시판 만들기
   + 프로필 기능 추가
+
 
 + 배포
   + amazon ec2 인스턴스 생성
