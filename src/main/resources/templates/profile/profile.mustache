@@ -20,24 +20,20 @@
                                     <h6 class="m-b-20 p-b-5 b-b-default f-w-600">회원 정보</h6>
                                     <div class="row">
                                         <div class="col-sm-6">
-                                            <p class="m-b-10 f-w-600">ID</p>
-                                            <h6 class="text-muted f-w-400"></h6>
-                                        </div>
-                                        <div class="col-sm-6">
                                             <p class="m-b-10 f-w-600">Email</p>
-                                            <h6 class="text-muted f-w-400">rntng@gmail.com</h6>
+                                            <h6 class="text-muted f-w-400">{{userEmail}}</h6>
                                         </div>
                                     </div>
                                     <h6 class="m-b-20 m-t-40 p-b-5 b-b-default f-w-600">건강 정보</h6>
                                     <div class="row">
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-10">
                                             <p class="m-b-10 f-w-600">당뇨 단계</p>
-                                            <h6 class="text-muted f-w-400">Sam Disuja</h6>
+                                            {{profile.diabetesPhase}}
                                         </div>
                                     </div>
                                     <div class="form-group" id="profile-btn">
                                         <button class="btn btn-info" id="updateProfileBtn">
-                                            수정 반영하기
+                                            프로필 수정하기
                                         </button>
                                         <button class="btn btn-danger" id="withdrawalBtn">
                                             회원 탈퇴하기
@@ -52,4 +48,33 @@
         </div>
     </div>
 
+    <div id="profileModal">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">당뇨 단계 수정하기</h4>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group" id="phaseSelect">
+                        <select id="phaseSelector" class="form-control" aria-label="Diabetes phase">
+                            <option value="normal">정상(공복혈당 100미만)</option>
+                            <option value="pre">전 단계(공복혈당 100이상 125이하)</option>
+                            <option value="diabetes">당뇨병 (공복혈당 126이상)</option>
+                        </select>
+                    </div>
+                </div> <!-- 모달 본문 -->
+
+                <div class="modal-footer">
+                    <button id='profileModalDecideBtn' class="btn btn-info">결정</button>
+                    <button id='profileModalCloseBtn' class="btn btn-danger" data-dismiss="modal">닫기</button>
+                </div> <!-- 모달 버튼 -->
+            </div>
+        </div>
+    </div>
+
+
+    <script src="/js/profile/profile.js"></script>
 {{/layout}}

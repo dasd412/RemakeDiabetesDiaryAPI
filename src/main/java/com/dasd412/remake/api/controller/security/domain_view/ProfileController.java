@@ -60,6 +60,6 @@ public class ProfileController {
         ProfileResponseDTO dto = new ProfileResponseDTO(profile);
         logger.info("profile dto : " + dto);
         model.addAttribute("profile", dto);
-        return "/profile/profile";
+        return "profile/profile";
     }
 }
