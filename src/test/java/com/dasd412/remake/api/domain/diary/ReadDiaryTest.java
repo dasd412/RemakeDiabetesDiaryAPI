@@ -12,6 +12,9 @@ import com.dasd412.remake.api.controller.security.domain_rest.dto.chart.FoodBoar
 import com.dasd412.remake.api.domain.diary.diet.QDiet;
 import com.dasd412.remake.api.domain.diary.food.AmountUnit;
 import com.dasd412.remake.api.controller.security.domain_view.FoodPageVO;
+import com.dasd412.remake.api.domain.diary.profile.DiabetesPhase;
+import com.dasd412.remake.api.domain.diary.profile.Profile;
+import com.dasd412.remake.api.service.domain.FindDiaryService;
 import com.dasd412.remake.api.service.domain.SaveDiaryService;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Predicate;
@@ -80,6 +83,9 @@ public class ReadDiaryTest {
 
     @Autowired
     FoodRepository foodRepository;
+
+    @Autowired
+    FindDiaryService findDiaryService;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -657,4 +663,25 @@ public class ReadDiaryTest {
         assertThat(result1.getContent().size()).isEqualTo(10);
     }
 
+    @Transactional
+    @Test
+    public void cannotFindProfile(){
+        thrown.expect(NoResultException.class);
+        thrown.expectMessage("해당 프로필이 존재하지 않습니다.");
+        findDiaryService.getProfile(EntityId.of(Writer.class, me.getId()));
+    }
+
+    @Transactional
+    @Test
+    public void findProfile(){
+        //given
+        Profile profile=saveDiaryService.makeProfile(EntityId.of(Writer.class, me.getId()), DiabetesPhase.NORMAL);
+
+        //when
+        Profile found=findDiaryService.getProfile(EntityId.of(Writer.class, me.getId()));
+
+        //then
+        assertThat(profile.getProfileId()).isEqualTo(found.getProfileId());
+        assertThat(profile.getDiabetesPhase()).isEqualTo(found.getDiabetesPhase());
+    }
 }

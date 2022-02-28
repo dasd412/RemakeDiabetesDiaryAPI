@@ -1,5 +1,5 @@
 /*
- * @(#)FindDiaryService.java        1.0.9 2022/2/19
+ * @(#)FindDiaryService.java        1.1.1 2022/2/28
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -19,8 +19,10 @@ import com.dasd412.remake.api.domain.diary.diet.DietRepository;
 import com.dasd412.remake.api.domain.diary.diet.EatTime;
 import com.dasd412.remake.api.domain.diary.food.Food;
 import com.dasd412.remake.api.domain.diary.food.FoodRepository;
+import com.dasd412.remake.api.domain.diary.profile.Profile;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 
+import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Predicate;
 import org.slf4j.Logger;
@@ -47,7 +49,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * 조회 비즈니스 로직을 수행하는 서비스 클래스
  *
  * @author 양영준
- * @version 1.0.9 2022년 2월 19일
+ * @version 1.1.1 2022년 2월 28일
  */
 @Service
 public class FindDiaryService {
@@ -56,11 +58,13 @@ public class FindDiaryService {
     private final DiaryRepository diaryRepository;
     private final DietRepository dietRepository;
     private final FoodRepository foodRepository;
+    private final WriterRepository writerRepository;
 
-    public FindDiaryService(DiaryRepository diaryRepository, DietRepository dietRepository, FoodRepository foodRepository) {
+    public FindDiaryService(DiaryRepository diaryRepository, DietRepository dietRepository, FoodRepository foodRepository, WriterRepository writerRepository) {
         this.diaryRepository = diaryRepository;
         this.dietRepository = dietRepository;
         this.foodRepository = foodRepository;
+        this.writerRepository = writerRepository;
     }
 
     /*
@@ -502,5 +506,17 @@ public class FindDiaryService {
         }
 
         return foodRepository.findFoodsWithPagination(writerEntityId.getId(), predicates, page);
+    }
+
+    /**
+     * @param writerEntityId 래퍼로 감싸진 작성자 id
+     * @return 작성자와 1 대 1 관계의 프로필 정보
+     */
+    @Transactional(readOnly = true)
+    public Profile getProfile(EntityId<Writer, Long> writerEntityId) {
+        logger.info("get profile");
+        checkNotNull(writerEntityId, "writerId must be provided");
+
+        return writerRepository.findProfile(writerEntityId.getId()).orElseThrow(() -> new NoResultException("해당 프로필이 존재하지 않습니다."));
     }
 }
