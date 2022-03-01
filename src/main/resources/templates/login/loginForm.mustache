@@ -36,12 +36,79 @@
             <label for="password">Password</label>
             <input type="password" name="password" id="password"/>
             <input type="submit" value="Login"/>
-            <input type="button" value="아이디 찾기" id="findIdBtn"/>
-            <input type="button" value="비밀번호 찾기" id="findPasswordBtn"/>
+            <input type="button" value="아이디 찾기" id="callModalIdBtn"/>
+            <input type="button" value="비밀번호 찾기" id="callModalPasswordBtn"/>
             <p class="text-p">계정이 없으신가요? <a href="/join-form">회원 가입</a></p>
 
         </div>
     </form>
+
+    <div class="container">
+        <div class="modal-dialog" id="findIdModal">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" id="findIdModalHeader">
+                    <h4 class="modal-title" style="color: white">ID 찾기</h4>
+                </div>
+                <div class="modal-body">
+                    <hr>
+                    <form role="form">
+                        <div class="form-group">
+                            <label for="emailForFindingId"><span class="glyphicon glyphicon-user"></span>email</label>
+                            <input type="text" class="form-control" id="emailForFindingId" placeholder="가입 이메일을 입력하세요.">
+                        </div>
+                        <button type="button" class="btn btn-primary btn-block" id="findIdBtn">전송하기</button>
+                    </form>
+                    <hr>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger btn-default pull-left" data-dismiss="modal"><span
+                            class="glyphicon glyphicon-remove"></span> 취소하기
+                    </button>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="modal-dialog" id="findPasswordModal">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" id="findPasswordModalHeader">
+                    <h4 class="modal-title" style="color: white">비밀 번호 찾기</h4>
+                </div>
+                <div class="modal-body">
+                    <hr>
+                    <form role="form">
+                        <div class="form-group">
+                            <label for="emailForFindingPassword"><span
+                                    class="glyphicon glyphicon-user"></span>email</label>
+                            <input type="text" class="form-control" id="emailForFindingPassword"
+                                   placeholder="가입 이메일을 입력하세요.">
+                        </div>
+                        <div class="form-group">
+                            <label for="idForFindingPassword"><span class="glyphicon glyphicon-eye-open"></span>
+                                ID</label>
+                            <input type="text" class="form-control" id="idForFindingPassword"
+                                   placeholder="가입 id를 입력하세요.">
+                        </div>
+                        <button type="button" class="btn btn-primary btn-block" id="findPasswordBtn">전송하기</button>
+                    </form>
+                    <hr>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger btn-default pull-left" data-dismiss="modal"><span
+                            class="glyphicon glyphicon-remove"></span> 취소하기
+                    </button>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
 
     <script src="/js/auth/infoValidator.js"></script>
     <script src="/js/auth/login.js"></script>

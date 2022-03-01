@@ -1,7 +1,11 @@
-#searchModal,#profileModal,#withdrawalModal {
+#searchModal,#profileModal,#withdrawalModal,#findIdModal,#findPasswordModal {
     position: relative;
     z-index: 1;
     display: none;
     left: 50%;
     transform: translate(-50%,-100%);
+}
+
+#findIdModalHeader,#findPasswordModalHeader{
+    background-image: linear-gradient(93deg, #a426b4, #581bc9 94%);
 }
