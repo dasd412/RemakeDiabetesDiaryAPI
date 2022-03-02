@@ -1,3 +1,11 @@
+/*
+ * @(#)FindInfoService.java        1.1.2 2022/3/2
+ *
+ * Copyright (c) 2022 YoungJun Yang.
+ * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
+ * All rights reserved.
+ */
+
 package com.dasd412.remake.api.service.security;
 
 import com.dasd412.remake.api.controller.exception.OAuthFindUsernameException;
@@ -13,6 +21,12 @@ import org.springframework.stereotype.Service;
 
 import static com.google.common.base.Preconditions.*;
 
+/**
+ * 아이디 찾기 등 유저 정보 검색을 담당하는 서비스
+ *
+ * @author 양영준
+ * @version 1.1.2 2022년 3월 2일
+ */
 @Service
 public class FindInfoService {
 
