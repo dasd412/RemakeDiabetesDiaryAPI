@@ -161,7 +161,7 @@ form#login-form {
     background: #fe7175;
 }
 
-.input-field #findIdBtn {
+.input-field #callModalIdBtn {
     background: blue;
     border: medium none;
     border-radius: 4px;
@@ -178,11 +178,11 @@ form#login-form {
     width: 100%;
 }
 
-.input-field #findIdBtn:hover {
+.input-field #callModalIdBtn:hover {
     background: #50bcdf;
 }
 
-.input-field #findPasswordBtn {
+.input-field #callModalPasswordBtn {
     background: black;
     border: medium none;
     border-radius: 4px;
@@ -199,7 +199,7 @@ form#login-form {
     width: 100%;
 }
 
-.input-field #findPasswordBtn:hover {
+.input-field #callModalPasswordBtn:hover {
     background: gray;
 }
 

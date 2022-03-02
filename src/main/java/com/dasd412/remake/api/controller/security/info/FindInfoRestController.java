@@ -43,7 +43,7 @@ public class FindInfoRestController {
     }
 
     @GetMapping("/user-info/user-name")
-    public ApiResult findUserName(@RequestBody @Valid FindIdRequestDTO dto) {
+    public ApiResult<?> findUserName(@RequestBody @Valid FindIdRequestDTO dto) {
         logger.info("find user name");
         String userName;
 
