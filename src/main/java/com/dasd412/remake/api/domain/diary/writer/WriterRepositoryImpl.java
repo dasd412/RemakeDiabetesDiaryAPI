@@ -10,6 +10,7 @@ package com.dasd412.remake.api.domain.diary.writer;
 
 import com.dasd412.remake.api.domain.diary.BulkDeleteHelper;
 import com.dasd412.remake.api.domain.diary.profile.Profile;
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import java.util.Optional;
@@ -122,15 +123,14 @@ public class WriterRepositoryImpl implements WriterRepositoryCustom {
 
     /**
      * @param email 이메일
-     * @return 이메일을 이용해 사용자 id 찾기
+     * @return 이메일을 이용해 (사용자 id 및 provider) 찾기
      */
     @Override
-    public Optional<String> findUserName(String email) {
-        return Optional.ofNullable(
-                jpaQueryFactory.select(QWriter.writer.name)
-                        .where(QWriter.writer.email.eq(email))
-                        .fetchOne()
-        );
+    public Tuple findUserInfoByEmail(String email) {
+        return jpaQueryFactory.select(QWriter.writer.name, QWriter.writer.provider)
+                .from(QWriter.writer)
+                .where(QWriter.writer.email.eq(email))
+                .fetchOne();
     }
 
     /**

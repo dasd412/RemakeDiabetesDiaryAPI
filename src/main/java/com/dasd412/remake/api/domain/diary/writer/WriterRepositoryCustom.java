@@ -9,6 +9,7 @@
 package com.dasd412.remake.api.domain.diary.writer;
 
 import com.dasd412.remake.api.domain.diary.profile.Profile;
+import com.querydsl.core.Tuple;
 
 import java.util.Optional;
 
@@ -46,9 +47,9 @@ public interface WriterRepositoryCustom {
 
     /**
      * @param email 이메일
-     * @return 이메일을 이용해 사용자 id 찾기
+     * @return 이메일을 이용해 (사용자 id 및 provider) 찾기
      */
-    Optional<String> findUserName(String email);
+    Tuple findUserInfoByEmail(String email);
 
     /**
      * @param userName 사용자 id
