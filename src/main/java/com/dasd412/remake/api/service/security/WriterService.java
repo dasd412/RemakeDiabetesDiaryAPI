@@ -1,5 +1,5 @@
 /*
- * @(#)WriterService.java        1.1.1 2022/2/28
+ * @(#)WriterService.java        1.1.2 2022/3/4
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -21,19 +21,26 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.NoResultException;
+
+import java.util.stream.IntStream;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * 사용자 회원 가입 로직을 수행하는 서비스 클래스
  *
  * @author 양영준
- * @version 1.1.1 2022년 2월 28일
+ * @version 1.1.2 2022년 3월 4일
  */
 @Service
 public class WriterService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final WriterRepository writerRepository;
+
+    private static final char[] CHAR_ARRAY = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
+            'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 
     /**
      * 패스워드 암호화 객체
@@ -115,5 +122,30 @@ public class WriterService {
         logger.info("withdraw writer !!");
         checkNotNull(writerId, "writerId must be provided");
         writerRepository.bulkDeleteWriter(writerId.getId());
+    }
+
+    /**
+     * 
+     * @return 새로운 임시 비밀 번호
+     */
+    @Transactional
+    public String issueNewPassword() {
+        StringBuilder tempPassword = new StringBuilder();
+
+        IntStream.range(0, 10).forEach(i ->
+                tempPassword.append(CHAR_ARRAY[(int) (CHAR_ARRAY.length * Math.random())]));
+
+        return tempPassword.toString();
+    }
+
+    /**
+     *
+     * @param email 사용자 email
+     * @param userName 사용자 id (unique == true)
+     * @param tempPassWord 새로 발급 받은 임시 비밀 번호
+     */
+    @Transactional
+    public void updateTempPassword(String email, String userName,String tempPassWord) {
+
     }
 }

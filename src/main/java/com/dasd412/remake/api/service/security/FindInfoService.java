@@ -1,5 +1,5 @@
 /*
- * @(#)FindInfoService.java        1.1.2 2022/3/2
+ * @(#)FindInfoService.java        1.1.2 2022/3/4
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -25,7 +25,7 @@ import static com.google.common.base.Preconditions.*;
  * 아이디 찾기 등 유저 정보 검색을 담당하는 서비스
  *
  * @author 양영준
- * @version 1.1.2 2022년 3월 2일
+ * @version 1.1.2 2022년 3월 4일
  */
 @Service
 public class FindInfoService {
@@ -42,6 +42,7 @@ public class FindInfoService {
      * @param email 사용자 이메일
      * @return 이메일에 해당하는 사용자 id 정보
      */
+    @Transactional(readOnly = true)
     public String getUserNameByEmail(String email) {
         logger.info("get user name");
         checkArgument(RegexChecker.isRightEmail(email), "String must be pattern of email!!");
@@ -68,4 +69,19 @@ public class FindInfoService {
         }
     }
 
+
+    /**
+     * 파라미터들에 해당하는 유저가 있는지 확인해주는 메서드
+     *
+     * @param email    입력받은 이메일
+     * @param userName 입력받은 유저 id
+     * @return 비밀 번호 존재 여부
+     */
+    @Transactional(readOnly = true)
+    public boolean existPassword(String email, String userName) {
+        logger.info("exist password");
+        checkArgument(RegexChecker.isRightEmail(email), "Parameter should be pattern of email!!");
+
+        return writerRepository.existPassword(email,userName);
+    }
 }
