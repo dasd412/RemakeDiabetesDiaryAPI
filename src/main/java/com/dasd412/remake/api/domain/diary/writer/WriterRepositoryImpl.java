@@ -1,5 +1,5 @@
 /*
- * @(#)WriterRepositoryImpl.java        1.1.2 2022/3/2
+ * @(#)WriterRepositoryImpl.java        1.1.2 2022/3/4
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -19,7 +19,7 @@ import java.util.Optional;
  * Querydsl을 사용하기 위해 만든 구현체 클래스.
  *
  * @author 양영준
- * @version 1.1.2 2022년 3월 2일
+ * @version 1.1.2 2022년 3월 4일
  */
 public class WriterRepositoryImpl implements WriterRepositoryCustom {
 
@@ -134,12 +134,21 @@ public class WriterRepositoryImpl implements WriterRepositoryCustom {
     }
 
     /**
-     * @param userName 사용자 id
      * @param email    사용자 이메일
+     * @param userName 사용자 id
      * @return 파라미터를 이용해 비밀 번호가 존재하는 지 여부
      */
     @Override
-    public Boolean existPassword(String userName, String email) {
-        return null;
+    public Boolean existPassword(String email, String userName) {
+
+        Integer fetchFirst = jpaQueryFactory
+                .selectOne()
+                .from(QWriter.writer)
+                .where(QWriter.writer.name.eq(userName)
+                        .and(QWriter.writer.email.eq(email))
+                        .and(QWriter.writer.provider.isNull())) /* provider가 null일때만 비밀번호가 존재한다.*/
+                .fetchFirst();
+
+        return fetchFirst != null;
     }
 }

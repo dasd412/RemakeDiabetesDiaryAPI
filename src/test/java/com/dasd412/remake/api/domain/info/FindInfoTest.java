@@ -1,5 +1,5 @@
 /*
- * @(#)FindInfoTest.java        1.1.2 2022/3/2
+ * @(#)FindInfoTest.java        1.1.2 2022/3/4
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -35,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * 컨트롤러 레이어를 거치지 않고 FindInfoService를 테스트하기 위한 클래스.
  *
  * @author 양영준
- * @version 1.1.2 2022년 3월 2일
+ * @version 1.1.2 2022년 3월 4일
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest()
@@ -143,6 +143,59 @@ public class FindInfoTest {
         //then
         logger.info(foundUserName);
         assertThat(foundUserName).isEqualTo(userName);
+    }
+
+    @Transactional
+    @Test
+    public void existPasswordWhenOAuth() {
+        //given
+        String email = "test@google.com";
+        String userName = "TEST-NAME";
+
+        Writer writer = Writer.builder()
+                .writerEntityId(EntityId.of(Writer.class, 1L))
+                .name(userName)
+                .email(email)
+                .provider("google")
+                .providerId("1")
+                .password(null)
+                .role(Role.User)
+                .build();
+
+        writerRepository.save(writer);
+
+        //when
+        boolean exist = writerRepository.existPassword(email, userName);
+
+        //then
+        assertThat(exist).isFalse();
+    }
+
+    @Transactional
+    @Test
+    public void existPassword() {
+        //given
+        String email = "test@test.com";
+        String userName = "TEST-NAME";
+
+        Writer writer = Writer.builder()
+                .writerEntityId(EntityId.of(Writer.class, 1L))
+                .name(userName)
+                .email(email)
+                .provider(null)
+                .providerId(null)
+                .password("test")
+                .role(Role.User)
+                .build();
+
+        writerRepository.save(writer);
+
+        //when
+        boolean exist = writerRepository.existPassword(email, userName);
+
+        //then
+        assertThat(exist).isTrue();
+
     }
 
 }

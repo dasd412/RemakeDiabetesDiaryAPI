@@ -1,5 +1,5 @@
 /*
- * @(#)WriterRepositoryCustom.java        1.1.2 2022/3/2
+ * @(#)WriterRepositoryCustom.java        1.1.2 2022/3/4
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -17,7 +17,7 @@ import java.util.Optional;
  * 작성자 리포지토리 상위 인터페이스. Querydsl을 이용하기 위해 구현하였다.
  *
  * @author 양영준
- * @version 1.1.2 2022년 3월 2일
+ * @version 1.1.2 2022년 3월 4일
  */
 public interface WriterRepositoryCustom {
 
@@ -52,11 +52,11 @@ public interface WriterRepositoryCustom {
     Tuple findUserInfoByEmail(String email);
 
     /**
-     * @param userName 사용자 id
      * @param email    사용자 이메일
+     * @param userName 사용자 id
      * @return 파라미터를 이용해 비밀 번호가 존재하는 지 여부
      */
-    Boolean existPassword(String userName, String email);
+    Boolean existPassword(String email, String userName);
 
 
 }
