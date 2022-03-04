@@ -1,5 +1,5 @@
 /*
- * @(#)FindInfoRestController.java        1.1.2 2022/3/2
+ * @(#)FindInfoRestController.java        1.1.2 2022/3/4
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -10,24 +10,24 @@ package com.dasd412.remake.api.controller.security.info;
 
 import com.dasd412.remake.api.controller.ApiResult;
 import com.dasd412.remake.api.controller.exception.OAuthFindUsernameException;
-import com.dasd412.remake.api.controller.security.info.dto.FindIdRequestDTO;
 import com.dasd412.remake.api.service.security.EmailService;
 import com.dasd412.remake.api.service.security.FindInfoService;
+import com.dasd412.remake.api.util.RegexChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
+import java.util.Map;
 
 /**
  * 아이디 찾기 등 유저 정보 검색 및 이메일 제공
  *
  * @author 양영준
- * @version 1.1.2 2022년 3월 2일
+ * @version 1.1.2 2022년 3월 4일
  */
 @RestController
 public class FindInfoRestController {
@@ -43,17 +43,21 @@ public class FindInfoRestController {
     }
 
     @GetMapping("/user-info/user-name")
-    public ApiResult<?> findUserName(@RequestBody @Valid FindIdRequestDTO dto) {
-        logger.info("find user name");
+    public ApiResult<?> findUserName(@RequestParam(value = "email") String email) {
+        logger.info("find user name by email");
         String userName;
 
-        try {
-            userName = findInfoService.getUserNameByEmail(dto.getEmail());
-        } catch (UsernameNotFoundException | OAuthFindUsernameException exception) {
-            return ApiResult.ERROR(exception, HttpStatus.valueOf(404));
+        if (!RegexChecker.isRightEmail(email)) {
+            return ApiResult.ERROR(new IllegalArgumentException("올바르지 않은 이메일 형식입니다."), HttpStatus.BAD_REQUEST);
         }
 
-        emailService.sendEmailAboutId(dto.getEmail(), userName);
+        try {
+            userName = findInfoService.getUserNameByEmail(email);
+        } catch (UsernameNotFoundException | OAuthFindUsernameException exception) {
+            return ApiResult.ERROR(exception, HttpStatus.BAD_REQUEST);
+        }
+
+        emailService.sendEmailAboutId(email, userName);
 
         return ApiResult.OK("sent email");
     }

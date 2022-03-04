@@ -1,5 +1,5 @@
 /*
- * @(#)findInfo.js        1.1.2 2022/3/2
+ * @(#)findInfo.js        1.1.2 2022/3/4
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, JavaScript, Pocheon-si, KOREA
@@ -10,7 +10,7 @@
  * id 찾기, 비밀 번호 찾기 담당
  *
  * @author 양영준
- * @version 1.1.2 2022년 3월 2일
+ * @version 1.1.2 2022년 3월 4일
  */
 
 const FindIdManipulator = {
@@ -19,12 +19,18 @@ const FindIdManipulator = {
 
     init: function () {
         const _this = this;
+
         $("#callModalIdBtn").on('click', function () {
             _this.changeVisibilityOfModal();
         });
         $("#cancelFindIdBtn").on('click', function () {
             _this.changeVisibilityOfModal();
         });
+
+        $("#findIdBtn").on('click', function () {
+            _this.findId();
+        });
+
     },
 
     changeVisibilityOfModal: function () {
@@ -35,8 +41,21 @@ const FindIdManipulator = {
             $("#findIdModal").attr("style", "display:none;");
             this.isModalOn = false;
         }
-    }
+    },
+    findId: function () {
 
+        const email= $("#emailForFindingId").val();
+        $.ajax({
+            type: "GET",
+            url: "/user-info/user-name?email="+email
+        }).done(function (e) {
+            if (e.success === true) {
+                swal('', "입력한 이메일로 id가 전송되었어요!", "success");
+            } else {
+                swal('', e.error.message, "error");
+            }
+        });
+    }
 };
 
 const FindPasswordManipulator = {
