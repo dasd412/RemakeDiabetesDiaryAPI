@@ -54,6 +54,7 @@ const FindIdManipulator = {
             } else {
                 swal('', e.error.message, "error");
             }
+            $("#emailForFindingId").val("");
         });
     }
 };
@@ -71,6 +72,10 @@ const FindPasswordManipulator = {
         $("#cancelFindPasswordBtn").on('click', function () {
             _this.changeVisibilityOfModal();
         });
+
+        $("#findPasswordBtn").on('click', function () {
+            _this.findPassword();
+        });
     },
     changeVisibilityOfModal: function () {
         if (this.isModalOn === false) {
@@ -80,6 +85,23 @@ const FindPasswordManipulator = {
             $("#findPasswordModal").attr("style", "display:none;");
             this.isModalOn = false;
         }
+    },
+    findPassword:function () {
+        const email = $("#emailForFindingPassword").val();
+        const userName = $("#idForFindingPassword").val();
+
+        $.ajax({
+            type: "GET",
+            url: "/user-info/password?email="+email+"&userName="+userName
+        }).done(function (e) {
+            if (e.success === true) {
+                swal('', "입력한 이메일로 임시 비밀번호가 전송되었어요!", "success");
+            } else {
+                swal('', e.error.message, "error");
+            }
+            $("#emailForFindingPassword").val("");
+            $("#idForFindingPassword").val("");
+        });
     }
 };
 

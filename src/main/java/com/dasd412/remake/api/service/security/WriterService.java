@@ -147,6 +147,6 @@ public class WriterService {
     @Transactional
     public void updateTempPassword(String email, String userName, String tempPassWord) {
         checkArgument(RegexChecker.isRightEmail(email), "String must be pattern of email!!");
-        writerRepository.updateTempPassword(email, userName, tempPassWord);
+        writerRepository.updateTempPassword(email, userName, this.encodePassword(tempPassWord));
     }
 }

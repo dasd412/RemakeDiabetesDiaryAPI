@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,6 +51,9 @@ public class FindInfoTest {
 
     @Autowired
     private WriterRepository writerRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
     private WriterService writerService;
@@ -235,7 +239,11 @@ public class FindInfoTest {
 
         //then
         Writer found = writerRepository.findAll().get(0);
-        assertThat(found.getPassword()).isEqualTo(tempPassword);
+        /*
+         * bCryptPasswordEncoder의 경우 매번 해싱 값이 달라진다. 따라서 equals()로 비교할 수 없고
+         * 직접 제공하는 matches()를 이용하여 비교해야 한다.
+         */
+        assertThat(bCryptPasswordEncoder.matches(tempPassword, found.getPassword())).isTrue();
     }
 
 }
