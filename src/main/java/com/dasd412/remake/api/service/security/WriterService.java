@@ -15,6 +15,7 @@ import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.writer.Role;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
+import com.dasd412.remake.api.util.RegexChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,6 +26,7 @@ import javax.persistence.NoResultException;
 
 import java.util.stream.IntStream;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -125,7 +127,6 @@ public class WriterService {
     }
 
     /**
-     * 
      * @return 새로운 임시 비밀 번호
      */
     @Transactional
@@ -139,13 +140,13 @@ public class WriterService {
     }
 
     /**
-     *
-     * @param email 사용자 email
-     * @param userName 사용자 id (unique == true)
+     * @param email        사용자 email
+     * @param userName     사용자 id (unique == true)
      * @param tempPassWord 새로 발급 받은 임시 비밀 번호
      */
     @Transactional
-    public void updateTempPassword(String email, String userName,String tempPassWord) {
-
+    public void updateTempPassword(String email, String userName, String tempPassWord) {
+        checkArgument(RegexChecker.isRightEmail(email), "String must be pattern of email!!");
+        writerRepository.updateTempPassword(email, userName, tempPassWord);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * @(#)WriterRepositoryImpl.java        1.1.2 2022/3/4
+ * @(#)WriterRepositoryImpl.java        1.1.2 2022/3/5
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -19,7 +19,7 @@ import java.util.Optional;
  * Querydsl을 사용하기 위해 만든 구현체 클래스.
  *
  * @author 양영준
- * @version 1.1.2 2022년 3월 4일
+ * @version 1.1.2 2022년 3월 5일
  */
 public class WriterRepositoryImpl implements WriterRepositoryCustom {
 
@@ -150,5 +150,30 @@ public class WriterRepositoryImpl implements WriterRepositoryCustom {
                 .fetchFirst();
 
         return fetchFirst != null;
+    }
+
+    /**
+     * 임시 비밀 번호로 갱신
+     *
+     * @param email        사용자 이메일
+     * @param userName     사용자 id (Unique == true)
+     * @param tempPassWord 임시 비밀 번호
+     */
+    @Override
+    public void updateTempPassword(String email, String userName, String tempPassWord) {
+        jpaQueryFactory.update(QWriter.writer)
+                .set(QWriter.writer.password, tempPassWord)
+                .where(QWriter.writer.email.eq(email)
+                        .and(QWriter.writer.name.eq(userName)))
+                .execute();
+    }
+
+    /**
+     * @param writerId 로그인한 사용자 id
+     * @param password 변경하고자 하는 비밀 번호
+     */
+    @Override
+    public void updatePassword(Long writerId, String password) {
+
     }
 }

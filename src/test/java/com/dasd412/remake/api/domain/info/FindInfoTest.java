@@ -1,5 +1,5 @@
 /*
- * @(#)FindInfoTest.java        1.1.2 2022/3/4
+ * @(#)FindInfoTest.java        1.1.2 2022/3/5
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -15,6 +15,7 @@ import com.dasd412.remake.api.domain.diary.writer.Role;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
 import com.dasd412.remake.api.service.security.FindInfoService;
+import com.dasd412.remake.api.service.security.WriterService;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
@@ -35,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * 컨트롤러 레이어를 거치지 않고 FindInfoService를 테스트하기 위한 클래스.
  *
  * @author 양영준
- * @version 1.1.2 2022년 3월 4일
+ * @version 1.1.2 2022년 3월 5일
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest()
@@ -49,6 +50,9 @@ public class FindInfoTest {
 
     @Autowired
     private WriterRepository writerRepository;
+
+    @Autowired
+    private WriterService writerService;
 
     //예외 캐치용 객체
     @Rule
@@ -196,6 +200,42 @@ public class FindInfoTest {
         //then
         assertThat(exist).isTrue();
 
+    }
+
+    @Test
+    public void issueNewPassword() {
+        //when and then
+        String tempPassword = writerService.issueNewPassword();
+        assertThat(tempPassword.length()).isEqualTo(10);
+        logger.info(tempPassword);
+    }
+
+    @Test
+    public void updateTempPassword() {
+        //given
+        String email = "test@test.com";
+        String userName = "TEST-NAME";
+
+        Writer writer = Writer.builder()
+                .writerEntityId(EntityId.of(Writer.class, 1L))
+                .name(userName)
+                .email(email)
+                .provider(null)
+                .providerId(null)
+                .password("test")
+                .role(Role.User)
+                .build();
+
+        writerRepository.save(writer);
+
+        String tempPassword = writerService.issueNewPassword();
+
+        //when
+        writerService.updateTempPassword(email, userName, tempPassword);
+
+        //then
+        Writer found = writerRepository.findAll().get(0);
+        assertThat(found.getPassword()).isEqualTo(tempPassword);
     }
 
 }
