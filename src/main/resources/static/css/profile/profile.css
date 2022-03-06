@@ -134,9 +134,19 @@ h6 {
     padding-bottom: 30px;
 }
 
+#profile-warning{
+    margin-top: 40px;
+    padding-bottom: 30px;
+}
+
 #updateProfileBtn{
     float:left;
 }
+
+#updatePasswordBtn{
+    float: left;
+}
+
 #withdrawalBtn {
     float: right;
 }

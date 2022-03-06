@@ -35,6 +35,11 @@
                                         <button class="btn btn-info" id="updateProfileBtn">
                                             프로필 수정하기
                                         </button>
+                                    </div>
+                                    <div class="form-group" id="profile-warning">
+                                        <button class="btn btn-warning" id="updatePasswordBtn">
+                                            비밀 번호 수정하기
+                                        </button>
                                         <button class="btn btn-danger" id="withdrawalBtn">
                                             회원 탈퇴하기
                                         </button>
@@ -74,6 +79,35 @@
         </div>
     </div>
 
+    <div id="updatePasswordModal">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">비밀 번호 변경 하기</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="passwordInput">비밀 번호</label>
+                        <input type="password" class="form-control" name="passwordInput" id="passwordInput"
+                               placeholder="최소 8자 이상 입력해야 합니다."/>
+
+                        <label for="passwordConfirmInput">비밀 번호 확인</label>
+                        <input type="password" class="form-control" name="passwordConfirmInput"
+                               id="passwordConfirmInput" placeholder="최소 8자 이상 입력해야 합니다."/>
+                    </div>
+                </div> <!-- 모달 본문 -->
+
+                <div class="modal-footer">
+                    <button id='updatePasswordModalDecideBtn' class="btn btn-primary">결정</button>
+                    <button id='updatePasswordModalCloseBtn' class="btn btn-danger" data-dismiss="modal">취소</button>
+                </div> <!-- 모달 버튼 -->
+            </div>
+        </div>
+    </div>
+
+
     <div id="withdrawalModal">
         <div class="modal-dialog">
 
@@ -93,7 +127,6 @@
             </div>
         </div>
     </div>
-
 
 
     <script src="/js/profile/profile.js"></script>

@@ -1,5 +1,5 @@
 /*
- * @(#)profile.js        1.1.1 2022/2/28
+ * @(#)profile.js        1.1.2 2022/3/6
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, JavaScript, Pocheon-si, KOREA
@@ -10,7 +10,7 @@
  * 일지 작성 폼을 담당
  *
  * @author 양영준
- * @version 1.1.1 2022년 2월 28일
+ * @version 1.1.2 2022년 3월 6일
  */
 
 const ProfileManipulator = {
@@ -89,13 +89,39 @@ const WithDrawlManipulator = {
             url: "/profile/withdrawal",
             dataType: 'json',
             contentType: 'application/json; charset=utf-8'
-        }).done(function (){
+        }).done(function () {
             window.location.href = "/";
         });
     }
 };
 
+const UpdatePasswordManipulator = {
+
+    isModalOn: false,
+
+    init: function () {
+        const _this = this;
+        $("#updatePasswordBtn").on('click', function () {
+            _this.changeVisibilityOfModal();
+        });
+
+        $("#updatePasswordModalCloseBtn").on('click', function () {
+            _this.changeVisibilityOfModal();
+        });
+    },
+    changeVisibilityOfModal: function () {
+        if (this.isModalOn === false) {
+            $("#updatePasswordModal").attr("style", "display:block;");
+            this.isModalOn = true;
+        } else {
+            $("#updatePasswordModal").attr("style", "display:none;");
+            this.isModalOn = false;
+        }
+    }
+}
+
 $(document).ready(function () {
     ProfileManipulator.init();
+    UpdatePasswordManipulator.init();
     WithDrawlManipulator.init();
 });
