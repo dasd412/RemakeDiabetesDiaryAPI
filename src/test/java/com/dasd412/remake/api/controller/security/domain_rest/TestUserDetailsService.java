@@ -1,5 +1,5 @@
 /*
- * @(#)TestUserDetailsService.java        1.0.1 2022/1/22
+ * @(#)TestUserDetailsService.java        1.1.2 2022/3/5
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -17,22 +17,25 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.HashMap;
+
 /**
  * 가짜 UserDetails를 공급해주는 서비스. 테스트 수행시에만 사용된다.
  * 만약 @Service 적용하면 중복 빈 주입 오류 난다.
  *
  * @author 양영준
- * @version 1.0.1 2022년 1월 22일
+ * @version 1.1.2 2022년 3월 5일
  */
 @Profile("test")
 public class TestUserDetailsService implements UserDetailsService {
 
     public static final String USERNAME = "user@example.com";
+    public static final String OAUTH_USER_NAME = "test@google.com";
 
     /**
      * @return 가짜 사용자 인증 정보
      */
-    private Writer getUser() {
+    private Writer getUserMock() {
         return Writer.builder()
                 .writerEntityId(EntityId.of(Writer.class, 1L))
                 .name(USERNAME)
@@ -44,10 +47,32 @@ public class TestUserDetailsService implements UserDetailsService {
                 .build();
     }
 
+    /**
+     * @return 가짜 OAuth 유저 인증 정보
+     */
+    private Writer getOAuthUserMock() {
+        return Writer.builder()
+                .writerEntityId(EntityId.of(Writer.class, 1L))
+                .name(OAUTH_USER_NAME)
+                .email(OAUTH_USER_NAME)
+                .password(null)
+                .provider("google")
+                .providerId("1")
+                .role(Role.User)
+                .build();
+    }
+
+    /**
+     * @param userName 테스트용 사용자 정보
+     * @return 가짜 사용자 인증 정보
+     * @throws UsernameNotFoundException 올바른 유저 id 못찾을 때 던져지는 예외
+     */
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        if (s.equals(USERNAME)) {
-            return new PrincipalDetails(getUser());
+    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+        if (userName.equals(USERNAME)) {
+            return new PrincipalDetails(getUserMock());
+        } else if (userName.equals(OAUTH_USER_NAME)) {
+            return new PrincipalDetails(getOAuthUserMock(), new HashMap<>());
         }
         return null;
     }

@@ -10,6 +10,7 @@ package com.dasd412.remake.api.controller.security.profile;
 
 import com.dasd412.remake.api.config.security.auth.PrincipalDetails;
 import com.dasd412.remake.api.controller.ApiResult;
+import com.dasd412.remake.api.controller.exception.OAuthChangePasswordException;
 import com.dasd412.remake.api.controller.exception.PasswordConfirmException;
 import com.dasd412.remake.api.controller.security.profile.dto.PasswordUpdateRequestDTO;
 import com.dasd412.remake.api.controller.security.profile.dto.ProfileUpdateRequestDTO;
@@ -93,6 +94,10 @@ public class ProfileRestController {
     @PutMapping("/profile/password")
     public ApiResult<?> updatePassword(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody @Valid PasswordUpdateRequestDTO dto) {
         logger.info("update password of user");
+
+        if (principalDetails.getWriter().getProvider() != null) {
+            return ApiResult.ERROR(new OAuthChangePasswordException("OAuth 로그인 유저는 비밀 번호를 변경할 수 없습니다."), HttpStatus.BAD_REQUEST);
+        }
 
         if (!dto.getPassword().equals(dto.getPasswordConfirm())) {
             return ApiResult.ERROR(new PasswordConfirmException("비밀 번호와 비밀 번호 확인이 동일하지 않습니다."), HttpStatus.BAD_REQUEST);

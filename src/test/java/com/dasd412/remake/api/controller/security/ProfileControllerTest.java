@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
@@ -178,7 +179,6 @@ public class ProfileControllerTest {
                         .content(new ObjectMapper().writeValueAsString(dto))
                         .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
-                .andDo(print())
                 .andExpect(jsonPath("$.success").value("true"))
                 .andExpect(jsonPath("$.response.diabetesPhase").value(DiabetesPhase.DIABETES.name()));
 
@@ -194,13 +194,48 @@ public class ProfileControllerTest {
 
         //when and then
         mockMvc.perform(delete(url).with(user(principalDetails)))
-                .andExpect(status().isOk())
-                .andDo(print());
+                .andExpect(status().isOk());
     }
 
     /*
     비밀 번호 변경하기 테스트
      */
+    @Test
+    public void changePasswordOfOAuthUser() throws Exception {
+        //given
+        Writer oAuthUser = Writer.builder()
+                .writerEntityId(EntityId.of(Writer.class, 1L))
+                .name("TEST-NAME")
+                .email("test@google.com")
+                .provider("google")
+                .providerId("1")
+                .password(null)
+                .role(Role.User)
+                .build();
+
+        writerRepository.save(oAuthUser);
+        PrincipalDetails oAuthPrincipalDetails = (PrincipalDetails) testUserDetailsService.loadUserByUsername(TestUserDetailsService.OAUTH_USER_NAME);
+
+        String url = "/profile/password";
+
+        String password = "test12345678";
+        String passwordConfirm = "test12345678";
+
+        PasswordUpdateRequestDTO dto = PasswordUpdateRequestDTO.builder()
+                .password(password)
+                .passwordConfirm(passwordConfirm)
+                .build();
+
+        //when and then
+        mockMvc.perform(put(url).with(user(oAuthPrincipalDetails))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dto)))
+                .andExpect(jsonPath("$.success").value("false"))
+                .andExpect(jsonPath("$.error.message").value("OAuth 로그인 유저는 비밀 번호를 변경할 수 없습니다."))
+                .andExpect(jsonPath("$.error.status").value(HttpStatus.BAD_REQUEST.value()));
+
+    }
+
     @Test
     public void passwordNotConfirm() throws Exception {
         //given
@@ -218,8 +253,7 @@ public class ProfileControllerTest {
         mockMvc.perform(put(url).with(user(principalDetails))
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(dto)))
-                .andExpect(status().isBadRequest())
-                .andDo(print());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -238,8 +272,7 @@ public class ProfileControllerTest {
         mockMvc.perform(put(url).with(user(principalDetails))
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(dto)))
-                .andExpect(status().isBadRequest())
-                .andDo(print());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -258,8 +291,7 @@ public class ProfileControllerTest {
         mockMvc.perform(put(url).with(user(principalDetails))
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(dto)))
-                .andExpect(status().isOk())
-                .andDo(print());
+                .andExpect(status().isOk());
 
         Writer found = writerRepository.findAll().get(0);
         assertThat(bCryptPasswordEncoder.matches(password, found.getPassword())).isTrue();
