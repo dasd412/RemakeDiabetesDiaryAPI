@@ -1,5 +1,5 @@
 /*
- * @(#)WriterService.java        1.1.2 2022/3/4
+ * @(#)WriterService.java        1.1.2 2022/3/6
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -31,7 +31,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * 사용자 회원 가입 로직을 수행하는 서비스 클래스
  *
  * @author 양영준
- * @version 1.1.2 2022년 3월 4일
+ * @version 1.1.2 2022년 3월 6일
  */
 @Service
 public class WriterService {
@@ -146,5 +146,19 @@ public class WriterService {
     public void updateTempPassword(String email, String userName, String tempPassWord) {
         checkArgument(RegexChecker.isRightEmail(email), "String must be pattern of email!!");
         writerRepository.updateTempPassword(email, userName, this.encodePassword(tempPassWord));
+    }
+
+    /**
+     * 비밀 번호 변경 메서드
+     *
+     * @param writerId    래퍼로 감싸진 작성자 id
+     * @param rawPassword 사용자가 입력한 새 비밀 번호 (인코딩 되야 함!)
+     */
+    @Transactional
+    public void updatePassword(EntityId<Writer, Long> writerId, String rawPassword) {
+        logger.info("update password!");
+        checkNotNull(writerId, "writerId must be provided");
+        /* 반드시 비밀번호를 인코딩해서 파라미터로 넘겨줘야 한다! */
+        writerRepository.updatePassword(writerId.getId(), this.encodePassword(rawPassword));
     }
 }

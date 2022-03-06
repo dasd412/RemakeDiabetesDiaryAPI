@@ -1,5 +1,5 @@
 /*
- * @(#)FindInfoTest.java        1.1.2 2022/3/5
+ * @(#)UserInfoTest.java        1.1.2 2022/3/6
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -34,15 +34,15 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * 컨트롤러 레이어를 거치지 않고 FindInfoService를 테스트하기 위한 클래스.
+ * 컨트롤러 레이어를 거치지 않고 유저의 정보 (프로필, 비밀 번호)등을 테스트하기 위한 클래스.
  *
  * @author 양영준
- * @version 1.1.2 2022년 3월 5일
+ * @version 1.1.2 2022년 3월 6일
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest()
 @TestPropertySource(locations = "classpath:application-test.properties")
-public class FindInfoTest {
+public class UserInfoTest {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -244,6 +244,33 @@ public class FindInfoTest {
          * 직접 제공하는 matches()를 이용하여 비교해야 한다.
          */
         assertThat(bCryptPasswordEncoder.matches(tempPassword, found.getPassword())).isTrue();
+    }
+
+
+    @Test
+    public void updateNewPassword() {
+        //given
+        String newPassword = "testPassword";
+        EntityId<Writer, Long> writerEntityId = EntityId.of(Writer.class, 1L);
+
+        Writer writer = Writer.builder()
+                .writerEntityId(writerEntityId)
+                .name("TEST-NAME")
+                .email("test@test.com")
+                .provider(null)
+                .providerId(null)
+                .password("test")
+                .role(Role.User)
+                .build();
+
+        writerRepository.save(writer);
+
+        //when
+        writerService.updatePassword(writerEntityId, newPassword);
+
+        //then
+        Writer found = writerRepository.findAll().get(0);
+        assertThat(bCryptPasswordEncoder.matches(newPassword, found.getPassword())).isTrue();
     }
 
 }

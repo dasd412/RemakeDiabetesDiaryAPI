@@ -1,5 +1,5 @@
 /*
- * @(#)WriterRepositoryCustom.java        1.1.2 2022/3/5
+ * @(#)WriterRepositoryCustom.java        1.1.2 2022/3/6
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -17,7 +17,7 @@ import java.util.Optional;
  * 작성자 리포지토리 상위 인터페이스. Querydsl을 이용하기 위해 구현하였다.
  *
  * @author 양영준
- * @version 1.1.2 2022년 3월 5일
+ * @version 1.1.2 2022년 3월 6일
  */
 public interface WriterRepositoryCustom {
 
@@ -69,8 +69,8 @@ public interface WriterRepositoryCustom {
 
     /**
      * @param writerId 로그인한 사용자 id
-     * @param password 변경하고자 하는 비밀 번호
+     * @param encodePassword 변경하고자 하는 비밀 번호 (인코딩 필수!)
      */
-    void updatePassword(Long writerId, String password);
+    void updatePassword(Long writerId, String encodePassword);
 
 }
