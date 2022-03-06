@@ -8,7 +8,7 @@
 
 package com.dasd412.remake.api.controller.security;
 
-import com.dasd412.remake.api.controller.security.writer.UserJoinRequestDTO;
+import com.dasd412.remake.api.controller.security.join.UserJoinRequestDTO;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;

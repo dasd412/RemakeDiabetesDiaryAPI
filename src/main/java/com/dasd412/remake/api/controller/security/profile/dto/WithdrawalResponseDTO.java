@@ -1,4 +1,4 @@
-package com.dasd412.remake.api.controller.security.domain_rest.dto.profile;
+package com.dasd412.remake.api.controller.security.profile.dto;
 
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;

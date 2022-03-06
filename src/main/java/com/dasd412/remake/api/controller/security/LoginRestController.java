@@ -10,7 +10,7 @@ package com.dasd412.remake.api.controller.security;
 import com.dasd412.remake.api.controller.ApiResult;
 import com.dasd412.remake.api.controller.exception.DuplicateEmailException;
 import com.dasd412.remake.api.controller.exception.DuplicateUserNameException;
-import com.dasd412.remake.api.controller.security.writer.UserJoinRequestDTO;
+import com.dasd412.remake.api.controller.security.join.UserJoinRequestDTO;
 import com.dasd412.remake.api.domain.diary.writer.Role;
 import com.dasd412.remake.api.service.security.WriterService;
 import org.slf4j.Logger;
@@ -44,7 +44,7 @@ public class LoginRestController {
      * @return 회원가입 정상 진행 여부
      */
     @PostMapping("/signup/user")
-    public ApiResult signup(@RequestBody @Valid UserJoinRequestDTO dto) {
+    public ApiResult<?> signup(@RequestBody @Valid UserJoinRequestDTO dto) {
         logger.info("writer join");
 
         try {

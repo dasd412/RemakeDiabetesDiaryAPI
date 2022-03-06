@@ -1,18 +1,19 @@
-package com.dasd412.remake.api.controller.security.domain_rest.dto.profile;
+package com.dasd412.remake.api.controller.security.profile.dto;
 
 import com.dasd412.remake.api.domain.diary.profile.DiabetesPhase;
-import com.dasd412.remake.api.domain.diary.profile.Profile;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Getter
-public class ProfileUpdateResponseDTO {
+public class ProfileUpdateRequestDTO {
 
-    private final DiabetesPhase diabetesPhase;
+    private DiabetesPhase diabetesPhase;
 
-    public ProfileUpdateResponseDTO(Profile profile) {
-        this.diabetesPhase = profile.getDiabetesPhase();
+    public ProfileUpdateRequestDTO(){}
+
+    public ProfileUpdateRequestDTO(DiabetesPhase diabetesPhase) {
+        this.diabetesPhase = diabetesPhase;
     }
 
     @Override

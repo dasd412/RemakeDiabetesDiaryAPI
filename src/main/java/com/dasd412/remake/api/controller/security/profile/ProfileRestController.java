@@ -5,13 +5,13 @@
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
  * All rights reserved.
  */
-package com.dasd412.remake.api.controller.security.domain_rest;
+package com.dasd412.remake.api.controller.security.profile;
 
 import com.dasd412.remake.api.config.security.auth.PrincipalDetails;
 import com.dasd412.remake.api.controller.ApiResult;
-import com.dasd412.remake.api.controller.security.domain_rest.dto.profile.ProfileUpdateRequestDTO;
-import com.dasd412.remake.api.controller.security.domain_rest.dto.profile.ProfileUpdateResponseDTO;
-import com.dasd412.remake.api.controller.security.domain_rest.dto.profile.WithdrawalResponseDTO;
+import com.dasd412.remake.api.controller.security.profile.dto.ProfileUpdateRequestDTO;
+import com.dasd412.remake.api.controller.security.profile.dto.ProfileUpdateResponseDTO;
+import com.dasd412.remake.api.controller.security.profile.dto.WithdrawalResponseDTO;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.profile.Profile;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.view.RedirectView;
 
 /**
  * 프로필 갱신과 회원 탈퇴를 처리하는 RestController
