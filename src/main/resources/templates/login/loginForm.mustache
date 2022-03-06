@@ -31,10 +31,11 @@
         </div>
 
         <div class="input-field">
+
             <label for="username">user name</label>
             <input type="text" name="username" id="username">
             <label for="password">Password</label>
-            <input type="password" name="password" id="password"/>
+            <input type="password" name="password" id="password" autocomplete="off"/>
             <input type="submit" value="Login"/>
             <input type="button" value="아이디 찾기" id="callModalIdBtn"/>
             <input type="button" value="비밀번호 찾기" id="callModalPasswordBtn"/>
@@ -62,7 +63,8 @@
                     <hr>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-danger btn-default pull-left" data-dismiss="modal" id="cancelFindIdBtn"><span
+                    <button type="submit" class="btn btn-danger btn-default pull-left" data-dismiss="modal"
+                            id="cancelFindIdBtn"><span
                             class="glyphicon glyphicon-remove"></span> 취소하기
                     </button>
                 </div>
@@ -99,7 +101,8 @@
                     <hr>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-danger btn-default pull-left" data-dismiss="modal" id="cancelFindPasswordBtn"><span
+                    <button type="submit" class="btn btn-danger btn-default pull-left" data-dismiss="modal"
+                            id="cancelFindPasswordBtn"><span
                             class="glyphicon glyphicon-remove"></span> 취소하기
                     </button>
                 </div>

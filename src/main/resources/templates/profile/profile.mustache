@@ -89,13 +89,15 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="passwordInput">비밀 번호</label>
-                        <input type="password" class="form-control" name="passwordInput" id="passwordInput"
-                               placeholder="최소 8자 이상 입력해야 합니다."/>
+                        <form>
+                            <label for="passwordInput">비밀 번호</label>
+                            <input type="password" class="form-control" id="passwordInput"
+                                   placeholder="최소 8자 이상 입력해야 합니다." autocomplete="off"/>
 
-                        <label for="passwordConfirmInput">비밀 번호 확인</label>
-                        <input type="password" class="form-control" name="passwordConfirmInput"
-                               id="passwordConfirmInput" placeholder="최소 8자 이상 입력해야 합니다."/>
+                            <label for="passwordConfirmInput">비밀 번호 확인</label>
+                            <input type="password" class="form-control"
+                                   id="passwordConfirmInput" placeholder="최소 8자 이상 입력해야 합니다." autocomplete="off"/>
+                        </form>
                     </div>
                 </div> <!-- 모달 본문 -->
 
@@ -114,10 +116,12 @@
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">회원 탈퇴 여부</h4>
+                    <h4 class="modal-title">회원 탈퇴</h4>
                 </div>
                 <div class="modal-body">
-                    <p>정말로 회원 탈퇴하시겠습니까?</p>
+                    <label for="withdrawConfirm">탈퇴 확인 서명 (자신의 이메일을 입력하세요.)</label>
+                    <input type="text" class="form-control"
+                           id="withdrawConfirm" placeholder={{userEmail}} />
                 </div> <!-- 모달 본문 -->
 
                 <div class="modal-footer">

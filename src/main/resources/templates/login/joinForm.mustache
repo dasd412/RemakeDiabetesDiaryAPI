@@ -5,16 +5,17 @@
         <div class="head">Sign up</div>
 
         <div class="input-field-join">
-            <label for="username">user name</label>
-            <input type="text" name="username" id="username">
-            <label for="email">Email</label>
-            <input type="email" name="email" id="email"/>
-            <label for="password">Password</label>
-            <input type="password" name="password" id="password"/>
+            <form>
+                <label for="username">user name</label>
+                <input type="text" name="username" id="username">
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email"/>
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" autocomplete="off"/>
+            </form>
             <input type="submit" value="회원 가입" id="signupBtn"/>
             <input type="button" value="로그인 하러 가기" id="goLoginBtn"/>
         </div>
-
     </div>
 
     <script src="/js/auth/infoValidator.js"></script>
