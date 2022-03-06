@@ -1,5 +1,5 @@
 /*
- * @(#)ProfileControllerTest.java        1.1.1 2022/2/28
+ * @(#)ProfileControllerTest.java        1.1.2 2022/3/5
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -12,6 +12,7 @@ import com.dasd412.remake.api.config.security.auth.PrincipalDetails;
 import com.dasd412.remake.api.controller.security.domain_rest.TestUserDetailsService;
 import com.dasd412.remake.api.controller.security.domain_rest.dto.diary.SecurityDiaryPostRequestDTO;
 import com.dasd412.remake.api.controller.security.domain_rest.dto.diary.SecurityFoodDTO;
+import com.dasd412.remake.api.controller.security.profile.dto.PasswordUpdateRequestDTO;
 import com.dasd412.remake.api.controller.security.profile.dto.ProfileUpdateRequestDTO;
 import com.dasd412.remake.api.controller.security.domain_view.dto.ProfileResponseDTO;
 import com.dasd412.remake.api.domain.diary.EntityId;
@@ -31,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -53,7 +55,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * @author 양영준
- * @version 1.1.1 2022년 2월 28일
+ * @version 1.1.2 2022년 3월 5일
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -68,6 +70,9 @@ public class ProfileControllerTest {
 
     @Autowired
     private ProfileRepository profileRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private final TestUserDetailsService testUserDetailsService = new TestUserDetailsService();
 
@@ -191,5 +196,73 @@ public class ProfileControllerTest {
         mockMvc.perform(delete(url).with(user(principalDetails)))
                 .andExpect(status().isOk())
                 .andDo(print());
+    }
+
+    /*
+    비밀 번호 변경하기 테스트
+     */
+    @Test
+    public void passwordNotConfirm() throws Exception {
+        //given
+        String url = "/profile/password";
+
+        String password = "test1";
+        String passwordConfirm = "test2";
+
+        PasswordUpdateRequestDTO dto = PasswordUpdateRequestDTO.builder()
+                .password(password)
+                .passwordConfirm(passwordConfirm)
+                .build();
+
+        //when and then
+        mockMvc.perform(put(url).with(user(principalDetails))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dto)))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    public void invalidSizePassword() throws Exception {
+        String url = "/profile/password";
+
+        String password = "test";
+        String passwordConfirm = "test";
+
+        PasswordUpdateRequestDTO dto = PasswordUpdateRequestDTO.builder()
+                .password(password)
+                .passwordConfirm(passwordConfirm)
+                .build();
+
+        //when and then
+        mockMvc.perform(put(url).with(user(principalDetails))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dto)))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    public void updatePassword() throws Exception {
+        String url = "/profile/password";
+
+        String password = "test12345678";
+        String passwordConfirm = "test12345678";
+
+        PasswordUpdateRequestDTO dto = PasswordUpdateRequestDTO.builder()
+                .password(password)
+                .passwordConfirm(passwordConfirm)
+                .build();
+
+        //when and then
+        mockMvc.perform(put(url).with(user(principalDetails))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dto)))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        Writer found = writerRepository.findAll().get(0);
+        assertThat(bCryptPasswordEncoder.matches(password, found.getPassword())).isTrue();
+
     }
 }
