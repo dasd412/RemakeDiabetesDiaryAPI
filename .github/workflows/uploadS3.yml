@@ -26,6 +26,14 @@ jobs:
       with:
         java-version: '1.8'
 
+      # 의존성 캐싱으로 빌드 시간을 더 빠르게 해보자
+    - name: Cache Maven packages
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+
     - name: Grant execute permission for mavenw
       run: chmod +x mvnw
       
