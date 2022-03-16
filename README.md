@@ -1,6 +1,6 @@
 # __Diabetes Diary API Remake__
 
-## 버전 : 1.1.2
+## 버전 : 1.1.5
 
 ***
 
@@ -23,13 +23,63 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 6. 음식 검색 게시판 ✅
 7. 프로필 및 회원 탈퇴 ✅
 8. 아이디 ,비밀 번호 찾기 ✅
-9. 도커 적용 (진행중)
-10. 시큐어 코딩 (예정)
-11. JWT 적용 (예정)
-12. ???
+9. JWT 적용(예정)
+
+***
+### 사용 기술
+
++ SpringBoot
++ JPA
++ Querydsl
++ MySql
++ Spring Security
++ Junit
++ JavaMail
++ Mustache, css
++ JQuery
++ AWS (ec2, route 53, ACM, rds, code deploy )
++ travis ci [trial plan 만료로 인해 사용 중지]
++ github actions
+
+### 사용 라이브러리
+
++ chart.js
++ datepicker.js
++ bootstrap
 
 ***
 
+
+### 테스트 커버리지 ###
+
++ (2022-03-06 전체 패키지 기준)
+  + 테스트 총 175개
+  + 클래스 커버리지 93% (128/137)
+  + 메소드 커버리지 75% (575/765)
+  + 라인 커버리지 74% (1783/2378)
+
+
++ (2022-03-06 domain 패키지 기준)
+  + 테스트 총 99개
+  + 클래스 커버리지 100% (27/27)
+  + 메소드 커버리지 85% (160/187)
+  + 라인 커버리지 84% (523/622)
+
+
++ (2022-03-06 controller 패키지 기준)
+  + 테스트 총 76개
+  + 클래스 커버리지 93% (80/86)
+  + 메소드 커버리지 72% (331/459)
+  + 라인 커버리지 68% (846/1243)
+
+***
+
+### 포트폴리오 코드 예시 및 설명
++ [JPA 및 Querydsl 사용 경험 정리](https://github.com/dasd412/interview_note_for_myself/blob/master/JPA/JPA%20%EC%82%AC%EC%9A%A9%20%EA%B2%BD%ED%97%98%20%EC%A0%95%EB%A6%AC.md)
++ [도메인 테스트 코드 작성하기](https://github.com/dasd412/interview_note_for_myself/blob/master/TestCode/%EB%8F%84%EB%A9%94%EC%9D%B8%20%ED%85%8C%EC%8A%A4%ED%8A%B8.md)
++ [컨트롤러 레이어 테스트 코드 작성하기](https://github.com/dasd412/interview_note_for_myself/blob/master/TestCode/%EC%BB%A8%ED%8A%B8%EB%A1%A4%EB%9F%AC%20%ED%85%8C%EC%8A%A4%ED%8A%B8.md)
+
+***
 ### API end point
 
 #### Controller
@@ -111,7 +161,6 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 ***
 
 ### 진행 상황 ###
-
 + 데이터 재설계 및 JPA 적용
     + DB 스키마 재설계
     + JPA 연관관계 재맵핑
@@ -172,59 +221,12 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 
 ***
 
-### 테스트 커버리지 ###
-
-+ (2022-03-06 전체 패키지 기준)
-    + 테스트 총 175개
-    + 클래스 커버리지 93% (128/137)
-    + 메소드 커버리지 75% (575/765)
-    + 라인 커버리지 74% (1783/2378)
-
-
-+ (2022-03-06 domain 패키지 기준)
-    + 테스트 총 99개
-    + 클래스 커버리지 100% (27/27)
-    + 메소드 커버리지 85% (160/187)
-    + 라인 커버리지 84% (523/622)
-
-
-+ (2022-03-06 controller 패키지 기준)
-    + 테스트 총 76개
-    + 클래스 커버리지 93% (80/86)
-    + 메소드 커버리지 72% (331/459)
-    + 라인 커버리지 68% (846/1243)
-
-***
-
 ### 개선 사항
 
 + 복합키의 장점을 못 살렸음.
 + Nginx 무중단 배포 실패. (아마 elb와 충돌한 것 같다.)
 + 음식 엔티티 저장 로직의 비효율 개선 필요
 + 크롬 브라우저 웹 사이트 보안 인증 및 사이트 보안 강화 필요
-***
-
-### 사용 기술
-
-+ SpringBoot
-+ JPA
-+ Querydsl
-+ MySql
-+ Spring Security
-+ Junit
-+ JavaMail
-+ Mustache, css
-+ JQuery
-+ AWS (ec2, route 53, ACM, rds, code deploy )
-+ travis ci [trial plan 만료로 인해 사용 중지]
-+ github actions
-
-### 사용 라이브러리
-
-+ chart.js
-+ datepicker.js
-+ bootstrap
-
 ***
 
 ### 본인 작성이 아닌 것.
