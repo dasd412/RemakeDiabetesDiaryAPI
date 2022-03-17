@@ -74,10 +74,14 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 
 ***
 
-### 포트폴리오 코드 예시 및 설명
+### 본인 코드 작성 예시 및 설명
 + [JPA 및 Querydsl 사용 경험 정리](https://github.com/dasd412/interview_note_for_myself/blob/master/JPA/JPA%20%EC%82%AC%EC%9A%A9%20%EA%B2%BD%ED%97%98%20%EC%A0%95%EB%A6%AC.md)
 + [도메인 테스트 코드 작성하기](https://github.com/dasd412/interview_note_for_myself/blob/master/TestCode/%EB%8F%84%EB%A9%94%EC%9D%B8%20%ED%85%8C%EC%8A%A4%ED%8A%B8.md)
 + [컨트롤러 레이어 테스트 코드 작성하기](https://github.com/dasd412/interview_note_for_myself/blob/master/TestCode/%EC%BB%A8%ED%8A%B8%EB%A1%A4%EB%9F%AC%20%ED%85%8C%EC%8A%A4%ED%8A%B8.md)
++ [오타에서 안전한 코드 만들기](https://github.com/dasd412/interview_note_for_myself/blob/master/CodeDesign/%EC%98%A4%ED%83%80%EC%97%90%EC%84%9C%20%EC%95%88%EC%A0%84%ED%95%9C%20%EC%BD%94%EB%93%9C%20%EB%A7%8C%EB%93%A4%EA%B8%B0.md)
++ [스프링 시큐리티 적용하기](https://velog.io/@dasd412/2.%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85-%EB%A7%8C%EB%93%A4%EA%B8%B0)
++ [일지 기능 구현하기](https://velog.io/@dasd412/3.%EA%B8%B0%EB%B3%B8-%EA%B8%B0%EB%8A%A5-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0-%EC%9D%BC%EC%A7%80-%EC%9E%91%EC%84%B1%ED%95%98%EA%B8%B0)
++ [배포](https://velog.io/@dasd412/4.-%EB%B0%B0%ED%8F%AC%ED%95%98%EA%B8%B0maven-%ED%94%8C%EB%9F%AC%EA%B7%B8%EC%9D%B8-%EC%B6%94%EA%B0%80)
 
 ***
 ### API end point
