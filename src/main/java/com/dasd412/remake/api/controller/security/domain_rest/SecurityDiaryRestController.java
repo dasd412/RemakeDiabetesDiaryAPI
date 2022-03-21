@@ -1,5 +1,5 @@
 /*
- * @(#)SecurityDiaryRestController.java        1.0.5 2022/2/5
+ * @(#)SecurityDiaryRestController.java        1.1.6 2022/3/21
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -23,11 +23,11 @@ import com.dasd412.remake.api.util.DateStringJoiner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  * 로그인한 사용자들이 일지를 "사용" (작성, 수정, 삭제 등...)할 때의 일을 처리하는 RestController
  *
  * @author 양영준
- * @version 1.0.5 2022년 2월 5일
+ * @version 1.1.6 2022년 3월 21일
  */
 @RestController
 public class SecurityDiaryRestController {
@@ -108,6 +108,7 @@ public class SecurityDiaryRestController {
                                 EntityId.of(Diet.class, dinner.getDietId()),
                                 elem.getFoodName(), elem.getAmount(), elem.getAmountUnit()
                         ));
+
         return ApiResult.OK(new SecurityDiaryPostResponseDTO(diaryId));
     }
 

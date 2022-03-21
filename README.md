@@ -1,6 +1,6 @@
 # __Diabetes Diary API Remake__
 
-## 버전 : 1.1.5
+## 버전 : 1.1.6
 
 ***
 
@@ -23,7 +23,8 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 6. 음식 검색 게시판 ✅
 7. 프로필 및 회원 탈퇴 ✅
 8. 아이디 ,비밀 번호 찾기 ✅
-9. JWT 적용(예정)
+9. 임시 저장 기능 구현 (예정)
+10. JWT 적용(예정)
 
 ***
 ### 사용 기술
@@ -34,7 +35,6 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 + MySql
 + Spring Security
 + Junit
-+ JavaMail
 + Mustache, css
 + JQuery
 + AWS (ec2, route 53, ACM, rds, code deploy )
@@ -42,7 +42,7 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 + github actions
 
 ### 사용 라이브러리
-
++ JavaMail
 + chart.js
 + datepicker.js
 + bootstrap
@@ -82,6 +82,7 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 + [스프링 시큐리티 적용하기](https://velog.io/@dasd412/2.%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85-%EB%A7%8C%EB%93%A4%EA%B8%B0)
 + [일지 기능 구현하기](https://velog.io/@dasd412/3.%EA%B8%B0%EB%B3%B8-%EA%B8%B0%EB%8A%A5-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0-%EC%9D%BC%EC%A7%80-%EC%9E%91%EC%84%B1%ED%95%98%EA%B8%B0)
 + [배포](https://velog.io/@dasd412/4.-%EB%B0%B0%ED%8F%AC%ED%95%98%EA%B8%B0maven-%ED%94%8C%EB%9F%AC%EA%B7%B8%EC%9D%B8-%EC%B6%94%EA%B0%80)
++ [JPA batch insert 실험하기](https://velog.io/@dasd412/JPA-Save-%EC%B5%9C%EC%A0%81%ED%99%94-%EC%8B%A4%ED%97%98-batch-insert)
 
 ***
 ### API end point
@@ -180,7 +181,9 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
     + 음식 엔티티에 수량 단위 추가 [요구사항 반영]
     + 중복 QueryDSL 코드 BooleanBuilder로 리팩토링. [BooleanBuider를 활용한 동적 쿼리 생성]
     + 프로필 엔티티 추가 및 작성자 엔티티와 1대1 관계 구성
-
+    + 엔티티 저장 코드 최적화 수행(예정)
+    + 일지 내용 임시 저장 기능 구현하기(예정)
+  
 
 + 스프링 시큐리티
     + 일반 회원가입과 로그인 구현
@@ -189,7 +192,7 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
     + 도메인 컨트롤러 매핑 url 에서 작성자 정보 제거하고 세션으로 판단하기
     + 회원 탈퇴 기능 구현 [회원 탈퇴 시 서명 필요]
     + 아이디 찾기 , 비밀번호 찾기 구현
-    + 시큐어 코딩(예정)
+    + JWT 적용 (예정)
 
 
 + 뷰
@@ -231,6 +234,7 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 + Nginx 무중단 배포 실패. (아마 elb와 충돌한 것 같다.)
 + 음식 엔티티 저장 로직의 비효율 개선 필요
 + 크롬 브라우저 웹 사이트 보안 인증 및 사이트 보안 강화 필요
++ 도커를 맛봤지만, 어떻게 적용해야 할지 모르겠다.
 ***
 
 ### 본인 작성이 아닌 것.
