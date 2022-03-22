@@ -64,50 +64,7 @@ public class SecurityDiaryRestController {
     public ApiResult<SecurityDiaryPostResponseDTO> postDiary(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody @Valid SecurityDiaryPostRequestDTO dto) {
         logger.info("post diary with authenticated user");
 
-        Long writerId = principalDetails.getWriter().getId();
-
-        /*JSON 직렬화가 LocalDateTime 에는 적용이 안되서 작성한 코드. */
-        DateStringJoiner dateStringJoiner = DateStringJoiner.builder()
-                .year(dto.getYear()).month(dto.getMonth()).day(dto.getDay())
-                .hour(dto.getHour()).minute(dto.getMinute()).second(dto.getSecond())
-                .build();
-
-        LocalDateTime writtenTime = dateStringJoiner.convertLocalDateTime();
-
-        /* 혈당 일지 저장 */
-        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, writerId), dto.getFastingPlasmaGlucose(), dto.getRemark(), writtenTime);
-
-        Long diaryId = diary.getId();
-
-        /* 아침 점심 저녁 식단 저장 */
-        Diet breakFast = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, writerId), EntityId.of(DiabetesDiary.class, diaryId), EatTime.BreakFast, dto.getBreakFastSugar());
-        Diet lunch = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, writerId), EntityId.of(DiabetesDiary.class, diaryId), EatTime.Lunch, dto.getLunchSugar());
-        Diet dinner = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, writerId), EntityId.of(DiabetesDiary.class, diaryId), EatTime.Dinner, dto.getDinnerSugar());
-
-        /* 아침 음식 저장 */
-        dto.getBreakFastFoods()
-                .forEach(elem -> saveDiaryService.saveFoodAndAmountOfWriterById
-                        (EntityId.of(Writer.class, writerId),
-                                EntityId.of(DiabetesDiary.class, diaryId),
-                                EntityId.of(Diet.class, breakFast.getDietId()),
-                                elem.getFoodName(), elem.getAmount(), elem.getAmountUnit()
-                        ));
-        /* 점심 음식 저장 */
-        dto.getLunchFoods()
-                .forEach(elem -> saveDiaryService.saveFoodAndAmountOfWriterById
-                        (EntityId.of(Writer.class, writerId),
-                                EntityId.of(DiabetesDiary.class, diaryId),
-                                EntityId.of(Diet.class, lunch.getDietId()),
-                                elem.getFoodName(), elem.getAmount(), elem.getAmountUnit()
-                        ));
-        /* 식단 음식 저장 */
-        dto.getDinnerFoods()
-                .forEach(elem -> saveDiaryService.saveFoodAndAmountOfWriterById
-                        (EntityId.of(Writer.class, writerId),
-                                EntityId.of(DiabetesDiary.class, diaryId),
-                                EntityId.of(Diet.class, dinner.getDietId()),
-                                elem.getFoodName(), elem.getAmount(), elem.getAmountUnit()
-                        ));
+        Long diaryId = saveDiaryService.postDiary(principalDetails, dto);
 
         return ApiResult.OK(new SecurityDiaryPostResponseDTO(diaryId));
     }
