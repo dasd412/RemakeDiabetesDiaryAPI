@@ -121,7 +121,7 @@ public class SaveDiaryService {
 
     /**
      * 1.17 버전 부터 [테스트 환경]에서만 사용
-     *
+     * @deprecated
      * @param name  유저 네임
      * @param email 이메일
      * @param role  권한
@@ -137,7 +137,7 @@ public class SaveDiaryService {
 
     /**
      * 1.17 버전 부터 [테스트 환경]에서만 사용
-     *
+     * @deprecated
      * @param writerEntityId       작성자 id
      * @param fastingPlasmaGlucose 공복 혈당
      * @param remark               비고
@@ -158,7 +158,7 @@ public class SaveDiaryService {
 
     /**
      * 1.17 버전 부터 [테스트 환경]에서만 사용
-     *
+     * @deprecated
      * @param writerEntityId 작성자 id
      * @param diaryEntityId  일지 id
      * @param eatTime        식사 시간
@@ -181,7 +181,7 @@ public class SaveDiaryService {
 
     /**
      * 1.17 버전 부터 [테스트 환경]에서만 사용
-     *
+     * @deprecated
      * @param writerEntityId 작성자 id
      * @param diaryEntityId  일지 id
      * @param dietEntityId   식사 id
@@ -205,7 +205,7 @@ public class SaveDiaryService {
 
     /**
      * 1.17 버전 부터 [테스트 환경]에서만 사용
-     *
+     * @deprecated
      * @param writerEntityId 작성자 id
      * @param diaryEntityId  일지 id
      * @param dietEntityId   식사 id
