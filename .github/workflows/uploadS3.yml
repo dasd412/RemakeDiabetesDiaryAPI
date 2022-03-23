@@ -39,8 +39,7 @@ jobs:
       
       # 빌드하기
       - name: Maven Build with external properties
-        run: ./mvnw clean package -Dspring.config.location=classpath:/application.properties,/home/ec2-user/app/application-oauth.properties,/home/ec2-user/app/application-real-db.properties,/home/ec2-user/app/application-email.properties \
-  -Dspring.profiles.active=real
+        run: ./mvnw clean package -Dspring.config.location=classpath:/application.properties,/home/ec2-user/app/application-oauth.properties,/home/ec2-user/app/application-real-db.properties,/home/ec2-user/app/application-email.properties \ -Dspring.profiles.active=real
 
   # 전송할 파일을 담을 디렉토리 생성
   - name: Make directory for delivery
