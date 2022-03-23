@@ -1,5 +1,5 @@
 /*
- * @(#)SecurityDiaryRestController.java        1.1.6 2022/3/21
+ * @(#)SecurityDiaryRestController.java        1.1.7 2022/3/23
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -19,11 +19,9 @@ import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.service.domain.FindDiaryService;
 import com.dasd412.remake.api.service.domain.SaveDiaryService;
 import com.dasd412.remake.api.service.domain.UpdateDeleteDiaryService;
-import com.dasd412.remake.api.util.DateStringJoiner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -36,7 +34,7 @@ import java.util.stream.Collectors;
  * 로그인한 사용자들이 일지를 "사용" (작성, 수정, 삭제 등...)할 때의 일을 처리하는 RestController
  *
  * @author 양영준
- * @version 1.1.6 2022년 3월 21일
+ * @version 1.1.7 2022년 3월 23일
  */
 @RestController
 public class SecurityDiaryRestController {
@@ -64,50 +62,7 @@ public class SecurityDiaryRestController {
     public ApiResult<SecurityDiaryPostResponseDTO> postDiary(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody @Valid SecurityDiaryPostRequestDTO dto) {
         logger.info("post diary with authenticated user");
 
-        Long writerId = principalDetails.getWriter().getId();
-
-        /*JSON 직렬화가 LocalDateTime 에는 적용이 안되서 작성한 코드. */
-        DateStringJoiner dateStringJoiner = DateStringJoiner.builder()
-                .year(dto.getYear()).month(dto.getMonth()).day(dto.getDay())
-                .hour(dto.getHour()).minute(dto.getMinute()).second(dto.getSecond())
-                .build();
-
-        LocalDateTime writtenTime = dateStringJoiner.convertLocalDateTime();
-
-        /* 혈당 일지 저장 */
-        DiabetesDiary diary = saveDiaryService.saveDiaryOfWriterById(EntityId.of(Writer.class, writerId), dto.getFastingPlasmaGlucose(), dto.getRemark(), writtenTime);
-
-        Long diaryId = diary.getId();
-
-        /* 아침 점심 저녁 식단 저장 */
-        Diet breakFast = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, writerId), EntityId.of(DiabetesDiary.class, diaryId), EatTime.BreakFast, dto.getBreakFastSugar());
-        Diet lunch = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, writerId), EntityId.of(DiabetesDiary.class, diaryId), EatTime.Lunch, dto.getLunchSugar());
-        Diet dinner = saveDiaryService.saveDietOfWriterById(EntityId.of(Writer.class, writerId), EntityId.of(DiabetesDiary.class, diaryId), EatTime.Dinner, dto.getDinnerSugar());
-
-        /* 아침 음식 저장 */
-        dto.getBreakFastFoods()
-                .forEach(elem -> saveDiaryService.saveFoodAndAmountOfWriterById
-                        (EntityId.of(Writer.class, writerId),
-                                EntityId.of(DiabetesDiary.class, diaryId),
-                                EntityId.of(Diet.class, breakFast.getDietId()),
-                                elem.getFoodName(), elem.getAmount(), elem.getAmountUnit()
-                        ));
-        /* 점심 음식 저장 */
-        dto.getLunchFoods()
-                .forEach(elem -> saveDiaryService.saveFoodAndAmountOfWriterById
-                        (EntityId.of(Writer.class, writerId),
-                                EntityId.of(DiabetesDiary.class, diaryId),
-                                EntityId.of(Diet.class, lunch.getDietId()),
-                                elem.getFoodName(), elem.getAmount(), elem.getAmountUnit()
-                        ));
-        /* 식단 음식 저장 */
-        dto.getDinnerFoods()
-                .forEach(elem -> saveDiaryService.saveFoodAndAmountOfWriterById
-                        (EntityId.of(Writer.class, writerId),
-                                EntityId.of(DiabetesDiary.class, diaryId),
-                                EntityId.of(Diet.class, dinner.getDietId()),
-                                elem.getFoodName(), elem.getAmount(), elem.getAmountUnit()
-                        ));
+        Long diaryId = saveDiaryService.postDiaryWithEntities(principalDetails, dto);
 
         return ApiResult.OK(new SecurityDiaryPostResponseDTO(diaryId));
     }
@@ -120,70 +75,10 @@ public class SecurityDiaryRestController {
     @PutMapping("/api/diary/user/diabetes-diary")
     public ApiResult<SecurityDiaryUpdateResponseDTO> updateDiary(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody SecurityDiaryUpdateDTO dto) {
         logger.info("update diabetes diary from browser");
-        logger.info(dto.toString());
 
-        EntityId<Writer, Long> writerLongEntityId = EntityId.of(Writer.class, principalDetails.getWriter().getId());
-        EntityId<DiabetesDiary, Long> diabetesDiaryLongEntityId = EntityId.of(DiabetesDiary.class, dto.getDiaryId());
-        EntityId<Diet, Long> breakFastEntityId = EntityId.of(Diet.class, dto.getBreakFastId());
-        EntityId<Diet, Long> lunchEntityId = EntityId.of(Diet.class, dto.getLunchId());
-        EntityId<Diet, Long> dinnerEntityId = EntityId.of(Diet.class, dto.getDinnerId());
+        Long diaryId= updateDeleteDiaryService.updateDiaryWithEntities(principalDetails,dto);
 
-        /* 혈당 일지 변경 감지 되었으면 수정. */
-        if (dto.isDiaryDirty()) {
-            updateDeleteDiaryService.updateDiary(writerLongEntityId, diabetesDiaryLongEntityId, dto.getFastingPlasmaGlucose(), dto.getRemark());
-        }
-
-        /* 아침 식단 변경 감지 되었으면 수정 */
-        if (dto.isBreakFastDirty()) {
-            updateDeleteDiaryService.updateDiet(writerLongEntityId, diabetesDiaryLongEntityId, breakFastEntityId, EatTime.BreakFast, dto.getBreakFastSugar());
-        }
-
-        /* 점심 식단 변경 감지 되었으면 수정 */
-        if (dto.isLunchDirty()) {
-            updateDeleteDiaryService.updateDiet(writerLongEntityId, diabetesDiaryLongEntityId, lunchEntityId, EatTime.Lunch, dto.getLunchSugar());
-        }
-
-        /* 저녁 식단 변경 감지 되었으면 수정 */
-        if (dto.isDinnerDirty()) {
-            updateDeleteDiaryService.updateDiet(writerLongEntityId, diabetesDiaryLongEntityId, dinnerEntityId, EatTime.Dinner, dto.getDinnerSugar());
-        }
-
-        /* 기존 음식 엔티티 삭제 ( in (id) 벌크 삭제) */
-        List<SecurityFoodForUpdateDTO> allOldFoods = new ArrayList<>();
-        allOldFoods.addAll(dto.getOldBreakFastFoods());
-        allOldFoods.addAll(dto.getOldLunchFoods());
-        allOldFoods.addAll(dto.getOldDinnerFoods());
-
-        if (allOldFoods.size() > 0) {
-            List<EntityId<Food, Long>> foodEntityIds = allOldFoods.stream().map(elem -> EntityId.of(Food.class, elem.getId())).collect(Collectors.toList());
-            updateDeleteDiaryService.bulkDeleteFoods(foodEntityIds);
-        }
-
-        /* 음식 엔티티 새로이 생성 */
-        dto.getNewBreakFastFoods()
-                .forEach(elem -> saveDiaryService.saveFoodAndAmountOfWriterById
-                        (writerLongEntityId,
-                                diabetesDiaryLongEntityId,
-                                breakFastEntityId,
-                                elem.getFoodName(), elem.getAmount(), elem.getAmountUnit()
-                        ));
-
-        dto.getNewLunchFoods()
-                .forEach(elem -> saveDiaryService.saveFoodAndAmountOfWriterById
-                        (writerLongEntityId,
-                                diabetesDiaryLongEntityId,
-                                lunchEntityId,
-                                elem.getFoodName(), elem.getAmount(), elem.getAmountUnit()
-                        ));
-
-        dto.getNewDinnerFoods()
-                .forEach(elem -> saveDiaryService.saveFoodAndAmountOfWriterById
-                        (writerLongEntityId,
-                                diabetesDiaryLongEntityId,
-                                dinnerEntityId,
-                                elem.getFoodName(), elem.getAmount(), elem.getAmountUnit()
-                        ));
-        return ApiResult.OK(new SecurityDiaryUpdateResponseDTO(dinnerEntityId.getId()));
+        return ApiResult.OK(new SecurityDiaryUpdateResponseDTO(diaryId));
     }
 
     /**
@@ -195,6 +90,7 @@ public class SecurityDiaryRestController {
     @DeleteMapping("/api/diary/user/diabetes-diary/{diaryId}")
     public void bulkDeleteDiary(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable Long diaryId) {
         logger.info("bulk delete Diabetes Diary from browser");
+
         updateDeleteDiaryService.deleteDiary(EntityId.of(Writer.class, principalDetails.getWriter().getId()), EntityId.of(DiabetesDiary.class, diaryId));
     }
 
