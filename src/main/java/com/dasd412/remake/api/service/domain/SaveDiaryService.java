@@ -1,5 +1,5 @@
 /*
- * @(#)SaveDiaryService.java        1.1.7 2022/3/22
+ * @(#)SaveDiaryService.java        1.1.7 2022/3/23
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -40,7 +40,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * 저장 로직을 수행하는 서비스 클래스
  *
  * @author 양영준
- * @version 1.1.7 2022년 3월 22일
+ * @version 1.1.7 2022년 3월 23일
  */
 @Service
 public class SaveDiaryService {
@@ -141,7 +141,7 @@ public class SaveDiaryService {
      * @return 작성된 일지의 id
      */
     @Transactional
-    public Long postDiary(PrincipalDetails principalDetails, SecurityDiaryPostRequestDTO dto) {
+    public Long postDiaryWithEntities(PrincipalDetails principalDetails, SecurityDiaryPostRequestDTO dto) {
         logger.info("post diary in service logic");
         checkNotNull(principalDetails, "principalDetails must be provided");
 
