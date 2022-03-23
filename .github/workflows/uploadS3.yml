@@ -15,7 +15,7 @@ jobs:
   build:
     # 실행 환경
     runs-on: ubuntu-latest
-    
+
     # task의 순서 명시
     steps:
       - uses: actions/checkout@v2
@@ -36,49 +36,48 @@ jobs:
 
       - name: Grant execute permission for mavenw
         run: chmod +x mvnw
-      
+
       # 빌드하기
-      - name: Maven Build with external properties
-        run: ./mvnw clean package -Dspring.config.location=classpath:/application.properties,/home/ec2-user/app/application-oauth.properties,/home/ec2-user/app/application-real-db.properties,/home/ec2-user/app/application-email.properties \ -Dspring.profiles.active=real
+      - name: Build with Maven
+        run: ./mvnw clean package ./mvnw clean package -Dspring.config.location=classpath:/application.properties,/home/ec2-user/app/application-oauth.properties,/home/ec2-user/app/application-real-db.properties,/home/ec2-user/app/application-email.properties \ -Dspring.profiles.active=real
 
-  # 전송할 파일을 담을 디렉토리 생성
-  - name: Make directory for delivery
-    run: mkdir -p github-actions-deploy
-
-
-  # jar file 복사하기
-  - name: copy jar file
-    run: cp target/*.jar ./github-actions-deploy
-
-  # appspec.yml 파일 copy
-  - name: copy appspec.yml file
-    run: cp appspec.yml ./github-actions-deploy
-
-  # script files 복사
-  - name: copy shell scrips
-    run: cp ./scripts/*.sh ./github-actions-deploy
+      # 전송할 파일을 담을 디렉토리 생성
+      - name: Make directory for delivery
+        run: mkdir -p github-actions-deploy
 
 
-  # 압축파일 형태 만들기
-  - name: make zip file
-    run: zip -r RemakeDiabetesDiaryAPI.zip ./github-actions-deploy
+      # jar file 복사하기
+      - name: copy jar file
+        run: cp target/*.jar ./github-actions-deploy
 
-  # deploy
-  - name: deploy
-    uses: aws-actions/configure-aws-credentials@v1
-    with:
-      aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      aws-region: ap-northeast-2
+      # appspec.yml 파일 copy
+      - name : copy appspec.yml file
+        run : cp appspec.yml ./github-actions-deploy
 
-  # upload to s3
-  - name: upload to s3
-    run: aws s3 cp --region ap-northeast-2 --acl private ./RemakeDiabetesDiaryAPI.zip s3://dasd412-github-actions-deploy
+      # script files 복사
+      - name : copy shell scrips
+        run : cp ./scripts/*.sh ./github-actions-deploy
 
-  # deploy zip to code-deploy
-  - name: CodeDeploy
-    run: aws deploy create-deployment --application-name dasd412-diabetes-diary-api --deployment-group-name dasd412-diabetes-diary-api-group --s3-location bucket=dasd412-github-actions-deploy,key=RemakeDiabetesDiaryAPI.zip,bundleType=zip
-   
 
-    
+      # 압축파일 형태 만들기
+      - name : make zip file
+        run : zip -r RemakeDiabetesDiaryAPI.zip ./github-actions-deploy
+
+      # deploy
+      - name: deploy
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region : ap-northeast-2
+
+      # upload to s3
+      - name : upload to s3
+        run : aws s3 cp --region ap-northeast-2 --acl private ./RemakeDiabetesDiaryAPI.zip s3://dasd412-github-actions-deploy
+
+      # deploy zip to code-deploy
+      - name: CodeDeploy
+        run: aws deploy create-deployment --application-name dasd412-diabetes-diary-api --deployment-group-name dasd412-diabetes-diary-api-group --s3-location bucket=dasd412-github-actions-deploy,key=RemakeDiabetesDiaryAPI.zip,bundleType=zip
+
+
 
