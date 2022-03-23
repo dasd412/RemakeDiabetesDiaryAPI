@@ -1,14 +1,17 @@
 # __Diabetes Diary API Remake__
 
-## 버전 : 1.1.6
+## 버전 : 1.1.7
 
 ***
 
 ### 웹 사이트 주소 ###
+**크롬 브라우저 검수가 아직 안되었습니다. 다른 브라우저로 접속해주세요!**
 
 https://www.diabetes-diary.tk/
 
-### 블로그 주소
+### 블로그 주소 
+
+**제가 어떻게 코드를 설계했고 버그를 해결했는 지 확인할 수 있습니다.**
 
 https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 ***
@@ -75,6 +78,7 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 ***
 
 ### 본인 코드 작성 예시 및 설명
++ [1:N 관계 엔티티 save시 update 쿼리가 추가로 발생 및 전파되는 이슈 해결](https://velog.io/@dasd412/1.%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B0%8F-%EA%B5%AC%EC%A1%B0-%EC%84%A4%EA%B3%84-1N-%EA%B4%80%EA%B3%84-%EC%97%94%ED%8B%B0%ED%8B%B0-save%EC%8B%9C-update-%EC%BF%BC%EB%A6%AC%EA%B0%80-%EC%B6%94%EA%B0%80%EB%A1%9C-%EB%B0%9C%EC%83%9D%ED%95%98%EB%8A%94-%EC%9D%B4%EC%8A%88-%ED%95%B4%EA%B2%B0)
 + [JPA 및 Querydsl 사용 경험 정리](https://github.com/dasd412/interview_note_for_myself/blob/master/JPA/JPA%20%EC%82%AC%EC%9A%A9%20%EA%B2%BD%ED%97%98%20%EC%A0%95%EB%A6%AC.md)
 + [도메인 테스트 코드 작성하기](https://github.com/dasd412/interview_note_for_myself/blob/master/TestCode/%EB%8F%84%EB%A9%94%EC%9D%B8%20%ED%85%8C%EC%8A%A4%ED%8A%B8.md)
 + [컨트롤러 레이어 테스트 코드 작성하기](https://github.com/dasd412/interview_note_for_myself/blob/master/TestCode/%EC%BB%A8%ED%8A%B8%EB%A1%A4%EB%9F%AC%20%ED%85%8C%EC%8A%A4%ED%8A%B8.md)
@@ -82,7 +86,10 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 + [스프링 시큐리티 적용하기](https://velog.io/@dasd412/2.%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85-%EB%A7%8C%EB%93%A4%EA%B8%B0)
 + [일지 기능 구현하기](https://velog.io/@dasd412/3.%EA%B8%B0%EB%B3%B8-%EA%B8%B0%EB%8A%A5-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0-%EC%9D%BC%EC%A7%80-%EC%9E%91%EC%84%B1%ED%95%98%EA%B8%B0)
 + [배포](https://velog.io/@dasd412/4.-%EB%B0%B0%ED%8F%AC%ED%95%98%EA%B8%B0maven-%ED%94%8C%EB%9F%AC%EA%B7%B8%EC%9D%B8-%EC%B6%94%EA%B0%80)
++ [음식 게시판 페이징 처리하기](https://github.com/dasd412/RemakeDiabetesDiaryAPI/issues/48)
++ [Querydsl BooleanBuilder로 중복 코드 제거하기 리팩토링](https://github.com/dasd412/RemakeDiabetesDiaryAPI/issues/51)
 + [JPA batch insert 실험하기](https://velog.io/@dasd412/JPA-Save-%EC%B5%9C%EC%A0%81%ED%99%94-%EC%8B%A4%ED%97%98-batch-insert)
++ [save, update 성능  40% 향상 ](https://velog.io/@dasd412/%ED%8A%B8%EB%9E%9C%EC%9E%AD%EC%85%98%EC%9C%BC%EB%A1%9C-%EC%84%B1%EB%8A%A5-%EC%B5%9C%EC%A0%81%ED%99%94%ED%95%98%EA%B8%B0)
 
 ***
 ### API end point
@@ -181,7 +188,7 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
     + 음식 엔티티에 수량 단위 추가 [요구사항 반영]
     + 중복 QueryDSL 코드 BooleanBuilder로 리팩토링. [BooleanBuider를 활용한 동적 쿼리 생성]
     + 프로필 엔티티 추가 및 작성자 엔티티와 1대1 관계 구성
-    + 엔티티 저장 코드 최적화 수행(예정)
+    + 엔티티 저장 및 수정 코드 최적화 수행 [약 40% 향상]
     + 일지 내용 임시 저장 기능 구현하기(예정)
   
 
@@ -229,14 +236,19 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 ***
 
 ### 개선 사항
-
-+ 복합키의 장점을 못 살렸음.
 + Nginx 무중단 배포 실패. (아마 elb와 충돌한 것 같다.)
-+ 음식 엔티티 저장 로직의 비효율 개선 필요
-+ 크롬 브라우저 웹 사이트 보안 인증 및 사이트 보안 강화 필요
-+ 도커를 맛봤지만, 어떻게 적용해야 할지 모르겠다.
++ 크롬 브라우저 웹 사이트 검수 및 사이트 보안 강화 필요
++ 도커를 맛봤지만, 어떻게 기존 CI CD 구조에 적용해야 할지 모르겠다.
 ***
 
+### 참고 서적 [사용 용도]
++ 자바 ORM 표준 JPA 프로그래밍 [JPA 엔티티 설계 및 최적화]
++ 데이터베이스 개론 [정규화 적용]
++ 자바로 배우는 리팩토링 입문 [코드 리팩토링]
++ 자바와 JUnit을 활용한 실용주의 단위 테스트 [단위 테스트 작성법]
++ 스타트 스프링 부트 [게시판]
++ 스프링 부트와 AWS로 혼자 구현하는 웹 서비스 [AWS 배포]
+***
 ### 본인 작성이 아닌 것.
 
 + /resources/static/vendor/* [colorLib 저작권 ]
@@ -244,3 +256,4 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 + /resources/static/js/calendar/ (calendar.js ,formatter.js, stringBuffer.js) [구글링 코드]
 + src/main/java/com/dasd412/remake/api/controller/security/domain_view/FoodPageMaker [스타트 스프링 부트]
 
+***
