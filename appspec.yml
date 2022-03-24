@@ -14,17 +14,17 @@ permissions:
 hooks:
   # stop spring boot application running
   AfterInstall:
-    - location: scripts/stop.sh
+    - location: stop.sh
       timeout: 180
       runas: ec2-user
   # lunch new spring boot application
   ApplicationStart:
-    - location: scripts/start.sh
+    - location: start.sh
       timeout: 180
       runas: ec2-user
   # check health of new spring boot application
   ValidateService:
-    -  location: scripts/health.sh
+    -  location: health.sh
        timeout: 180
        runas: ec2-user
 
