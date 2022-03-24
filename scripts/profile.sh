@@ -11,7 +11,7 @@ function find_idle_profile()
     then
         CURRENT_PROFILE=real2
     else
-        CURRENT_PROFILE=$(curl -s http://localhost/properties)
+        CURRENT_PROFILE=$(sudo curl -s http://localhost/properties)
     fi
 
     if [ "${CURRENT_PROFILE}" == real1 ]

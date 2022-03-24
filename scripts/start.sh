@@ -5,7 +5,6 @@ ABSDIR=$(dirname "$ABSPATH")
 source "${ABSDIR}"/profile.sh
 
 REPOSITORY=/home/ec2-user/app/nginx
-ARTIFACT_ID=ReFacDiabetesDiary
 
 echo "> Build 파일 복사"
 echo "> cp $REPOSITORY/zip/*.jar $REPOSITORY/"
@@ -19,7 +18,7 @@ echo "> JAR Name: $JAR_NAME"
 
 echo "> $JAR_NAME 에 실행권한 추가"
 
-chmod +x $JAR_NAME
+chmod +x "$JAR_NAME"
 
 echo "> $JAR_NAME 실행"
 
