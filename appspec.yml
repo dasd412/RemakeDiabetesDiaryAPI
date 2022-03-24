@@ -15,17 +15,17 @@ hooks:
   # stop spring boot application running
   AfterInstall:
     - location: stop.sh
-      timeout: 180
+      timeout: 120
       runas: ec2-user
   # lunch new spring boot application
   ApplicationStart:
     - location: start.sh
-      timeout: 180
+      timeout: 120
       runas: ec2-user
   # check health of new spring boot application
   ValidateService:
     -  location: health.sh
-       timeout: 180
+       timeout: 120
        runas: ec2-user
 
 
