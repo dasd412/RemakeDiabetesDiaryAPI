@@ -2,7 +2,8 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ec2-user/app/deploy
+    destination: /home/ec2-user/app/nginx
+    overwrite: yes
 
 permissions:
   - object: /
@@ -11,8 +12,24 @@ permissions:
     group: ec2-user
 
 hooks:
-  ApplicationStart:
-    - location: deploy.sh
+  # stop spring boot application running
+  AfterInstall:
+    - location: stop.sh
       timeout: 60
       runas: ec2-user
+  # lunch new spring boot application
+  ApplicationStart:
+    - location: start.sh
+      timeout: 60
+      runas: ec2-user
+  # check health of new spring boot application
+  ValidateService:
+    -  location: health.sh
+       timeout: 60
+       runas: ec2-user
+
+
+
+
+
 
