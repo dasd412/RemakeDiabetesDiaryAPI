@@ -25,7 +25,7 @@ hooks:
   # check health of new spring boot application
   ValidateService:
     -  location: health.sh
-       timeout: 120
+       timeout: 180
        runas: ec2-user
 
 
