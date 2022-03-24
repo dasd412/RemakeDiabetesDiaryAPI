@@ -5,7 +5,7 @@ ABSPATH=$(readlink -f "$0")
 # print directory
 ABSDIR=$(dirname "$ABSPATH")
 # import profile.sh
-soucre "${ABSDIR}"/profile.sh
+source  "${ABSDIR}"/profile.sh
 
 REPOSITORY=/home/ec2-user/app/nginx
 ARTIFACT_ID=ReFacDiabetesDiary
