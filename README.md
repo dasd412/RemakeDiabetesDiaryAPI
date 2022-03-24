@@ -1,6 +1,6 @@
 # __Diabetes Diary API Remake__
 
-## 버전 : 1.1.7
+## 버전 : 1.1.9
 
 ***
 
@@ -225,7 +225,8 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
     + oauth 로그인 리디렉션 url 변경 (크롬 브라우저 등에서 피싱 사이트 의심 발생. 조치 필요.)
     + travis ci 와 code deploy 를 활용하여 배포 자동화 [master branch 푸시하면 자동 배포됨.]
     + travis ci trial plan 만료로 인해 github actions로 바꾸었다.
-
+    + 보안 상 중요한 properties를 mock으로 만들어 테스트 자동화 진행.
+  
 
 + 문서화
     + Readme
