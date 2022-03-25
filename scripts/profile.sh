@@ -6,8 +6,6 @@
 function find_idle_profile()
 {
     RESPONSE_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/properties)
-    echo "find_idle_profile()"
-    echo "${RESPONSE_CODE}"
 
     if [ "${RESPONSE_CODE}" -ge 400 ] # 400 보다 크면 (즉, 40x/50x 에러 모두 포함)
     then
@@ -15,9 +13,6 @@ function find_idle_profile()
     else
         CURRENT_PROFILE=$(sudo curl -s http://localhost/properties)
     fi
-
-    echo "current profile is"
-    echo "${CURRENT_PROFILE}"
 
     if [ ${CURRENT_PROFILE} == real1 ]
     then
