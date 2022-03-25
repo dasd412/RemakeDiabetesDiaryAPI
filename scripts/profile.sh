@@ -7,11 +7,11 @@ function find_idle_profile()
 {
     RESPONSE_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/properties)
 
-    if [ "${RESPONSE_CODE}" -ge 400 ] # 400 보다 크면 (즉, 40x/50x 에러 모두 포함)
+    if [ ${RESPONSE_CODE} -ge 400 ] # 400 보다 크면 (즉, 40x/50x 에러 모두 포함)
     then
         CURRENT_PROFILE=real2
     else
-        CURRENT_PROFILE=$(sudo curl -s http://localhost/properties)
+        CURRENT_PROFILE=$(curl -s http://localhost/properties)
     fi
 
     if [ ${CURRENT_PROFILE} == real1 ]
@@ -31,8 +31,8 @@ function find_idle_port()
 
     if [ ${IDLE_PROFILE} == real1 ]
     then
-      echo "8085"
+      echo "8081"
     else
-      echo "8086"
+      echo "8082"
     fi
 }
