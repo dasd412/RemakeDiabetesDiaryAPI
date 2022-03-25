@@ -1,6 +1,6 @@
 # __Diabetes Diary API Remake__
 
-## 버전 : 1.1.9
+## 버전 : 1.2.0
 
 ***
 
@@ -43,6 +43,7 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 + AWS (ec2, route 53, ACM, rds, code deploy )
 + travis ci [trial plan 만료로 인해 사용 중지]
 + github actions
++ Nginx
 
 ### 사용 라이브러리
 + JavaMail
@@ -90,7 +91,7 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 + [Querydsl BooleanBuilder로 중복 코드 제거하기 리팩토링](https://github.com/dasd412/RemakeDiabetesDiaryAPI/issues/51)
 + [JPA batch insert 실험하기](https://velog.io/@dasd412/JPA-Save-%EC%B5%9C%EC%A0%81%ED%99%94-%EC%8B%A4%ED%97%98-batch-insert)
 + [save, update 성능  40% 향상 ](https://velog.io/@dasd412/%ED%8A%B8%EB%9E%9C%EC%9E%AD%EC%85%98%EC%9C%BC%EB%A1%9C-%EC%84%B1%EB%8A%A5-%EC%B5%9C%EC%A0%81%ED%99%94%ED%95%98%EA%B8%B0)
-
++ [HTTPS 적용된 것을 Nginx로 무중단 배포해보자.](https://velog.io/@dasd412/Nginx-%EC%9E%AC%EC%8B%9C%EB%8F%84)
 ***
 ### API end point
 
@@ -164,11 +165,19 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 ### 다이어그램
 
 + ERD
-    + ![erd.png](images/erd.png)
-+ 브라우저 접근 흐름도
-    + ![browserFlow.png](images/browserFlow.png)
+![erd.png](images/erd.png)
+  
+  
 + 배포 다이어그램
-    + ![deploy.png](images/deploy.png)
+![deploy.jpg](images/deploy_diagram.jpg)
+  
+
++ 무중단 운영 다이어그램
+![Nginx.jpg](images/nginx_deploy.jpg)
+  
+
++ 쉘 스크립트 요청 캐치 예시
+![Nginx_shellScript.jpg](images/nginx_sh.jpg)
 
 ***
 
@@ -226,8 +235,8 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
     + travis ci 와 code deploy 를 활용하여 배포 자동화 [master branch 푸시하면 자동 배포됨.]
     + travis ci trial plan 만료로 인해 github actions로 바꾸었다.
     + 보안 상 중요한 properties를 mock으로 만들어 테스트 자동화 진행.
-    + 무중단 배포 (시도 중)
-  
+    + HTTPS 적용과 동시에 무중단 배포 
+
 
 + 문서화
     + Readme
@@ -238,7 +247,6 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 ***
 
 ### 개선 사항
-+ Nginx 무중단 배포 실패. (아마 elb와 충돌한 것 같다.)
 + 크롬 브라우저 웹 사이트 검수 및 사이트 보안 강화 필요
 + 도커를 맛봤지만, 어떻게 기존 CI CD 구조에 적용해야 할지 모르겠다.
 ***
