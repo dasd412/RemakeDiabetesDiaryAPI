@@ -34,12 +34,10 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 
 + SpringBoot
 + JPA
-+ Querydsl
 + MySql
 + Spring Security
 + Junit
 + Mustache, css
-+ JQuery
 + AWS (ec2, route 53, ACM, rds, code deploy )
 + travis ci [trial plan 만료로 인해 사용 중지]
 + github actions
@@ -47,7 +45,9 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 
 ### 사용 라이브러리
 + JavaMail
++ Querydsl
 + chart.js
++ JQuery
 + datepicker.js
 + bootstrap
 
@@ -173,6 +173,14 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 ![signup.jpg](images/signup.jpg)
   
   
++ 시큐리티 관련 예외처리
+![security_exception.jpg](images/security_exception.jpg)
+  
+
++ 로그인  
+![login.jpg](images/login.jpg)
+  
+
 + 배포 다이어그램
 ![deploy.jpg](images/deploy_diagram.jpg)
   
