@@ -168,6 +168,10 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 + ERD
 ![erd.png](images/erd.png)
   
+
++ 회원 가입 
+![signup.jpg](images/signup.jpg)
+  
   
 + 배포 다이어그램
 ![deploy.jpg](images/deploy_diagram.jpg)
@@ -247,9 +251,11 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 
 ***
 
-### 개선 사항
+### 개선해야 할 사항
 + 크롬 브라우저 웹 사이트 검수 및 사이트 보안 강화 필요
 + 도커를 맛봤지만, 어떻게 기존 CI CD 구조에 적용해야 할지 모르겠다.
++ OAuth 로그인 처리가 느리다. 
++ 일지에서 `뒤로 가기` 클릭 시, 일지의 달력을 참고해서 이동시키면 유저의 편의성이 더 늘어날 것이다.
 ***
 
 ### 참고 서적 [사용 용도]
