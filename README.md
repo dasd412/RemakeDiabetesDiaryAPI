@@ -169,6 +169,14 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 ![erd.png](images/erd.png)
   
 
++ 일지 저장 (프론트엔드)
+![post_front.png](images/postDiaryFront.png)
+  
+
++ 일지 저장 (백엔드)
+![post_back.png](images/postDiaryBack.png)
+  
+
 + 회원 가입 
 ![signup.jpg](images/signup.jpg)
   
