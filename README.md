@@ -1,6 +1,6 @@
 # __Diabetes Diary API Remake__
 
-## 버전 : 1.2.0
+## 버전 : 1.2.1
 
 ***
 
@@ -34,12 +34,10 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 
 + SpringBoot
 + JPA
-+ Querydsl
 + MySql
 + Spring Security
 + Junit
 + Mustache, css
-+ JQuery
 + AWS (ec2, route 53, ACM, rds, code deploy )
 + travis ci [trial plan 만료로 인해 사용 중지]
 + github actions
@@ -47,7 +45,9 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 
 ### 사용 라이브러리
 + JavaMail
++ Querydsl
 + chart.js
++ JQuery
 + datepicker.js
 + bootstrap
 
@@ -84,6 +84,7 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 + [도메인 테스트 코드 작성하기](https://github.com/dasd412/interview_note_for_myself/blob/master/TestCode/%EB%8F%84%EB%A9%94%EC%9D%B8%20%ED%85%8C%EC%8A%A4%ED%8A%B8.md)
 + [컨트롤러 레이어 테스트 코드 작성하기](https://github.com/dasd412/interview_note_for_myself/blob/master/TestCode/%EC%BB%A8%ED%8A%B8%EB%A1%A4%EB%9F%AC%20%ED%85%8C%EC%8A%A4%ED%8A%B8.md)
 + [오타에서 안전한 코드 만들기](https://github.com/dasd412/interview_note_for_myself/blob/master/CodeDesign/%EC%98%A4%ED%83%80%EC%97%90%EC%84%9C%20%EC%95%88%EC%A0%84%ED%95%9C%20%EC%BD%94%EB%93%9C%20%EB%A7%8C%EB%93%A4%EA%B8%B0.md)
++ [예외 처리](https://github.com/dasd412/interview_note_for_myself/blob/master/Java/%EC%98%88%EC%99%B8%20%EC%B2%98%EB%A6%AC.md)
 + [스프링 시큐리티 적용하기](https://velog.io/@dasd412/2.%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85-%EB%A7%8C%EB%93%A4%EA%B8%B0)
 + [일지 기능 구현하기](https://velog.io/@dasd412/3.%EA%B8%B0%EB%B3%B8-%EA%B8%B0%EB%8A%A5-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0-%EC%9D%BC%EC%A7%80-%EC%9E%91%EC%84%B1%ED%95%98%EA%B8%B0)
 + [배포](https://velog.io/@dasd412/4.-%EB%B0%B0%ED%8F%AC%ED%95%98%EA%B8%B0maven-%ED%94%8C%EB%9F%AC%EA%B7%B8%EC%9D%B8-%EC%B6%94%EA%B0%80)
@@ -167,7 +168,32 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 + ERD
 ![erd.png](images/erd.png)
   
+
++ 일지 저장 (프론트엔드)
+![post_front.png](images/postDiaryFront.png)
   
+
++ 일지 저장 (백엔드)
+![post_back.png](images/postDiaryBack.png)
+  
+
++ 음식 게시판 조회 
+![food_board.jpg](images/food_board.jpg)
+
+  
+
++ 회원 가입 
+![signup.jpg](images/signup.jpg)
+  
+  
++ 시큐리티 관련 예외처리
+![security_exception.jpg](images/security_exception.jpg)
+  
+
++ 로그인  
+![login.jpg](images/login.jpg)
+  
+
 + 배포 다이어그램
 ![deploy.jpg](images/deploy_diagram.jpg)
   
@@ -246,9 +272,11 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 
 ***
 
-### 개선 사항
+### 개선해야 할 사항
 + 크롬 브라우저 웹 사이트 검수 및 사이트 보안 강화 필요
 + 도커를 맛봤지만, 어떻게 기존 CI CD 구조에 적용해야 할지 모르겠다.
++ OAuth 로그인 처리가 느리다. 
++ 일지에서 `뒤로 가기` 클릭 시, 일지의 달력을 참고해서 이동시키면 유저의 편의성이 더 늘어날 것이다.
 ***
 
 ### 참고 서적 [사용 용도]
