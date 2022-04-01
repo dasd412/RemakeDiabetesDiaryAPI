@@ -1,6 +1,6 @@
 # __Diabetes Diary API Remake__
 
-## 버전 : 1.2.0
+## 버전 : 1.2.1
 
 ***
 
@@ -175,6 +175,11 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 
 + 일지 저장 (백엔드)
 ![post_back.png](images/postDiaryBack.png)
+  
+
++ 음식 게시판 조회 
+![food_board.jpg](images/food_board.jpg)
+
   
 
 + 회원 가입 
