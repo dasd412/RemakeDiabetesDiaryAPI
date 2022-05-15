@@ -8,6 +8,7 @@
 
 package com.dasd412.remake.api.domain.diary.diabetesDiary;
 
+import com.dasd412.remake.api.domain.diary.BaseTimeEntity;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.diet.Diet;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
@@ -25,12 +26,12 @@ import static com.google.common.base.Preconditions.checkArgument;
  * 혈당일지 엔티티
  *
  * @author 양영준
- * @version 1.0.1 2022년 1월 22일
+ * @version 1.2.2 2022년 5월 15일
  */
 @Entity
 @Table(name = "DiabetesDiary", uniqueConstraints = @UniqueConstraint(columnNames = {"diary_id"}))
 @IdClass(DiabetesDiaryId.class)
-public class DiabetesDiary {
+public class DiabetesDiary extends BaseTimeEntity {
     /**
      * 식별 관계이므로 복합키 사용
      * 복합키의 경우 @GeneratedValue 사용 불가.
