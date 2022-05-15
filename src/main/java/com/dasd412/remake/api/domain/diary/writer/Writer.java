@@ -8,6 +8,7 @@
 
 package com.dasd412.remake.api.domain.diary.writer;
 
+import com.dasd412.remake.api.domain.diary.BaseTimeEntity;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 
@@ -25,11 +26,11 @@ import static com.google.common.base.Preconditions.checkArgument;
  * 작성자 엔티티. 로그인 정보와 관련이 있다.
  *
  * @author 양영준
- * @version 1.1.1 2022년 2월 27일
+ * @version 1.2.2 2022년 5월 15일
  */
 @Entity
 @Table(name = "Writer", uniqueConstraints = @UniqueConstraint(columnNames = {"writer_id", "name"}))
-public class Writer {
+public class Writer extends BaseTimeEntity {
 
     /**
      * 작성자의 식별자

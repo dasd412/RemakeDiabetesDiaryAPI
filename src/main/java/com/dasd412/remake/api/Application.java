@@ -9,11 +9,14 @@ package com.dasd412.remake.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+
 /**
  * 어플리케이션 시작 지점.
  *
  * @author 양영준
  */
+@EnableJpaAuditing
 @SpringBootApplication
 public class Application {
     public static void main(String[] args) {
