@@ -5,7 +5,7 @@
 ***
 
 ### 웹 사이트 주소 ###
-**크롬 브라우저 검수가 아직 안되었습니다. 다른 브라우저로 접속해주세요!**
+**2022/06/08 기준 서버 중지했습니다. (ec2, route 53 등등 기능 중지)**
 
 https://www.diabetes-diary.tk/
 
@@ -26,8 +26,7 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 6. 음식 검색 게시판 ✅
 7. 프로필 및 회원 탈퇴 ✅
 8. 아이디 ,비밀 번호 찾기 ✅
-9. 임시 저장 기능 구현 (예정)
-10. JWT 적용(예정)
+
 
 ***
 ### 사용 기술
@@ -93,6 +92,9 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 + [JPA batch insert 실험하기](https://velog.io/@dasd412/JPA-Save-%EC%B5%9C%EC%A0%81%ED%99%94-%EC%8B%A4%ED%97%98-batch-insert)
 + [save, update 성능  40% 향상 ](https://velog.io/@dasd412/%ED%8A%B8%EB%9E%9C%EC%9E%AD%EC%85%98%EC%9C%BC%EB%A1%9C-%EC%84%B1%EB%8A%A5-%EC%B5%9C%EC%A0%81%ED%99%94%ED%95%98%EA%B8%B0)
 + [HTTPS 적용된 것을 Nginx로 무중단 배포해보자.](https://velog.io/@dasd412/Nginx-%EC%9E%AC%EC%8B%9C%EB%8F%84)
++ [생성 시간 및 수정 시간 dirty check 원인 분석하기](https://velog.io/@dasd412/%EC%83%9D%EC%84%B1-%EC%8B%9C%EA%B0%84-%EC%88%98%EC%A0%95-%EC%8B%9C%EA%B0%84-%EC%B6%94%EC%A0%81%ED%95%98%EA%B8%B0)
++ [ec2 중지 후 재기동 시 연결 불가 해결하기](https://velog.io/@dasd412/ec2-%EC%9E%AC%EB%B6%80%ED%8C%85-%ED%9B%84-%EC%97%B0%EA%B2%B0-%EB%B6%88%EA%B0%80-%ED%95%B4%EA%B2%B0%ED%95%98%EA%B8%B0)
+
 ***
 ### API end point
 
