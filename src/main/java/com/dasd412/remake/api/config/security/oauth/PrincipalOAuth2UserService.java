@@ -62,7 +62,7 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
         /* OAuth 로그인의 경우 OAuth Provider 정보가 필요하다. */
-        OAuth2UserInfo oAuth2UserInfo = selectProvider(oAuth2User, oAuth2UserRequest).orElseThrow(() -> new IllegalStateException("등록된 provider 가 아닙니다."));
+        OAuth2UserInfo oAuth2UserInfo = oAuth2UserInfoFactory.selectOAuth2UserInfo(oAuth2User, oAuth2UserRequest).orElseThrow(() -> new IllegalStateException("등록된 provider 가 아닙니다."));
 
         String username = oAuth2UserInfo.getProvider() + "_" + oAuth2UserInfo.getProviderId();
 
@@ -85,13 +85,4 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
         return new PrincipalDetails(writer, oAuth2User.getAttributes());
     }
 
-    /**
-     * @param oAuth2User  OAuth 사용자 정보
-     * @param userRequest OAuth 로그인 요청 정보
-     * @return OAuth registrationId에 따라 알맞은 OAuth 로그인 유저 정보를 리턴한다.
-     */
-    private Optional<OAuth2UserInfo> selectProvider(OAuth2User oAuth2User, OAuth2UserRequest userRequest) {
-        String registrationId = userRequest.getClientRegistration().getRegistrationId();
-        return oAuth2UserInfoFactory.selectOAuth2UserInfo(oAuth2User, registrationId);
-    }
 }
