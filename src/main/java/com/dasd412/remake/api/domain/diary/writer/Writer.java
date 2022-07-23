@@ -69,39 +69,8 @@ public class Writer extends BaseTimeEntity {
     }
 
     /**
-     * 시큐리티 없이 사용할 때 쓰인 생성자.
-     *
-     * @deprecated
-     */
-    public Writer(EntityId<Writer, Long> writerEntityId, String name, String email, Role role) {
-        this(writerEntityId, name, email, null, role);
-    }
-
-    /**
-     * @param writerEntityId EntityId로 감싸진 작성자 id
-     * @param name           유저 네임
-     * @param email          이메일
-     * @param password       암호화된 비밀 번호
-     * @param role           권한
-     * @deprecated
-     */
-    public Writer(EntityId<Writer, Long> writerEntityId, String name, String email, String password, Role role) {
-        checkArgument(name.length() > 0 && name.length() <= 50, "name should be between 1 and 50");
-        this.writerId = writerEntityId.getId();
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-    }
-
-    /**
-     * 시큐리티 적용 이후 사용되는 생성자
-     *
-     * @param writerEntityId EntityId로 감싸진 작성자 id
-     * @param name           유저 네임
      * @param email          이메일 (github의 경우 null일 수 있다.)
      * @param password       암호화된 비밀 번호 (OAuth 로그인의 경우 null과 마찬가지)
-     * @param role           권한
      * @param provider       OAuth 제공자 (Form Login의 경우 null)
      * @param providerId     OAuth 제공자 식별자 (Form Login의 경우 null)
      */

@@ -1,5 +1,5 @@
 /*
- * @(#)SaveDiaryService.java        1.1.7 2022/3/23
+ * @(#)SaveDiaryService.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -16,13 +16,11 @@ import com.dasd412.remake.api.domain.diary.diabetesDiary.DiaryRepository;
 import com.dasd412.remake.api.domain.diary.diet.Diet;
 import com.dasd412.remake.api.domain.diary.diet.DietRepository;
 import com.dasd412.remake.api.domain.diary.diet.EatTime;
-import com.dasd412.remake.api.domain.diary.food.AmountUnit;
 import com.dasd412.remake.api.domain.diary.food.Food;
 import com.dasd412.remake.api.domain.diary.food.FoodRepository;
 import com.dasd412.remake.api.domain.diary.profile.DiabetesPhase;
 import com.dasd412.remake.api.domain.diary.profile.Profile;
 import com.dasd412.remake.api.domain.diary.profile.ProfileRepository;
-import com.dasd412.remake.api.domain.diary.writer.Role;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
 import com.dasd412.remake.api.util.DateStringJoiner;
@@ -36,12 +34,6 @@ import java.time.LocalDateTime;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * 저장 로직을 수행하는 서비스 클래스
- *
- * @author 양영준
- * @version 1.1.7 2022년 3월 23일
- */
 @Service
 public class SaveDiaryService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -63,20 +55,6 @@ public class SaveDiaryService {
     /*
     getIdOfXXX()의 경우 트랜잭션 처리 안하면 다른 스레드가 껴들어 올 경우 id 값이 중복될 수 있어 기본키 조건을 위배할 수도 있다. 레이스 컨디션 반드시 예방해야 함.
      */
-
-    /**
-     * 작성자 id 생성 메서드 (트랜잭션 필수). 시큐리티 적용 후에는 WriterService가 담당한다.
-     *
-     * @return 래퍼로 감싸진 작성자 id
-     * @deprecated
-     */
-    public EntityId<Writer, Long> getNextIdOfWriter() {
-        Long writerId = writerRepository.findMaxOfId();
-        if (writerId == null) {
-            writerId = 0L;
-        }
-        return EntityId.of(Writer.class, writerId + 1);
-    }
 
     /**
      * 일지 id 생성 메서드 (트랜잭션 필수).
@@ -187,119 +165,6 @@ public class SaveDiaryService {
         writerRepository.save(writer);
 
         return diary.getId();
-    }
-
-    /**
-     * 1.17 버전 부터 [테스트 환경]에서만 사용
-     *
-     * @param name  유저 네임
-     * @param email 이메일
-     * @param role  권한
-     * @return 회원 가입된 작성자
-     * @deprecated
-     */
-    @Transactional
-    public Writer saveWriter(String name, String email, Role role) {
-        logger.info("saveWriter");
-        Writer writer = new Writer(getNextIdOfWriter(), name, email, role);
-        writerRepository.save(writer);
-        return writer;
-    }
-
-    /**
-     * 1.17 버전 부터 [테스트 환경]에서만 사용
-     *
-     * @param writerEntityId       작성자 id
-     * @param fastingPlasmaGlucose 공복 혈당
-     * @param remark               비고
-     * @param writtenTime          작성시간
-     * @return 작성 완료된 일지
-     * @deprecated
-     */
-    @Transactional
-    public DiabetesDiary saveDiaryOfWriterById(EntityId<Writer, Long> writerEntityId, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
-        logger.info("saveDiaryOfWriterById");
-        checkNotNull(writerEntityId, "writerId must be provided");
-
-        Writer writer = writerRepository.findById(writerEntityId.getId()).orElseThrow(() -> new NoResultException("작성자가 없습니다."));
-        DiabetesDiary diary = new DiabetesDiary(getNextIdOfDiary(), writer, fastingPlasmaGlucose, remark, writtenTime);
-        writer.addDiary(diary);
-        writerRepository.save(writer);
-        return diary;
-    }
-
-    /**
-     * 1.17 버전 부터 [테스트 환경]에서만 사용
-     *
-     * @param writerEntityId 작성자 id
-     * @param diaryEntityId  일지 id
-     * @param eatTime        식사 시간
-     * @param bloodSugar     혈당
-     * @return 작성 완료된 식사
-     * @deprecated
-     */
-    @Transactional
-    public Diet saveDietOfWriterById(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diaryEntityId, EatTime eatTime, int bloodSugar) {
-        logger.info("saveDietOfWriterById");
-        checkNotNull(writerEntityId, "writerId must be provided");
-        checkNotNull(diaryEntityId, "diaryEntityId must be provided");
-
-        Writer writer = writerRepository.findById(writerEntityId.getId()).orElseThrow(() -> new NoResultException("작성자가 없습니다."));
-        DiabetesDiary diary = diaryRepository.findOneDiabetesDiaryByIdInWriter(writerEntityId.getId(), diaryEntityId.getId()).orElseThrow(() -> new NoResultException("일지가 없습니다."));
-        Diet diet = new Diet(getNextIdOfDiet(), diary, eatTime, bloodSugar);
-        diary.addDiet(diet);
-        writerRepository.save(writer);
-        return diet;
-    }
-
-    /**
-     * 1.17 버전 부터 [테스트 환경]에서만 사용
-     *
-     * @param writerEntityId 작성자 id
-     * @param diaryEntityId  일지 id
-     * @param dietEntityId   식사 id
-     * @param foodName       음식 이름
-     * @return 작성된 음식
-     * @deprecated
-     */
-    @Transactional
-    public Food saveFoodOfWriterById(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diaryEntityId, EntityId<Diet, Long> dietEntityId, String foodName) {
-        logger.info("saveFoodOfWriterById");
-        checkNotNull(writerEntityId, "writerId must be provided");
-        checkNotNull(diaryEntityId, "diaryEntityId must be provided");
-        checkNotNull(dietEntityId, "dietEntityId must be provided");
-
-        Writer writer = writerRepository.findById(writerEntityId.getId()).orElseThrow(() -> new NoResultException("작성자가 없습니다."));
-        Diet diet = dietRepository.findOneDietByIdInDiary(writerEntityId.getId(), diaryEntityId.getId(), dietEntityId.getId()).orElseThrow(() -> new NoResultException("식단이 없습니다."));
-        Food food = new Food(getNextIdOfFood(), diet, foodName);
-        diet.addFood(food);
-        writerRepository.save(writer);
-        return food;
-    }
-
-    /**
-     * 1.17 버전 부터 [테스트 환경]에서만 사용
-     *
-     * @param writerEntityId 작성자 id
-     * @param diaryEntityId  일지 id
-     * @param dietEntityId   식사 id
-     * @param foodName       음식 이름
-     * @param amount         음식 양
-     * @param amountUnit     음식 단위
-     * @deprecated
-     */
-    @Transactional
-    public void saveFoodAndAmountOfWriterById(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diaryEntityId, EntityId<Diet, Long> dietEntityId, String foodName, double amount, AmountUnit amountUnit) {
-        logger.info("saveFoodAndAmountOfWriterById");
-        checkNotNull(writerEntityId, "writerId must be provided");
-        checkNotNull(diaryEntityId, "diaryId must be provided");
-        checkNotNull(dietEntityId, "dietId must be provided");
-
-        Writer writer = writerRepository.findById(writerEntityId.getId()).orElseThrow(() -> new NoResultException("작성자가 없습니다."));
-        Diet diet = dietRepository.findOneDietByIdInDiary(writerEntityId.getId(), diaryEntityId.getId(), dietEntityId.getId()).orElseThrow(() -> new NoResultException("식단이 없습니다."));
-        Food food = new Food(getNextIdOfFood(), diet, foodName, amount, amountUnit);
-        diet.addFood(food);
-        writerRepository.save(writer);
     }
 
     /**
