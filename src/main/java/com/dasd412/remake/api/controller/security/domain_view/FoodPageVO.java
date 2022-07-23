@@ -8,6 +8,7 @@
 
 package com.dasd412.remake.api.controller.security.domain_view;
 
+import com.dasd412.remake.api.controller.exception.ConvertLocalDateException;
 import com.dasd412.remake.api.domain.diary.InequalitySign;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 
 import static com.dasd412.remake.api.util.DateStringConverter.convertLocalDateTime;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -73,6 +75,7 @@ public class FoodPageVO {
 
     /**
      * 만약, 음식 이름 게시물의 수가 기본 10개보다 적거나, 50개를 초과할 경우에는 기본 사이즈인 10으로 정해준다.
+     *
      * @param size 음식 이름 게시물의 수
      */
     public void setSize(int size) {
@@ -81,6 +84,7 @@ public class FoodPageVO {
 
     /**
      * Pageble 객체의 offset = page * size이기 때문에 pageable 객체를 만들 때는 page-1 해준다.
+     *
      * @param direction  정렬 방향
      * @param properties 정렬 기준
      */
@@ -153,11 +157,11 @@ public class FoodPageVO {
     }
 
     public LocalDateTime convertStartDate() {
-        return convertLocalDateTime(this.startYear, this.startMonth, this.startDay);
+        return convertLocalDateTime(this.startYear, this.startMonth, this.startDay).orElseThrow(() -> new ConvertLocalDateException("시작 날짜 변환 실패"));
     }
 
     public LocalDateTime convertEndDate() {
-        return convertLocalDateTime(this.endYear, this.endMonth, this.endDay);
+        return convertLocalDateTime(this.endYear, this.endMonth, this.endDay).orElseThrow(() -> new ConvertLocalDateException("끝 날짜 변환 실패"));
     }
 
     @Override
