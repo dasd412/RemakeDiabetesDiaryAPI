@@ -414,7 +414,7 @@ public class ReadDiaryTest {
         predicates.add(decideEqualitySignOfBloodSugar(InequalitySign.GREAT_OR_EQUAL, 150));
 
         //when
-        List<String> foodNames = foodRepository.findFoodNamesInDiet(me.getId(), predicates);
+        List<String> foodNames = foodRepository.findFoodNamesInDietWithWhereClause(me.getId(), predicates);
 
         //then
         logger.info(foodNames.toString());
@@ -444,7 +444,7 @@ public class ReadDiaryTest {
         predicates.add(decideAverageOfDiet(InequalitySign.GREAT_OR_EQUAL));
 
         //when
-        List<String> foodNames = foodRepository.findFoodNamesInDiet(me.getId(), predicates);
+        List<String> foodNames = foodRepository.findFoodNamesInDietWithWhereClause(me.getId(), predicates);
 
         //then
         logger.info(foodNames.toString());
@@ -464,7 +464,7 @@ public class ReadDiaryTest {
         predicates.add(decideAverageOfDiet(InequalitySign.EQUAL));
 
         //when
-        foodRepository.findFoodNamesInDiet(me.getId(), predicates);
+        foodRepository.findFoodNamesInDietWithWhereClause(me.getId(), predicates);
     }
 
     @Transactional
@@ -656,7 +656,7 @@ public class ReadDiaryTest {
 
         //when
         logger.info("select\n");
-        Page<FoodBoardDTO> result1 = foodRepository.findFoodsWithPagination(other.getId(), betweenAndSugar, pageable);
+        Page<FoodBoardDTO> result1 = foodRepository.findFoodsWithPaginationAndWhereClause(other.getId(), betweenAndSugar, pageable);
 
         //then
         logger.info(result1.getContent().toString());

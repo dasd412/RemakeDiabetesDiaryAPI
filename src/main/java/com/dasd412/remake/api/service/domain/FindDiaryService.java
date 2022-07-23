@@ -352,7 +352,7 @@ public class FindDiaryService {
         checkNotNull(writerEntityId, "writerId must be provided");
         return dietRepository.findAverageBloodSugarWithWhereClauseGroupByEatTime(writerEntityId.getId(), new ArrayList<>());
     }
-    
+
     @Transactional(readOnly = true)
     public List<Tuple> getAverageBloodSugarGroupByEatTimeBetweenTime(EntityId<Writer, Long> writerEntityId, LocalDateTime startDate, LocalDateTime endDate) {
         logger.info("getAverageBloodSugarGroupByEatTimeBetweenTime");
@@ -376,13 +376,7 @@ public class FindDiaryService {
         checkNotNull(dietEntityId, "dietId must be provided");
         return foodRepository.findFoodsInDiet(writerEntityId.getId(), dietEntityId.getId());
     }
-
-    /**
-     * @param writerEntityId 래퍼로 감싸진 작성자 id
-     * @param dietEntityId   래퍼로 감싸진 식단 id
-     * @param foodEntityId   래퍼로 감싸진 음식 id
-     * @return 입력에 해당 하는 음식 하나
-     */
+    
     @Transactional(readOnly = true)
     public Food getOneFoodByIdInDiet(EntityId<Writer, Long> writerEntityId, EntityId<Diet, Long> dietEntityId, EntityId<Food, Long> foodEntityId) {
         logger.info("getOneFoodByIdInDiet");
@@ -392,11 +386,6 @@ public class FindDiaryService {
         return foodRepository.findOneFoodByIdInDiet(writerEntityId.getId(), dietEntityId.getId(), foodEntityId.getId()).orElseThrow(() -> new NoResultException("식단에서 해당 음식이 존재하지 않습니다."));
     }
 
-    /**
-     * @param writerEntityId 래퍼로 감싸진 작성자 id
-     * @param bloodSugar     식사 혈당
-     * @return 식단 혈당 입력보다 높거나 같은 식단들에 기재된 음식들
-     */
     @Transactional(readOnly = true)
     public List<String> getFoodNamesInDietHigherThanBloodSugar(EntityId<Writer, Long> writerEntityId, int bloodSugar) {
         logger.info("getFoodNamesInDietHigherThanBloodSugar");
@@ -404,27 +393,18 @@ public class FindDiaryService {
         checkArgument(bloodSugar > 0, "bloodSugar must be higher than zero");
         List<Predicate> predicates = new ArrayList<>();
         predicates.add(decideEqualitySignOfBloodSugar(InequalitySign.GREAT_OR_EQUAL, bloodSugar));
-        return foodRepository.findFoodNamesInDiet(writerEntityId.getId(), predicates);
+        return foodRepository.findFoodNamesInDietWithWhereClause(writerEntityId.getId(), predicates);
     }
 
-    /**
-     * @param writerEntityId 래퍼로 감싸진 작성자 id
-     * @return 작성자의 평균 혈당보다 높거나 같은 식단들에 기재된 음식들
-     */
     @Transactional(readOnly = true)
     public List<String> getFoodHigherThanAverageBloodSugarOfDiet(EntityId<Writer, Long> writerEntityId) {
         logger.info("getFoodHigherThanAverageBloodSugarOfDiet");
         checkNotNull(writerEntityId, "writerId must be provided");
         List<Predicate> predicates = new ArrayList<>();
         predicates.add(decideAverageOfDiet(InequalitySign.GREAT_OR_EQUAL));
-        return foodRepository.findFoodNamesInDiet(writerEntityId.getId(), predicates);
+        return foodRepository.findFoodNamesInDietWithWhereClause(writerEntityId.getId(), predicates);
     }
 
-    /**
-     * @param writerEntityId 래퍼로 감싸진 작성자 id
-     * @param foodPageVO     페이징 조건이 기재된 객체
-     * @return 조건을 만족하는 페이지에 해당하는 dto (음식 이름, 식사 혈당, 작성 시간)
-     */
     @Transactional(readOnly = true)
     public Page<FoodBoardDTO> getFoodByPagination(EntityId<Writer, Long> writerEntityId, FoodPageVO foodPageVO) {
         logger.info("getFoodByPagination");
@@ -445,7 +425,7 @@ public class FindDiaryService {
             predicates.add(decideBetweenTimeInDiary(foodPageVO.convertStartDate(), foodPageVO.convertEndDate()));
         }
 
-        return foodRepository.findFoodsWithPagination(writerEntityId.getId(), predicates, page);
+        return foodRepository.findFoodsWithPaginationAndWhereClause(writerEntityId.getId(), predicates, page);
     }
 
     /**
