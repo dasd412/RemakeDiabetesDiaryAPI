@@ -52,6 +52,94 @@ public class SaveDiaryService {
         this.profileRepository = profileRepository;
     }
 
+
+    /**
+     * 트랜잭션 하나에 넣어서 처리 (트랜잭션 오버헤드 줄이기 위함)
+     */
+    @Transactional
+    public Long postDiaryWithEntities(PrincipalDetails principalDetails, SecurityDiaryPostRequestDTO dto) {
+        logger.info("post diary in service logic");
+        checkNotNull(principalDetails, "principalDetails must be provided");
+
+        Writer writer = writerRepository.findById(principalDetails.getWriter().getId()).orElseThrow(() -> new NoResultException("작성자가 없습니다."));
+
+        /* 2-1. LocalDateTime JSON 직렬화 */
+        LocalDateTime writtenTime = convertStringToLocalDateTime(dto);
+
+        DiabetesDiary diary = makeDiary(writer, dto, writtenTime);
+
+        Diet breakFast = makeBreakFast(diary, dto);
+        Diet lunch = makeLunch(diary, dto);
+        Diet dinner = makeDinner(diary, dto);
+
+        makeBreakFastFoods(dto, breakFast);
+        makeLunchFoods(dto, lunch);
+        makeDinnerFoods(dto, dinner);
+
+        writerRepository.save(writer);
+
+        return diary.getId();
+    }
+
+    /**
+     * JSON 직렬화가 LocalDateTime 에는 적용이 안되서 작성한 헬프 메서드.
+     *
+     * @return String => LocalDateTime
+     */
+    private LocalDateTime convertStringToLocalDateTime(SecurityDiaryPostRequestDTO dto) {
+        DateStringJoiner dateStringJoiner = DateStringJoiner.builder()
+                .year(dto.getYear()).month(dto.getMonth()).day(dto.getDay())
+                .hour(dto.getHour()).minute(dto.getMinute()).second(dto.getSecond())
+                .build();
+
+        return dateStringJoiner.convertLocalDateTime();
+    }
+
+    private DiabetesDiary makeDiary(Writer writer, SecurityDiaryPostRequestDTO dto, LocalDateTime writtenTime) {
+        DiabetesDiary diary = new DiabetesDiary(getNextIdOfDiary(), writer, dto.getFastingPlasmaGlucose(), dto.getRemark(), writtenTime);
+        writer.addDiary(diary);
+        return diary;
+    }
+
+    private Diet makeBreakFast(DiabetesDiary diary, SecurityDiaryPostRequestDTO dto) {
+        Diet diet = new Diet(getNextIdOfDiet(), diary, EatTime.BreakFast, dto.getBreakFastSugar());
+        diary.addDiet(diet);
+        return diet;
+    }
+
+    private Diet makeLunch(DiabetesDiary diary, SecurityDiaryPostRequestDTO dto) {
+        Diet diet = new Diet(getNextIdOfDiet(), diary, EatTime.Lunch, dto.getLunchSugar());
+        diary.addDiet(diet);
+        return diet;
+    }
+
+    private Diet makeDinner(DiabetesDiary diary, SecurityDiaryPostRequestDTO dto) {
+        Diet diet = new Diet(getNextIdOfDiet(), diary, EatTime.Dinner, dto.getDinnerSugar());
+        diary.addDiet(diet);
+        return diet;
+    }
+
+    private void makeBreakFastFoods(SecurityDiaryPostRequestDTO dto, Diet breakFast) {
+        dto.getBreakFastFoods().forEach(elem -> {
+            Food food = new Food(getNextIdOfFood(), breakFast, elem.getFoodName(), elem.getAmount(), elem.getAmountUnit());
+            breakFast.addFood(food);
+        });
+    }
+
+    private void makeLunchFoods(SecurityDiaryPostRequestDTO dto, Diet lunch) {
+        dto.getLunchFoods().forEach(elem -> {
+            Food food = new Food(getNextIdOfFood(), lunch, elem.getFoodName(), elem.getAmount(), elem.getAmountUnit());
+            lunch.addFood(food);
+        });
+    }
+
+    private void makeDinnerFoods(SecurityDiaryPostRequestDTO dto, Diet dinner) {
+        dto.getDinnerFoods().forEach(elem -> {
+            Food food = new Food(getNextIdOfFood(), dinner, elem.getFoodName(), elem.getAmount(), elem.getAmountUnit());
+            dinner.addFood(food);
+        });
+    }
+
     /*
     getIdOfXXX()의 경우 트랜잭션 처리 안하면 다른 스레드가 껴들어 올 경우 id 값이 중복될 수 있어 기본키 조건을 위배할 수도 있다. 레이스 컨디션 반드시 예방해야 함.
      */
@@ -77,64 +165,6 @@ public class SaveDiaryService {
             foodId = 0L;
         }
         return EntityId.of(Food.class, foodId + 1);
-    }
-
-    /**
-     * 트랜잭션 하나에 넣어서 처리 (트랜잭션 오버헤드 줄이기 위함)
-     */
-    @Transactional
-    public Long postDiaryWithEntities(PrincipalDetails principalDetails, SecurityDiaryPostRequestDTO dto) {
-        logger.info("post diary in service logic");
-        checkNotNull(principalDetails, "principalDetails must be provided");
-
-        Writer writer = writerRepository.findById(principalDetails.getWriter().getId()).orElseThrow(() -> new NoResultException("작성자가 없습니다."));
-
-        /* 2-1. LocalDateTime JSON 직렬화 */
-        LocalDateTime writtenTime = convertStringToLocalDateTime(dto);
-
-        DiabetesDiary diary = new DiabetesDiary(getNextIdOfDiary(), writer, dto.getFastingPlasmaGlucose(), dto.getRemark(), writtenTime);
-        writer.addDiary(diary);
-
-        Diet breakFast = new Diet(getNextIdOfDiet(), diary, EatTime.BreakFast, dto.getBreakFastSugar());
-        diary.addDiet(breakFast);
-
-        Diet lunch = new Diet(getNextIdOfDiet(), diary, EatTime.Lunch, dto.getLunchSugar());
-        diary.addDiet(lunch);
-
-        Diet dinner = new Diet(getNextIdOfDiet(), diary, EatTime.Dinner, dto.getDinnerSugar());
-        diary.addDiet(dinner);
-
-        dto.getBreakFastFoods().forEach(elem -> {
-            Food food = new Food(getNextIdOfFood(), breakFast, elem.getFoodName(), elem.getAmount(), elem.getAmountUnit());
-            breakFast.addFood(food);
-        });
-
-        dto.getLunchFoods().forEach(elem -> {
-            Food food = new Food(getNextIdOfFood(), lunch, elem.getFoodName(), elem.getAmount(), elem.getAmountUnit());
-            lunch.addFood(food);
-        });
-
-        dto.getDinnerFoods().forEach(elem -> {
-            Food food = new Food(getNextIdOfFood(), dinner, elem.getFoodName(), elem.getAmount(), elem.getAmountUnit());
-            dinner.addFood(food);
-        });
-
-        writerRepository.save(writer);
-
-        return diary.getId();
-    }
-
-    /**
-     * JSON 직렬화가 LocalDateTime 에는 적용이 안되서 작성한 헬프 메서드.
-     * @return String => LocalDateTime
-     */
-    private LocalDateTime convertStringToLocalDateTime(SecurityDiaryPostRequestDTO dto) {
-        DateStringJoiner dateStringJoiner = DateStringJoiner.builder()
-                .year(dto.getYear()).month(dto.getMonth()).day(dto.getDay())
-                .hour(dto.getHour()).minute(dto.getMinute()).second(dto.getSecond())
-                .build();
-
-        return dateStringJoiner.convertLocalDateTime();
     }
 
     @Transactional

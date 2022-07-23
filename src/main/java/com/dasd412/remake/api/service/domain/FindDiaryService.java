@@ -154,7 +154,6 @@ public class FindDiaryService {
 
         List<Predicate> predicates = new ArrayList<>();
         predicates.add(decideBetweenTimeInDiet(startUntilEnd.getStartDate(), startUntilEnd.getEndDate()));
-
         return dietRepository.findAverageBloodSugarWithWhereClauseGroupByEatTime(writerEntityId.getId(), predicates);
     }
 
@@ -172,12 +171,11 @@ public class FindDiaryService {
         if (foodPageVO.getSign() != null && foodPageVO.getEnumOfSign() != InequalitySign.NONE) {
             predicates.add(decideEqualitySignOfBloodSugar(foodPageVO.getEnumOfSign(), foodPageVO.getBloodSugar()));
         }
-
         LocalDateTime startDate;
         LocalDateTime endDate;
         try {
-            startDate = foodPageVO.convertStartDate().orElseThrow(()->new ConvertLocalDateException("시작 날짜 변환 실패"));
-            endDate = foodPageVO.convertEndDate().orElseThrow(()->new ConvertLocalDateException("끝 날짜 변환 실패"));
+            startDate = foodPageVO.convertStartDate().orElseThrow(() -> new ConvertLocalDateException("시작 날짜 변환 실패"));
+            endDate = foodPageVO.convertEndDate().orElseThrow(() -> new ConvertLocalDateException("끝 날짜 변환 실패"));
 
             if (isStartDateEqualOrBeforeEndDate(startDate, endDate)) {
                 predicates.add(decideBetweenTimeInDiary(startDate, endDate));
