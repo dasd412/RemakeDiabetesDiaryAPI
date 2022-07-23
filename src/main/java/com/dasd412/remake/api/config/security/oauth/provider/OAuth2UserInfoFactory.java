@@ -1,5 +1,5 @@
 /*
- * @(#)OAuth2UserInfoFactory.java        1.0.8 2022/2/16
+ * @(#)OAuth2UserInfoFactory.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -17,9 +17,6 @@ import java.util.Optional;
 
 /**
  * registrationId를 읽어서 어떤 OAuth2User인지 알려주는 팩토리.
- *
- * @author 양영준
- * @version 1.0.8 2022년 2월 16일
  */
 @Component
 public class OAuth2UserInfoFactory {

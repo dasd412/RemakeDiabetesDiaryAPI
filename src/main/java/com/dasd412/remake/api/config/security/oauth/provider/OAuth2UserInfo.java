@@ -1,5 +1,5 @@
 /*
- * @(#)OAuth2UserInfo.java        1.0.1 2022/1/22
+ * @(#)OAuth2UserInfo.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -10,9 +10,6 @@ package com.dasd412.remake.api.config.security.oauth.provider;
 
 /**
  * OAuth 요청이 오면, 사용자가 어떤 provider를 통해 로그인했는지 알기 위해 사용되는 인터페이스.
- *
- * @author 양영준
- * @version 1.0.1 2022년 1월 22일
  */
 public interface OAuth2UserInfo {
     /**
