@@ -123,8 +123,8 @@ public class SecurityChartRestController {
     public ApiResult<FindAverageAllDTO> findAverageAll(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         logger.info("find average all");
         Double averageFpg = findDiaryService.getAverageFpg(EntityId.of(Writer.class, principalDetails.getWriter().getId()));
-        List<Tuple> averageBloodSugarTuples = findDiaryService.getAverageBloodSugarGroupByEatTime(EntityId.of(Writer.class, principalDetails.getWriter().getId()));
-        Double averageBloodSugar = findDiaryService.getAverageBloodSugarOfDiet(EntityId.of(Writer.class, principalDetails.getWriter().getId()));
+        List<Tuple> averageBloodSugarTuples = findDiaryService.getAverageBloodSugarWithWhereClauseGroupByEatTime(EntityId.of(Writer.class, principalDetails.getWriter().getId()));
+        Double averageBloodSugar = findDiaryService.getAverageBloodSugarOfDietWithWhereClause(EntityId.of(Writer.class, principalDetails.getWriter().getId()));
 
         return ApiResult.OK(FindAverageAllDTO.builder().averageFpg(averageFpg).tupleList(averageBloodSugarTuples).averageBloodSugar(averageBloodSugar).build());
     }

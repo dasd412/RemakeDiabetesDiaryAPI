@@ -316,12 +316,6 @@ public class FindDiaryService {
         return dietRepository.findDietsWithWhereClause(writerEntityId.getId(), predicates);
     }
 
-    /**
-     * @param writerEntityId 래퍼로 감싸진 작성자 id
-     * @param bloodSugar     식사 혈당
-     * @param eatTime        식사 시간
-     * @return 입력된 식사 시간 중, 식사 혈당 입력 값보다 낮거나 같은 식단들
-     */
     @Transactional(readOnly = true)
     public List<Diet> getLowerThanBloodSugarInEatTime(EntityId<Writer, Long> writerEntityId, int bloodSugar, EatTime eatTime) {
         logger.info("getLowerThanBloodSugarInEatTime");
@@ -334,23 +328,13 @@ public class FindDiaryService {
         return dietRepository.findDietsWithWhereClause(writerEntityId.getId(), predicates);
     }
 
-    /**
-     * @param writerEntityId 래퍼로 감싸진 작성자 id
-     * @return 전체 기간 동안의 작성자의 평균 식사 혈당
-     */
     @Transactional(readOnly = true)
-    public double getAverageBloodSugarOfDiet(EntityId<Writer, Long> writerEntityId) {
+    public double getAverageBloodSugarOfDietWithWhereClause(EntityId<Writer, Long> writerEntityId) {
         logger.info("getAverageBloodSugarOfDiet");
         checkNotNull(writerEntityId, "writerId must be provided");
-        return dietRepository.findAverageBloodSugarOfDiet(writerEntityId.getId(), new ArrayList<>()).orElseThrow(() -> new IllegalStateException("아직 혈당을 기록한 식단이 없습니다."));
+        return dietRepository.findAverageBloodSugarOfDietWithWhereClause(writerEntityId.getId(), new ArrayList<>()).orElseThrow(() -> new IllegalStateException("아직 혈당을 기록한 식단이 없습니다."));
     }
 
-    /**
-     * @param writerEntityId 래퍼로 감싸진 작성자 id
-     * @param startDate      시작 날짜
-     * @param endDate        끝 날짜
-     * @return 해당 기간 동안의 작성자의 평균 식사 혈당
-     */
     @Transactional(readOnly = true)
     public double getAverageBloodSugarOfDietBetweenTime(EntityId<Writer, Long> writerEntityId, LocalDateTime startDate, LocalDateTime endDate) {
         logger.info("getAverageBloodSugarOfDietBetweenTime");
@@ -359,27 +343,16 @@ public class FindDiaryService {
 
         List<Predicate> predicates = new ArrayList<>();
         predicates.add(decideBetweenTimeInDiet(startDate, endDate));
-        return dietRepository.findAverageBloodSugarOfDiet(writerEntityId.getId(), predicates).orElseThrow(NoResultException::new);
+        return dietRepository.findAverageBloodSugarOfDietWithWhereClause(writerEntityId.getId(), predicates).orElseThrow(NoResultException::new);
     }
 
-
-    /**
-     * @param writerEntityId 래퍼로 감싸진 작성자 id
-     * @return 전체 기간 동안의 (평균 혈당, 식사 시간) 형태의 튜플들
-     */
     @Transactional(readOnly = true)
-    public List<Tuple> getAverageBloodSugarGroupByEatTime(EntityId<Writer, Long> writerEntityId) {
+    public List<Tuple> getAverageBloodSugarWithWhereClauseGroupByEatTime(EntityId<Writer, Long> writerEntityId) {
         logger.info("getAverageBloodSugarGroupByEatTime");
         checkNotNull(writerEntityId, "writerId must be provided");
-        return dietRepository.findAverageBloodSugarGroupByEatTime(writerEntityId.getId(), new ArrayList<>());
+        return dietRepository.findAverageBloodSugarWithWhereClauseGroupByEatTime(writerEntityId.getId(), new ArrayList<>());
     }
-
-    /**
-     * @param writerEntityId 래퍼로 감싸진 작성자 id
-     * @param startDate      시작 날짜
-     * @param endDate        끝 날짜
-     * @return 해당 기간 동안의 (평균 혈당, 식사 시간) 형태의 튜플들
-     */
+    
     @Transactional(readOnly = true)
     public List<Tuple> getAverageBloodSugarGroupByEatTimeBetweenTime(EntityId<Writer, Long> writerEntityId, LocalDateTime startDate, LocalDateTime endDate) {
         logger.info("getAverageBloodSugarGroupByEatTimeBetweenTime");
@@ -388,7 +361,7 @@ public class FindDiaryService {
 
         List<Predicate> predicates = new ArrayList<>();
         predicates.add(decideBetweenTimeInDiet(startDate, endDate));
-        return dietRepository.findAverageBloodSugarGroupByEatTime(writerEntityId.getId(), predicates);
+        return dietRepository.findAverageBloodSugarWithWhereClauseGroupByEatTime(writerEntityId.getId(), predicates);
     }
 
     /**

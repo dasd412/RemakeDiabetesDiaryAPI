@@ -1,5 +1,5 @@
 /*
- * @(#)DietId.java        1.0.1 2022/1/22
+ * @(#)DietId.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -16,9 +16,6 @@ import java.util.Objects;
 
 /**
  * 식단 복합키 식별자 클래스. 반드시 Serializable 구현해야 한다.
- *
- * @author 양영준
- * @version 1.0.1 2022년 1월 22일
  * @serial
  */
 public class DietId implements Serializable {

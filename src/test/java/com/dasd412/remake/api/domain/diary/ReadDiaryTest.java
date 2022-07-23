@@ -429,7 +429,7 @@ public class ReadDiaryTest {
     @Test
     public void findAverageBloodSugarDiet() {
         //when
-        double averageBloodSugar = dietRepository.findAverageBloodSugarOfDiet(me.getId(), new ArrayList<>()).orElseThrow(() -> new NullPointerException("아예 혈당이 없다."));
+        double averageBloodSugar = dietRepository.findAverageBloodSugarOfDietWithWhereClause(me.getId(), new ArrayList<>()).orElseThrow(() -> new NullPointerException("아예 혈당이 없다."));
 
         //then
         logger.info(String.valueOf(averageBloodSugar));
@@ -528,7 +528,7 @@ public class ReadDiaryTest {
     @Test
     public void findAverageBloodSugarGroupByEatTime() {
         //when
-        List<Tuple> tupleList = dietRepository.findAverageBloodSugarGroupByEatTime(me.getId(), new ArrayList<>());
+        List<Tuple> tupleList = dietRepository.findAverageBloodSugarWithWhereClauseGroupByEatTime(me.getId(), new ArrayList<>());
 
         //then
         logger.info(tupleList.toString());
@@ -578,7 +578,7 @@ public class ReadDiaryTest {
         predicates.add(decideBetweenTimeInDiet(startDate, endDate));
 
         //when
-        Double averageBloodSugar = dietRepository.findAverageBloodSugarOfDiet(me.getId(), predicates).orElseThrow(NoResultException::new);
+        Double averageBloodSugar = dietRepository.findAverageBloodSugarOfDietWithWhereClause(me.getId(), predicates).orElseThrow(NoResultException::new);
 
         //then
         assertThat(averageBloodSugar).isCloseTo(150.0, Percentage.withPercentage(0.5));
@@ -596,7 +596,7 @@ public class ReadDiaryTest {
         predicates.add(decideBetweenTimeInDiet(startDate, endDate));
 
         //when
-        List<Tuple> tupleList = dietRepository.findAverageBloodSugarGroupByEatTime(me.getId(), predicates);
+        List<Tuple> tupleList = dietRepository.findAverageBloodSugarWithWhereClauseGroupByEatTime(me.getId(), predicates);
 
         //then
         assertThat(tupleList.size()).isEqualTo(3);
