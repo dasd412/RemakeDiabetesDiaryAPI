@@ -8,7 +8,6 @@
 
 package com.dasd412.remake.api.controller.security.domain_view;
 
-import com.dasd412.remake.api.controller.exception.ConvertLocalDateException;
 import com.dasd412.remake.api.domain.diary.InequalitySign;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -18,7 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
+import java.util.Optional;
 
 import static com.dasd412.remake.api.util.DateStringConverter.convertLocalDateTime;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -156,12 +155,12 @@ public class FoodPageVO {
         this.endDay = endDay;
     }
 
-    public LocalDateTime convertStartDate() {
-        return convertLocalDateTime(this.startYear, this.startMonth, this.startDay).orElseThrow(() -> new ConvertLocalDateException("시작 날짜 변환 실패"));
+    public Optional<LocalDateTime> convertStartDate() {
+        return convertLocalDateTime(this.startYear, this.startMonth, this.startDay);
     }
 
-    public LocalDateTime convertEndDate() {
-        return convertLocalDateTime(this.endYear, this.endMonth, this.endDay).orElseThrow(() -> new ConvertLocalDateException("끝 날짜 변환 실패"));
+    public Optional<LocalDateTime> convertEndDate() {
+        return convertLocalDateTime(this.endYear, this.endMonth, this.endDay);
     }
 
     @Override

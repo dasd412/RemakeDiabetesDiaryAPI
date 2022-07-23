@@ -35,7 +35,7 @@ public class DateStringConverter {
     }
 
     public static boolean isStartDateEqualOrBeforeEndDate(LocalDateTime startDate, LocalDateTime endDate) {
-        return (startDate != null && endDate != null && (startDate.isEqual(endDate) || startDate.isBefore(endDate)));
+        return startDate.isEqual(endDate) || startDate.isBefore(endDate);
     }
 
     public static Optional<LocalDateTime> convertLocalDateTime(String year, String month, String day) {

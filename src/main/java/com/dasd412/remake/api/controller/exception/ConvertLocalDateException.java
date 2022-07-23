@@ -1,3 +1,11 @@
+/*
+ * @(#)ConvertLocalDateException.java
+ *
+ * Copyright (c) 2022 YoungJun Yang.
+ * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
+ * All rights reserved.
+ */
+
 package com.dasd412.remake.api.controller.exception;
 
 public class ConvertLocalDateException extends RuntimeException{

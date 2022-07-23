@@ -8,6 +8,7 @@
 
 package com.dasd412.remake.api.service.domain;
 
+import com.dasd412.remake.api.controller.exception.ConvertLocalDateException;
 import com.dasd412.remake.api.controller.security.domain_rest.dto.chart.FoodBoardDTO;
 import com.dasd412.remake.api.controller.security.domain_view.FoodPageVO;
 import com.dasd412.remake.api.domain.diary.EntityId;
@@ -168,11 +169,18 @@ public class FindDiaryService {
         if (foodPageVO.getSign() != null && foodPageVO.getEnumOfSign() != InequalitySign.NONE) {
             predicates.add(decideEqualitySignOfBloodSugar(foodPageVO.getEnumOfSign(), foodPageVO.getBloodSugar()));
         }
+        LocalDateTime startDate;
+        LocalDateTime endDate;
+        try {
+            startDate = foodPageVO.convertStartDate().orElseThrow(()->new ConvertLocalDateException("시작 날짜 변환 실패"));
+            endDate = foodPageVO.convertEndDate().orElseThrow(()->new ConvertLocalDateException("끝 날짜 변환 실패"));
 
-        if (isStartDateEqualOrBeforeEndDate(foodPageVO.convertStartDate(), foodPageVO.convertEndDate())) {        /* 날짜 규격에 적합한 파라미터라면, where 절에 추가해준다. */
-            predicates.add(decideBetweenTimeInDiary(foodPageVO.convertStartDate(), foodPageVO.convertEndDate()));
+            if (isStartDateEqualOrBeforeEndDate(startDate, endDate)) {
+                predicates.add(decideBetweenTimeInDiary(startDate, endDate));
+            }
+        } catch (ConvertLocalDateException e) {
+            logger.info("date format is empty or null " + e.getMessage());
         }
-
         return foodRepository.findFoodsWithPaginationAndWhereClause(writerEntityId.getId(), predicates, page);
     }
 
