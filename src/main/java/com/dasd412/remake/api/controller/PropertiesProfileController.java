@@ -1,5 +1,5 @@
 /*
- * @(#)PropertiesProfileController.java        1.2.0 2022/3/24
+ * @(#)PropertiesProfileController.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -16,10 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 현재 배포 운영 상에서 사용중인 프로파일 확인용
- *
- * @author 양영준
- * @version 1.2.0 2022년 3월 24일
+ * 현재 배포 운영 상에서 사용중인 프로파일 확인용 컨트롤러
  */
 @RestController
 public class PropertiesProfileController {
