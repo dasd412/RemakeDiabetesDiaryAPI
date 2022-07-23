@@ -7,6 +7,7 @@
  */
 package com.dasd412.remake.api.controller.security.domain_view;
 
+import com.dasd412.remake.api.controller.ControllerViewPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -20,7 +21,7 @@ public class CalendarFormController {
     @GetMapping("/calendar")
     public String calendarViewResolve() {
         logger.info("calendar view resolve");
-        return "calendar/calendar";
+        return ControllerViewPath.CALENDAR;
     }
 }
 

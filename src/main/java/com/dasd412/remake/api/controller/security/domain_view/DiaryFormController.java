@@ -9,6 +9,7 @@
 package com.dasd412.remake.api.controller.security.domain_view;
 
 import com.dasd412.remake.api.config.security.auth.PrincipalDetails;
+import com.dasd412.remake.api.controller.ControllerViewPath;
 import com.dasd412.remake.api.controller.security.domain_view.dto.PostForUpdateDTO;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
@@ -43,7 +44,7 @@ public class DiaryFormController {
         model.addAttribute("month", month);
         model.addAttribute("day", day);
 
-        return "post/post";
+        return ControllerViewPath.POST_FORM;
     }
 
     @GetMapping("/update-delete/{diaryId}")
@@ -58,7 +59,7 @@ public class DiaryFormController {
 
         model.addAttribute("diary", dto);
 
-        return "post/update-delete";
+        return ControllerViewPath.UPDATE_DELETE_FORM;
     }
 
     /**
@@ -69,6 +70,6 @@ public class DiaryFormController {
     @GetMapping("/update-delete/404")
     public String errorPathResolve() {
         logger.info("error path view resolve for solving circular view path");
-        return "error/404";
+        return ControllerViewPath.ERROR_404;
     }
 }

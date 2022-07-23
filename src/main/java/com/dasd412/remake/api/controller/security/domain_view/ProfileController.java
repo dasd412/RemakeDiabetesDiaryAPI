@@ -9,6 +9,7 @@
 package com.dasd412.remake.api.controller.security.domain_view;
 
 import com.dasd412.remake.api.config.security.auth.PrincipalDetails;
+import com.dasd412.remake.api.controller.ControllerViewPath;
 import com.dasd412.remake.api.controller.security.domain_view.dto.ProfileResponseDTO;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.profile.DiabetesPhase;
@@ -54,6 +55,7 @@ public class ProfileController {
         ProfileResponseDTO dto = new ProfileResponseDTO(profile);
         logger.info("profile dto : " + dto);
         model.addAttribute("profile", dto);
-        return "profile/profile";
+
+        return ControllerViewPath.PROFILE;
     }
 }

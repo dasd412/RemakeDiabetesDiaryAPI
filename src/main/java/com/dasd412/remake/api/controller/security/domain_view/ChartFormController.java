@@ -9,6 +9,7 @@
 package com.dasd412.remake.api.controller.security.domain_view;
 
 import com.dasd412.remake.api.config.security.auth.PrincipalDetails;
+import com.dasd412.remake.api.controller.ControllerViewPath;
 import com.dasd412.remake.api.controller.security.domain_rest.dto.chart.FoodBoardDTO;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
@@ -35,25 +36,25 @@ public class ChartFormController {
     @GetMapping("/chart-menu")
     public String showChartMenu() {
         logger.info("chart menu view resolve");
-        return "chart/chartMenu";
+        return ControllerViewPath.CHART_MENU;
     }
 
     @GetMapping("/chart-menu/chart/fasting-plasma-glucose")
     public String showChartFastingPlasmaGlucose() {
         logger.info("chart fasting-plasma-glucose resolve");
-        return "chart/fastingPlasmaGlucose";
+        return ControllerViewPath.FASTING_PLASMA_GLUCOSE;
     }
 
     @GetMapping("/chart-menu/chart/blood-sugar")
     public String showChartBloodSugarBetweenTime() {
         logger.info("chart blood sugar  resolve");
-        return "chart/bloodSugar";
+        return ControllerViewPath.CHART_BLOOD_SUGAR;
     }
 
     @GetMapping("/chart-menu/chart/average")
     public String showChartAverage() {
         logger.info("chart average resolve");
-        return "chart/average";
+        return ControllerViewPath.CHART_AVERAGE;
     }
 
     /**
@@ -68,6 +69,6 @@ public class ChartFormController {
         logger.info("dto : " + dtoPage);
         model.addAttribute("dtoPage", new FoodPageMaker<>(dtoPage));
 
-        return "chart/foodBoard";
+        return ControllerViewPath.CHART_FOOD_BOARD;
     }
 }
