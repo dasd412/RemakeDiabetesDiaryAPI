@@ -1,5 +1,5 @@
 /*
- * @(#)Profile.java        1.1.1 2022/2/28
+ * @(#)Profile.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -15,28 +15,15 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import javax.persistence.*;
 import java.util.Objects;
 
-/**
- * 프로필 엔티티. 작성자의 정보(당뇨 단계)등을 기입하는데 쓰인다.
- *
- * @author 양영준
- * @version 1.1.1 2022년 2월 28일
- */
 @Entity
 @Getter
 public class Profile {
 
-    /**
-     * 프로필 식별자
-     * 복합키 아니므로 id 자동 할당 전략 사용
-     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "profile_id")
     private Long profileId;
 
-    /**
-     * 작성자의 당뇨 단계
-     */
     @Enumerated(EnumType.STRING)
     private DiabetesPhase diabetesPhase;
 
