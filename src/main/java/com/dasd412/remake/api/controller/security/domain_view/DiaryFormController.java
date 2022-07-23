@@ -51,7 +51,7 @@ public class DiaryFormController {
         logger.info("update delete view resolve");
 
         /* fetch join 을 이용하여 일지와 관련된 모든 엔티티를 "한꺼번에" 불러옵니다. (n+1 방지) */
-        DiabetesDiary targetDiary = findDiaryService.getDiabetesDiaryOfWriterWithRelation(EntityId.of(Writer.class, principalDetails.getWriter().getId()), EntityId.of(DiabetesDiary.class, diaryId));
+        DiabetesDiary targetDiary = findDiaryService.getDiabetesDiaryWithSubEntitiesOfWriter(EntityId.of(Writer.class, principalDetails.getWriter().getId()), EntityId.of(DiabetesDiary.class, diaryId));
 
         PostForUpdateDTO dto = new PostForUpdateDTO(targetDiary);
         logger.info(dto.toString());

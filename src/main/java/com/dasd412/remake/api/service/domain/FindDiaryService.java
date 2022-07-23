@@ -1,5 +1,5 @@
 /*
- * @(#)FindDiaryService.java        1.1.1 2022/2/28
+ * @(#)FindDiaryService.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -45,12 +45,6 @@ import static com.dasd412.remake.api.util.DateStringConverter.isStartDateEqualOr
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * 조회 비즈니스 로직을 수행하는 서비스 클래스
- *
- * @author 양영준
- * @version 1.1.1 2022년 2월 28일
- */
 @Service
 public class FindDiaryService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -67,15 +61,6 @@ public class FindDiaryService {
         this.writerRepository = writerRepository;
     }
 
-    /*
-    조회용으로만 트랜잭션할 경우 readonly = true 로 하면 조회 성능 향상 가능
-     */
-
-
-    /**
-     * @param diaryEntityId 래퍼로 감싸진 일지 id
-     * @return 일지의 작성자
-     */
     @Transactional(readOnly = true)
     public Writer getWriterOfDiary(EntityId<DiabetesDiary, Long> diaryEntityId) {
         logger.info("getWriterOfDiary");
@@ -83,10 +68,6 @@ public class FindDiaryService {
         return diaryRepository.findWriterOfDiary(diaryEntityId.getId()).orElseThrow(() -> new NoResultException("작성자가 없습니다."));
     }
 
-    /**
-     * @param writerEntityId 래퍼로 감싸진 작성자 id
-     * @return 작성자가 작성한 모든 혈당 일지
-     */
     @Transactional(readOnly = true)
     public List<DiabetesDiary> getDiabetesDiariesOfWriter(EntityId<Writer, Long> writerEntityId) {
         logger.info("getDiabetesDiariesOfWriter");
@@ -94,11 +75,6 @@ public class FindDiaryService {
         return diaryRepository.findDiabetesDiariesOfWriter(writerEntityId.getId());
     }
 
-    /**
-     * @param writerEntityId        래퍼로 감싸진 작성자 id
-     * @param diabetesDiaryEntityId 래퍼로 감싸진 일지 id
-     * @return 입력에 해당하는 혈당 일지 하나
-     */
     @Transactional(readOnly = true)
     public DiabetesDiary getDiabetesDiaryOfWriter(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diabetesDiaryEntityId) {
         logger.info("getDiabetesDiaryOfWriter");
@@ -107,28 +83,19 @@ public class FindDiaryService {
         return diaryRepository.findOneDiabetesDiaryByIdInWriter(writerEntityId.getId(), diabetesDiaryEntityId.getId()).orElseThrow(() -> new NoResultException("작성자의 일지 중, id에 해당하는 일지가 없습니다."));
     }
 
-    /**
-     * @param writerEntityId        래퍼로 감싸진 작성자 id
-     * @param diabetesDiaryEntityId 래퍼로 감싸진 일지 id
-     * @return 입력에 해당하는 혈당 일지 하나 + 관련된 하위 엔티티 모두
-     */
     @Transactional(readOnly = true)
-    public DiabetesDiary getDiabetesDiaryOfWriterWithRelation(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diabetesDiaryEntityId) {
+    public DiabetesDiary getDiabetesDiaryWithSubEntitiesOfWriter(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diabetesDiaryEntityId) {
         logger.info("getDiabetesDiaryOfWriterWithRelation");
         checkNotNull(writerEntityId, "writerId must be provided");
         checkNotNull(diabetesDiaryEntityId, "diaryId must be provided");
-        return diaryRepository.findDiabetesDiaryOfWriterWithRelation(writerEntityId.getId(), diabetesDiaryEntityId.getId()).orElseThrow(() -> new NoResultException("작성자의 일지 중, id에 해당하는 일지가 없습니다."));
+        return diaryRepository.findDiabetesDiaryWithSubEntitiesOfWriter(writerEntityId.getId(), diabetesDiaryEntityId.getId()).orElseThrow(() -> new NoResultException("작성자의 일지 중, id에 해당하는 일지가 없습니다."));
     }
 
-    /**
-     * @param writerEntityId 래퍼로 감싸진 작성자 id
-     * @return 전체 기간 동안 작성한 일지들 + 하위 엔티티 모두 (fetch join 되어 있기 때문에 하위 엔티티 참조해도 무방하다.)
-     */
     @Transactional(readOnly = true)
-    public List<DiabetesDiary> getDiabetesDiariesOfWriterWithRelation(EntityId<Writer, Long> writerEntityId) {
+    public List<DiabetesDiary> getDiabetesDiariesWithSubEntitiesOfWriter(EntityId<Writer, Long> writerEntityId) {
         logger.info("getDiabetesDiariesOfWriterWithRelation");
         checkNotNull(writerEntityId, "writerId must be provided");
-        return diaryRepository.findDiabetesDiariesOfWriterWithRelation(writerEntityId.getId(), new ArrayList<>());
+        return diaryRepository.findDiabetesDiariesWithSubEntitiesOfWriter(writerEntityId.getId(), new ArrayList<>());
     }
 
     @Transactional(readOnly = true)
@@ -139,7 +106,7 @@ public class FindDiaryService {
 
         List<Predicate> predicates = new ArrayList<>();
         predicates.add(decideBetweenTimeInDiary(startDate, endDate));
-        return diaryRepository.findDiabetesDiariesOfWriterWithRelation(writerEntityId.getId(), predicates);
+        return diaryRepository.findDiabetesDiariesWithSubEntitiesOfWriter(writerEntityId.getId(), predicates);
     }
 
     /**

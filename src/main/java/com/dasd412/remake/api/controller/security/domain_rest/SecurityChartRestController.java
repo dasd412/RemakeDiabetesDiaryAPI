@@ -77,7 +77,7 @@ public class SecurityChartRestController {
     @GetMapping("/chart-menu/blood-sugar/all")
     public ApiResult<List<FindAllBloodSugarDTO>> findAllBloodSugar(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         logger.info("find all blood sugar");
-        List<DiabetesDiary> diaries = findDiaryService.getDiabetesDiariesOfWriterWithRelation(EntityId.of(Writer.class, principalDetails.getWriter().getId()));
+        List<DiabetesDiary> diaries = findDiaryService.getDiabetesDiariesWithSubEntitiesOfWriter(EntityId.of(Writer.class, principalDetails.getWriter().getId()));
 
         List<FindAllBloodSugarDTO> dtoList = new ArrayList<>();
         for (DiabetesDiary diary : diaries) {

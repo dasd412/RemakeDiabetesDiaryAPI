@@ -145,7 +145,7 @@ public class SecurityDiaryRestControllerTest {
                 .andExpect(jsonPath("$.success").value("true"))
                 .andExpect(jsonPath("$.response.id").value(1));
         logger.info("repository \n");
-        DiabetesDiary found = diaryRepository.findDiabetesDiaryOfWriterWithRelation(1L, 1L).orElseThrow(NoResultException::new);
+        DiabetesDiary found = diaryRepository.findDiabetesDiaryWithSubEntitiesOfWriter(1L, 1L).orElseThrow(NoResultException::new);
         List<Food> foodList = foodRepository.findAll();
 
         assertThat(found.getFastingPlasmaGlucose()).isEqualTo(0);
@@ -207,7 +207,7 @@ public class SecurityDiaryRestControllerTest {
                 .andExpect(jsonPath("$.response.id").value(1));
 
         logger.info("repository \n");
-        DiabetesDiary found = diaryRepository.findDiabetesDiaryOfWriterWithRelation(1L, 1L).orElseThrow(NoResultException::new);
+        DiabetesDiary found = diaryRepository.findDiabetesDiaryWithSubEntitiesOfWriter(1L, 1L).orElseThrow(NoResultException::new);
         List<Food> foodList = foodRepository.findAll();
 
         assertThat(found.getFastingPlasmaGlucose()).isEqualTo(100);
@@ -242,7 +242,7 @@ public class SecurityDiaryRestControllerTest {
                 .andExpect(jsonPath("$.response.id").value(1));
 
         logger.info("repository \n");
-        DiabetesDiary found = diaryRepository.findDiabetesDiaryOfWriterWithRelation(1L, 1L).orElseThrow(NoResultException::new);
+        DiabetesDiary found = diaryRepository.findDiabetesDiaryWithSubEntitiesOfWriter(1L, 1L).orElseThrow(NoResultException::new);
         List<Food> foodList = foodRepository.findAll();
 
         assertThat(found.getFastingPlasmaGlucose()).isEqualTo(100);
@@ -320,7 +320,7 @@ public class SecurityDiaryRestControllerTest {
                 .andExpect(jsonPath("$.success").value("true"))
                 .andExpect(jsonPath("$.response.id").value(1));
 
-        DiabetesDiary targetDiary = findDiaryService.getDiabetesDiaryOfWriterWithRelation(EntityId.of(Writer.class, principalDetails.getWriter().getId()), EntityId.of(DiabetesDiary.class, 1L));
+        DiabetesDiary targetDiary = findDiaryService.getDiabetesDiaryWithSubEntitiesOfWriter(EntityId.of(Writer.class, principalDetails.getWriter().getId()), EntityId.of(DiabetesDiary.class, 1L));
         PostForUpdateDTO viewDTO = new PostForUpdateDTO(targetDiary);
 
         List<SecurityFoodForUpdateDTO> oldBreakFast = viewDTO.getBreakFastFoods()

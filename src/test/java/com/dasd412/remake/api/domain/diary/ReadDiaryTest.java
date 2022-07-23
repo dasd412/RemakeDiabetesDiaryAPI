@@ -471,7 +471,7 @@ public class ReadDiaryTest {
     @Test
     public void findDiabetesDiariesOfWriterWithRelation() {
         //when
-        List<DiabetesDiary> diariesWithRelation = diaryRepository.findDiabetesDiariesOfWriterWithRelation(me.getId(), new ArrayList<>());
+        List<DiabetesDiary> diariesWithRelation = diaryRepository.findDiabetesDiariesWithSubEntitiesOfWriter(me.getId(), new ArrayList<>());
         //then
         logger.info(diariesWithRelation.toString());
         for (DiabetesDiary diary : diariesWithRelation) {
@@ -495,7 +495,7 @@ public class ReadDiaryTest {
         predicates.add(decideBetweenTimeInDiary(startDate, endDate));
 
         //when
-        List<DiabetesDiary> diaries = diaryRepository.findDiabetesDiariesOfWriterWithRelation(me.getId(), predicates);
+        List<DiabetesDiary> diaries = diaryRepository.findDiabetesDiariesWithSubEntitiesOfWriter(me.getId(), predicates);
 
         //then
         logger.info(diaries.toString());
