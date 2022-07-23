@@ -65,7 +65,26 @@ public class UpdateDeleteDiaryService {
         /* 0. 현재 세션에 담긴 사용자 정보 판별 */
         Writer writer = writerRepository.findById(principalDetails.getWriter().getId()).orElseThrow(() -> new NoResultException("작성자가 없습니다."));
 
-        /* 1. 혈당 일지 변경 감지 되었으면 수정. */
+        Long diabetesDiaryId = dto.getDiaryId();
+
+        ifDirtyThenUpdateDiary(principalDetails, dto);
+
+        Diet targetBreakFast = ifDirtyThenUpdateBreakFast(principalDetails, dto, diabetesDiaryId);
+        Diet targetLunch = ifDirtyThenUpdateLunch(principalDetails, dto, diabetesDiaryId);
+        Diet targetDinner = ifDirtyThenUpdateDinner(principalDetails, dto, diabetesDiaryId);
+
+        bulkDeleteOldFoods(dto);
+
+        makeNewBreakFastFoods(dto, targetBreakFast);
+        makeNewLunchFoods(dto, targetLunch);
+        makeNewDinnerFoods(dto, targetDinner);
+
+        writerRepository.save(writer);
+
+        return diabetesDiaryId;
+    }
+
+    private void ifDirtyThenUpdateDiary(PrincipalDetails principalDetails, SecurityDiaryUpdateDTO dto) {
         Long diabetesDiaryId = dto.getDiaryId();
         if (dto.isDiaryDirty()) {
             DiabetesDiary targetDiary = diaryRepository.findOneDiabetesDiaryByIdInWriter(principalDetails.getWriter().getId(), diabetesDiaryId)
@@ -73,8 +92,9 @@ public class UpdateDeleteDiaryService {
 
             targetDiary.update(dto.getFastingPlasmaGlucose(), dto.getRemark());
         }
+    }
 
-        /* 2. 아침 식단 변경 감지 되었으면 수정 */
+    private Diet ifDirtyThenUpdateBreakFast(PrincipalDetails principalDetails, SecurityDiaryUpdateDTO dto, Long diabetesDiaryId) {
         Long breakFastId = dto.getBreakFastId();
 
         Diet targetBreakFast = dietRepository.findOneDietByIdInDiary(principalDetails.getWriter().getId(), diabetesDiaryId, breakFastId)
@@ -82,8 +102,10 @@ public class UpdateDeleteDiaryService {
         if (dto.isBreakFastDirty()) {
             targetBreakFast.update(EatTime.BreakFast, dto.getBreakFastSugar());
         }
+        return targetBreakFast;
+    }
 
-        /* 3. 점심 식단 변경 감지 되었으면 수정 */
+    private Diet ifDirtyThenUpdateLunch(PrincipalDetails principalDetails, SecurityDiaryUpdateDTO dto, Long diabetesDiaryId) {
         Long lunchId = dto.getLunchId();
 
         Diet targetLunch = dietRepository.findOneDietByIdInDiary(principalDetails.getWriter().getId(), diabetesDiaryId, lunchId)
@@ -91,8 +113,10 @@ public class UpdateDeleteDiaryService {
         if (dto.isLunchDirty()) {
             targetLunch.update(EatTime.Lunch, dto.getLunchSugar());
         }
+        return targetLunch;
+    }
 
-        /* 4. 저녁 식단 변경 감지 되었으면 수정 */
+    private Diet ifDirtyThenUpdateDinner(PrincipalDetails principalDetails, SecurityDiaryUpdateDTO dto, Long diabetesDiaryId) {
         Long dinnerId = dto.getDinnerId();
 
         Diet targetDinner = dietRepository.findOneDietByIdInDiary(principalDetails.getWriter().getId(), diabetesDiaryId, dinnerId)
@@ -101,8 +125,10 @@ public class UpdateDeleteDiaryService {
         if (dto.isDinnerDirty()) {
             targetDinner.update(EatTime.Dinner, dto.getDinnerSugar());
         }
+        return targetDinner;
+    }
 
-        /* 5. 기존 음식 엔티티 삭제 ( in (id) 벌크 삭제) */
+    private void bulkDeleteOldFoods(SecurityDiaryUpdateDTO dto) {
         List<SecurityFoodForUpdateDTO> allOldFoods = new ArrayList<>();
         allOldFoods.addAll(dto.getOldBreakFastFoods());
         allOldFoods.addAll(dto.getOldLunchFoods());
@@ -112,30 +138,32 @@ public class UpdateDeleteDiaryService {
             List<EntityId<Food, Long>> foodEntityIds = allOldFoods.stream().map(elem -> EntityId.of(Food.class, elem.getId())).collect(Collectors.toList());
             bulkDeleteFoods(foodEntityIds);
         }
+    }
 
-        /* 6. 음식 엔티티 새로이 생성 */
+    private void makeNewBreakFastFoods(SecurityDiaryUpdateDTO dto, Diet targetBreakFast) {
         dto.getNewBreakFastFoods()
                 .forEach(elem -> {
                     Food food = new Food(saveDiaryService.getNextIdOfFood(), targetBreakFast, elem.getFoodName(), elem.getAmount(), elem.getAmountUnit());
                     targetBreakFast.addFood(food);
                 });
+    }
 
+    private void makeNewLunchFoods(SecurityDiaryUpdateDTO dto, Diet targetLunch) {
         dto.getNewLunchFoods()
                 .forEach(elem -> {
                     Food food = new Food(saveDiaryService.getNextIdOfFood(), targetLunch, elem.getFoodName(), elem.getAmount(), elem.getAmountUnit());
                     targetLunch.addFood(food);
                 });
+    }
 
+    private void makeNewDinnerFoods(SecurityDiaryUpdateDTO dto, Diet targetDinner) {
         dto.getNewDinnerFoods()
                 .forEach(elem -> {
                     Food food = new Food(saveDiaryService.getNextIdOfFood(), targetDinner, elem.getFoodName(), elem.getAmount(), elem.getAmountUnit());
                     targetDinner.addFood(food);
                 });
-
-        writerRepository.save(writer);
-
-        return diabetesDiaryId;
     }
+
 
     @Transactional
     public void deleteDiary(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diaryEntityId) {
