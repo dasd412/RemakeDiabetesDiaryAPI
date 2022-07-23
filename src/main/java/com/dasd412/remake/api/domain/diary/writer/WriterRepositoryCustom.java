@@ -1,5 +1,5 @@
 /*
- * @(#)WriterRepositoryCustom.java        1.1.2 2022/3/6
+ * @(#)WriterRepositoryCustom.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -13,12 +13,6 @@ import com.querydsl.core.Tuple;
 
 import java.util.Optional;
 
-/**
- * 작성자 리포지토리 상위 인터페이스. Querydsl을 이용하기 위해 구현하였다.
- *
- * @author 양영준
- * @version 1.1.2 2022년 3월 6일
- */
 public interface WriterRepositoryCustom {
 
     /**
@@ -26,11 +20,6 @@ public interface WriterRepositoryCustom {
      */
     Long findMaxOfId();
 
-    /**
-     * 회원 탈퇴 시 작성한 일지 및 연관된 하위 엔티티들 (식단, 음식) 모두 "한꺼번에" 삭제하는 메서드
-     *
-     * @param writerId 작성자 id
-     */
     void bulkDeleteWriter(Long writerId);
 
     Optional<Writer> findWriterByName(String name);
@@ -39,36 +28,15 @@ public interface WriterRepositoryCustom {
 
     Boolean existsEmail(String email, String provider);
 
-    /**
-     * @param writerId 작성자 id
-     * @return 작성자와의 1대1 관계인 프로필 정보
-     */
     Optional<Profile> findProfile(Long writerId);
 
-    /**
-     * @param email 이메일
-     * @return 이메일을 이용해 (사용자 id 및 provider) 찾기
-     */
     Tuple findUserInfoByEmail(String email);
 
-    /**
-     * @param email    사용자 이메일
-     * @param userName 사용자 id
-     * @return 파라미터를 이용해 비밀 번호가 존재하는 지 여부
-     */
     Boolean existPassword(String email, String userName);
 
-    /**
-     * 임시 비밀 번호로 갱신
-     *
-     * @param email        사용자 이메일
-     * @param userName     사용자 id (Unique == true)
-     * @param tempPassWord 임시 비밀 번호
-     */
-    void updateTempPassword(String email, String userName, String tempPassWord);
+    void updateWithTempPassword(String email, String userName, String tempPassWord);
 
     /**
-     * @param writerId 로그인한 사용자 id
      * @param encodePassword 변경하고자 하는 비밀 번호 (인코딩 필수!)
      */
     void updatePassword(Long writerId, String encodePassword);

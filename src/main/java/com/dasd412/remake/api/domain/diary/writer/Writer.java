@@ -1,5 +1,5 @@
 /*
- * @(#)Writer.java        1.1.1 2022/2/27
+ * @(#)Writer.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -22,26 +22,14 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-/**
- * 작성자 엔티티. 로그인 정보와 관련이 있다.
- *
- * @author 양영준
- * @version 1.2.2 2022년 5월 15일
- */
 @Entity
 @Table(name = "Writer", uniqueConstraints = @UniqueConstraint(columnNames = {"writer_id", "name"}))
 public class Writer extends BaseTimeEntity {
 
-    /**
-     * 작성자의 식별자
-     */
     @Id
     @Column(name = "writer_id", columnDefinition = "bigint default 0", nullable = false, unique = true)
     private Long writerId;
 
-    /**
-     * 작성자 이름
-     */
     @Column(nullable = false, unique = true)
     private String name;
 
@@ -57,9 +45,6 @@ public class Writer extends BaseTimeEntity {
      */
     private String password;
 
-    /**
-     * 작성자의 권한
-     */
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -73,16 +58,9 @@ public class Writer extends BaseTimeEntity {
      */
     private String providerId;
 
-    /**
-     * 연관된 엔티티의 컬렉션을 로딩하는 것은 비용이 너무 많이 드므로 지연 로딩.
-     */
     @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private final Set<DiabetesDiary> diaries = new HashSet<>();
 
-    /**
-     * Writer -> Profile 로의 단방향 참조 관계
-     * 그리고 Writer에 외래키가 존재하므로 @JoinColumn 부착.
-     */
     @OneToOne
     @JoinColumn(name = "profile_id")
     private Profile profile;

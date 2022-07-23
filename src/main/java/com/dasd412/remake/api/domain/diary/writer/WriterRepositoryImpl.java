@@ -1,5 +1,5 @@
 /*
- * @(#)WriterRepositoryImpl.java        1.1.2 2022/3/6
+ * @(#)WriterRepositoryImpl.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -15,25 +15,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import java.util.Optional;
 
-/**
- * Querydsl을 사용하기 위해 만든 구현체 클래스.
- *
- * @author 양영준
- * @version 1.1.2 2022년 3월 6일
- */
 public class WriterRepositoryImpl implements WriterRepositoryCustom {
 
-    /*
-    fetch : 조회 대상이 여러건일 경우. 컬렉션 반환
-    fetchOne : 조회 대상이 1건일 경우(1건 이상일 경우 에러). generic 에 지정한 타입으로 반환
-    fetchFirst : 조회 대상이 1건이든 1건 이상이든 무조건 1건만 반환. 내부에 보면 return limit(1).fetchOne() 으로 되어있음
-    fetchCount : 개수 조회. long 타입 반환
-    fetchResults : 조회한 리스트 + 전체 개수를 포함한 QueryResults 반환. count 쿼리가 추가로 실행된다.
-     */
-
-    /**
-     * Querydsl 쿼리 사용을 위한 객체
-     */
     private final JPAQueryFactory jpaQueryFactory;
 
     public WriterRepositoryImpl(JPAQueryFactory jpaQueryFactory) {
@@ -48,11 +31,6 @@ public class WriterRepositoryImpl implements WriterRepositoryCustom {
         return jpaQueryFactory.from(QWriter.writer).select(QWriter.writer.writerId.max()).fetchOne();
     }
 
-    /**
-     * 회원 탈퇴 시 작성한 일지 및 연관된 하위 엔티티들 (식단, 음식) 모두 "한꺼번에" 삭제하는 메서드
-     *
-     * @param writerId 작성자 id
-     */
     @Override
     public void bulkDeleteWriter(Long writerId) {
         BulkDeleteHelper deleteHelper = new BulkDeleteHelper(jpaQueryFactory);
@@ -106,10 +84,6 @@ public class WriterRepositoryImpl implements WriterRepositoryCustom {
 
     /**
      * 이 메서드의 sql을 분석해보면, 알아서 inner join 해준다.
-     * select profile1_.profile_id as profile_1_3_, profile1_.diabetes_phase as diabetes2_3_ from writer writer0_ inner join profile profile1_ on writer0_.profile_id=profile1_.profile_id where writer0_.writer_id=?
-     *
-     * @param writerId 작성자 id
-     * @return 작성자와의 1대1 관계인 프로필 정보
      */
     @Override
     public Optional<Profile> findProfile(Long writerId) {
@@ -121,10 +95,6 @@ public class WriterRepositoryImpl implements WriterRepositoryCustom {
         );
     }
 
-    /**
-     * @param email 이메일
-     * @return 이메일을 이용해 (사용자 id 및 provider) 찾기
-     */
     @Override
     public Tuple findUserInfoByEmail(String email) {
         return jpaQueryFactory.select(QWriter.writer.name, QWriter.writer.provider)
@@ -133,11 +103,6 @@ public class WriterRepositoryImpl implements WriterRepositoryCustom {
                 .fetchOne();
     }
 
-    /**
-     * @param email    사용자 이메일
-     * @param userName 사용자 id
-     * @return 파라미터를 이용해 비밀 번호가 존재하는 지 여부
-     */
     @Override
     public Boolean existPassword(String email, String userName) {
 
@@ -152,15 +117,8 @@ public class WriterRepositoryImpl implements WriterRepositoryCustom {
         return fetchFirst != null;
     }
 
-    /**
-     * 임시 비밀 번호로 갱신
-     *
-     * @param email        사용자 이메일
-     * @param userName     사용자 id (Unique == true)
-     * @param tempPassWord 임시 비밀 번호
-     */
     @Override
-    public void updateTempPassword(String email, String userName, String tempPassWord) {
+    public void updateWithTempPassword(String email, String userName, String tempPassWord) {
         jpaQueryFactory.update(QWriter.writer)
                 .set(QWriter.writer.password, tempPassWord)
                 .where(QWriter.writer.email.eq(email)
@@ -168,10 +126,7 @@ public class WriterRepositoryImpl implements WriterRepositoryCustom {
                 .execute();
     }
 
-    /**
-     * @param writerId       로그인한 사용자 id
-     * @param encodePassword 변경하고자 하는 비밀 번호 (인코딩되있어야 함!!)
-     */
+
     @Override
     public void updatePassword(Long writerId, String encodePassword) {
         jpaQueryFactory.update(QWriter.writer)

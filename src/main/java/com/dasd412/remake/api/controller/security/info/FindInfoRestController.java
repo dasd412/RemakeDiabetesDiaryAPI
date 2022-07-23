@@ -84,7 +84,7 @@ public class FindInfoRestController {
         if (exist) {
             String tempPassword = writerService.issueNewPassword();
             /* 새 임시 비밀 번호 영속화 */
-            writerService.updateTempPassword(email, userName, tempPassword);
+            writerService.updateWithTempPassword(email, userName, tempPassword);
 
             emailService.sendEmailAboutTempPassword(email, tempPassword);
 

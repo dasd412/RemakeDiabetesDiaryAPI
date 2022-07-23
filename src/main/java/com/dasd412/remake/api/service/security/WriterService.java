@@ -137,15 +137,10 @@ public class WriterService {
         return tempPassword.toString();
     }
 
-    /**
-     * @param email        사용자 email
-     * @param userName     사용자 id (unique == true)
-     * @param tempPassWord 새로 발급 받은 임시 비밀 번호
-     */
     @Transactional
-    public void updateTempPassword(String email, String userName, String tempPassWord) {
+    public void updateWithTempPassword(String email, String userName, String tempPassWord) {
         checkArgument(RegexChecker.isRightEmail(email), "String must be pattern of email!!");
-        writerRepository.updateTempPassword(email, userName, this.encodePassword(tempPassWord));
+        writerRepository.updateWithTempPassword(email, userName, this.encodePassword(tempPassWord));
     }
 
     /**

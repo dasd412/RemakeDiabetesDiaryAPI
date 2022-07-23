@@ -235,7 +235,7 @@ public class UserInfoTest {
         String tempPassword = writerService.issueNewPassword();
 
         //when
-        writerService.updateTempPassword(email, userName, tempPassword);
+        writerService.updateWithTempPassword(email, userName, tempPassword);
 
         //then
         Writer found = writerRepository.findAll().get(0);
