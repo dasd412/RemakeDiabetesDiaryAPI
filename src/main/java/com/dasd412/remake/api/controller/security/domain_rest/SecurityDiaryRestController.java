@@ -12,9 +12,6 @@ import com.dasd412.remake.api.controller.ApiResult;
 import com.dasd412.remake.api.controller.security.domain_rest.dto.diary.*;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
-import com.dasd412.remake.api.domain.diary.diet.Diet;
-import com.dasd412.remake.api.domain.diary.diet.EatTime;
-import com.dasd412.remake.api.domain.diary.food.Food;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.service.domain.FindDiaryService;
 import com.dasd412.remake.api.service.domain.SaveDiaryService;
@@ -27,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,7 +57,7 @@ public class SecurityDiaryRestController {
     public ApiResult<SecurityDiaryUpdateResponseDTO> updateDiary(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody SecurityDiaryUpdateDTO dto) {
         logger.info("update diabetes diary from browser");
 
-        Long diaryId= updateDeleteDiaryService.updateDiaryWithEntities(principalDetails,dto);
+        Long diaryId = updateDeleteDiaryService.updateDiaryWithEntities(principalDetails, dto);
 
         return ApiResult.OK(new SecurityDiaryUpdateResponseDTO(diaryId));
     }
@@ -80,20 +76,27 @@ public class SecurityDiaryRestController {
                                                                                  @RequestParam(value = "endDay") int endDay) {
         logger.info("get diaries between time");
 
-        LocalDateTime startDate = LocalDateTime.of(year, month, startDay, 0, 0, 0);
-        LocalDateTime endDate = LocalDateTime.of(year, month, endDay, 0, 0, 0);
-        logger.info(startDate + " ~ " + endDate);
-
         /* fetch join 안했음. 달력에서는 id 값과 작성 날짜만 필요하기 때문. */
         List<DiabetesDiary> diaries =
                 findDiaryService.getDiariesBetweenLocalDateTime(EntityId.of(Writer.class, principalDetails.getWriter().getId()),
-                        FromStartUntilEnd.builder().startDate(startDate).endDate(endDate).build());
+                        makeStartUntilEnd(year, month, startDay, endDay));
 
         /* (일지 id, 작성 시간)의 형태의 dto 생성 */
-        List<DiaryListBetweenTimeDTO> dtoList = diaries
-                .stream().map(DiaryListBetweenTimeDTO::new)
-                .collect(Collectors.toList());
+        List<DiaryListBetweenTimeDTO> dtoList = makeDtoList(diaries);
 
         return ApiResult.OK(dtoList);
+    }
+
+    private FromStartUntilEnd makeStartUntilEnd(int year, int month, int startDay, int endDay) {
+        return FromStartUntilEnd.builder()
+                .startDate(LocalDateTime.of(year, month, startDay, 0, 0, 0))
+                .endDate(LocalDateTime.of(year, month, endDay, 0, 0, 0))
+                .build();
+    }
+
+    private List<DiaryListBetweenTimeDTO>makeDtoList(List<DiabetesDiary> diaries){
+        return diaries
+                .stream().map(DiaryListBetweenTimeDTO::new)
+                .collect(Collectors.toList());
     }
 }

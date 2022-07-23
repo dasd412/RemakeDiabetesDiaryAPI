@@ -83,16 +83,21 @@ public class SecurityChartRestController {
         logger.info("find all blood sugar");
         List<DiabetesDiary> diaries = findDiaryService.getDiabetesDiariesWithSubEntitiesOfWriter(EntityId.of(Writer.class, principalDetails.getWriter().getId()));
 
+        List<FindAllBloodSugarDTO> dtoList = makeAllBloodSugarDtoListAndSortByDate(diaries);
+
+        return ApiResult.OK(dtoList);
+    }
+
+    private List<FindAllBloodSugarDTO> makeAllBloodSugarDtoListAndSortByDate(List<DiabetesDiary> diaries) {
         List<FindAllBloodSugarDTO> dtoList = new ArrayList<>();
         for (DiabetesDiary diary : diaries) {
             for (Diet diet : diary.getDietList()) {
                 dtoList.add(new FindAllBloodSugarDTO(diary, diet));
             }
         }
-
         dtoList.sort(Comparator.comparing(FindAllBloodSugarDTO::getDateTime));
 
-        return ApiResult.OK(dtoList);
+        return dtoList;
     }
 
     /**
@@ -110,6 +115,12 @@ public class SecurityChartRestController {
                         principalDetails.getWriter().getId()),
                 FromStartUntilEnd.builder().startDate(startDate).endDate(endDate).build());
 
+        List<FindBloodSugarBetweenDTO> dtoList = makeBloodSugarBetweenDtoListAndSortByDate(diaries);
+
+        return ApiResult.OK(dtoList);
+    }
+
+    private List<FindBloodSugarBetweenDTO> makeBloodSugarBetweenDtoListAndSortByDate(List<DiabetesDiary> diaries) {
         List<FindBloodSugarBetweenDTO> dtoList = new ArrayList<>();
 
         for (DiabetesDiary diary : diaries) {
@@ -117,10 +128,9 @@ public class SecurityChartRestController {
                 dtoList.add(new FindBloodSugarBetweenDTO(diary, diet));
             }
         }
-
         dtoList.sort(Comparator.comparing(FindBloodSugarBetweenDTO::getDateTime));
 
-        return ApiResult.OK(dtoList);
+        return dtoList;
     }
 
     /**
