@@ -19,6 +19,7 @@ import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.service.domain.FindDiaryService;
 import com.dasd412.remake.api.service.domain.SaveDiaryService;
 import com.dasd412.remake.api.service.domain.UpdateDeleteDiaryService;
+import com.dasd412.remake.api.service.domain.vo.FromStartUntilEnd;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -86,7 +87,7 @@ public class SecurityDiaryRestController {
         /* fetch join 안했음. 달력에서는 id 값과 작성 날짜만 필요하기 때문. */
         List<DiabetesDiary> diaries =
                 findDiaryService.getDiariesBetweenLocalDateTime(EntityId.of(Writer.class, principalDetails.getWriter().getId()),
-                        startDate, endDate);
+                        FromStartUntilEnd.builder().startDate(startDate).endDate(endDate).build());
 
         /* (일지 id, 작성 시간)의 형태의 dto 생성 */
         List<DiaryListBetweenTimeDTO> dtoList = diaries

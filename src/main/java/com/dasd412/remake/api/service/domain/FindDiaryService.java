@@ -21,6 +21,7 @@ import com.dasd412.remake.api.domain.diary.profile.Profile;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 
 import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
+import com.dasd412.remake.api.service.domain.vo.FromStartUntilEnd;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Predicate;
 import org.slf4j.Logger;
@@ -80,24 +81,24 @@ public class FindDiaryService {
     }
 
     @Transactional(readOnly = true)
-    public List<DiabetesDiary> getDiariesWithRelationBetweenTime(EntityId<Writer, Long> writerEntityId, LocalDateTime startDate, LocalDateTime endDate) {
+    public List<DiabetesDiary> getDiariesWithRelationBetweenTime(EntityId<Writer, Long> writerEntityId, FromStartUntilEnd startUntilEnd) {
         logger.info("getDiariesWithRelationBetweenTime");
         checkNotNull(writerEntityId, "writerId must be provided");
-        checkArgument(isStartDateEqualOrBeforeEndDate(startDate, endDate), "startDate must be equal or before than endDate");
+        checkArgument(isStartDateEqualOrBeforeEndDate(startUntilEnd.getStartDate(), startUntilEnd.getEndDate()), "startDate must be equal or before than endDate");
 
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(decideBetweenTimeInDiary(startDate, endDate));
+        predicates.add(decideBetweenTimeInDiary(startUntilEnd.getStartDate(), startUntilEnd.getEndDate()));
         return diaryRepository.findDiabetesDiariesWithSubEntitiesOfWriter(writerEntityId.getId(), predicates);
     }
 
     @Transactional(readOnly = true)
-    public List<DiabetesDiary> getDiariesBetweenLocalDateTime(EntityId<Writer, Long> writerEntityId, LocalDateTime startDate, LocalDateTime endDate) {
+    public List<DiabetesDiary> getDiariesBetweenLocalDateTime(EntityId<Writer, Long> writerEntityId, FromStartUntilEnd startUntilEnd) {
         logger.info("get Diaries Between LocalDateTime");
         checkNotNull(writerEntityId, "writerId must be provided");
-        checkArgument(isStartDateEqualOrBeforeEndDate(startDate, endDate), "startDate must be equal or before than endDate");
+        checkArgument(isStartDateEqualOrBeforeEndDate(startUntilEnd.getStartDate(), startUntilEnd.getEndDate()), "startDate must be equal or before than endDate");
 
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(decideBetweenTimeInDiary(startDate, endDate));
+        predicates.add(decideBetweenTimeInDiary(startUntilEnd.getStartDate(), startUntilEnd.getEndDate()));
         return diaryRepository.findDiariesWithWhereClause(writerEntityId.getId(), predicates);
     }
 
@@ -109,12 +110,12 @@ public class FindDiaryService {
     }
 
     @Transactional(readOnly = true)
-    public Double getAverageFpgBetween(EntityId<Writer, Long> writerEntityId, LocalDateTime startDate, LocalDateTime endDate) {
+    public Double getAverageFpgBetween(EntityId<Writer, Long> writerEntityId, FromStartUntilEnd startUntilEnd) {
         logger.info("getAverageFpgBetween");
         checkNotNull(writerEntityId, "writerId must be provided");
-        checkArgument(isStartDateEqualOrBeforeEndDate(startDate, endDate), "startDate must be equal or before than endDate");
+        checkArgument(isStartDateEqualOrBeforeEndDate(startUntilEnd.getStartDate(), startUntilEnd.getEndDate()), "startDate must be equal or before than endDate");
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(decideBetweenTimeInDiary(startDate, endDate));
+        predicates.add(decideBetweenTimeInDiary(startUntilEnd.getStartDate(), startUntilEnd.getEndDate()));
         return diaryRepository.findAverageFpg(writerEntityId.getId(), predicates).orElseThrow(NoResultException::new);
     }
 
@@ -127,13 +128,14 @@ public class FindDiaryService {
     }
 
     @Transactional(readOnly = true)
-    public double getAverageBloodSugarOfDietBetweenTime(EntityId<Writer, Long> writerEntityId, LocalDateTime startDate, LocalDateTime endDate) {
+    public double getAverageBloodSugarOfDietBetweenTime(EntityId<Writer, Long> writerEntityId, FromStartUntilEnd startUntilEnd) {
         logger.info("getAverageBloodSugarOfDietBetweenTime");
         checkNotNull(writerEntityId, "writerId must be provided");
-        checkArgument(isStartDateEqualOrBeforeEndDate(startDate, endDate), "startDate must be equal or before endDate");
+        checkArgument(isStartDateEqualOrBeforeEndDate(startUntilEnd.getStartDate(), startUntilEnd.getEndDate()), "startDate must be equal or before endDate");
 
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(decideBetweenTimeInDiet(startDate, endDate));
+        predicates.add(decideBetweenTimeInDiet(startUntilEnd.getStartDate(), startUntilEnd.getEndDate()));
+
         return dietRepository.findAverageBloodSugarOfDietWithWhereClause(writerEntityId.getId(), predicates).orElseThrow(NoResultException::new);
     }
 
@@ -145,13 +147,14 @@ public class FindDiaryService {
     }
 
     @Transactional(readOnly = true)
-    public List<Tuple> getAverageBloodSugarGroupByEatTimeBetweenTime(EntityId<Writer, Long> writerEntityId, LocalDateTime startDate, LocalDateTime endDate) {
+    public List<Tuple> getAverageBloodSugarGroupByEatTimeBetweenTime(EntityId<Writer, Long> writerEntityId, FromStartUntilEnd startUntilEnd) {
         logger.info("getAverageBloodSugarGroupByEatTimeBetweenTime");
         checkNotNull(writerEntityId, "writerId must be provided");
-        checkArgument(isStartDateEqualOrBeforeEndDate(startDate, endDate), "startDate must be equal or before endDate");
+        checkArgument(isStartDateEqualOrBeforeEndDate(startUntilEnd.getStartDate(), startUntilEnd.getEndDate()), "startDate must be equal or before endDate");
 
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(decideBetweenTimeInDiet(startDate, endDate));
+        predicates.add(decideBetweenTimeInDiet(startUntilEnd.getStartDate(), startUntilEnd.getEndDate()));
+
         return dietRepository.findAverageBloodSugarWithWhereClauseGroupByEatTime(writerEntityId.getId(), predicates);
     }
 
@@ -169,6 +172,7 @@ public class FindDiaryService {
         if (foodPageVO.getSign() != null && foodPageVO.getEnumOfSign() != InequalitySign.NONE) {
             predicates.add(decideEqualitySignOfBloodSugar(foodPageVO.getEnumOfSign(), foodPageVO.getBloodSugar()));
         }
+
         LocalDateTime startDate;
         LocalDateTime endDate;
         try {

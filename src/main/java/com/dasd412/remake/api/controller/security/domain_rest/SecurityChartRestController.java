@@ -16,6 +16,7 @@ import com.dasd412.remake.api.domain.diary.diabetesDiary.DiabetesDiary;
 import com.dasd412.remake.api.domain.diary.diet.Diet;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.service.domain.FindDiaryService;
+import com.dasd412.remake.api.service.domain.vo.FromStartUntilEnd;
 import com.dasd412.remake.api.util.DateStringConverter;
 import com.querydsl.core.Tuple;
 import org.slf4j.Logger;
@@ -68,12 +69,15 @@ public class SecurityChartRestController {
 
         logger.info("find fpg between" + startDate + " and " + endDate);
 
-        List<DiabetesDiary> diaryList = findDiaryService.getDiariesBetweenLocalDateTime(EntityId.of(Writer.class, principalDetails.getWriter().getId()), startDate, endDate);
+        List<DiabetesDiary> diaryList = findDiaryService.getDiariesBetweenLocalDateTime(EntityId.of(Writer.class,
+                        principalDetails.getWriter().getId()),
+                FromStartUntilEnd.builder().startDate(startDate).endDate(endDate).build());
+
         List<FindFpgBetweenDTO> dtoList = diaryList.stream().map(FindFpgBetweenDTO::new).sorted(Comparator.comparing(FindFpgBetweenDTO::getTimeByTimeStamp)).collect(Collectors.toList());
 
         return ApiResult.OK(dtoList);
     }
-    
+
     @GetMapping("/chart-menu/blood-sugar/all")
     public ApiResult<List<FindAllBloodSugarDTO>> findAllBloodSugar(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         logger.info("find all blood sugar");
@@ -85,7 +89,7 @@ public class SecurityChartRestController {
                 dtoList.add(new FindAllBloodSugarDTO(diary, diet));
             }
         }
-        
+
         dtoList.sort(Comparator.comparing(FindAllBloodSugarDTO::getDateTime));
 
         return ApiResult.OK(dtoList);
@@ -101,7 +105,10 @@ public class SecurityChartRestController {
 
         logger.info("find blood sugar between" + startDate + " and " + endDate);
 
-        List<DiabetesDiary> diaries = findDiaryService.getDiariesWithRelationBetweenTime(EntityId.of(Writer.class, principalDetails.getWriter().getId()), startDate, endDate);
+        List<DiabetesDiary> diaries = findDiaryService.getDiariesWithRelationBetweenTime(
+                EntityId.of(Writer.class,
+                        principalDetails.getWriter().getId()),
+                FromStartUntilEnd.builder().startDate(startDate).endDate(endDate).build());
 
         List<FindBloodSugarBetweenDTO> dtoList = new ArrayList<>();
 
@@ -110,7 +117,7 @@ public class SecurityChartRestController {
                 dtoList.add(new FindBloodSugarBetweenDTO(diary, diet));
             }
         }
-        
+
         dtoList.sort(Comparator.comparing(FindBloodSugarBetweenDTO::getDateTime));
 
         return ApiResult.OK(dtoList);
@@ -129,9 +136,6 @@ public class SecurityChartRestController {
         return ApiResult.OK(FindAverageAllDTO.builder().averageFpg(averageFpg).tupleList(averageBloodSugarTuples).averageBloodSugar(averageBloodSugar).build());
     }
 
-    /**
-     * @return 해당 기간 내 혈당 일지 및 식단 정보 (평균)
-     */
     @GetMapping("/chart-menu/average/between")
     public ApiResult<FindAverageBetweenDTO> findAverageBetween(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestParam Map<String, String> startYearMonthDayEndYearMonthDay) {
         LocalDateTime startDate = DateStringConverter.convertMapParamsToStartDate(startYearMonthDayEndYearMonthDay);
@@ -139,9 +143,15 @@ public class SecurityChartRestController {
 
         logger.info("find average blood sugar between" + startDate + " and " + endDate);
 
-        Double averageFpgBetween = findDiaryService.getAverageFpgBetween(EntityId.of(Writer.class, principalDetails.getWriter().getId()), startDate, endDate);
-        List<Tuple> averageBloodSugarTuplesBetween = findDiaryService.getAverageBloodSugarGroupByEatTimeBetweenTime(EntityId.of(Writer.class, principalDetails.getWriter().getId()), startDate, endDate);
-        Double averageBloodSugarBetween = findDiaryService.getAverageBloodSugarOfDietBetweenTime(EntityId.of(Writer.class, principalDetails.getWriter().getId()), startDate, endDate);
+        Double averageFpgBetween = findDiaryService.getAverageFpgBetween(EntityId.of(Writer.class,
+                        principalDetails.getWriter().getId()),
+                FromStartUntilEnd.builder().startDate(startDate).endDate(endDate).build());
+
+        List<Tuple> averageBloodSugarTuplesBetween = findDiaryService.getAverageBloodSugarGroupByEatTimeBetweenTime(EntityId.of(Writer.class, principalDetails.getWriter().getId())
+                , FromStartUntilEnd.builder().startDate(startDate).endDate(endDate).build());
+
+        Double averageBloodSugarBetween = findDiaryService.getAverageBloodSugarOfDietBetweenTime(EntityId.of(Writer.class, principalDetails.getWriter().getId())
+                , FromStartUntilEnd.builder().startDate(startDate).endDate(endDate).build());
 
         return ApiResult.OK(FindAverageBetweenDTO.builder().averageFpgBetween(averageFpgBetween).tupleListBetween(averageBloodSugarTuplesBetween).averageBloodSugarBetween(averageBloodSugarBetween).build());
     }
