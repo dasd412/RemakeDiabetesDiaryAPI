@@ -100,33 +100,25 @@ public class CreateDiaryTest {
     @Transactional
     @Test
     public void saveWritersMany() {
+
+        testSavingWriter("other", "OTHER@NAVER.COM", Role.User, 1);
+
+        testSavingWriter("another", "Another@NAVER.COM", Role.User, 2);
+    }
+
+    private void testSavingWriter(String name, String email, Role role, int savedSequence) {
+
         //given
-        Writer other = saveDiaryService.saveWriter("other", "OTHER@NAVER.COM", Role.User);
-        Writer another = saveDiaryService.saveWriter("another", "Another@NAVER.COM", Role.User);
+        Writer writer = saveDiaryService.saveWriter(name, email, role);
 
         //when
-        Writer foundMe = writerRepository.findAll().get(0);
-        Writer foundOther = writerRepository.findAll().get(1);
-        Writer foundAnother = writerRepository.findAll().get(2);
+        Writer found = writerRepository.findAll().get(savedSequence);
 
         //then
-        assertThat(foundMe).isEqualTo(me);
-        assertThat(foundMe.getName()).isEqualTo(me.getName());
-        assertThat(foundMe.getEmail()).isEqualTo(me.getEmail());
-        assertThat(foundMe.getRole()).isEqualTo(me.getRole());
-        logger.info(foundMe.toString());
-
-        assertThat(foundOther).isEqualTo(other);
-        assertThat(foundOther.getName()).isEqualTo(other.getName());
-        assertThat(foundOther.getEmail()).isEqualTo(other.getEmail());
-        assertThat(foundOther.getRole()).isEqualTo(other.getRole());
-        logger.info(foundOther.toString());
-
-        assertThat(foundAnother).isEqualTo(another);
-        assertThat(foundAnother.getName()).isEqualTo(another.getName());
-        assertThat(foundAnother.getEmail()).isEqualTo(another.getEmail());
-        assertThat(foundAnother.getRole()).isEqualTo(another.getRole());
-        logger.info(foundAnother.toString());
+        assertThat(found).isEqualTo(writer);
+        assertThat(found.getName()).isEqualTo(writer.getName());
+        assertThat(found.getEmail()).isEqualTo(writer.getEmail());
+        assertThat(found.getRole()).isEqualTo(found.getRole());
     }
 
 
