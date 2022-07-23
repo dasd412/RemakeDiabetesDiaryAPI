@@ -1,5 +1,5 @@
 /*
- * @(#)SecurityDiaryRestControllerTest.java        1.0.8 2022/2/16
+ * @(#)SecurityDiaryRestControllerTest.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -56,10 +56,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/**
- * @author 양영준
- * @version 1.0.8 2022년 2월 16일
- */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application-test.properties")
@@ -98,7 +94,7 @@ public class SecurityDiaryRestControllerTest {
                 .webAppContextSetup(context)
                 .apply(springSecurity())
                 .build();
-        //Writer[id=1,name=user@example.com,email=user@example.com,role=User]
+
         Writer entity = Writer.builder()
                 .writerEntityId(EntityId.of(Writer.class, 1L))
                 .name(TestUserDetailsService.USERNAME)

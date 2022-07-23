@@ -1,5 +1,5 @@
 /*
- * @(#)TestUserDetailsService.java        1.1.2 2022/3/5
+ * @(#)TestUserDetailsService.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -22,9 +22,6 @@ import java.util.HashMap;
 /**
  * 가짜 UserDetails를 공급해주는 서비스. 테스트 수행시에만 사용된다.
  * 만약 @Service 적용하면 중복 빈 주입 오류 난다.
- *
- * @author 양영준
- * @version 1.1.2 2022년 3월 5일
  */
 @Profile("test")
 public class TestUserDetailsService implements UserDetailsService {
@@ -62,11 +59,6 @@ public class TestUserDetailsService implements UserDetailsService {
                 .build();
     }
 
-    /**
-     * @param userName 테스트용 사용자 정보
-     * @return 가짜 사용자 인증 정보
-     * @throws UsernameNotFoundException 올바른 유저 id 못찾을 때 던져지는 예외
-     */
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
         if (userName.equals(USERNAME)) {
