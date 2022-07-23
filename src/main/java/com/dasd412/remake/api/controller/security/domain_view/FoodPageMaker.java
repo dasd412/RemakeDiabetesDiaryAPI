@@ -1,5 +1,5 @@
 /*
- * @(#)FoodPageMaker.java        1.0.7 2022/2/11
+ * @(#)FoodPageMaker.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -15,12 +15,6 @@ import org.springframework.data.domain.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 음식 게시판의 페이징 증, 페이지 번호 출력에 필요한 정보들을 처리하는 데 쓰이는 클래스
- *
- * @author 양영준
- * @version 1.0.7 2022년 2월 11일
- */
 @Getter
 public class FoodPageMaker<T> {
 
@@ -29,14 +23,8 @@ public class FoodPageMaker<T> {
      */
     private final Page<T> foodPage;
 
-    /**
-     * 이전 페이지, 즉 '<'를 뜻한다.
-     */
     private Pageable previousPage;
 
-    /**
-     * 다음 페이지, 즉 '>'를 뜻한다.
-     */
     private Pageable nextPage;
 
     /**
@@ -44,9 +32,6 @@ public class FoodPageMaker<T> {
      */
     private final int currentPageNumber;
 
-    /**
-     * 총 페이지 개수
-     */
     private final int totalPageCount;
 
     /**
@@ -81,9 +66,6 @@ public class FoodPageMaker<T> {
         calculatePages();
     }
 
-    /**
-     * 페이지 계산을 해주는 도우미 메서드
-     */
     private void calculatePages() {
         /*
             math.ceil()은 소수점 이하를 올리는 static method다. 예를 들어 보자.

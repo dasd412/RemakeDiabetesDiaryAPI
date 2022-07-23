@@ -1,5 +1,5 @@
 /*
- * @(#)LoginRestController.java        1.0.1 2022/1/22
+ * @(#)LoginRestController.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -22,12 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-/**
- * 로그인시 사용되는 RestController
- *
- * @author 양영준
- * @version 1.0.1 2022년 1월 22일
- */
 @RestController
 public class LoginRestController {
 
@@ -39,10 +33,6 @@ public class LoginRestController {
         this.writerService = writerService;
     }
 
-    /**
-     * @param dto 회원 가입 정보
-     * @return 회원가입 정상 진행 여부
-     */
     @PostMapping("/signup/user")
     public ApiResult<?> signup(@RequestBody @Valid UserJoinRequestDTO dto) {
         logger.info("writer join");

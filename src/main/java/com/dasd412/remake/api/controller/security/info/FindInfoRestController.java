@@ -1,5 +1,5 @@
 /*
- * @(#)FindInfoRestController.java        1.1.2 2022/3/5
+ * @(#)FindInfoRestController.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -26,9 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 아이디 찾기 등 유저 정보 검색 및 이메일 제공
- *
- * @author 양영준
- * @version 1.1.2 2022년 3월 5일
  */
 @RestController
 public class FindInfoRestController {
@@ -47,11 +44,11 @@ public class FindInfoRestController {
     }
 
     /**
-     * @param email 입력 받은 이메일
      * @return 이메일에 해당하는, 찾고자 하는 유저 id
      */
     @GetMapping("/user-info/user-name")
     public ApiResult<?> findUserName(@RequestParam(value = "email") String email) {
+
         logger.info("find user name by email");
         String userName;
 
@@ -69,12 +66,11 @@ public class FindInfoRestController {
     }
 
     /**
-     * @param email    입력받은 이메일
-     * @param userName 입력받은 유저 id
      * @return 새로운 임시 비밀 번호
      */
     @GetMapping("/user-info/password")
     public ApiResult<?> findPassword(@RequestParam(value = "email") String email, @RequestParam(value = "userName") String userName) {
+
         logger.info("find user password");
 
         boolean exist;
@@ -86,11 +82,10 @@ public class FindInfoRestController {
         }
 
         if (exist) {
-            /* 새 임시 비밀 번호 발급 */
             String tempPassword = writerService.issueNewPassword();
             /* 새 임시 비밀 번호 영속화 */
             writerService.updateTempPassword(email, userName, tempPassword);
-            /* 새 임시 비밀 번호 이메일 보내기 */
+
             emailService.sendEmailAboutTempPassword(email, tempPassword);
 
             return ApiResult.OK(new TempPasswordDTO(tempPassword));

@@ -16,7 +16,7 @@ https://www.diabetes-diary.tk/
 https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 ***
 
-### 주요 기능
+### 주요 기능 
 
 1. 회원 가입 ✅
 2. 로그인 (form login과 OAuth login 방식 모두 제공) ✅
@@ -26,7 +26,7 @@ https://velog.io/@dasd412/series/%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4
 6. 음식 검색 게시판 ✅
 7. 프로필 및 회원 탈퇴 ✅
 8. 아이디 ,비밀 번호 찾기 ✅
-
+9. 클린코드 리팩토링 (진행중)
 
 ***
 ### 사용 기술

@@ -1,5 +1,5 @@
 /*
- * @(#)SecurityChartRestController.java        1.0.7 2022/2/10
+ * @(#)SecurityChartRestController.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -30,10 +30,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * 로그인한 사용자들이 자신의 혈당 "정보"를 조회할 수 있게 하는 RestController
- *
- * @author 양영준
- * @version 1.0.7 2022년 2월 10일
+ * 로그인한 사용자들이 자신의 혈당 "정보"를 차트 형태로 조회할 수 있게 하는 RestController
  */
 @RestController
 public class SecurityChartRestController {
@@ -47,49 +44,36 @@ public class SecurityChartRestController {
     }
 
     /**
-     * 사용자의 전체 기간 내 공복 혈당 조회.
-     *
-     * @param principalDetails 사용장 인증 정보
      * @return 전체 기간 내 공복 혈당
      */
     @GetMapping("/chart-menu/fasting-plasma-glucose/all")
     public ApiResult<List<FindAllFpgDTO>> findAllFpg(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+
         logger.info("find all fasting-plasma-glucose ..");
         List<DiabetesDiary> diaryList = findDiaryService.getDiabetesDiariesOfWriter(EntityId.of(Writer.class, principalDetails.getWriter().getId()));
 
         List<FindAllFpgDTO> dtoList = diaryList.stream().map(FindAllFpgDTO::new).sorted(Comparator.comparing(FindAllFpgDTO::getTimeByTimeStamp)).collect(Collectors.toList());
 
-        //시간 순 정렬
-
         return ApiResult.OK(dtoList);
     }
 
     /**
-     * 사용자의 해당 기간 내 공복 혈당 조회
-     *
-     * @param principalDetails 사용자 인증 정보
-     * @param allParams        시작 연도, 시작 월, 시작 일, 끝 년도, 끝 월, 끝 일
      * @return 해당 기간 내 공복 혈당
      */
     @GetMapping("/chart-menu/fasting-plasma-glucose/between")
-    public ApiResult<List<FindFpgBetweenDTO>> findFpgBetweenTime(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestParam Map<String, String> allParams) {
-        LocalDateTime startDate = DateStringConverter.convertMapParamsToStartDate(allParams);
-        LocalDateTime endDate = DateStringConverter.convertMapParamsToEndDate(allParams);
+    public ApiResult<List<FindFpgBetweenDTO>> findFpgBetweenTime(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestParam Map<String, String> startYearMonthDayEndYearMonthDay) {
+
+        LocalDateTime startDate = DateStringConverter.convertMapParamsToStartDate(startYearMonthDayEndYearMonthDay);
+        LocalDateTime endDate = DateStringConverter.convertMapParamsToEndDate(startYearMonthDayEndYearMonthDay);
 
         logger.info("find fpg between" + startDate + " and " + endDate);
 
         List<DiabetesDiary> diaryList = findDiaryService.getDiariesBetweenLocalDateTime(EntityId.of(Writer.class, principalDetails.getWriter().getId()), startDate, endDate);
         List<FindFpgBetweenDTO> dtoList = diaryList.stream().map(FindFpgBetweenDTO::new).sorted(Comparator.comparing(FindFpgBetweenDTO::getTimeByTimeStamp)).collect(Collectors.toList());
 
-        //시간 순 정렬
-
         return ApiResult.OK(dtoList);
     }
-
-    /**
-     * @param principalDetails 사용자 인증 정보
-     * @return 전체 기간 내 혈당 일지 및 식단 정보
-     */
+    
     @GetMapping("/chart-menu/blood-sugar/all")
     public ApiResult<List<FindAllBloodSugarDTO>> findAllBloodSugar(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         logger.info("find all blood sugar");
@@ -101,22 +85,19 @@ public class SecurityChartRestController {
                 dtoList.add(new FindAllBloodSugarDTO(diary, diet));
             }
         }
-
-        //시간 순 정렬
+        
         dtoList.sort(Comparator.comparing(FindAllBloodSugarDTO::getDateTime));
 
         return ApiResult.OK(dtoList);
     }
 
     /**
-     * @param principalDetails 사용자 인증 정보
-     * @param allParams        시작 연도, 시작 월, 시작 일, 끝 년도, 끝 월, 끝 일
      * @return 해당 기간 내 혈당 일지 및 식단 정보
      */
     @GetMapping("/chart-menu/blood-sugar/between")
-    public ApiResult<List<FindBloodSugarBetweenDTO>> findBloodSugarBetween(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestParam Map<String, String> allParams) {
-        LocalDateTime startDate = DateStringConverter.convertMapParamsToStartDate(allParams);
-        LocalDateTime endDate = DateStringConverter.convertMapParamsToEndDate(allParams);
+    public ApiResult<List<FindBloodSugarBetweenDTO>> findBloodSugarBetween(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestParam Map<String, String> startYearMonthDayEndYearMonthDay) {
+        LocalDateTime startDate = DateStringConverter.convertMapParamsToStartDate(startYearMonthDayEndYearMonthDay);
+        LocalDateTime endDate = DateStringConverter.convertMapParamsToEndDate(startYearMonthDayEndYearMonthDay);
 
         logger.info("find blood sugar between" + startDate + " and " + endDate);
 
@@ -129,15 +110,13 @@ public class SecurityChartRestController {
                 dtoList.add(new FindBloodSugarBetweenDTO(diary, diet));
             }
         }
-
-        //시간 순 정렬
+        
         dtoList.sort(Comparator.comparing(FindBloodSugarBetweenDTO::getDateTime));
 
         return ApiResult.OK(dtoList);
     }
 
     /**
-     * @param principalDetails 사용자 인증 정보
      * @return 사용자의 평균 공복 혈당 정보 + 사용자의 식사 시간 별 평균 혈당 정보 + 사용자의 전체 식사 평균 혈당 정보
      */
     @GetMapping("/chart-menu/average/all")
@@ -151,14 +130,12 @@ public class SecurityChartRestController {
     }
 
     /**
-     * @param principalDetails 사용자 인증 정보
-     * @param allParams        시작 연도, 시작 월, 시작 일, 끝 년도, 끝 월, 끝 일
      * @return 해당 기간 내 혈당 일지 및 식단 정보 (평균)
      */
     @GetMapping("/chart-menu/average/between")
-    public ApiResult<FindAverageBetweenDTO> findAverageBetween(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestParam Map<String, String> allParams) {
-        LocalDateTime startDate = DateStringConverter.convertMapParamsToStartDate(allParams);
-        LocalDateTime endDate = DateStringConverter.convertMapParamsToEndDate(allParams);
+    public ApiResult<FindAverageBetweenDTO> findAverageBetween(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestParam Map<String, String> startYearMonthDayEndYearMonthDay) {
+        LocalDateTime startDate = DateStringConverter.convertMapParamsToStartDate(startYearMonthDayEndYearMonthDay);
+        LocalDateTime endDate = DateStringConverter.convertMapParamsToEndDate(startYearMonthDayEndYearMonthDay);
 
         logger.info("find average blood sugar between" + startDate + " and " + endDate);
 

@@ -1,5 +1,5 @@
 /*
- * @(#)ProfileRestController.java        1.1.2 2022/3/5
+ * @(#)ProfileRestController.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -35,9 +35,6 @@ import javax.validation.Valid;
 
 /**
  * 프로필 갱신과 회원 탈퇴를 처리하는 RestController
- *
- * @author 양영준
- * @version 1.1.2 2022년 3월 5일
  */
 @RestController
 public class ProfileRestController {
@@ -53,13 +50,6 @@ public class ProfileRestController {
         this.writerService = writerService;
     }
 
-    /**
-     * 회원 프로필 수정
-     *
-     * @param principalDetails 작성자 인증 정보
-     * @param dto              변경할 내용이 담긴 dto
-     * @return 정상 변경됬는지 여부
-     */
     @PutMapping("/profile/info")
     public ApiResult<ProfileUpdateResponseDTO> updateProfile(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody ProfileUpdateRequestDTO dto) {
         logger.info("update profile info..." + dto.toString());
@@ -67,12 +57,6 @@ public class ProfileRestController {
         return ApiResult.OK(new ProfileUpdateResponseDTO(updated));
     }
 
-    /**
-     * 사용자 회원 탈퇴
-     *
-     * @param principalDetails 작성자 인증 정보
-     * @return 탈퇴 응답 dto
-     */
     @DeleteMapping("/profile/withdrawal")
     public ApiResult<WithdrawalResponseDTO> withDrawWriter(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         logger.info("withdraw writer ...!");
@@ -84,13 +68,6 @@ public class ProfileRestController {
         return ApiResult.OK(new WithdrawalResponseDTO(principalDetails.getWriter().getId()));
     }
 
-    /**
-     * 기존 비밀 번호 변경
-     *
-     * @param principalDetails 작성자 인증 정보
-     * @param dto              (비밀 번호, 비밀 번호 확인)의 dto
-     * @return 변경 정상으로 됬는지 여부
-     */
     @PutMapping("/profile/password")
     public ApiResult<?> updatePassword(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody @Valid PasswordUpdateRequestDTO dto) {
         logger.info("update password of user");

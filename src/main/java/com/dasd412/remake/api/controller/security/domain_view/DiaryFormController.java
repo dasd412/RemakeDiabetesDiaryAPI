@@ -1,5 +1,5 @@
 /*
- * @(#)DiaryFormController.java        1.0.1 2022/1/22
+ * @(#)DiaryFormController.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -23,12 +23,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-/**
- * 일지 작성 폼 및 수정 삭제 폼 보여주는 컨트롤러
- *
- * @author 양영준
- * @version 1.0.1 2022년 1월 22일
- */
 @Controller
 public class DiaryFormController {
 
@@ -40,15 +34,6 @@ public class DiaryFormController {
         this.findDiaryService = findDiaryService;
     }
 
-    /**
-     * 날짜에 해당하는 정보를 모델에 담은 후, 일지 작성 폼 리턴
-     *
-     * @param year  년도
-     * @param month 월
-     * @param day   일
-     * @param model 모델 객체
-     * @return 일지 작성 폼
-     */
     @GetMapping("/post")
     public String postForm(@RequestParam(value = "year") String year, @RequestParam(value = "month") String month, @RequestParam(value = "day") String day, Model model) {
         logger.info("post view resolve");
@@ -61,14 +46,6 @@ public class DiaryFormController {
         return "post/post";
     }
 
-    /**
-     * 일지 id에 해당하는 일지를 조회 후, 모델에 담아서 일지 수정 및 삭제 폼을 리턴
-     *
-     * @param principalDetails 사용자 로그인 정보
-     * @param diaryId          일지 id
-     * @param model            모델 객체
-     * @return 일지 수정 및 삭제 폼
-     */
     @GetMapping("/update-delete/{diaryId}")
     public String updateDeleteForm(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable Long diaryId, Model model) {
         logger.info("update delete view resolve");

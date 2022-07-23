@@ -1,5 +1,5 @@
 /*
- * @(#)ProfileController.java        1.1.1 2022/2/28
+ * @(#)ProfileController.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -25,12 +25,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.persistence.NoResultException;
 
-/**
- * 프로필 메뉴 클릭 시  사용되는 컨트롤러
- *
- * @author 양영준
- * @version 1.1.1 2022년 2월 28일
- */
 @Controller
 public class ProfileController {
 
