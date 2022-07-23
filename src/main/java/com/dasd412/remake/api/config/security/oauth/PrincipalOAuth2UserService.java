@@ -15,6 +15,7 @@ import com.dasd412.remake.api.domain.diary.writer.Role;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
 import com.dasd412.remake.api.service.security.WriterService;
+import com.dasd412.remake.api.service.security.vo.OAuth2UserVO;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -55,15 +56,19 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
 
         Role role = Role.User;
 
+
         /* 만약 회원가입된 적 없으면, writerService 한테 회원 가입을 요청한다. 비밀 번호 인코딩도 해준다. */
+
+        OAuth2UserVO oAuth2UserVO = OAuth2UserVO.builder()
+                .name(username).email(oAuth2UserInfo.getEmail())
+                .password(password).role(role)
+                .provider(oAuth2UserInfo.getProvider())
+                .providerId(oAuth2UserInfo.getProviderId())
+                .build();
+
         Writer writer = writerRepository.findWriterByName(username)
                 .orElseGet(() ->
-                        writerService.saveWriterWithSecurity(username,
-                                oAuth2UserInfo.getEmail(),
-                                password,
-                                role,
-                                oAuth2UserInfo.getProvider(),
-                                oAuth2UserInfo.getProviderId()));
+                        writerService.saveWriterWithSecurity(oAuth2UserVO));
 
         return new PrincipalDetails(writer, oAuth2User.getAttributes());
     }

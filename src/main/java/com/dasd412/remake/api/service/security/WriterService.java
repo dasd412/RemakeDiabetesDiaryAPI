@@ -12,9 +12,9 @@ import com.dasd412.remake.api.controller.exception.DuplicateEmailException;
 import com.dasd412.remake.api.controller.exception.DuplicateException;
 import com.dasd412.remake.api.controller.exception.DuplicateUserNameException;
 import com.dasd412.remake.api.domain.diary.EntityId;
-import com.dasd412.remake.api.domain.diary.writer.Role;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
+import com.dasd412.remake.api.service.security.vo.AuthenticationVO;
 import com.dasd412.remake.api.util.RegexChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,29 +58,20 @@ public class WriterService {
         return bCryptPasswordEncoder.encode(rawPassword);
     }
 
-    /**
-     * @param email      이메일 (깃헙의 경우 nullable)
-     * @param password   비밀 번호 (OAuth의 경우 null)
-     */
     @Transactional
-    public Writer saveWriterWithSecurity(String name, String email, String password, Role role, String provider, String providerId) throws DuplicateException {
+    public Writer saveWriterWithSecurity(AuthenticationVO vo) throws DuplicateException {
         logger.info("join writer with security");
 
-        if (writerRepository.existsName(name) == Boolean.TRUE) {
+        if (writerRepository.existsName(vo.getName()) == Boolean.TRUE) {
             throw new DuplicateUserNameException("이미 존재하는 회원 이름입니다.");
         }
 
-        if (writerRepository.existsEmail(email, provider) == Boolean.TRUE) {
+        if (writerRepository.existsEmail(vo.getEmail(), vo.getProvider()) == Boolean.TRUE) {
             throw new DuplicateEmailException("이미 존재하는 이메일입니다.");
         }
 
-        String encodedPassword = encodePassword(password);
+        Writer writer = vo.makeEntityWithPasswordEncode(getNextIdOfWriter(),bCryptPasswordEncoder);
 
-        Writer writer = Writer.builder()
-                .writerEntityId(getNextIdOfWriter()).name(name)
-                .email(email).password(encodedPassword).role(role)
-                .provider(provider).providerId(providerId)
-                .build();
         writerRepository.save(writer);
 
         return writer;

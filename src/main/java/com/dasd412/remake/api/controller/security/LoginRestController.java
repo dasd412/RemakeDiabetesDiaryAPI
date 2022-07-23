@@ -13,6 +13,7 @@ import com.dasd412.remake.api.controller.exception.DuplicateUserNameException;
 import com.dasd412.remake.api.controller.security.join.UserJoinRequestDTO;
 import com.dasd412.remake.api.domain.diary.writer.Role;
 import com.dasd412.remake.api.service.security.WriterService;
+import com.dasd412.remake.api.service.security.vo.UserDetailsVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -39,7 +40,12 @@ public class LoginRestController {
 
         try {
             /* 사용자 정의 회원 가입 시에는 provider 관련 데이터가 필요없다. */
-            writerService.saveWriterWithSecurity(dto.getName(), dto.getEmail(), dto.getPassword(), Role.User, null, null);
+            UserDetailsVO userDetailsVO= UserDetailsVO.builder()
+                            .name(dto.getName()).email(dto.getEmail())
+                            .password(dto.getPassword()).role(Role.User)
+                            .build();
+
+            writerService.saveWriterWithSecurity(userDetailsVO);
 
         } catch (DuplicateUserNameException nameException) {
             return ApiResult.ERROR("duplicateName", HttpStatus.BAD_REQUEST);
