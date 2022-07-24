@@ -1,5 +1,5 @@
 /*
- * @(#)SecurityChartRestControllerTest.java        1.0.8 2022/2/16
+ * @(#)SecurityChartRestControllerTest.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -46,10 +46,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/**
- * @author 양영준
- * @version 1.0.8 2022년 2월 16일
- */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application-test.properties")
@@ -72,12 +68,30 @@ public class SecurityChartRestControllerTest {
     @Before
     public void setup() throws Exception {
         logger.info("set up");
+
+        applySpringSecurity();
+
+        Writer entity = makeWriter();
+
+        saveSession(entity);
+        String url = "/api/diary/user/diabetes-diary";
+
+        postDiaryOneForSetUp(url);
+
+        postDiaryOtherForSetUp(url);
+
+        logger.info("set end \n");
+    }
+
+    private void applySpringSecurity() {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .apply(springSecurity())
                 .build();
-        //Writer[id=1,name=user@example.com,email=user@example.com,role=User]
-        Writer entity = Writer.builder()
+    }
+
+    private Writer makeWriter() {
+        return Writer.builder()
                 .writerEntityId(EntityId.of(Writer.class, 1L))
                 .name(TestUserDetailsService.USERNAME)
                 .email(TestUserDetailsService.USERNAME)
@@ -86,10 +100,15 @@ public class SecurityChartRestControllerTest {
                 .provider(null)
                 .providerId(null)
                 .build();
+    }
 
-        writerRepository.save(entity);
+    private void saveSession(Writer writer) {
+        writerRepository.save(writer);
         principalDetails = (PrincipalDetails) testUserDetailsService.loadUserByUsername(TestUserDetailsService.USERNAME);
 
+    }
+
+    private void postDiaryOneForSetUp(String url) throws Exception {
         List<SecurityFoodDTO> breakFast = IntStream.rangeClosed(1, 3).mapToObj(i -> new SecurityFoodDTO("breakFast" + i, i))
                 .collect(Collectors.toList());
         List<SecurityFoodDTO> lunch = IntStream.rangeClosed(1, 3).mapToObj(i -> new SecurityFoodDTO("lunch" + i, i))
@@ -102,14 +121,22 @@ public class SecurityChartRestControllerTest {
                 .breakFastSugar(110).lunchSugar(120).dinnerSugar(130)
                 .breakFastFoods(breakFast).lunchFoods(lunch).dinnerFoods(dinner).build();
 
-        String url = "/api/diary/user/diabetes-diary";
-
         mockMvc.perform(post(url).with(user(principalDetails))
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(dto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value("true"))
                 .andExpect(jsonPath("$.response.id").value(1));
+
+    }
+
+    private void postDiaryOtherForSetUp(String url) throws Exception {
+        List<SecurityFoodDTO> breakFast = IntStream.rangeClosed(1, 3).mapToObj(i -> new SecurityFoodDTO("breakFast" + i, i))
+                .collect(Collectors.toList());
+        List<SecurityFoodDTO> lunch = IntStream.rangeClosed(1, 3).mapToObj(i -> new SecurityFoodDTO("lunch" + i, i))
+                .collect(Collectors.toList());
+        List<SecurityFoodDTO> dinner = IntStream.rangeClosed(1, 3).mapToObj(i -> new SecurityFoodDTO("dinner" + i, i))
+                .collect(Collectors.toList());
 
         SecurityDiaryPostRequestDTO dto2 = SecurityDiaryPostRequestDTO.builder().fastingPlasmaGlucose(110).remark("test")
                 .year("2022").month("01").day("31").hour("00").minute("00").second("00")
@@ -122,8 +149,6 @@ public class SecurityChartRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value("true"))
                 .andExpect(jsonPath("$.response.id").value(2));
-
-        logger.info("set end \n");
     }
 
     @After
