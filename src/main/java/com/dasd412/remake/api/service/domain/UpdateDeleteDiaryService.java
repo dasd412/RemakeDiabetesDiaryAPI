@@ -1,5 +1,5 @@
 /*
- * @(#)UpdateDeleteDiaryService.java        1.1.7 2022/3/23
+ * @(#)UpdateDeleteDiaryService.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -37,12 +37,6 @@ import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * 수정 및 삭제 비즈니스 로직을 수행하는 서비스 클래스
- *
- * @author 양영준
- * @version 1.1.7 2022년 3월 23일
- */
 @Service
 public class UpdateDeleteDiaryService {
 
@@ -63,13 +57,6 @@ public class UpdateDeleteDiaryService {
         this.saveDiaryService = saveDiaryService;
     }
 
-    /**
-     * 일지 및 연관된 엔티티 수정 메서드
-     * 1.1.7부터 이것 사용할 것.
-     * @param principalDetails 사용자 인증 정보
-     * @param dto              일지 수정된 정보
-     * @return 수정된 일지
-     */
     @Transactional
     public Long updateDiaryWithEntities(PrincipalDetails principalDetails, SecurityDiaryUpdateDTO dto) {
         logger.info("update diary in service logic");
@@ -78,7 +65,26 @@ public class UpdateDeleteDiaryService {
         /* 0. 현재 세션에 담긴 사용자 정보 판별 */
         Writer writer = writerRepository.findById(principalDetails.getWriter().getId()).orElseThrow(() -> new NoResultException("작성자가 없습니다."));
 
-        /* 1. 혈당 일지 변경 감지 되었으면 수정. */
+        Long diabetesDiaryId = dto.getDiaryId();
+
+        ifDirtyThenUpdateDiary(principalDetails, dto);
+
+        Diet targetBreakFast = ifDirtyThenUpdateBreakFast(principalDetails, dto, diabetesDiaryId);
+        Diet targetLunch = ifDirtyThenUpdateLunch(principalDetails, dto, diabetesDiaryId);
+        Diet targetDinner = ifDirtyThenUpdateDinner(principalDetails, dto, diabetesDiaryId);
+
+        bulkDeleteOldFoods(dto);
+
+        makeNewBreakFastFoods(dto, targetBreakFast);
+        makeNewLunchFoods(dto, targetLunch);
+        makeNewDinnerFoods(dto, targetDinner);
+
+        writerRepository.save(writer);
+
+        return diabetesDiaryId;
+    }
+
+    private void ifDirtyThenUpdateDiary(PrincipalDetails principalDetails, SecurityDiaryUpdateDTO dto) {
         Long diabetesDiaryId = dto.getDiaryId();
         if (dto.isDiaryDirty()) {
             DiabetesDiary targetDiary = diaryRepository.findOneDiabetesDiaryByIdInWriter(principalDetails.getWriter().getId(), diabetesDiaryId)
@@ -86,8 +92,9 @@ public class UpdateDeleteDiaryService {
 
             targetDiary.update(dto.getFastingPlasmaGlucose(), dto.getRemark());
         }
+    }
 
-        /* 2. 아침 식단 변경 감지 되었으면 수정 */
+    private Diet ifDirtyThenUpdateBreakFast(PrincipalDetails principalDetails, SecurityDiaryUpdateDTO dto, Long diabetesDiaryId) {
         Long breakFastId = dto.getBreakFastId();
 
         Diet targetBreakFast = dietRepository.findOneDietByIdInDiary(principalDetails.getWriter().getId(), diabetesDiaryId, breakFastId)
@@ -95,8 +102,10 @@ public class UpdateDeleteDiaryService {
         if (dto.isBreakFastDirty()) {
             targetBreakFast.update(EatTime.BreakFast, dto.getBreakFastSugar());
         }
+        return targetBreakFast;
+    }
 
-        /* 3. 점심 식단 변경 감지 되었으면 수정 */
+    private Diet ifDirtyThenUpdateLunch(PrincipalDetails principalDetails, SecurityDiaryUpdateDTO dto, Long diabetesDiaryId) {
         Long lunchId = dto.getLunchId();
 
         Diet targetLunch = dietRepository.findOneDietByIdInDiary(principalDetails.getWriter().getId(), diabetesDiaryId, lunchId)
@@ -104,8 +113,10 @@ public class UpdateDeleteDiaryService {
         if (dto.isLunchDirty()) {
             targetLunch.update(EatTime.Lunch, dto.getLunchSugar());
         }
+        return targetLunch;
+    }
 
-        /* 4. 저녁 식단 변경 감지 되었으면 수정 */
+    private Diet ifDirtyThenUpdateDinner(PrincipalDetails principalDetails, SecurityDiaryUpdateDTO dto, Long diabetesDiaryId) {
         Long dinnerId = dto.getDinnerId();
 
         Diet targetDinner = dietRepository.findOneDietByIdInDiary(principalDetails.getWriter().getId(), diabetesDiaryId, dinnerId)
@@ -114,8 +125,10 @@ public class UpdateDeleteDiaryService {
         if (dto.isDinnerDirty()) {
             targetDinner.update(EatTime.Dinner, dto.getDinnerSugar());
         }
+        return targetDinner;
+    }
 
-        /* 5. 기존 음식 엔티티 삭제 ( in (id) 벌크 삭제) */
+    private void bulkDeleteOldFoods(SecurityDiaryUpdateDTO dto) {
         List<SecurityFoodForUpdateDTO> allOldFoods = new ArrayList<>();
         allOldFoods.addAll(dto.getOldBreakFastFoods());
         allOldFoods.addAll(dto.getOldLunchFoods());
@@ -125,62 +138,33 @@ public class UpdateDeleteDiaryService {
             List<EntityId<Food, Long>> foodEntityIds = allOldFoods.stream().map(elem -> EntityId.of(Food.class, elem.getId())).collect(Collectors.toList());
             bulkDeleteFoods(foodEntityIds);
         }
+    }
 
-        /* 6. 음식 엔티티 새로이 생성 */
+    private void makeNewBreakFastFoods(SecurityDiaryUpdateDTO dto, Diet targetBreakFast) {
         dto.getNewBreakFastFoods()
                 .forEach(elem -> {
                     Food food = new Food(saveDiaryService.getNextIdOfFood(), targetBreakFast, elem.getFoodName(), elem.getAmount(), elem.getAmountUnit());
                     targetBreakFast.addFood(food);
                 });
+    }
 
+    private void makeNewLunchFoods(SecurityDiaryUpdateDTO dto, Diet targetLunch) {
         dto.getNewLunchFoods()
                 .forEach(elem -> {
                     Food food = new Food(saveDiaryService.getNextIdOfFood(), targetLunch, elem.getFoodName(), elem.getAmount(), elem.getAmountUnit());
                     targetLunch.addFood(food);
                 });
+    }
 
+    private void makeNewDinnerFoods(SecurityDiaryUpdateDTO dto, Diet targetDinner) {
         dto.getNewDinnerFoods()
                 .forEach(elem -> {
                     Food food = new Food(saveDiaryService.getNextIdOfFood(), targetDinner, elem.getFoodName(), elem.getAmount(), elem.getAmountUnit());
                     targetDinner.addFood(food);
                 });
-
-        writerRepository.save(writer);
-
-        return diabetesDiaryId;
     }
 
 
-    /**
-     * 일지 내용 수정 메서드
-     *
-     * @param writerEntityId       래퍼로 감싸진 작성자 id
-     * @param diaryEntityId        래퍼로 감싸진 일지 id
-     * @param fastingPlasmaGlucose 공복 혈당
-     * @param remark               비고
-     * @return 수정된 일지
-     */
-    @Transactional
-    public DiabetesDiary updateDiary(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diaryEntityId, int fastingPlasmaGlucose, String remark) {
-        logger.info("update diary");
-
-        checkNotNull(writerEntityId, "writerId must be provided");
-        checkNotNull(diaryEntityId, "diaryId must be provided");
-
-        DiabetesDiary targetDiary = diaryRepository.findOneDiabetesDiaryByIdInWriter(writerEntityId.getId(), diaryEntityId.getId())
-                .orElseThrow(() -> new NoResultException("해당 혈당일지가 존재하지 않습니다."));
-
-        targetDiary.update(fastingPlasmaGlucose, remark);
-
-        return targetDiary;
-    }
-
-    /**
-     * 일지 및 하위 엔티티 한꺼번에 삭제하는 메서드
-     *
-     * @param writerEntityId 래퍼로 감싸진 작성자 id
-     * @param diaryEntityId  래퍼로 감싸진 일지 id
-     */
     @Transactional
     public void deleteDiary(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diaryEntityId) {
         logger.info("delete diary");
@@ -200,91 +184,6 @@ public class UpdateDeleteDiaryService {
         diaryRepository.bulkDeleteDiary(diaryEntityId.getId());
     }
 
-    /**
-     * 식단 수정 메서드
-     *
-     * @param writerEntityId 래퍼로 감싸진 작성자 id
-     * @param diaryEntityId  래퍼로 감싸진 일지 id
-     * @param dietEntityId   래퍼로 감싸진 식단 id
-     * @param eatTime        식사 시간
-     * @param bloodSugar     식사 혈당
-     * @return 수정된 식단
-     */
-    @Transactional
-    public Diet updateDiet(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diaryEntityId, EntityId<Diet, Long> dietEntityId, EatTime eatTime, int bloodSugar) {
-        logger.info("update diet");
-
-        checkNotNull(writerEntityId, "writerId must be provided");
-        checkNotNull(diaryEntityId, "diaryId must be provided");
-        checkNotNull(dietEntityId, "dietId must be provided");
-
-        Diet targetDiet = dietRepository.findOneDietByIdInDiary(writerEntityId.getId(), diaryEntityId.getId(), dietEntityId.getId())
-                .orElseThrow(() -> new NoResultException("해당 식단이 존재하지 않습니다."));
-
-        targetDiet.update(eatTime, bloodSugar);
-
-        return targetDiet;
-    }
-
-    /**
-     * 식단과 하위 엔티티 한꺼번에 삭제하는 메서드
-     *
-     * @param writerEntityId 래퍼로 감싸진 작성자 id
-     * @param diaryEntityId  래퍼로 감싸진 일지 id
-     * @param dietEntityId   래퍼로 감싸진 식단 id
-     */
-    @Transactional
-    public void deleteDiet(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diaryEntityId, EntityId<Diet, Long> dietEntityId) {
-        logger.info("delete diet");
-
-        checkNotNull(writerEntityId, "writerId must be provided");
-        checkNotNull(diaryEntityId, "diaryId must be provided");
-        checkNotNull(dietEntityId, "dietId must be provided");
-
-        DiabetesDiary diary = diaryRepository.findOneDiabetesDiaryByIdInWriter(writerEntityId.getId(), diaryEntityId.getId())
-                .orElseThrow(() -> new NoResultException("해당 혈당일지가 존재하지 않습니다."));
-
-        Diet targetDiet = dietRepository.findOneDietByIdInDiary(writerEntityId.getId(), diaryEntityId.getId(), dietEntityId.getId())
-                .orElseThrow(() -> new NoResultException("해당 식단이 존재하지 않습니다."));
-
-        logger.info("association detached");
-        diary.removeDiet(targetDiet);
-        logger.info("bulk delete diet");
-        dietRepository.bulkDeleteDiet(dietEntityId.getId());
-
-    }
-
-    /**
-     * 음식 수정 메서드
-     *
-     * @param writerEntityId 래퍼로 감싸진 작성자 id
-     * @param dietEntityId   래퍼로 감싸진 식단 id
-     * @param foodEntityId   래퍼로 감싸진 음식 id
-     * @param foodName       음식 이름
-     * @return 수정된 음식
-     */
-    @Transactional
-    public Food updateFood(EntityId<Writer, Long> writerEntityId, EntityId<Diet, Long> dietEntityId, EntityId<Food, Long> foodEntityId, String foodName) {
-        logger.info("update food");
-        checkNotNull(writerEntityId, "writerId must be provided");
-        checkNotNull(dietEntityId, "dietId must be provided");
-        checkNotNull(foodEntityId, "foodId must be provided");
-
-        Food targetFood = foodRepository.findOneFoodByIdInDiet(writerEntityId.getId(), dietEntityId.getId(), foodEntityId.getId())
-                .orElseThrow(() -> new NoResultException("해당 음식이 존재하지 않습니다."));
-
-        targetFood.update(foodName);
-
-        return targetFood;
-    }
-
-    /**
-     * 프로필 수정 메서드
-     *
-     * @param writerEntityId 래퍼로 감싸진 작성자 id
-     * @param phase          당뇨 단계
-     * @return 수정된 프로필
-     */
     @Transactional
     public Profile updateProfile(EntityId<Writer, Long> writerEntityId, DiabetesPhase phase) {
         logger.info("update profile");
@@ -297,37 +196,6 @@ public class UpdateDeleteDiaryService {
         return targetProfile;
     }
 
-    /**
-     * 음식 삭제 메서드
-     *
-     * @param writerEntityId 래퍼로 감싸진 작성자 id
-     * @param diaryEntityId  래퍼로 감싸진 일지 id
-     * @param dietEntityId   래퍼로 감싸진 식단 id
-     * @param foodEntityId   래퍼로 감싸진 음식 id
-     */
-    @Transactional
-    public void deleteFood(EntityId<Writer, Long> writerEntityId, EntityId<DiabetesDiary, Long> diaryEntityId, EntityId<Diet, Long> dietEntityId, EntityId<Food, Long> foodEntityId) {
-        logger.info("delete food");
-        checkNotNull(writerEntityId, "writerId must be provided");
-        checkNotNull(diaryEntityId, "diaryId must be provided");
-        checkNotNull(dietEntityId, "dietId must be provided");
-        checkNotNull(foodEntityId, "foodId must be provided");
-
-        Diet diet = dietRepository.findOneDietByIdInDiary(writerEntityId.getId(), diaryEntityId.getId(), dietEntityId.getId())
-                .orElseThrow(() -> new NoResultException("해당 식단이 존재하지 않습니다."));
-
-        Food targetFood = foodRepository.findOneFoodByIdInDiet(writerEntityId.getId(), dietEntityId.getId(), foodEntityId.getId())
-                .orElseThrow(() -> new NoResultException("해당 음식이 존재하지 않습니다."));
-
-        //orphanRemoval = true 로 해놓았기 때문에 부모의 컬렉션에서 자식이 null 되면 알아서 delete 쿼리가 나간다.
-        diet.removeFood(targetFood);
-    }
-
-    /**
-     * 음식 id 리스트에 담긴 음식들 전부 한꺼번에 삭제하는 메서드
-     *
-     * @param foodEntityIds 음식 id 리스트
-     */
     @Transactional
     public void bulkDeleteFoods(List<EntityId<Food, Long>> foodEntityIds) {
         logger.info("bulk delete food service");

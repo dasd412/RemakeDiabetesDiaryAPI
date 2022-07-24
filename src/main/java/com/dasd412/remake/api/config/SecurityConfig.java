@@ -1,5 +1,5 @@
 /*
- * @(#)SecurityConfig.java        1.1.2 2022/3/4
+ * @(#)SecurityConfig.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -19,24 +19,12 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-/**
- * 웹 시큐리티와 관련된 설정용 클래스.
- *
- * @author 양영준
- * @version 1.1.2 2022년 3월 4일
- */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    /**
-     * OAuth 2.0과 관련된 작업을 하는 서비스 객체
-     */
     private final PrincipalOAuth2UserService principalOAuth2UserService;
 
-    /**
-     * 로그인 실패시 예외를 판단하여, 적절한 예외 메시지를 던져주는 객체
-     */
     private final AuthenticationExceptionJudge judge;
 
     public SecurityConfig(PrincipalOAuth2UserService principalOAuth2UserService, AuthenticationExceptionJudge judge) {
@@ -68,35 +56,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/calendar/**").authenticated()
                 .antMatchers("/chart-menu/**").authenticated()
                 .antMatchers("/profile/**").authenticated()
-                /*기존에 테스트 용도로만 쓰는 url 들 접근 막기. 기존 매핑은 관리자만 허락하게 바꿈. */
-                .antMatchers("/api/diary/owner/**").hasRole(Role.Admin.name())
-                .antMatchers("/api/diary/writer/**").hasRole(Role.Admin.name())
-                .antMatchers("/api/diary/diabetes-diary/**").hasRole(Role.Admin.name())
-                .antMatchers("/api/diary/diet/**").hasRole(Role.Admin.name())
-                .antMatchers("/api/diary/food/**").hasRole(Role.Admin.name())
                 .anyRequest().permitAll()
                 .and()
                 .csrf()
                 .ignoringAntMatchers("/h2-console/**")
                 .disable()
                 .formLogin()/* 로그인이 필요하면 */
-                .loginPage("/login-form")/* loginForm 뷰로 이동. */
+                .loginPage("/login-form")
                 .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/")/* 로그인 성공하면 이동하는 디폴트 url 설정. */
-                .failureHandler(loginFailHandler())/*로그인 실패 시 처리하는 핸들러 등록. */
+                .defaultSuccessUrl("/")
+                .failureHandler(loginFailHandler())
                 .and()
-                .oauth2Login()/*Oauth 로그인 역시 "/loginForm" 으로 이동하게 함.*/
+                .oauth2Login()
                 .loginPage("/login-form")
                 .userInfoEndpoint()
-                .userService(principalOAuth2UserService);/*Oauth 로그인 이후의 후처리 담당하는 객체. OAuth2UserService 구현체여야 한다.*/
+                .userService(principalOAuth2UserService);
 
-        /*로그아웃 성공 시 인덱스 페이지로 이동.*/
         http.logout().logoutSuccessUrl("/");
     }
 
-    /**
-     * 로그인 실패를 처리하는 핸들러를 빈으로 등록하는 메서드
-     */
     @Bean
     public LoginFailHandler loginFailHandler() {
         return new LoginFailHandler(judge);

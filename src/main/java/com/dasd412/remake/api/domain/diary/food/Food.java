@@ -1,5 +1,5 @@
 /*
- * @(#)Food.java        1.0.5 2022/2/6
+ * @(#)Food.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -19,27 +19,16 @@ import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-/**
- * 음식 엔티티. 식단의 하위 엔티티
- *
- * @author 양영준
- * @version 1.0.5 2022년 2월 6일
- */
 @Entity
 @Table(name = "Food", uniqueConstraints = @UniqueConstraint(columnNames = {"food_id"}))
 @IdClass(FoodId.class)
 public class Food {
 
-    /**
-     * 식별 관계이므로 복합키 사용
-     * 복합키의 경우 @GeneratedValue 사용 불가.
-     */
     @Id
     @Column(name = "food_id", columnDefinition = "bigint default 0")
     private Long foodId;
 
     /**
-     * '다'에 해당하므로 연관 관계의 주인이다. 되도록이면 모든 연관 관계를 지연로딩으로 사용하는 것이 성능에 좋음.
      * referencedColumnName 를 지정해줘야 순서가 거꾸로 안나온다.
      */
     @Id
@@ -51,19 +40,10 @@ public class Food {
     })
     private Diet diet;
 
-    /**
-     * 음식 이름
-     */
     private String foodName;
 
-    /**
-     * 음식 수량
-     */
     private double amount;
 
-    /**
-     * 음식 수량 단위. 음식 수량이랑 엮인다.
-     */
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "varchar(32) default 'NONE'")
     private AmountUnit amountUnit = AmountUnit.NONE;
@@ -71,38 +51,14 @@ public class Food {
     public Food() {
     }
 
-    /**
-     * 수량 작성하지 않고 음식 엔티티 저장.
-     *
-     * @param foodEntityId 래퍼로 감싸진 작성자 id
-     * @param diet         연관 관계를 맺는 식단
-     * @param foodName     음식 이름
-     */
     public Food(EntityId<Food, Long> foodEntityId, Diet diet, String foodName) {
         this(foodEntityId, diet, foodName, 0);
     }
 
-    /**
-     * 음식 수량 단위가 추가되지 않았을 때 쓰였던 기존 생성자.
-     *
-     * @param foodEntityId 래퍼로 감싸진 작성자 id
-     * @param diet         연관 관계를 맺는 식단
-     * @param foodName     음식 이름
-     * @param amount       음식 수량
-     */
     public Food(EntityId<Food, Long> foodEntityId, Diet diet, String foodName, double amount) {
         this(foodEntityId, diet, foodName, amount, AmountUnit.NONE);
     }
 
-    /**
-     * 음식 수량 단위가 추가되고 나서 쓰이는 생성자.
-     *
-     * @param foodEntityId 래퍼로 감싸진 작성자 id
-     * @param diet         연관 관계를 맺는 식단
-     * @param foodName     음식 이름
-     * @param amount       음식 수량
-     * @param amountUnit   음식 수량 단위
-     */
     public Food(EntityId<Food, Long> foodEntityId, Diet diet, String foodName, double amount, AmountUnit amountUnit) {
         checkArgument(foodName.length() > 0 && foodName.length() <= 50, "food name length should be between 1 and 50");
         checkArgument(amount >= 0, "amount must be positive.");

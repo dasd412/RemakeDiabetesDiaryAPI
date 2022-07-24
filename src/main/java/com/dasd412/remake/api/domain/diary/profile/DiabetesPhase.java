@@ -1,5 +1,5 @@
 /*
- * @(#)DiabetesPhase.java        1.1.1 2022/2/27
+ * @(#)DiabetesPhase.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -10,9 +10,6 @@ package com.dasd412.remake.api.domain.diary.profile;
 
 /**
  * 당뇨 단계를 나타내는 enum
- *
- * @author 양영준
- * @version 1.1.1 2022년 2월 27일
  */
 public enum DiabetesPhase {
     /**

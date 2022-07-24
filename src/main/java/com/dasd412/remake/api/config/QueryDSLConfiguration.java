@@ -1,5 +1,5 @@
 /*
- * @(#)QueryDSLConfiguration.java        1.0.1 2022/1/22
+ * @(#)QueryDSLConfiguration.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -16,11 +16,7 @@ import javax.persistence.PersistenceContext;
 
 /**
  * Querydsl 설정과 관련된 클래스. JpaQueryFactory Bean 주입용으로 사용하고 있다.
- *
- * @author 양영준
- * @version 1.0.1 2022년 1월 22일
  */
-
 @Configuration
 public class QueryDSLConfiguration {
 

@@ -1,5 +1,5 @@
 /*
- * @(#)SecurityDiaryRestControllerTest.java        1.0.8 2022/2/16
+ * @(#)SecurityDiaryRestControllerTest.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -56,10 +56,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/**
- * @author 양영준
- * @version 1.0.8 2022년 2월 16일
- */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application-test.properties")
@@ -94,12 +90,25 @@ public class SecurityDiaryRestControllerTest {
     @Before
     public void setup() {
         logger.info("set up");
+
+        applySpringSecurity();
+
+        Writer entity = makeWriter();
+
+        saveSession(entity);
+
+        logger.info("set end \n");
+    }
+
+    private void applySpringSecurity() {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .apply(springSecurity())
                 .build();
-        //Writer[id=1,name=user@example.com,email=user@example.com,role=User]
-        Writer entity = Writer.builder()
+    }
+
+    private Writer makeWriter() {
+        return Writer.builder()
                 .writerEntityId(EntityId.of(Writer.class, 1L))
                 .name(TestUserDetailsService.USERNAME)
                 .email(TestUserDetailsService.USERNAME)
@@ -108,10 +117,11 @@ public class SecurityDiaryRestControllerTest {
                 .provider(null)
                 .providerId(null)
                 .build();
+    }
 
-        writerRepository.save(entity);
+    private void saveSession(Writer writer) {
+        writerRepository.save(writer);
         principalDetails = (PrincipalDetails) testUserDetailsService.loadUserByUsername(TestUserDetailsService.USERNAME);
-        logger.info("set end \n");
     }
 
     @After
@@ -121,10 +131,19 @@ public class SecurityDiaryRestControllerTest {
     }
 
     @Test
-    public void postDiaryHasNullWithSecurity() throws Exception {
+    public void postDiaryWhichHasZeroFpgAndBloodSugarWithSecurity() throws Exception {
         //given
         String url = "/api/diary/user/diabetes-diary";
 
+        SecurityDiaryPostRequestDTO dto = makeDtoWithZeroFpgAndBloodSugar();
+
+        //when and then
+        postRequestDiaryWithZeroFpgAndBloodSugar(url, dto);
+
+        expectFpgAndBloodSugarAreAllZero();
+    }
+
+    private SecurityDiaryPostRequestDTO makeDtoWithZeroFpgAndBloodSugar() {
         List<SecurityFoodDTO> breakFast = IntStream.rangeClosed(1, 3).mapToObj(i -> new SecurityFoodDTO("breakFast" + i, i))
                 .collect(Collectors.toList());
         List<SecurityFoodDTO> lunch = IntStream.rangeClosed(1, 3).mapToObj(i -> new SecurityFoodDTO("lunch" + i, i))
@@ -132,27 +151,32 @@ public class SecurityDiaryRestControllerTest {
         List<SecurityFoodDTO> dinner = IntStream.rangeClosed(1, 1).mapToObj(i -> new SecurityFoodDTO("dinner" + i, i))
                 .collect(Collectors.toList());
 
-        SecurityDiaryPostRequestDTO dto = SecurityDiaryPostRequestDTO.builder().fastingPlasmaGlucose(0).remark("test")
+        return SecurityDiaryPostRequestDTO.builder().fastingPlasmaGlucose(0).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00")
                 .breakFastSugar(0).lunchSugar(0).dinnerSugar(0)
                 .breakFastFoods(breakFast).lunchFoods(lunch).dinnerFoods(dinner).build();
+    }
 
-        //when and then
+    private void postRequestDiaryWithZeroFpgAndBloodSugar(String url, SecurityDiaryPostRequestDTO dto) throws Exception {
         mockMvc.perform(post(url).with(user(principalDetails))
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(dto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value("true"))
                 .andExpect(jsonPath("$.response.id").value(1));
-        logger.info("repository \n");
-        DiabetesDiary found = diaryRepository.findDiabetesDiaryOfWriterWithRelation(1L, 1L).orElseThrow(NoResultException::new);
-        List<Food> foodList = foodRepository.findAll();
+    }
+
+    private void expectFpgAndBloodSugarAreAllZero() {
+        DiabetesDiary found = diaryRepository.findDiabetesDiaryWithSubEntitiesOfWriter(1L, 1L).orElseThrow(NoResultException::new);
 
         assertThat(found.getFastingPlasmaGlucose()).isEqualTo(0);
-        assertThat(found.getRemark()).isEqualTo("test");
-        assertThat(found.getDietList().size()).isEqualTo(3);
-        assertThat(foodList.size()).isEqualTo(breakFast.size() + lunch.size() + dinner.size());
 
+        int bloodSugarSum = 0;
+        for (Diet diet : found.getDietList()) {
+            bloodSugarSum += diet.getBloodSugar();
+        }
+
+        assertThat(bloodSugarSum).isEqualTo(0);
     }
 
     @Test
@@ -160,6 +184,13 @@ public class SecurityDiaryRestControllerTest {
         //given
         String url = "/api/diary/user/diabetes-diary";
 
+        SecurityDiaryPostRequestDTO dto = makeDtoWithInvalidSize();
+
+        //when and then
+        expectRequestIsInvalidSize(url, dto);
+    }
+
+    private SecurityDiaryPostRequestDTO makeDtoWithInvalidSize() {
         List<SecurityFoodDTO> breakFast = IntStream.rangeClosed(0, 5).mapToObj(i -> new SecurityFoodDTO("breakFast" + i, i * -1000))
                 .collect(Collectors.toList());
         List<SecurityFoodDTO> lunch = IntStream.rangeClosed(0, 6).mapToObj(i -> new SecurityFoodDTO("lunch" + i, i * -1000))
@@ -167,18 +198,18 @@ public class SecurityDiaryRestControllerTest {
         List<SecurityFoodDTO> dinner = IntStream.rangeClosed(0, 7).mapToObj(i -> new SecurityFoodDTO("dinner" + i, i * -1000))
                 .collect(Collectors.toList());
 
-        SecurityDiaryPostRequestDTO dto = SecurityDiaryPostRequestDTO.builder().fastingPlasmaGlucose(0).remark("test")
+        return SecurityDiaryPostRequestDTO.builder().fastingPlasmaGlucose(0).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00")
                 .breakFastSugar(0).lunchSugar(0).dinnerSugar(0)
                 .breakFastFoods(breakFast).lunchFoods(lunch).dinnerFoods(dinner).build();
+    }
 
-        //when and then
+    private void expectRequestIsInvalidSize(String url, SecurityDiaryPostRequestDTO dto) throws Exception {
         mockMvc.perform(post(url).with(user(principalDetails))
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(dto)))
                 .andExpect(status().isBadRequest())
                 .andDo(print());
-
     }
 
     @Test
@@ -186,6 +217,15 @@ public class SecurityDiaryRestControllerTest {
         //given
         String url = "/api/diary/user/diabetes-diary";
 
+        SecurityDiaryPostRequestDTO dto = makeDtoValid();
+
+        //when and then
+        postDiaryValid(url, dto);
+
+        expectRequestIsValid(dto);
+    }
+
+    private SecurityDiaryPostRequestDTO makeDtoValid() {
         List<SecurityFoodDTO> breakFast = IntStream.rangeClosed(1, 3).mapToObj(i -> new SecurityFoodDTO("breakFast" + i, i))
                 .collect(Collectors.toList());
         List<SecurityFoodDTO> lunch = IntStream.rangeClosed(1, 3).mapToObj(i -> new SecurityFoodDTO("lunch" + i, i))
@@ -193,34 +233,46 @@ public class SecurityDiaryRestControllerTest {
         List<SecurityFoodDTO> dinner = IntStream.rangeClosed(1, 1).mapToObj(i -> new SecurityFoodDTO("dinner" + i, i))
                 .collect(Collectors.toList());
 
-        SecurityDiaryPostRequestDTO dto = SecurityDiaryPostRequestDTO.builder().fastingPlasmaGlucose(100).remark("test")
+        return SecurityDiaryPostRequestDTO.builder().fastingPlasmaGlucose(100).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00")
                 .breakFastSugar(110).lunchSugar(120).dinnerSugar(130)
                 .breakFastFoods(breakFast).lunchFoods(lunch).dinnerFoods(dinner).build();
+    }
 
-        //when and then
+    private void postDiaryValid(String url, SecurityDiaryPostRequestDTO dto) throws Exception {
         mockMvc.perform(post(url).with(user(principalDetails))
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(dto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value("true"))
                 .andExpect(jsonPath("$.response.id").value(1));
+    }
 
-        logger.info("repository \n");
-        DiabetesDiary found = diaryRepository.findDiabetesDiaryOfWriterWithRelation(1L, 1L).orElseThrow(NoResultException::new);
+    private void expectRequestIsValid(SecurityDiaryPostRequestDTO dto) {
+        DiabetesDiary found = diaryRepository.findDiabetesDiaryWithSubEntitiesOfWriter(1L, 1L).orElseThrow(NoResultException::new);
         List<Food> foodList = foodRepository.findAll();
 
         assertThat(found.getFastingPlasmaGlucose()).isEqualTo(100);
         assertThat(found.getRemark()).isEqualTo("test");
         assertThat(found.getDietList().size()).isEqualTo(3);
-        assertThat(foodList.size()).isEqualTo(breakFast.size() + lunch.size() + dinner.size());
-
+        assertThat(foodList.size()).isEqualTo(dto.getBreakFastFoods().size() + dto.getLunchFoods().size() + dto.getDinnerFoods().size());
     }
+
 
     @Test
     public void postDiaryWithFoodAmountUnit() throws Exception {
         //given
         String url = "/api/diary/user/diabetes-diary";
+
+        SecurityDiaryPostRequestDTO dto = makeDtoWithFoodAmountUnit();
+
+        //when and then
+        postRequestDiaryWithFoodAmountUnit(url, dto);
+
+        expectRequestWithFoodAmountUnitIsValid(dto);
+    }
+
+    private SecurityDiaryPostRequestDTO makeDtoWithFoodAmountUnit() {
         List<SecurityFoodDTO> breakFast = IntStream.rangeClosed(1, 3).mapToObj(i -> new SecurityFoodDTO("breakFast" + i, i, AmountUnit.g))
                 .collect(Collectors.toList());
         List<SecurityFoodDTO> lunch = IntStream.rangeClosed(1, 3).mapToObj(i -> new SecurityFoodDTO("lunch" + i, i, AmountUnit.mL))
@@ -228,27 +280,29 @@ public class SecurityDiaryRestControllerTest {
         List<SecurityFoodDTO> dinner = IntStream.rangeClosed(1, 1).mapToObj(i -> new SecurityFoodDTO("dinner" + i, i, AmountUnit.count))
                 .collect(Collectors.toList());
 
-        SecurityDiaryPostRequestDTO dto = SecurityDiaryPostRequestDTO.builder().fastingPlasmaGlucose(100).remark("test")
+        return SecurityDiaryPostRequestDTO.builder().fastingPlasmaGlucose(100).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00")
                 .breakFastSugar(110).lunchSugar(120).dinnerSugar(130)
                 .breakFastFoods(breakFast).lunchFoods(lunch).dinnerFoods(dinner).build();
+    }
 
-        //when and then
+    private void postRequestDiaryWithFoodAmountUnit(String url, SecurityDiaryPostRequestDTO dto) throws Exception {
         mockMvc.perform(post(url).with(user(principalDetails))
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(dto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value("true"))
                 .andExpect(jsonPath("$.response.id").value(1));
+    }
 
-        logger.info("repository \n");
-        DiabetesDiary found = diaryRepository.findDiabetesDiaryOfWriterWithRelation(1L, 1L).orElseThrow(NoResultException::new);
+    private void expectRequestWithFoodAmountUnitIsValid(SecurityDiaryPostRequestDTO dto) {
+        DiabetesDiary found = diaryRepository.findDiabetesDiaryWithSubEntitiesOfWriter(1L, 1L).orElseThrow(NoResultException::new);
         List<Food> foodList = foodRepository.findAll();
 
         assertThat(found.getFastingPlasmaGlucose()).isEqualTo(100);
         assertThat(found.getRemark()).isEqualTo("test");
         assertThat(found.getDietList().size()).isEqualTo(3);
-        assertThat(foodList.size()).isEqualTo(breakFast.size() + lunch.size() + dinner.size());
+        assertThat(foodList.size()).isEqualTo(dto.getBreakFastFoods().size() + dto.getLunchFoods().size() + dto.getDinnerFoods().size());
 
     }
 
@@ -259,6 +313,18 @@ public class SecurityDiaryRestControllerTest {
         //given
         String url = "/api/diary/user/diabetes-diary";
 
+        SecurityDiaryPostRequestDTO dto = makeDtoForDelete();
+
+        postDiaryForDelete(url, dto);
+
+        //when and then
+        deleteRequest();
+
+        deleteRequestIsValid();
+
+    }
+
+    private SecurityDiaryPostRequestDTO makeDtoForDelete() {
         List<SecurityFoodDTO> breakFast = IntStream.rangeClosed(1, 3).mapToObj(i -> new SecurityFoodDTO("breakFast" + i, i))
                 .collect(Collectors.toList());
         List<SecurityFoodDTO> lunch = IntStream.rangeClosed(1, 3).mapToObj(i -> new SecurityFoodDTO("lunch" + i, i))
@@ -266,26 +332,30 @@ public class SecurityDiaryRestControllerTest {
         List<SecurityFoodDTO> dinner = IntStream.rangeClosed(1, 1).mapToObj(i -> new SecurityFoodDTO("dinner" + i, i))
                 .collect(Collectors.toList());
 
-        SecurityDiaryPostRequestDTO dto = SecurityDiaryPostRequestDTO.builder().fastingPlasmaGlucose(100).remark("test")
+        return SecurityDiaryPostRequestDTO.builder().fastingPlasmaGlucose(100).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00")
                 .breakFastSugar(110).lunchSugar(120).dinnerSugar(130)
                 .breakFastFoods(breakFast).lunchFoods(lunch).dinnerFoods(dinner).build();
+    }
 
+    private void postDiaryForDelete(String url, SecurityDiaryPostRequestDTO dto) throws Exception {
         mockMvc.perform(post(url).with(user(principalDetails))
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(dto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value("true"))
                 .andExpect(jsonPath("$.response.id").value(1));
+    }
 
+    private void deleteRequest() throws Exception {
         DiabetesDiary found = diaryRepository.findAll().get(0);
 
-
-        //when and then
         String deleteUrl = "/api/diary/user/diabetes-diary/" + found.getId();
         mockMvc.perform(delete(deleteUrl).with(user(principalDetails)))
                 .andDo(print());
+    }
 
+    private void deleteRequestIsValid() {
         List<DiabetesDiary> diaries = diaryRepository.findAll();
         List<Diet> dietList = dietRepository.findAll();
         List<Food> foodList = foodRepository.findAll();
@@ -293,7 +363,6 @@ public class SecurityDiaryRestControllerTest {
         assertThat(diaries.size()).isEqualTo(0);
         assertThat(dietList.size()).isEqualTo(0);
         assertThat(foodList.size()).isEqualTo(0);
-
     }
 
     @Test
@@ -301,18 +370,36 @@ public class SecurityDiaryRestControllerTest {
         //given
         String url = "/api/diary/user/diabetes-diary";
 
+        SecurityDiaryPostRequestDTO dto = makePostDto();
+
+        postDiaryForUpdate(url, dto);
+
+        DiabetesDiary targetDiary = findDiaryService.getDiabetesDiaryWithSubEntitiesOfWriter(EntityId.of(Writer.class, principalDetails.getWriter().getId()), EntityId.of(DiabetesDiary.class, 1L));
+        PostForUpdateDTO viewDTO = new PostForUpdateDTO(targetDiary);
+        SecurityDiaryUpdateDTO updateDTO = makeDtoForUpdate(viewDTO, dto);
+
+
+        //when
+        updateRequest(updateDTO);
+
+        //then
+        updateRequestIsValid(viewDTO);
+    }
+
+    private SecurityDiaryPostRequestDTO makePostDto() {
         List<SecurityFoodDTO> breakFast = IntStream.rangeClosed(1, 1).mapToObj(i -> new SecurityFoodDTO("breakFast" + i, i))
                 .collect(Collectors.toList());
         List<SecurityFoodDTO> lunch = IntStream.rangeClosed(1, 1).mapToObj(i -> new SecurityFoodDTO("lunch" + i, i))
                 .collect(Collectors.toList());
         List<SecurityFoodDTO> dinner = IntStream.rangeClosed(1, 1).mapToObj(i -> new SecurityFoodDTO("dinner" + i, i))
                 .collect(Collectors.toList());
-
-        SecurityDiaryPostRequestDTO dto = SecurityDiaryPostRequestDTO.builder().fastingPlasmaGlucose(100).remark("test")
+        return SecurityDiaryPostRequestDTO.builder().fastingPlasmaGlucose(100).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00")
                 .breakFastSugar(110).lunchSugar(120).dinnerSugar(130)
                 .breakFastFoods(breakFast).lunchFoods(lunch).dinnerFoods(dinner).build();
+    }
 
+    private void postDiaryForUpdate(String url, SecurityDiaryPostRequestDTO dto) throws Exception {
         mockMvc.perform(post(url).with(user(principalDetails))
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(dto)))
@@ -320,19 +407,21 @@ public class SecurityDiaryRestControllerTest {
                 .andExpect(jsonPath("$.success").value("true"))
                 .andExpect(jsonPath("$.response.id").value(1));
 
-        DiabetesDiary targetDiary = findDiaryService.getDiabetesDiaryOfWriterWithRelation(EntityId.of(Writer.class, principalDetails.getWriter().getId()), EntityId.of(DiabetesDiary.class, 1L));
-        PostForUpdateDTO viewDTO = new PostForUpdateDTO(targetDiary);
+    }
+
+    private SecurityDiaryUpdateDTO makeDtoForUpdate(PostForUpdateDTO viewDTO, SecurityDiaryPostRequestDTO dto) {
+
 
         List<SecurityFoodForUpdateDTO> oldBreakFast = viewDTO.getBreakFastFoods()
-                .stream().map(elem -> new SecurityFoodForUpdateDTO(elem.getId(), breakFast.get(0).getFoodName(), breakFast.get(0).getAmount(),AmountUnit.g))
+                .stream().map(elem -> new SecurityFoodForUpdateDTO(elem.getId(), dto.getBreakFastFoods().get(0).getFoodName(), dto.getBreakFastFoods().get(0).getAmount(), AmountUnit.g))
                 .collect(Collectors.toList());
 
         List<SecurityFoodForUpdateDTO> oldLunch = viewDTO.getLunchFoods()
-                .stream().map(elem -> new SecurityFoodForUpdateDTO(elem.getId(), lunch.get(0).getFoodName(), lunch.get(0).getAmount(),AmountUnit.g))
+                .stream().map(elem -> new SecurityFoodForUpdateDTO(elem.getId(), dto.getLunchFoods().get(0).getFoodName(), dto.getLunchFoods().get(0).getAmount(), AmountUnit.g))
                 .collect(Collectors.toList());
 
         List<SecurityFoodForUpdateDTO> oldDinner = viewDTO.getDinnerFoods()
-                .stream().map(elem -> new SecurityFoodForUpdateDTO(elem.getId(), dinner.get(0).getFoodName(), dinner.get(0).getAmount(),AmountUnit.g))
+                .stream().map(elem -> new SecurityFoodForUpdateDTO(elem.getId(), dto.getDinnerFoods().get(0).getFoodName(), dto.getDinnerFoods().get(0).getAmount(), AmountUnit.g))
                 .collect(Collectors.toList());
 
         List<SecurityFoodDTO> newBreakFast = viewDTO.getBreakFastFoods()
@@ -347,8 +436,7 @@ public class SecurityDiaryRestControllerTest {
                 .stream().map(elem -> new SecurityFoodDTO("kimchi", 50.0))
                 .collect(Collectors.toList());
 
-
-        SecurityDiaryUpdateDTO updateDTO = SecurityDiaryUpdateDTO.builder()
+        return SecurityDiaryUpdateDTO.builder()
                 .diaryId(viewDTO.getDiaryId()).fastingPlasmaGlucose(200).remark("modify").diaryDirty(true)
                 .breakFastId(viewDTO.getBreakFastId()).breakFastSugar(210).breakFastDirty(true)
                 .lunchId(viewDTO.getLunchId()).lunchSugar(220).lunchDirty(true)
@@ -356,16 +444,17 @@ public class SecurityDiaryRestControllerTest {
                 .oldBreakFastFoods(oldBreakFast).newBreakFastFoods(newBreakFast)
                 .oldLunchFoods(oldLunch).newLunchFoods(newLunch)
                 .oldDinnerFoods(oldDinner).newDinnerFoods(newDinner).build();
+    }
 
-
-        //when
+    private void updateRequest(SecurityDiaryUpdateDTO updateDTO) throws Exception {
         String updateURL = "/api/diary/user/diabetes-diary";
         mockMvc.perform(put(updateURL).with(user(principalDetails))
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(updateDTO)))
                 .andDo(print());
+    }
 
-        //then
+    private void updateRequestIsValid(PostForUpdateDTO viewDTO) {
         List<DiabetesDiary> diaries = diaryRepository.findAll();
         List<Diet> dietList = dietRepository.findAll();
         List<Food> foodList = foodRepository.findAll();

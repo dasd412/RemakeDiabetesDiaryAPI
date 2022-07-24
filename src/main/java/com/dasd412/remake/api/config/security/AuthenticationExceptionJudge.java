@@ -1,5 +1,5 @@
 /*
- * @(#)LoginFailHandler.java        1.0.8 2022/2/16
+ * @(#)LoginFailHandler.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -17,9 +17,6 @@ import org.springframework.stereotype.Component;
 
 /**
  * 로그인 실패시 발생한 예외를 분석해서 적절한 예외 메시지를 던져주는 클래스
- *
- * @author 양영준
- * @version 1.0.8 2022년 2월 16일
  */
 @Component
 public class AuthenticationExceptionJudge {

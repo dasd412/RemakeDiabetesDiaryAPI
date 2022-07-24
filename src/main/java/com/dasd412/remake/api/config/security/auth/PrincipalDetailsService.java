@@ -1,5 +1,5 @@
 /*
- * @(#)PrincipalDetailsService.java        1.0.1 2022/1/22
+ * @(#)PrincipalDetailsService.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -17,9 +17,6 @@ import org.springframework.stereotype.Service;
 
 /**
  * "/login" 요청 시 인터셉트했는데 기본 Form Login인 인경우, UserDetails 를 Authentication 객체에 넣어주는 서비스 클래스.
- *
- * @author 양영준
- * @version 1.0.1 2022년 1월 22일
  */
 @Service
 public class PrincipalDetailsService implements UserDetailsService {
@@ -32,8 +29,6 @@ public class PrincipalDetailsService implements UserDetailsService {
 
     /**
      * @param username 사용자의 이름을 뜻한다. 주의할점: loginForm.mustache 의 username 과 파라미터 이름이 일치해야 에러가 발생하지 않는다.
-     * @return 작성자 엔티티를 감싼 UserDetails. 스프링 시큐리티 내 Authentication 객체에 사용된다.
-     * @throws UsernameNotFoundException 해당하는 사용자 이름이 없을 경우에 발생하는 예외.
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

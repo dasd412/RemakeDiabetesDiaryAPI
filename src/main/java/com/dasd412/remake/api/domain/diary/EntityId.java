@@ -1,5 +1,5 @@
 /*
- * @(#)EntityId.java        1.0.1 2022/1/22
+ * @(#)EntityId.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -17,9 +17,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * 복합키 엔티티의 Id를 생성할 때, 타입 정확성을 위해 만든 보조 클래스
- *
- * @author 양영준
- * @version 1.0.1 2022년 1월 22일
  */
 public class EntityId<R, Long> {
 
@@ -31,9 +28,6 @@ public class EntityId<R, Long> {
     private final Long id;
 
     /**
-     * 생성자를 private 으로 잠그고 정적 팩토리 메소드 of()를 활용하였다.
-     * 왜냐하면 이 클래스는 <R,Long> 형인자 자료형 객체인데 생성자로 만들면 타이핑하기 힘들기 때문이다.
-     *
      * @param reference 객체의 클래스 정보
      * @param id        객체의 식별자
      */
@@ -43,7 +37,6 @@ public class EntityId<R, Long> {
     }
 
     public static <R, Long> EntityId<R, Long> of(Class<R> reference, Long id) {
-        /* 입력 값 검증은 모델 단에서 하는게 효율적이다. */
         checkNotNull(reference, "entity reference must be provided");
         checkNotNull(id, "entity id must be provided");
 

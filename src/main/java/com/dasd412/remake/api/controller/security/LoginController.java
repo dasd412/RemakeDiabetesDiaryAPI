@@ -1,5 +1,5 @@
 /*
- * @(#)LoginController.java        1.0.7 2022/2/13
+ * @(#)LoginController.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -15,12 +15,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-/**
- * 로그인폼 resolve 용 컨트롤러
- *
- * @author 양영준
- * @version 1.0.7 2022년 2월 13일
- */
 @Controller
 public class LoginController {
 
@@ -30,7 +24,6 @@ public class LoginController {
      * @param error     로그인 실패 여부
      * @param exception 로그인 실패 시 에러 내용
      * @param model     에러 내용을 담을 모델 객체
-     * @return 로그인 폼 뷰
      */
     @GetMapping("/login-form")
     public String loginForm(@RequestParam(value = "error", required = false) String error,
@@ -43,9 +36,6 @@ public class LoginController {
         return "login/loginForm";
     }
 
-    /**
-     * @return 회원 가입 뷰
-     */
     @GetMapping("/join-form")
     public String joinForm() {
         logger.info("joinForm view resolve");

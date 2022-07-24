@@ -11,9 +11,6 @@ import java.time.LocalDateTime;
 
 /**
  * 생성 시간, 갱신 시간 자동 추적용 추상 클래스
- *
- * @author 양영준
- * @version 1.2.2 2022년 5월 15일
  */
 @Getter
 @MappedSuperclass

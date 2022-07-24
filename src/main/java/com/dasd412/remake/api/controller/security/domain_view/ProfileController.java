@@ -1,5 +1,5 @@
 /*
- * @(#)ProfileController.java        1.1.1 2022/2/28
+ * @(#)ProfileController.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -9,6 +9,7 @@
 package com.dasd412.remake.api.controller.security.domain_view;
 
 import com.dasd412.remake.api.config.security.auth.PrincipalDetails;
+import com.dasd412.remake.api.controller.ControllerViewPath;
 import com.dasd412.remake.api.controller.security.domain_view.dto.ProfileResponseDTO;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.profile.DiabetesPhase;
@@ -25,12 +26,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.persistence.NoResultException;
 
-/**
- * 프로필 메뉴 클릭 시  사용되는 컨트롤러
- *
- * @author 양영준
- * @version 1.1.1 2022년 2월 28일
- */
 @Controller
 public class ProfileController {
 
@@ -60,6 +55,7 @@ public class ProfileController {
         ProfileResponseDTO dto = new ProfileResponseDTO(profile);
         logger.info("profile dto : " + dto);
         model.addAttribute("profile", dto);
-        return "profile/profile";
+
+        return ControllerViewPath.PROFILE;
     }
 }

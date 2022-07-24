@@ -1,5 +1,5 @@
 /*
- * @(#)LayoutAdvice.java        1.0.1 2022/1/22
+ * @(#)LayoutAdvice.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -18,9 +18,6 @@ import java.util.Map;
 
 /**
  * mustache 사용 시 Layout 적용을 위한 ControllerAdvice
- *
- * @author 양영준
- * @version 1.0.1 2022년 1월 22일
  */
 @ControllerAdvice
 public class LayoutAdvice {

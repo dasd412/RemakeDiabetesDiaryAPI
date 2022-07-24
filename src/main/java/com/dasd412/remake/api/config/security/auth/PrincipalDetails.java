@@ -1,5 +1,5 @@
 /*
- * @(#)PrincipalDetails.java        1.0.8 2022/2/16
+ * @(#)PrincipalDetails.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -20,9 +20,6 @@ import java.util.Map;
 /**
  * Authentication 객체에 넣기 위한 래퍼 객체.
  * 사용자 정의 UserDetails 와 OAuth 로그인용 OAuth2User 를 모두 implements 하였기 때문에, Authentication 객체에 두 타입 모두로 인식가능해졌다.
- *
- * @author 양영준
- * @version 1.0.8 2022년 2월 16일
  */
 public class PrincipalDetails implements UserDetails, OAuth2User {
 
@@ -37,9 +34,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
     private Map<String, Object> oauthAttributes;
 
     /**
-     * 기본 로그인 방식인 Form Login 시 사용되는 생성자.
-     *
-     * @param writer 실제 작성자 엔티티
+     * 기본 로그인 방식인 Form Login 시 사용되는 생성자
      */
     public PrincipalDetails(Writer writer) {
         this.writer = writer;
@@ -56,10 +51,6 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
         this.oauthAttributes = oauthAttributes;
     }
 
-    /**
-     *
-     * @return 사용자의 '권한'
-     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collection = new ArrayList<>();
@@ -73,8 +64,6 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
 
     /**
      * PrincipalDetailsService 또는 PrincipalOAuth2UserService의 loadUser() 호출 시 스프링 시큐리티에서 '알아서' 이 비밀번호를 체크한다.
-     *
-     * @return 사용자의 비밀 번호
      */
     @Override
     public String getPassword() {
@@ -106,10 +95,6 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
         return true;
     }
 
-    /**
-     *
-     * @return OAuth 로그인 유저의 속성. provider 등...
-     */
     @Override
     public Map<String, Object> getAttributes() {
         return this.oauthAttributes;

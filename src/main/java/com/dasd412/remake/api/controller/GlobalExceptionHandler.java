@@ -1,5 +1,5 @@
 /*
- * @(#)GlobalExceptionHandler.java        1.0.1 2022/1/22
+ * @(#)GlobalExceptionHandler.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -26,22 +26,11 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.persistence.NoResultException;
 
-/**
- * 전역 예외 핸들러 클래스.
- *
- * @author 양영준
- * @version 1.0.1 2022년 1월 22일
- */
-
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    /**
-     * @param throwable BAD_REQUEST 상태값과 관련된 예외
-     * @return 400.mustache 이동
-     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class,
             TypeMismatchException.class, MissingServletRequestParameterException.class,
@@ -51,11 +40,6 @@ public class GlobalExceptionHandler {
         return new ModelAndView("400");
     }
 
-    /**
-     * 허가되지 않은 접근일때 캐치
-     *
-     * @return 403.mustache 이동
-     */
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(AccessDeniedException.class)
     public ModelAndView handle403() {
@@ -65,8 +49,6 @@ public class GlobalExceptionHandler {
 
     /**
      * 참고로 NoResultException 은 쿼리 결과가 하나도 없을 때 발생하는 (jpa 가 제공하는) 예외이다.
-     *
-     * @return 404.mustache 이동
      */
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler({NoHandlerFoundException.class, NoResultException.class})
@@ -91,7 +73,6 @@ public class GlobalExceptionHandler {
 
     /**
      * @param throwable 다른 예외 캐치에서 잡히지 못한 예외들
-     * @return 500.mustache 이동
      */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)

@@ -1,5 +1,5 @@
 /*
- * @(#)FoodPageVO.java        1.0.8 2022/2/16
+ * @(#)FoodPageVO.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -17,16 +17,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static com.dasd412.remake.api.util.DateStringConverter.convertLocalDateTime;
 import static com.google.common.base.Preconditions.checkArgument;
 
-/**
- * 음식 게시판의 조회 페이징을 위해 사용되는 VO
- *
- * @author 양영준
- * @version 1.0.8 2022년 2월 16일
- */
 @Getter
 public class FoodPageVO {
 
@@ -39,34 +34,18 @@ public class FoodPageVO {
      */
     private int page;
 
-    /**
-     * 음식 이름의 수
-     */
     private int size;
 
-    /**
-     * 식사 혈당 수치 [검색 조건]
-     */
     private int bloodSugar;
 
-    /**
-     * 부등호 [검색 조건]
-     */
     private String sign;
 
-    /**
-     * 시작 날짜 [검색 조건]
-     */
     private String startYear;
 
     private String startMonth;
 
     private String startDay;
 
-
-    /**
-     * 끝 날짜 [검색 조건]
-     */
     private String endYear;
 
     private String endMonth;
@@ -107,7 +86,6 @@ public class FoodPageVO {
      *
      * @param direction  정렬 방향
      * @param properties 정렬 기준
-     * @return Pageable 객체.
      */
     public Pageable makePageable(Sort.Direction direction, String... properties) {
         return PageRequest.of(this.page - 1, this.size, direction, properties);
@@ -177,11 +155,11 @@ public class FoodPageVO {
         this.endDay = endDay;
     }
 
-    public LocalDateTime convertStartDate() {
+    public Optional<LocalDateTime> convertStartDate() {
         return convertLocalDateTime(this.startYear, this.startMonth, this.startDay);
     }
 
-    public LocalDateTime convertEndDate() {
+    public Optional<LocalDateTime> convertEndDate() {
         return convertLocalDateTime(this.endYear, this.endMonth, this.endDay);
     }
 

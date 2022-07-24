@@ -1,5 +1,5 @@
 /*
- * @(#)UserInfoTest.java        1.1.2 2022/3/6
+ * @(#)UserInfoTest.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -7,15 +7,13 @@
  */
 
 
-package com.dasd412.remake.api.domain.info;
+package com.dasd412.remake.api.service.security;
 
 import com.dasd412.remake.api.controller.exception.OAuthFindUsernameException;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.writer.Role;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
-import com.dasd412.remake.api.service.security.FindInfoService;
-import com.dasd412.remake.api.service.security.WriterService;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
@@ -35,9 +33,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * 컨트롤러 레이어를 거치지 않고 유저의 정보 (프로필, 비밀 번호)등을 테스트하기 위한 클래스.
- *
- * @author 양영준
- * @version 1.1.2 2022년 3월 6일
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest()
@@ -153,6 +148,7 @@ public class UserInfoTest {
         assertThat(foundUserName).isEqualTo(userName);
     }
 
+
     @Transactional
     @Test
     public void existPasswordWhenOAuth() {
@@ -181,7 +177,32 @@ public class UserInfoTest {
 
     @Transactional
     @Test
-    public void existPassword() {
+    public void existPasswordInService(){
+        //given
+        String email = "test@test.com";
+        String userName = "TEST-NAME";
+
+        Writer writer = Writer.builder()
+                .writerEntityId(EntityId.of(Writer.class, 1L))
+                .name(userName)
+                .email(email)
+                .provider(null)
+                .providerId(null)
+                .password("test")
+                .role(Role.User)
+                .build();
+
+        writerRepository.save(writer);
+        //when
+        boolean exist = findInfoService.existPassword(email, userName);
+
+        //then
+        assertThat(exist).isTrue();
+    }
+
+    @Transactional
+    @Test
+    public void existPasswordInRepository() {
         //given
         String email = "test@test.com";
         String userName = "TEST-NAME";
@@ -205,6 +226,7 @@ public class UserInfoTest {
         assertThat(exist).isTrue();
 
     }
+
 
     @Test
     public void issueNewPassword() {
@@ -235,7 +257,7 @@ public class UserInfoTest {
         String tempPassword = writerService.issueNewPassword();
 
         //when
-        writerService.updateTempPassword(email, userName, tempPassword);
+        writerService.updateWithTempPassword(email, userName, tempPassword);
 
         //then
         Writer found = writerRepository.findAll().get(0);
@@ -272,5 +294,6 @@ public class UserInfoTest {
         Writer found = writerRepository.findAll().get(0);
         assertThat(bCryptPasswordEncoder.matches(newPassword, found.getPassword())).isTrue();
     }
+
 
 }
