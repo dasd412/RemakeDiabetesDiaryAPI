@@ -1,5 +1,5 @@
 /*
- * @(#)UserInfoTest.java        1.1.2 2022/3/6
+ * @(#)UserInfoTest.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -33,9 +33,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * 컨트롤러 레이어를 거치지 않고 유저의 정보 (프로필, 비밀 번호)등을 테스트하기 위한 클래스.
- *
- * @author 양영준
- * @version 1.1.2 2022년 3월 6일
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest()

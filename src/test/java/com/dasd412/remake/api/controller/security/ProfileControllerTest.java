@@ -1,5 +1,5 @@
 /*
- * @(#)ProfileControllerTest.java        1.1.2 2022/3/5
+ * @(#)ProfileControllerTest.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -50,14 +50,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/**
- * @author 양영준
- * @version 1.1.2 2022년 3월 5일
- */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application-test.properties")
@@ -86,12 +81,27 @@ public class ProfileControllerTest {
     @Before
     public void setup() throws Exception {
         logger.info("set up");
-        mockMvc = MockMvcBuilders
+
+        mockMvc = applySpringSecurity();
+
+        Writer me = makeWriter();
+        principalDetails = saveSession(me);
+
+        SecurityDiaryPostRequestDTO dto = makePostRequestDTO();
+
+        //when and then
+        requestPostForSetUp(dto);
+    }
+
+    private MockMvc applySpringSecurity() {
+        return MockMvcBuilders
                 .webAppContextSetup(context)
                 .apply(springSecurity())
                 .build();
-        //Writer[id=1,name=user@example.com,email=user@example.com,role=User]
-        Writer me = Writer.builder()
+    }
+
+    private Writer makeWriter() {
+        return Writer.builder()
                 .writerEntityId(EntityId.of(Writer.class, 1L))
                 .name(TestUserDetailsService.USERNAME)
                 .email(TestUserDetailsService.USERNAME)
@@ -100,10 +110,15 @@ public class ProfileControllerTest {
                 .provider(null)
                 .providerId(null)
                 .build();
+    }
 
-        writerRepository.save(me);
+    private PrincipalDetails saveSession(Writer writer) {
+        writerRepository.save(writer);
         principalDetails = (PrincipalDetails) testUserDetailsService.loadUserByUsername(TestUserDetailsService.USERNAME);
+        return principalDetails;
+    }
 
+    private SecurityDiaryPostRequestDTO makePostRequestDTO() {
         List<SecurityFoodDTO> breakFast = IntStream.rangeClosed(1, 3).mapToObj(i -> new SecurityFoodDTO("breakFast" + i, i))
                 .collect(Collectors.toList());
         List<SecurityFoodDTO> lunch = IntStream.rangeClosed(1, 3).mapToObj(i -> new SecurityFoodDTO("lunch" + i, i))
@@ -111,18 +126,20 @@ public class ProfileControllerTest {
         List<SecurityFoodDTO> dinner = IntStream.rangeClosed(1, 1).mapToObj(i -> new SecurityFoodDTO("dinner" + i, i))
                 .collect(Collectors.toList());
 
-        SecurityDiaryPostRequestDTO dto = SecurityDiaryPostRequestDTO.builder().fastingPlasmaGlucose(0).remark("test")
+        return SecurityDiaryPostRequestDTO.builder().fastingPlasmaGlucose(0).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00")
                 .breakFastSugar(0).lunchSugar(0).dinnerSugar(0)
                 .breakFastFoods(breakFast).lunchFoods(lunch).dinnerFoods(dinner).build();
+    }
 
-        //when and then
+    private void requestPostForSetUp(SecurityDiaryPostRequestDTO dto) throws Exception {
         mockMvc.perform(post("/api/diary/user/diabetes-diary").with(user(principalDetails))
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(dto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value("true"));
     }
+
 
     @After
     public void clean() {
@@ -132,7 +149,7 @@ public class ProfileControllerTest {
     }
 
     @Test
-    public void makeProfile() throws Exception {
+    public void existProfileAfterSetUp() throws Exception {
         //given
         String url = "/profile/view";
 
@@ -140,10 +157,17 @@ public class ProfileControllerTest {
         mockMvc.perform(get(url).with(user(principalDetails)).contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
+        matchesSetUpWriter();
+        existDefaultProfile();
+    }
+
+    private void matchesSetUpWriter(){
         List<Writer> writers = writerRepository.findAll();
         assertThat(writers.size()).isEqualTo(1);
         assertThat(writers.get(0).getProfile().getDiabetesPhase()).isEqualTo(DiabetesPhase.NORMAL);
+    }
 
+    private void existDefaultProfile() {
         List<Profile> profileList = profileRepository.findAll();
         assertThat(profileList.size()).isEqualTo(1);
         assertThat(profileList.get(0).getDiabetesPhase()).isEqualTo(DiabetesPhase.NORMAL);
@@ -197,9 +221,6 @@ public class ProfileControllerTest {
                 .andExpect(status().isOk());
     }
 
-    /*
-    비밀 번호 변경하기 테스트
-     */
     @Test
     public void changePasswordOfOAuthUser() throws Exception {
         //given
@@ -219,12 +240,8 @@ public class ProfileControllerTest {
         String url = "/profile/password";
 
         String password = "test12345678";
-        String passwordConfirm = "test12345678";
 
-        PasswordUpdateRequestDTO dto = PasswordUpdateRequestDTO.builder()
-                .password(password)
-                .passwordConfirm(passwordConfirm)
-                .build();
+        PasswordUpdateRequestDTO dto = makePasswordForTest(password, password);
 
         //when and then
         mockMvc.perform(put(url).with(user(oAuthPrincipalDetails))
@@ -244,57 +261,59 @@ public class ProfileControllerTest {
         String password = "test1";
         String passwordConfirm = "test2";
 
-        PasswordUpdateRequestDTO dto = PasswordUpdateRequestDTO.builder()
-                .password(password)
-                .passwordConfirm(passwordConfirm)
-                .build();
+        PasswordUpdateRequestDTO dto = makePasswordForTest(password, passwordConfirm);
 
         //when and then
-        mockMvc.perform(put(url).with(user(principalDetails))
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
-                        .content(new ObjectMapper().writeValueAsString(dto)))
-                .andExpect(status().isBadRequest());
+        isPasswordUpdateHttpStatusBadRequest(url, dto);
     }
 
     @Test
     public void invalidSizePassword() throws Exception {
+        //given
         String url = "/profile/password";
 
         String password = "test";
-        String passwordConfirm = "test";
 
-        PasswordUpdateRequestDTO dto = PasswordUpdateRequestDTO.builder()
-                .password(password)
-                .passwordConfirm(passwordConfirm)
-                .build();
+        PasswordUpdateRequestDTO dto = makePasswordForTest(password, password);
 
         //when and then
-        mockMvc.perform(put(url).with(user(principalDetails))
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
-                        .content(new ObjectMapper().writeValueAsString(dto)))
-                .andExpect(status().isBadRequest());
+        isPasswordUpdateHttpStatusBadRequest(url, dto);
     }
 
     @Test
     public void updatePassword() throws Exception {
+        //given
         String url = "/profile/password";
-
         String password = "test12345678";
-        String passwordConfirm = "test12345678";
 
-        PasswordUpdateRequestDTO dto = PasswordUpdateRequestDTO.builder()
+        PasswordUpdateRequestDTO dto = makePasswordForTest(password, password);
+
+        //when and then
+        isPasswordUpdateHttpStatusOk(url, dto);
+
+        Writer found = writerRepository.findAll().get(0);
+
+        assertThat(bCryptPasswordEncoder.matches(password, found.getPassword())).isTrue();
+    }
+
+    private PasswordUpdateRequestDTO makePasswordForTest(String password, String passwordConfirm) {
+        return PasswordUpdateRequestDTO.builder()
                 .password(password)
                 .passwordConfirm(passwordConfirm)
                 .build();
+    }
 
-        //when and then
+    private void isPasswordUpdateHttpStatusOk(String url, PasswordUpdateRequestDTO dto) throws Exception {
         mockMvc.perform(put(url).with(user(principalDetails))
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(new ObjectMapper().writeValueAsString(dto)))
                 .andExpect(status().isOk());
+    }
 
-        Writer found = writerRepository.findAll().get(0);
-        assertThat(bCryptPasswordEncoder.matches(password, found.getPassword())).isTrue();
-
+    private void isPasswordUpdateHttpStatusBadRequest(String url, PasswordUpdateRequestDTO dto) throws Exception {
+        mockMvc.perform(put(url).with(user(principalDetails))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dto)))
+                .andExpect(status().isBadRequest());
     }
 }
