@@ -1,5 +1,5 @@
 /*
- * @(#)JoinTest.java        1.0.8 2022/2/16
+ * @(#)JoinTest.java
  *
  * Copyright (c) 2022 YoungJun Yang.
  * ComputerScience, ProgrammingLanguage, Java, Pocheon-si, KOREA
@@ -34,12 +34,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * 회원 가입과 관련된 테스트 수행
- *
- * @author 양영준
- * @version 1.0.8 2022년 2월 16일
- */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application-test.properties")
@@ -60,9 +54,18 @@ public class JoinTest {
 
     @Before
     public void setup() throws Exception {
+        applyMockMvcContextSetup();
+
+        joinRequestForSetUp();
+    }
+
+    private void applyMockMvcContextSetup() {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .build();
+    }
+
+    private void joinRequestForSetUp() throws Exception {
         //given
         UserJoinRequestDTO dto = new UserJoinRequestDTO("before", "before", "before@naver.com");
         url = "http://localhost:" + port + "/signup/user";
