@@ -7,15 +7,13 @@
  */
 
 
-package com.dasd412.remake.api.domain.info;
+package com.dasd412.remake.api.service.security;
 
 import com.dasd412.remake.api.controller.exception.OAuthFindUsernameException;
 import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.writer.Role;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
 import com.dasd412.remake.api.domain.diary.writer.WriterRepository;
-import com.dasd412.remake.api.service.security.FindInfoService;
-import com.dasd412.remake.api.service.security.WriterService;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
@@ -153,6 +151,7 @@ public class UserInfoTest {
         assertThat(foundUserName).isEqualTo(userName);
     }
 
+
     @Transactional
     @Test
     public void existPasswordWhenOAuth() {
@@ -181,7 +180,32 @@ public class UserInfoTest {
 
     @Transactional
     @Test
-    public void existPassword() {
+    public void existPasswordInService(){
+        //given
+        String email = "test@test.com";
+        String userName = "TEST-NAME";
+
+        Writer writer = Writer.builder()
+                .writerEntityId(EntityId.of(Writer.class, 1L))
+                .name(userName)
+                .email(email)
+                .provider(null)
+                .providerId(null)
+                .password("test")
+                .role(Role.User)
+                .build();
+
+        writerRepository.save(writer);
+        //when
+        boolean exist = findInfoService.existPassword(email, userName);
+
+        //then
+        assertThat(exist).isTrue();
+    }
+
+    @Transactional
+    @Test
+    public void existPasswordInRepository() {
         //given
         String email = "test@test.com";
         String userName = "TEST-NAME";
@@ -205,6 +229,7 @@ public class UserInfoTest {
         assertThat(exist).isTrue();
 
     }
+
 
     @Test
     public void issueNewPassword() {
@@ -272,5 +297,6 @@ public class UserInfoTest {
         Writer found = writerRepository.findAll().get(0);
         assertThat(bCryptPasswordEncoder.matches(newPassword, found.getPassword())).isTrue();
     }
+
 
 }

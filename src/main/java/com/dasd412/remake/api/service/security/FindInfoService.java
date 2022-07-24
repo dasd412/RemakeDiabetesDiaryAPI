@@ -50,12 +50,7 @@ public class FindInfoService {
         if (provider != null) {
             throw new OAuthFindUsernameException("OAuth 회원 가입 사용자는 id를 찾을 필요가 없어요.");
         } else {
-            String userName = tuple.get(QWriter.writer.name);
-            if (userName == null) {
-                throw new UsernameNotFoundException("해당하는 유저 id가 존재하지 않아요!");
-            }
-
-            return userName;
+            return tuple.get(QWriter.writer.name);
         }
     }
 
