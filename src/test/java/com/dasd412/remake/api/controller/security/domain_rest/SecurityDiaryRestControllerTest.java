@@ -49,6 +49,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -490,6 +491,77 @@ public class SecurityDiaryRestControllerTest {
         assertThat(foodList.get(1).getAmount()).isCloseTo(200.0, Percentage.withPercentage(0.05));
         assertThat(foodList.get(2).getFoodName()).isEqualTo("kimchi");
         assertThat(foodList.get(2).getAmount()).isCloseTo(50.0, Percentage.withPercentage(0.05));
+    }
+
+    @Test
+    public void getDiariesBetweenStartAndEndIfEndDateIsBeforeStartDate() throws Exception {
+        //given
+        String url = "/api/diary/user/diabetes-diary/list";
+
+        //when and then
+        mockMvc.perform(get(url).with(user(principalDetails))
+                        .param("year", "2022")
+                        .param("month", "7")
+                        .param("startDay", "28")
+                        .param("endDay", "25")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void getDiariesBetweenStartAndEnd() throws Exception {
+
+
+        //given
+        String postUrl = "/api/diary/user/diabetes-diary";
+
+        SecurityDiaryPostRequestDTO dto1 = makeDtoForBetweenStartAndEnd("2021", "02", "03");
+        postDiaryBetweenDate(postUrl, dto1, 1);
+
+        SecurityDiaryPostRequestDTO dto2 = makeDtoForBetweenStartAndEnd("2022", "09", "13");
+        postDiaryBetweenDate(postUrl, dto2, 2);
+
+        SecurityDiaryPostRequestDTO dto3 = makeDtoForBetweenStartAndEnd("2022", "09", "28");
+        postDiaryBetweenDate(postUrl, dto3, 3);
+
+
+        String url = "/api/diary/user/diabetes-diary/list";
+
+        //when and then
+        mockMvc.perform(get(url).with(user(principalDetails))
+                        .param("year", "2022")
+                        .param("month", "9")
+                        .param("startDay", "10")
+                        .param("endDay", "30")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value("true"))
+                .andExpect(jsonPath("$.response").value(hasSize(2)));
+    }
+
+    private SecurityDiaryPostRequestDTO makeDtoForBetweenStartAndEnd(String year, String month, String day) {
+        List<SecurityFoodDTO> breakFast = IntStream.rangeClosed(1, 3).mapToObj(i -> new SecurityFoodDTO("breakFast" + i, i))
+                .collect(Collectors.toList());
+        List<SecurityFoodDTO> lunch = IntStream.rangeClosed(1, 3).mapToObj(i -> new SecurityFoodDTO("lunch" + i, i))
+                .collect(Collectors.toList());
+        List<SecurityFoodDTO> dinner = IntStream.rangeClosed(1, 3).mapToObj(i -> new SecurityFoodDTO("dinner" + i, i))
+                .collect(Collectors.toList());
+
+        return SecurityDiaryPostRequestDTO.builder().fastingPlasmaGlucose(100).remark("test")
+                .year(year).month(month).day(day).hour("00").minute("00").second("00")
+                .breakFastSugar(110).lunchSugar(120).dinnerSugar(130)
+                .breakFastFoods(breakFast).lunchFoods(lunch).dinnerFoods(dinner).build();
+    }
+
+    private void postDiaryBetweenDate(String url, SecurityDiaryPostRequestDTO dto, int order) throws Exception {
+        mockMvc.perform(post(url).with(user(principalDetails))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(dto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value("true"))
+                .andExpect(jsonPath("$.response.id").value(order));
     }
 
 }
