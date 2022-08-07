@@ -14,7 +14,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -40,17 +39,17 @@ public class FoodPageVO {
 
     private String sign;
 
-    private String startYear;
+    private final String startYear;
 
-    private String startMonth;
+    private final String startMonth;
 
-    private String startDay;
+    private final String startDay;
 
-    private String endYear;
+    private final String endYear;
 
-    private String endMonth;
+    private final String endMonth;
 
-    private String endDay;
+    private final String endDay;
 
     public FoodPageVO() {
         this.page = 1;
@@ -81,15 +80,6 @@ public class FoodPageVO {
         this.size = size < DEFAULT_SIZE || size > DEFAULT_MAX_SIZE ? DEFAULT_SIZE : size;
     }
 
-    /**
-     * Pageble 객체의 offset = page * size이기 때문에 pageable 객체를 만들 때는 page-1 해준다.
-     *
-     * @param direction  정렬 방향
-     * @param properties 정렬 기준
-     */
-    public Pageable makePageable(Sort.Direction direction, String... properties) {
-        return PageRequest.of(this.page - 1, this.size, direction, properties);
-    }
 
     /**
      * 이 메서드를 사용하면, 리포지토리 코드 내에서 orderBy()를 지정해줘야 한다.
@@ -129,30 +119,6 @@ public class FoodPageVO {
             default:
                 return InequalitySign.NONE;
         }
-    }
-
-    public void setStartYear(String startYear) {
-        this.startYear = startYear;
-    }
-
-    public void setStartMonth(String startMonth) {
-        this.startMonth = startMonth;
-    }
-
-    public void setStartDay(String startDay) {
-        this.startDay = startDay;
-    }
-
-    public void setEndYear(String endYear) {
-        this.endYear = endYear;
-    }
-
-    public void setEndMonth(String endMonth) {
-        this.endMonth = endMonth;
-    }
-
-    public void setEndDay(String endDay) {
-        this.endDay = endDay;
     }
 
     public Optional<LocalDateTime> convertStartDate() {
