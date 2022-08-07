@@ -6,6 +6,7 @@ import com.dasd412.remake.api.domain.diary.diet.Diet;
 import com.dasd412.remake.api.domain.diary.diet.EatTime;
 import com.dasd412.remake.api.domain.diary.writer.Role;
 import com.dasd412.remake.api.domain.diary.writer.Writer;
+import org.assertj.core.data.Offset;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -61,11 +62,26 @@ public class FoodTest {
     }
 
     @Test
-    public void update() {
+    public void convertNullAmountUnit() {
+        assertThat(food.getAmountUnit()).isEqualTo(AmountUnit.NONE);
+    }
+
+    @Test
+    public void updateOnlyFoodName() {
         food.update("chicken");
         assertThat(food.getId()).isEqualTo(1L);
         assertThat(food.getFoodName()).isEqualTo("chicken");
     }
+
+    @Test
+    public void updateFoodNameAndAmountAndAmountUnit() {
+        food.update("chicken", 1.5, AmountUnit.kg);
+        assertThat(food.getId()).isEqualTo(1L);
+        assertThat(food.getFoodName()).isEqualTo("chicken");
+        assertThat(food.getAmount()).isCloseTo(1.5, Offset.offset(0.05));
+        assertThat(food.getAmountUnit()).isEqualTo(AmountUnit.kg);
+    }
+
 
     @Test
     public void updateInvalidFoodName() {

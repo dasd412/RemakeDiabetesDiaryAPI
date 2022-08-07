@@ -26,33 +26,6 @@ public class PredicateMaker {
 
     private PredicateMaker() {
     }
-
-    public static Predicate decideEqualitySignOfFastingPlasmaGlucose(InequalitySign sign, int fastingPlasmaGlucose) {
-        BooleanBuilder booleanBuilder = new BooleanBuilder();
-        switch (sign) {
-            case GREATER:
-                booleanBuilder.and(QDiabetesDiary.diabetesDiary.fastingPlasmaGlucose.gt(fastingPlasmaGlucose));
-                break;
-
-            case LESSER:
-                booleanBuilder.and(QDiabetesDiary.diabetesDiary.fastingPlasmaGlucose.lt(fastingPlasmaGlucose));
-                break;
-
-            case EQUAL:
-                booleanBuilder.and(QDiabetesDiary.diabetesDiary.fastingPlasmaGlucose.eq(fastingPlasmaGlucose));
-                break;
-
-            case GREAT_OR_EQUAL:
-                booleanBuilder.and(QDiabetesDiary.diabetesDiary.fastingPlasmaGlucose.goe(fastingPlasmaGlucose));
-                break;
-
-            case LESSER_OR_EQUAL:
-                booleanBuilder.and(QDiabetesDiary.diabetesDiary.fastingPlasmaGlucose.loe(fastingPlasmaGlucose));
-                break;
-        }
-        return booleanBuilder;
-    }
-
     /**
      * 작성자 id는 on 절에서 사용되므로 파라미터에서 생략.
      */
@@ -95,43 +68,4 @@ public class PredicateMaker {
         booleanBuilder.and(QDiet.diet.diary.writtenTime.between(startDate, endDate));
         return booleanBuilder;
     }
-
-    /**
-     * inner join diet on 절 이후에 쓰인다.
-     * @param sign 부등호 (Equal이면 안된다. double에 대해선 ==을 쓸 수 없기 때문)
-     */
-    public static Predicate decideAverageOfDiet(InequalitySign sign) {
-        checkArgument(sign != InequalitySign.EQUAL && sign != InequalitySign.NONE, "평균을 구할 땐 '=='과 'none' 은 사용할 수 없다.");
-        BooleanBuilder booleanBuilder = new BooleanBuilder();
-        switch (sign) {
-            case GREATER:
-                booleanBuilder.and(QDiet.diet.bloodSugar.gt(JPAExpressions.select(QDiet.diet.bloodSugar.avg())
-                        .from(QDiet.diet)));
-                break;
-
-            case LESSER:
-                booleanBuilder.and(QDiet.diet.bloodSugar.lt(JPAExpressions.select(QDiet.diet.bloodSugar.avg())
-                        .from(QDiet.diet)));
-                break;
-
-            case GREAT_OR_EQUAL:
-                booleanBuilder.and(QDiet.diet.bloodSugar.goe(JPAExpressions.select(QDiet.diet.bloodSugar.avg())
-                        .from(QDiet.diet)));
-                break;
-
-            case LESSER_OR_EQUAL:
-                booleanBuilder.and(QDiet.diet.bloodSugar.loe(JPAExpressions.select(QDiet.diet.bloodSugar.avg())
-                        .from(QDiet.diet)));
-                break;
-        }
-        return booleanBuilder;
-    }
-
-    public static Predicate decideEatTime(EatTime eatTime) {
-        BooleanBuilder builder = new BooleanBuilder();
-        builder.and(QDiet.diet.eatTime.eq(eatTime));
-        return builder;
-    }
-
-
 }
