@@ -9,6 +9,7 @@
 package com.dasd412.remake.api.controller.security.domain_view;
 
 import com.dasd412.remake.api.domain.diary.InequalitySign;
+import lombok.Builder;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -65,6 +66,21 @@ public class FoodPageVO {
         this.endYear = "";
         this.endMonth = "";
         this.endDay = "";
+    }
+
+    @Builder
+    public FoodPageVO(int bloodSugar, String sign, String startYear, String startMonth, String startDay, String endYear, String endMonth, String endDay) {
+        this.page = 1;
+        this.size = DEFAULT_SIZE;
+
+        this.bloodSugar = bloodSugar;
+        this.sign = sign;
+        this.startYear = startYear;
+        this.startMonth = startMonth;
+        this.startDay = startDay;
+        this.endYear = endYear;
+        this.endMonth = endMonth;
+        this.endDay = endDay;
     }
 
     public void setPage(int page) {

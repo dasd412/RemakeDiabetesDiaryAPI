@@ -1,12 +1,18 @@
 package com.dasd412.remake.api.controller.security.domain_view;
 
+import com.dasd412.remake.api.controller.security.domain_rest.dto.chart.FoodBoardDTO;
+import com.dasd412.remake.api.domain.diary.EntityId;
 import com.dasd412.remake.api.domain.diary.InequalitySign;
+import com.dasd412.remake.api.domain.diary.writer.Writer;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -111,5 +117,12 @@ public class FoodPageVOTest {
     public void setSignInvalid() {
         vo.setSign("test");
         assertThat(vo.getEnumOfSign()).isEqualTo(InequalitySign.NONE);
+    }
+
+    @Test
+    public void setDateWithInvalidDateFormat() {
+        FoodPageVO vo = FoodPageVO.builder().startYear("test").startMonth("ww").startDay("adsad").build();
+
+        assertThat(vo.convertStartDate()).isEqualTo(Optional.empty());
     }
 }
